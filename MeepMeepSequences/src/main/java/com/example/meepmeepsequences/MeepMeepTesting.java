@@ -49,13 +49,13 @@ public class MeepMeepTesting {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(35, 12), Math.toRadians(180))
                                 .strafeTo(new Vector2d(35,34)).setReversed(true)
-                                //If left
+                                //If Right
                                 //.splineTo(new Vector2d(12, 34), Math.toRadians(180))
                                 //If mid
 
-                                //If Right
-                                //.setReversed(false)
-                                //.splineTo(new Vector2d(60, 34), Math.toRadians(0))
+                                //If Left
+                                .setReversed(false)
+                                .splineTo(new Vector2d(60, 34), Math.toRadians(0))
 
                                 .build()
                 );
@@ -94,14 +94,14 @@ public class MeepMeepTesting {
                                 .setReversed(true)
                                 .splineTo(new Vector2d(-35, 12), Math.toRadians(0))
                                 .strafeTo(new Vector2d(-35,34))
-                                //If left
+                                //If Right
                                 //.setReversed(false)
                                 //.splineTo(new Vector2d(-60, 34), Math.toRadians(180))
                                 //If mid
 
-                                //If Right
-                                //.setReversed(true)
-                                //.splineTo(new Vector2d(-12, 34), Math.toRadians(0))
+                                //If Left
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-12, 34), Math.toRadians(0))
 
                                 .build()
                 );
