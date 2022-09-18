@@ -20,7 +20,7 @@ public class MeepMeepTesting {
                 // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 // Option: Set theme. Default = ColorSchemeRedDark()
-                .setColorScheme(new ColorSchemeRedDark())
+                .setColorScheme(new ColorSchemeBlueDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(0)))
                                 .strafeTo(new Vector2d(36, 24))
@@ -157,7 +157,7 @@ public class MeepMeepTesting {
                 // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 // Option: Set theme. Default = ColorSchemeRedDark()
-                .setColorScheme(new ColorSchemeRedLight())
+                .setColorScheme(new ColorSchemeBlueLight())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(-90)))
 
@@ -199,15 +199,204 @@ public class MeepMeepTesting {
 
                                 .build()
                 );
+        RoadRunnerBotEntity RedSideBlueTerm = new DefaultBotBuilder(meepMeep)
+                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                // Option: Set theme. Default = ColorSchemeRedDark()
+                .setColorScheme(new ColorSchemeRedDark())
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(36, -60, Math.toRadians(180)))
+                                .strafeTo(new Vector2d(36, -24))
+
+                                .strafeTo(new Vector2d(36, -12))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+                                .strafeTo(new Vector2d(35,-34))
+                                .setReversed(true)
+                                //If Right
+                                //.setReversed(false)
+                                //.splineTo(new Vector2d(12, -34), Math.toRadians(180))
+                                //If mid
+
+                                //If Left
+                                .splineTo(new Vector2d(60, -34), Math.toRadians(0))
+
+                                .build()
+                );
+        RoadRunnerBotEntity RedSideRedTerm = new DefaultBotBuilder(meepMeep)
+                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                // Option: Set theme. Default = ColorSchemeRedDark()
+                .setColorScheme(new ColorSchemeRedDark())
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(180)))
+                                .strafeTo(new Vector2d(-36, -24))
+
+                                .strafeTo(new Vector2d(-36, -12))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+                                .strafeTo(new Vector2d(-35,-34))
+                                .setReversed(false)
+                                //If Right
+                                //.setReversed(true)
+                                //.splineTo(new Vector2d(-12, -34), Math.toRadians(0))
+                                //If mid
+
+                                //If Left
+                                .splineTo(new Vector2d(-60, -34), Math.toRadians(180))
+
+                                .build()
+                );
+        RoadRunnerBotEntity ComplexRedRed = new DefaultBotBuilder(meepMeep)
+                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                // Option: Set theme. Default = ColorSchemeRedDark()
+                .setColorScheme(new ColorSchemeBlueLight())
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(36, -60, Math.toRadians(90)))
+
+                                .splineTo(new Vector2d(36, -24),Math.toRadians(90))
+                                .splineTo(new Vector2d(24, -12),Math.toRadians(180))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(56, -12), Math.toRadians(0))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(35, -12), Math.toRadians(180))
+                                .strafeTo(new Vector2d(35,-34))
+                                //If Right
+                                //.setReversed(false)
+                                //.splineTo(new Vector2d(12, -34), Math.toRadians(180))
+                                //If mid
+
+                                //If Left
+                                .setReversed(true)
+                                .splineTo(new Vector2d(60, -34), Math.toRadians(0))
+
+                                .build()
+                );
+        RoadRunnerBotEntity ComplexRedBlue = new DefaultBotBuilder(meepMeep)
+                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                // Option: Set theme. Default = ColorSchemeRedDark()
+                .setColorScheme(new ColorSchemeBlueLight())
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(90)))
+
+                                .splineTo(new Vector2d(-36, -24),Math.toRadians(90))
+                                .splineTo(new Vector2d(-24, -12),Math.toRadians(0))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+
+                                .setReversed(true)
+                                .splineTo(new Vector2d(-56, -12), Math.toRadians(180))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-35, -12), Math.toRadians(0))
+                                .strafeTo(new Vector2d(-35,-34))
+                                //If Right
+                                //.setReversed(true)
+                                //.splineTo(new Vector2d(-60, -34), Math.toRadians(180))
+                                //If mid
+
+                                //If Left
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-12, -34), Math.toRadians(0))
+
+                                .build()
+                );
         // Set field image
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_DARK)
                 .setDarkMode(true)
                 // Background opacity from 0-1
                 .setBackgroundAlpha(0.95f)
+                //Side/Terminal
                 //.addEntity(BlueSideRedTerm)
                 //.addEntity(BlueSideBlueTerm)
                 //.addEntity(ComplexBlueBlue)
-                .addEntity(ComplexBlueRed)
+                //.addEntity(ComplexBlueRed)
+                //.addEntity(RedSideBlueTerm)
+                //.addEntity(RedSideRedTerm)
+                //.addEntity(ComplexRedRed)
+                //.addEntity(ComplexRedBlue)
                 .start();
     }
 }
