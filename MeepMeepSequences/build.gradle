@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.NoahBres:MeepMeep:2.0.0'
+    implementation 'com.github.NoahBres:MeepMeep:2.0.2'
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
