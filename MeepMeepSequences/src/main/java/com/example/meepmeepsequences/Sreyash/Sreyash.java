@@ -1,4 +1,4 @@
-package com.example.meepmeepsequences;
+package com.example.meepmeepsequences.Sreyash;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedLight;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class Sreyash {
     public static void main(String[] args) {
         // Declare a MeepMeep instance
         // With a field size of 600 pixels
