@@ -19,24 +19,30 @@ public class MeepMeepTesting {
                 // Option: Set theme. Default = ColorSchemeRedDark()
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .addDisplacementMarker(() -> {
-                                    /* Everything in the marker callback should be commented out */
+                        drive.trajectorySequenceBuilder(new Pose2d(-34.5, 62, Math.toRadians(0)))
 
-                                    // bot.shooter.shoot()
-                                    // bot.wobbleArm.lower()
-                                })
-                                .turn(Math.toRadians(90))
-                                .splineTo(new Vector2d(10, 15), 0)
-                                .turn(Math.toRadians(90))
+
+                                .strafeRight(50)
+                                .back(21.5)
+                                .forward(21.5)
+
+                                .back(21.5)
+                                .forward(21.5)
+
+                                .back(21.5)
+                                .forward(21.5)
+
+                                .back(21.5)
+                                .forward(21.5)
+
+                                .back(21.5)
+                                .forward(21.5)
+
                                 .build()
                 );
 
         // Set field image
-        meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 // Background opacity from 0-1
                 .setBackgroundAlpha(0.95f)
