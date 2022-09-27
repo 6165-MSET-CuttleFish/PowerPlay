@@ -500,12 +500,12 @@ public class FtcRobotControllerActivity extends Activity
   }
 
   protected void logPackageVersions() {
-    RobotLog.logBuildConfig(com.qualcomm.ftcrobotcontroller.BuildConfig.class);
+    /*RobotLog.logBuildConfig(com.qualcomm.ftcrobotcontroller.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.robotcore.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.hardware.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.ftccommon.BuildConfig.class);
     RobotLog.logBuildConfig(com.google.blocks.BuildConfig.class);
-    RobotLog.logBuildConfig(org.firstinspires.inspection.BuildConfig.class);
+    RobotLog.logBuildConfig(org.firstinspires.inspection.BuildConfig.class);*/
   }
 
   protected void logDeviceSerialNumber() {
