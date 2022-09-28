@@ -4,6 +4,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public abstract class Module {
     public State state;
+
+    public abstract void init();
+
+    public abstract void setDebugMode(boolean b);
+
     public enum State{
 
     }
@@ -13,7 +18,7 @@ public abstract class Module {
     public void update(){
 
     }
-    public State getState() {
+    public Turret.State getState() {
         return state;
     }
     public void setState(State state){

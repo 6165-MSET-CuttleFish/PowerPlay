@@ -386,12 +386,12 @@ public class MeepMeepTesting {
                 // Background opacity from 0-1
                 .setBackgroundAlpha(0.95f)
                 //Side/Terminal
-                .addEntity(BlueSideRedTerm)
-                .addEntity(BlueSideBlueTerm)
+                //.addEntity(BlueSideRedTerm)
+                //.addEntity(BlueSideBlueTerm)
                 .addEntity(ComplexBlueBlue)
                 .addEntity(ComplexBlueRed)
-                .addEntity(RedSideBlueTerm)
-                .addEntity(RedSideRedTerm)
+                //.addEntity(RedSideBlueTerm)
+                //.addEntity(RedSideRedTerm)
                 .addEntity(ComplexRedRed)
                 .addEntity(ComplexRedBlue)
                 .start();
