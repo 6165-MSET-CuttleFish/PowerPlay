@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
@@ -42,8 +43,8 @@ import java.util.List;
 
 public class Robot extends SampleMecanumDrive {
     public DcMotorEx fl, bl, fr, br;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0, 1.2);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(9, 0.07, 0.1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.8;
 
@@ -58,11 +59,14 @@ public class Robot extends SampleMecanumDrive {
     private final VoltageSensor batteryVoltageSensor;
     public LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     FtcDashboard dashboard;
-
-    public Robot(OpMode opMode, Pose2d pose2d) {
+    public enum Mode{
+        teleOp,
+        autonomous
+    }
+    public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        hardwareMap = opMode.hardwareMap;
+        //hardwareMap = opMode.hardwareMap;
         telemetry = opMode.telemetry;
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
