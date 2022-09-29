@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+/*package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -34,3 +34,4 @@ public class TurretTest extends ModuleTest {
         turret.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
     }
 }
+*/

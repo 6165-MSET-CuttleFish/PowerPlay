@@ -18,7 +18,7 @@ public abstract class Module {
     public void update(){
 
     }
-    public Turret.State getState() {
+    public State getState() {
         return state;
     }
     public void setState(State state){

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+/*package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +19,7 @@ public abstract class Turret extends Module{
     }
     public void update(){
         switch (getState()) {
-            case IDLE:
+           case IDLE:
                 break;
             case ROTATING_LEFT:
                 turret.setPower(-1.0);
@@ -30,7 +30,7 @@ public abstract class Turret extends Module{
         }
 
     }
-    public State getState() {
+    public Turret.State getState() {
         return state;
     }
     public void setState(State state){
@@ -48,3 +48,4 @@ public abstract class Turret extends Module{
         setState(State.ROTATING_RIGHT);
     }
 }
+*/
