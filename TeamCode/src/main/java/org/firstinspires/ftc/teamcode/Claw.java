@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Claw
 {
-    //TODO: Implement a way to check if servo is all the way there to target position
-
     //temporary values
     static final double OPEN=0;
     static final double CLOSE=0;
@@ -43,8 +41,10 @@ public class Claw
         return state;
     }
 
-    public void setState(Claw.State state){
+    public void setState(Claw.State state)
+    {
         this.state = state;
+        update();
     }
 
 }
