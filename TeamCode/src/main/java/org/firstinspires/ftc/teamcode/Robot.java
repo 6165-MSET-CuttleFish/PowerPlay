@@ -121,7 +121,7 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-        odoRaise = hardwareMap.get(Servo.class, "midOdo");
+        //odoRaise = hardwareMap.get(Servo.class, "midOdo");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -146,7 +146,7 @@ public class Robot extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
 
