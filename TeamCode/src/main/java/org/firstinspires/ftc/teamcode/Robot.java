@@ -92,6 +92,7 @@ public class Robot extends MecanumDrive {
     public void setState(driveState state){
         this.state = state;
     }
+
     public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 

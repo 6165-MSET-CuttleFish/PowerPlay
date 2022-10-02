@@ -24,11 +24,13 @@ public class DrivetrainTest extends LinearOpMode {
         cycle = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
 
         waitForStart();
+
         while(opModeIsActive()){
             if(robot.getState()== Robot.driveState.normal) normal();
             else if(robot.getState()== Robot.driveState.straight) straight();
             else if(robot.getState()== Robot.driveState.ninja) ninja();
             if(cycle.wasJustPressed()){
+
                 switch (robot.getState()){
                     case normal:
                         robot.setState(Robot.driveState.ninja);
