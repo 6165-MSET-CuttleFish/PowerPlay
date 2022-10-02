@@ -26,7 +26,8 @@ public class DrivetrainTest extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
             if(robot.getState()== Robot.driveState.normal) normal();
-            else if(robot.getState()== Robot.driveState.straight)
+            else if(robot.getState()== Robot.driveState.straight) straight();
+            else if(robot.getState()== Robot.driveState.ninja) ninja();
             if(cycle.wasJustPressed()){
                 switch (robot.getState()){
                     case normal:
@@ -53,6 +54,32 @@ public class DrivetrainTest extends LinearOpMode {
         );
     }
     private void straight(){
-        
+        if(Math.abs(gm1.getLeftY()) > Math.abs(gm1.getLeftX())){
+            robot.setWeightedDrivePower(
+                    new Pose2d(
+                            -gm1.getLeftY(),
+                            0,
+                            -gm1.getRightX()
+                    )
+            );
+        }
+        else{
+            robot.setWeightedDrivePower(
+                    new Pose2d(
+                            0,
+                            -gm1.getLeftX(),
+                            -gm1.getRightX()
+                    )
+            );
+        }
+    }
+    private void ninja(){
+        robot.setWeightedDrivePower(
+                new Pose2d(
+                        -gm1.getLeftY()*0.2,
+                        -gm1.getLeftX()*0.2,
+                        -gm1.getRightX()*0.2
+                )
+        );
     }
 }
