@@ -74,9 +74,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
-    public SampleMecanumDrive(double kV, double kA, double kStatic, double width, double TRACK_WIDTH, double LATERAL_MULTIPLIER){
-        super(kV, kA, kStatic, width, width, width);
-    }
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -141,8 +139,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
