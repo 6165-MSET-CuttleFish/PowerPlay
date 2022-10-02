@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(group = "slides")
 public class TestSlides extends LinearOpMode {
     Slides slide;
-    ElapsedTime time;
     @Override
     public void runOpMode() throws InterruptedException {
 
