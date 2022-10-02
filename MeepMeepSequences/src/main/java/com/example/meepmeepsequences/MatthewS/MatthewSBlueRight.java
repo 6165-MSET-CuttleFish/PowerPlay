@@ -1,4 +1,4 @@
-package com.example.meepmeepsequences;
+package com.example.meepmeepsequences.MatthewS;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -7,7 +7,7 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class BlueRight {
+public class MatthewSBlueRight {
     //
     public static void main(String[] args) {
         // Declare a MeepMeep instance
