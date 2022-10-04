@@ -101,6 +101,12 @@ public class practiceDriverCode extends LinearOpMode {
             if(deposit.wasJustPressed()){
                 intake.setState(Intake.State.DEPOSITING);
             }
+            if(activeGround.getState()){
+                groundIntake.setState(GroundIntake.State.INTAKING);
+            }
+            else{
+                groundIntake.setState(GroundIntake.State.OFF);
+            }
             if(reset.wasJustPressed()){
                 turret.setState(Turret.State.RESET);
                 slides.setState(Slides.State.INTAKE);
