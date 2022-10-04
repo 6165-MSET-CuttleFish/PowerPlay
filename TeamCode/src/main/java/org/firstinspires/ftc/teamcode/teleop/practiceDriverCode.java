@@ -59,7 +59,7 @@ public class practiceDriverCode extends LinearOpMode {
             robot.update();
             for (KeyReader reader : keyReaders) {
                 reader.readValue();
-
+            }
                 if (ninjaMode.isDown()) {
                     robot.setWeightedDrivePower(
                             new Pose2d(
@@ -115,4 +115,3 @@ public class practiceDriverCode extends LinearOpMode {
             }
         }
     }
-}
