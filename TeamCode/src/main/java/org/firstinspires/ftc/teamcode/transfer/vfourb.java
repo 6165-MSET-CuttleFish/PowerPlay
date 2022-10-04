@@ -6,23 +6,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class vfourb
 {
     //temporary values
-    static final double INTAKE_POSITION_RUNNING=0;
-    static final double INTAKE_POSITION_SUPPORTING=0;
-    static final double DEPOSIT_POSITION_RUNNING=0;
-    static final double DEPOSIT_POSITION_SUPPORTING=0;
+    static final double INTAKE_POSITION=0;
+    static final double DEPOSIT_POSITION=0;
+    static final double PRIMED = 0;
 
     ServoEx Running;
     ServoEx Supporting;
     public vfourb.State state;
     public enum State
     {
-        INTAKE_POSITION,DEPOSIT_POSITION
+        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED
     }
 
     public vfourb(HardwareMap hardwareMap)
     {
         Running = hardwareMap.get(ServoEx.class, "v4brun");
         Supporting = hardwareMap.get(ServoEx.class, "v4bsup");
+        Supporting.setInverted(true);
         setState(State.INTAKE_POSITION);
     }
 
@@ -31,11 +31,14 @@ public class vfourb
         switch(state)
         {
             case INTAKE_POSITION:
-                Running.setPosition(INTAKE_POSITION_RUNNING);
-                Supporting.setPosition(INTAKE_POSITION_SUPPORTING);
+                Running.setPosition(INTAKE_POSITION);
+                Supporting.setPosition(INTAKE_POSITION);
             case DEPOSIT_POSITION:
-                Running.setPosition(DEPOSIT_POSITION_RUNNING);
-                Supporting.setPosition(DEPOSIT_POSITION_SUPPORTING);
+                Running.setPosition(DEPOSIT_POSITION);
+                Supporting.setPosition(DEPOSIT_POSITION);
+            case PRIMED:
+                Running.setPosition(PRIMED);
+                Supporting.setPosition(PRIMED);
         }
     }
 
