@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.pipelines;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Camera;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -13,27 +15,29 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
     Mat finalMat;
+    Camera.State state;
 
     Telemetry tel;
     public colorDetection(Telemetry tel)
     {
         this.tel=tel;
+        state=Camera.State.ONE;
     }
 
 
-    public Mat filterColor(Mat input)
+    public Mat preProcessing(Mat input)
     {
         Mat canYouNotBeNormal=new Mat();
         Core.normalize(input, canYouNotBeNormal, 20, 200, Core.NORM_MINMAX);
         //canYouNotBeNormal=normalizeV2(laCringe);
 
-        //HSV
-        Mat HSV=new Mat();
-        Imgproc.cvtColor(canYouNotBeNormal, HSV, Imgproc.COLOR_RGB2HSV);
+        //LAB
+        Mat LAB =new Mat();
+        Imgproc.cvtColor(canYouNotBeNormal, LAB, Imgproc.COLOR_RGB2Lab);
 
         //Blur
         Mat blurred=new Mat();
-        Imgproc.blur(HSV, blurred, new Size(3, 3));
+        Imgproc.blur(LAB, blurred, new Size(3, 3));
 
         //Dilate
         Mat dilate=new Mat();
@@ -41,7 +45,7 @@ public class colorDetection extends OpenCvPipeline
         kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         Imgproc.dilate(blurred, dilate, kernel, new Point(1.5, 1.5), 1);
 
-        Scalar lower=new Scalar(0, 60, 40);
+        Scalar lower=new Scalar(50, 1, 1);
         Scalar higher=new Scalar(255, 255, 255);
 
         Mat mask=new Mat();
@@ -57,24 +61,61 @@ public class colorDetection extends OpenCvPipeline
         Imgproc.morphologyEx(morphed, morphed01, Imgproc.MORPH_CLOSE, kernel1);
 
         Mat temp=new Mat();
-        Core.bitwise_and(canYouNotBeNormal, canYouNotBeNormal, temp, morphed01);
+        Core.bitwise_and(LAB, LAB, temp, morphed01);
 
-        
 
-        return temp;
+        Mat temp2=new Mat();
+        Rect rect=new Rect(50, 100, 50, 100);
+        Mat mask01=new Mat(LAB.rows(), LAB.cols(), CvType.CV_8U, Scalar.all(0));
+        Imgproc.rectangle(mask01, rect, new Scalar(255), -1);
+        Core.bitwise_and(temp, temp, temp2, mask01);
+
+        return temp2;
+    }
+
+    public Mat getZone(Mat input)
+    {
+        Mat A, B;
+        A=new Mat();
+        B=new Mat();
+        Core.extractChannel(input, A, 1);
+        Core.extractChannel(input, B, 2);
+
+        Scalar aAvg=Core.mean(A);
+        Scalar bAvg=Core.mean(B);
+
+        if(bAvg.val[0]*1.7<aAvg.val[0])
+        {
+            state=Camera.State.ONE;
+        }
+        else if(aAvg.val[0]*1.7<bAvg.val[0])
+        {
+            state=Camera.State.TWO;
+        }
+        else if(aAvg.val[0]-bAvg.val[0]<=30)
+            {
+                state=Camera.State.THREE;
+            }
+        //update the state
+        return input;
     }
 
 
     @Override
     public Mat processFrame(Mat input)
     {
-        finalMat=filterColor(input);
+        Mat temp=new Mat();
+        temp=preProcessing(input);
+        Mat temp2=new Mat();
+        temp2=getZone(temp);
+
+
         return null;
     }
 
     public Camera.State getOutput()
     {
         //temporary return
-        return Camera.State.ONE;
+        return state;
     }
 }

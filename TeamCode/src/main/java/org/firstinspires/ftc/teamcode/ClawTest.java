@@ -1,19 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class ClawTest extends LinearOpMode
 {
-    Claw claw;
+    Intake claw;
     ElapsedTime time;
     @Override
     public void runOpMode() throws InterruptedException
     {
 
         time=new ElapsedTime();
-        claw=new Claw(hardwareMap);
+        claw=new Intake(hardwareMap);
 
         waitForStart();
 
@@ -25,7 +24,7 @@ public class ClawTest extends LinearOpMode
 
         }
 
-        claw.setState(Claw.State.PARTIAL);
+        claw.setState(Intake.State.PARTIAL);
         claw.update();
 
         time.reset();
@@ -34,7 +33,7 @@ public class ClawTest extends LinearOpMode
 
         }
 
-        claw.setState(Claw.State.CLOSE);
+        claw.setState(Intake.State.CLOSE);
         claw.update();
 
         time.reset();
