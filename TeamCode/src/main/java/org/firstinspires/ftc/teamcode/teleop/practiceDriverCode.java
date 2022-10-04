@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleop;
-
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.KeyReader;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
+import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.transfer.Intake;
 import org.firstinspires.ftc.teamcode.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.turret.Turret;
@@ -20,16 +22,91 @@ public class practiceDriverCode extends LinearOpMode {
     Intake intake;
     Slides slides;
     vfourb fourbar;
+    GroundIntake groundIntake;
     Turret turret;
     GamepadEx primary;
     GamepadEx secondary;
     KeyReader[] keyReaders;
-    TriggerReader intakeButton, ninjaMode;
-    ButtonReader liftHigh, liftMedium, liftLow, deposit, intakeButton
-    ToggleButtonReader activeGround, closeDeposit, farDeposit, crossDeposit, mediumDeposit;
+    TriggerReader intakeButton, ninjaMode,reset, deposit;
+    ButtonReader liftHigh, liftMedium, liftLow,junction,align;
+    ToggleButtonReader activeGround;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        robot = new Robot(hardwareMap);
+        intake = robot.intake;
+        slides = robot.slides;
+        fourbar = robot.fourbar;
+        groundIntake = robot.groundIntake;
+        turret = robot.turret;
+        keyReaders = new KeyReader[]{
+                 intakeButton = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                ninjaMode = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                liftHigh = new ButtonReader(secondary,GamepadKeys.Button.LEFT_BUMPER),
+                liftMedium = new ButtonReader(secondary,GamepadKeys.Button.DPAD_UP),
+                liftLow = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
+                junction = new ButtonReader(secondary,GamepadKeys.Button.DPAD_DOWN),
+                deposit = new TriggerReader(secondary,GamepadKeys.Trigger.RIGHT_TRIGGER),
+                align = new ButtonReader(secondary,GamepadKeys.Button.RIGHT_BUMPER),
+                reset = new TriggerReader(secondary,GamepadKeys.Trigger.RIGHT_TRIGGER),
+                activeGround = new ToggleButtonReader(secondary,GamepadKeys.Button.A),
+        };
+        waitForStart();
+        slides.setState(Slides.State.INTAKE);
+        fourbar.setState(vfourb.State.PRIMED);
+        while (opModeIsActive()) {
+            robot.update();
+            for (KeyReader reader : keyReaders) {
+                reader.readValue();
+            }
+            robot.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
+            if(ninjaMode.isDown()){
+                robot.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y * 0.5,
+                                gamepad1.left_stick_x * 0.5,
+                                -gamepad1.right_stick_x * 0.5
+                        )
+                );
+            }
+            if(intakeButton.wasJustPressed()){
+                intake.setState(Intake.State.INTAKING);
+                fourbar.setState(vfourb.State.INTAKE_POSITION);
+            }
+            if(liftHigh.wasJustPressed()){
+                slides.setState(Slides.State.HIGH);
+                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+            }
+            if(liftMedium.wasJustPressed()){
+                slides.setState(Slides.State.MID);
+                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+            }
+            if(liftLow.wasJustPressed()){
+                slides.setState(Slides.State.LOW);
+                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+            }
+            if(junction.wasJustPressed()){
+                slides.setState(Slides.State.GROUND);
+                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+            }
+            if(align.wasJustPressed()){
+                turret.setState(Turret.State.ALIGNING);
+            }
+            if(deposit.wasJustPressed()){
+                intake.setState(Intake.State.DEPOSITING);
+            }
+            if(reset.wasJustPressed()){
+                turret.setState(Turret.State.RESET);
+                slides.setState(Slides.State.INTAKE);
+                fourbar.setState(vfourb.State.PRIMED);
+                intake.setState(Intake.State.OFF);
+            }
+        }
+        }
     }
-}

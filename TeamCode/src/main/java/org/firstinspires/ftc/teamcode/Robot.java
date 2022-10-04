@@ -46,11 +46,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.transfer.Intake;
+import org.firstinspires.ftc.teamcode.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -87,6 +92,13 @@ public class Robot extends MecanumDrive {
         ninja,
         straight
     }
+
+   public Intake intake;
+    public Slides slides;
+    public vfourb fourbar;
+    public Turret turret;
+    public GroundIntake groundIntake;
+
     public boolean isOdoRaised = false;
     public driveState state;
     public driveState getState() {
@@ -130,7 +142,11 @@ public class Robot extends MecanumDrive {
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
         }
-
+                turret = new Turret(hardwareMap);
+                slides = new Slides(hardwareMap);
+                intake = new Intake(hardwareMap);
+                groundIntake = new GroundIntake(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
         if (RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
