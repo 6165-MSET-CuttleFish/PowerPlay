@@ -10,7 +10,7 @@ public class TurretTestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        turret= hardwareMap.get(DcMotor.class, "hturret");
+        turret= hardwareMap.get(DcMotor.class, "turret");
         while (opModeIsActive()){
             turret.setPower(gamepad1.right_trigger-gamepad1.left_trigger);
             position=turret.getCurrentPosition();
