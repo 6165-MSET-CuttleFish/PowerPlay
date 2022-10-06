@@ -19,7 +19,7 @@ public class Slides {
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "slidesLeft");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "slidesLeft");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "slidesRight");
         setState(State.INTAKE);
     }
 
@@ -43,5 +43,9 @@ public class Slides {
     }
     public void setState(Slides.State state){
         this.state = state;
+    }
+    public double ticksToInches(double ticks) {
+
+        return ticks;
     }
 }

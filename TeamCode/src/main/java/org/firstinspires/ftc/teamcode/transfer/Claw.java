@@ -19,7 +19,7 @@ public class Claw
 
     public Claw(HardwareMap hardwareMap)
     {
-        claw=hardwareMap.get(ServoEx.class, "Claw");
+        claw = hardwareMap.get(ServoEx.class, "Claw");
         setState(State.OPEN);
     }
 
