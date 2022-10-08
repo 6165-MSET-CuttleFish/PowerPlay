@@ -21,7 +21,7 @@ public class TestSlides extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            slidesLeft.setPower(gamepad1.left_stick_y);
+            slidesLeft.setPower(-gamepad1.left_stick_y);
             slidesRight.setPower(gamepad1.right_stick_y);
 
             if (gamepad1.left_bumper) {
