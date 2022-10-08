@@ -1,26 +1,25 @@
 package org.firstinspires.ftc.teamcode.Slides;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Slides {
     DcMotorEx slidesLeft;
     DcMotorEx slidesRight;
-
-    static final double HIGH = 8;
-    static final double MID = 6;
-    static final double LOW = 4;
-    static final double GROUND = 2;
-    static final double INTAKE = 0;
+    //slides is 17.5 inches tall
+    static final double HIGH = 16; //in inches, 33.5 - 17.5 (high junction height - slides height)
+    static final double MID = 6; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final double LOW = 0; //in inches, low junction is 13.5 inches
 
     public Slides.State state;
     public enum State{
-        HIGH, MID, LOW, GROUND, INTAKE
+        HIGH, MID, LOW
     }
     public Slides(HardwareMap hardwareMap) {
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "slidesLeft");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "slidesRight");
-        setState(State.INTAKE);
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        setState(State.LOW);
     }
 
     public void update(){
@@ -30,11 +29,7 @@ public class Slides {
             case MID:
                 //TODO
             case LOW:
-                //TODO:
-            case GROUND:
-                //TODO
-            case INTAKE:
-                //TODO:
+                //TODO;
         }
     }
 

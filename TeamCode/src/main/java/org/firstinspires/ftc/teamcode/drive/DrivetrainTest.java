@@ -20,41 +20,40 @@ public class DrivetrainTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
-        robot.setState(Robot.driveState.normal);
+        robot.setState(Robot.driveState.NORMAL);
         gm1 = new GamepadEx(gamepad1);
         ninja = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
         straight = new ToggleButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
         waitForStart();
 
         while(opModeIsActive()){
-            if(robot.getState()== Robot.driveState.normal) normal();
-            else if(robot.getState()== Robot.driveState.straight) straight();
-            else if(robot.getState()== Robot.driveState.ninja) ninja();
-            if(ninja.wasJustPressed()){
+            if (robot.getState() == Robot.driveState.NORMAL)
+                normal();
+            else if (robot.getState()== Robot.driveState.STRAIGHT)
+                straight();
+            else if (robot.getState()== Robot.driveState.NINJA)
+                ninja();
 
+            if (ninja.wasJustPressed()) {
                 switch (robot.state){
-                    case normal:
-                        robot.state = Robot.driveState.ninja;
+                    case NORMAL:
+                    case STRAIGHT:
+                        robot.setState(Robot.driveState.NINJA);
                         break;
-                    case ninja:
-                        robot.state = Robot.driveState.normal;
-                        break;
-                    case straight:
-                        robot.state = Robot.driveState.ninja;
+                    case NINJA:
+                        robot.setState(Robot.driveState.NORMAL);
                         break;
                 }
             }
-            else if(straight.wasJustPressed()){
 
+            else if(straight.wasJustPressed()){
                 switch (robot.state){
-                    case normal:
-                        robot.state = Robot.driveState.straight;
+                    case NORMAL:
+                    case NINJA:
+                        robot.setState(Robot.driveState.STRAIGHT);
                         break;
-                    case ninja:
-                        robot.state = Robot.driveState.straight;
-                        break;
-                    case straight:
-                        robot.state = Robot.driveState.normal;
+                    case STRAIGHT:
+                        robot.state = Robot.driveState.NORMAL;
                         break;
                 }
             }
@@ -65,7 +64,7 @@ public class DrivetrainTest extends LinearOpMode {
     private void normal(){
         robot.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad1.left_stick_y,
+                        Math.abs(-gamepad1.left_stick_y) < 0.2 ? 0 : -gamepad1.left_stick_y,
                         gamepad1.left_stick_x,
                         -gamepad1.right_stick_x
                 )
