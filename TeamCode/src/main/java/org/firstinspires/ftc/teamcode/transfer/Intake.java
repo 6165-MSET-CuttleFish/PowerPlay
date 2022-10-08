@@ -22,8 +22,8 @@ public class Intake
 
     public Intake(HardwareMap hardwareMap)
     {
-        intakeRunning=hardwareMap.get(CRServo.class, "IntakeRunning");
-        intakeSupporting = hardwareMap.get(CRServo.class, "IntakeSupporting");
+        intakeRunning=hardwareMap.get(CRServo.class, "intakeRun");
+        intakeSupporting = hardwareMap.get(CRServo.class, "intakeSup");
         intakeSupporting.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }

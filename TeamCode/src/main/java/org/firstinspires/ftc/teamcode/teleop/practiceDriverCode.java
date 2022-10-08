@@ -21,10 +21,10 @@ import org.firstinspires.ftc.teamcode.turret.Turret;
 public class practiceDriverCode extends LinearOpMode {
     Robot robot;
     Intake intake;
-    Slides slides;
-    vfourb fourbar;
+    //Slides slides;
+   // vfourb fourbar;
     GroundIntake groundIntake;
-    Turret turret;
+    // Turret turret;
     GamepadEx primary;
     GamepadEx secondary;
     KeyReader[] keyReaders;
@@ -36,10 +36,10 @@ public class practiceDriverCode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
         intake = robot.intake;
-        slides = robot.slides;
-        fourbar = robot.fourbar;
+      //  slides = robot.slides;
+      //  fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
-        turret = robot.turret;
+      //  turret = robot.turret;
         keyReaders = new KeyReader[]{
                 intakeButton = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 ninjaMode = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
@@ -53,8 +53,8 @@ public class practiceDriverCode extends LinearOpMode {
                 activeGround = new ToggleButtonReader(secondary, GamepadKeys.Button.A),
         };
         waitForStart();
-        slides.setState(Slides.State.INTAKE);
-        fourbar.setState(vfourb.State.PRIMED);
+    //    slides.setState(Slides.State.INTAKE);
+     //   fourbar.setState(vfourb.State.PRIMED);
         while (opModeIsActive()) {
             robot.update();
             for (KeyReader reader : keyReaders) {
@@ -75,11 +75,17 @@ public class practiceDriverCode extends LinearOpMode {
                                 -gamepad1.right_stick_x
                         )
                 );
-                if (intakeButton.wasJustPressed()) {
+                if (intakeButton.isDown()) {
                     intake.setState(Intake.State.INTAKING);
-                    fourbar.setState(vfourb.State.INTAKE_POSITION);
+          /*          fourbar.setState(vfourb.State.INTAKE_POSITION);*/
                 }
-                if (liftHigh.wasJustPressed()) {
+           else if (deposit.isDown()) {
+                intake.setState(Intake.State.DEPOSITING);
+            }
+                else{
+                    intake.setState(Intake.State.OFF);
+                }
+            /*    if (liftHigh.wasJustPressed()) {
                     slides.setState(Slides.State.HIGH);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 }
@@ -97,21 +103,19 @@ public class practiceDriverCode extends LinearOpMode {
                 }
                 if (align.wasJustPressed()) {
                     turret.setState(Turret.State.ALIGNING);
-                }
-                if (deposit.wasJustPressed()) {
-                    intake.setState(Intake.State.DEPOSITING);
-                }
+                }*/
+
                 if (activeGround.getState()) {
                     groundIntake.setState(GroundIntake.State.INTAKING);
                 } else {
                     groundIntake.setState(GroundIntake.State.OFF);
                 }
-                if (reset.wasJustPressed()) {
-                    turret.setState(Turret.State.RESET);
-                    slides.setState(Slides.State.INTAKE);
-                    fourbar.setState(vfourb.State.PRIMED);
+/*                if (reset.wasJustPressed()) {
+             //       turret.setState(Turret.State.RESET);
+               //     slides.setState(Slides.State.INTAKE);
+                 //   fourbar.setState(vfourb.State.PRIMED);
                     intake.setState(Intake.State.OFF);
-                }
+                }*/
             }
         }
     }

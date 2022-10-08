@@ -22,9 +22,9 @@ public class GroundIntake
 
     public GroundIntake(HardwareMap hardwareMap)
     {
-        intakeRunning=hardwareMap.get(CRServo.class, "GroundLeft");
-        intakeSupporting = hardwareMap.get(CRServo.class, "GroundRight");
-        intakeSupporting.setDirection(CRServo.Direction.REVERSE);
+        intakeRunning=hardwareMap.get(CRServo.class, "intakeR");
+        intakeSupporting = hardwareMap.get(CRServo.class, "intakeL");
+    //    intakeSupporting.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
 
