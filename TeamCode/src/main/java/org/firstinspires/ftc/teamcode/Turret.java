@@ -1,51 +1,50 @@
-/*package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public abstract class Turret extends Module{
-    public State state;
-    private DcMotor turret;
+public class Turret
+{
 
-    public abstract void setPower(float v);
+    DcMotor turretMotor;
+    public Turret.State state;
+    public enum State
+    {
+        IDLE, LEFT_ROTATE, RIGHT_ROTATE
+    }
 
-    public enum State{
-        IDLE,
-        ROTATING_LEFT,
-        ROTATING_RIGHT,
+    public Turret(HardwareMap hardwareMap)
+    {
+        turretMotor = hardwareMap.get(DcMotor.class, "hturret");
+        setState(State.IDLE);
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public Turret(HardwareMap hardwareMap){
-        super(hardwareMap);
-    }
-    public void update(){
-        switch (getState()) {
-           case IDLE:
-                break;
-            case ROTATING_LEFT:
-                turret.setPower(-1.0);
-                break;
-            case ROTATING_RIGHT:
-                turret.setPower(1.0);
-                break;
+
+    public void update()
+    {
+        switch(state)
+        {
+            case IDLE:
+                turretMotor.setPower(0);
+
+            case LEFT_ROTATE:
+                turretMotor.setPower(-0.25);
+
+            case RIGHT_ROTATE:
+                turretMotor.setPower(0.25);
+
         }
-
     }
+
     public Turret.State getState() {
         return state;
     }
-    public void setState(State state){
+
+    public void setState(Turret.State state)
+    {
         this.state = state;
-    }
-    public void leftRotate() {
-        setState(State.ROTATING_LEFT);
+        update();
     }
 
-    public void idle() {
-        setState(State.IDLE);
-    }
-
-    public void rightRotate() {
-        setState(State.ROTATING_RIGHT);
-    }
 }
-*/
