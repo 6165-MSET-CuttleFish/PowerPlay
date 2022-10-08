@@ -15,13 +15,13 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
     Mat finalMat;
-    Camera.State state;
+    int state=1;
 
     Telemetry tel;
     public colorDetection(Telemetry tel)
     {
         this.tel=tel;
-        state=Camera.State.ONE;
+        state=1;
     }
 
 
@@ -86,15 +86,15 @@ public class colorDetection extends OpenCvPipeline
 
         if(bAvg.val[0]*1.7<aAvg.val[0])
         {
-            state=Camera.State.ONE;
+            state=1;
         }
         else if(aAvg.val[0]*1.7<bAvg.val[0])
         {
-            state=Camera.State.TWO;
+            state=2;
         }
         else if(aAvg.val[0]-bAvg.val[0]<=30)
             {
-                state=Camera.State.THREE;
+                state=3;
             }
         //update the state
         return input;
@@ -113,7 +113,7 @@ public class colorDetection extends OpenCvPipeline
         return null;
     }
 
-    public Camera.State getOutput()
+    public int getOutput()
     {
         //temporary return
         return state;
