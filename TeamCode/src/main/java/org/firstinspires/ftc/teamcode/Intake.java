@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake
@@ -19,6 +20,8 @@ public class Intake
         intake1=hardwareMap.get(CRServo.class, "intake1");
         intake2=hardwareMap.get(CRServo.class, "intake2");
 
+        intake1.setDirection(DcMotorSimple.Direction.REVERSE);
+        
         setState(State.OFF);
     }
 
