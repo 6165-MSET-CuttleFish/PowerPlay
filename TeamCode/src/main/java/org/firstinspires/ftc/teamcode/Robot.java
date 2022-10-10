@@ -142,8 +142,8 @@ public class Robot extends MecanumDrive {
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
         }
-                turret = new Turret(hardwareMap);
-                slides = new Slides(hardwareMap);
+  //              turret = new Turret(hardwareMap);
+//                slides = new Slides(hardwareMap);
                 intake = new Intake(hardwareMap);
                 groundIntake = new GroundIntake(hardwareMap);
         fourbar = new vfourb(hardwareMap);

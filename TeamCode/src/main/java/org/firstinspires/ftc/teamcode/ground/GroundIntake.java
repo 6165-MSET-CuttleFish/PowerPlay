@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.ground;
 
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -24,7 +22,7 @@ public class GroundIntake
     {
         intakeRunning=hardwareMap.get(CRServo.class, "intakeR");
         intakeSupporting = hardwareMap.get(CRServo.class, "intakeL");
-    //    intakeSupporting.setDirection(CRServo.Direction.REVERSE);
+        intakeRunning.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
 
@@ -35,12 +33,15 @@ public class GroundIntake
             case INTAKING:
                 intakeRunning.setPower(INTAKING);
                 intakeSupporting.setPower(INTAKING);
+                break;
             case DEPOSITING:
                 intakeRunning.setPower(REVERSE);
                 intakeSupporting.setPower(REVERSE);
+                break;
             case OFF:
                 intakeRunning.setPower(OFF);
                 intakeSupporting.setPower(OFF);
+                break;
         }
     }
 
@@ -48,7 +49,7 @@ public class GroundIntake
         return state;
     }
 
-    public void setState(GroundIntake.State state)
+    public void setState(State state)
     {
         this.state = state;
         update();

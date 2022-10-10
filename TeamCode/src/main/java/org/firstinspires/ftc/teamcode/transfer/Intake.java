@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.transfer;
 
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,7 +12,7 @@ public class Intake
 
     CRServo intakeRunning;
     CRServo intakeSupporting;
-    public Intake.State state;
+    public State state;
     public enum State
     {
         INTAKING, DEPOSITING, OFF
@@ -35,20 +33,23 @@ public class Intake
             case INTAKING:
                 intakeRunning.setPower(INTAKING);
                 intakeSupporting.setPower(INTAKING);
+                break;
             case DEPOSITING:
                 intakeRunning.setPower(DEPOSITING);
                 intakeSupporting.setPower(DEPOSITING);
+                break;
             case OFF:
                 intakeRunning.setPower(OFF);
                 intakeSupporting.setPower(OFF);
+                break;
         }
     }
 
-    public Intake.State getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(Intake.State state)
+    public void setState(State state)
     {
         this.state = state;
         update();

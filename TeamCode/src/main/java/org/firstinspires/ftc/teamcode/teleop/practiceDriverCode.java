@@ -11,18 +11,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.transfer.Intake;
 import org.firstinspires.ftc.teamcode.transfer.vfourb;
-import org.firstinspires.ftc.teamcode.turret.Turret;
 
 @TeleOp
 public class practiceDriverCode extends LinearOpMode {
     Robot robot;
     Intake intake;
     //Slides slides;
-   // vfourb fourbar;
+    vfourb fourbar;
     GroundIntake groundIntake;
     // Turret turret;
     GamepadEx primary;
@@ -35,9 +33,11 @@ public class practiceDriverCode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
+        primary = new GamepadEx(gamepad1);
+        secondary = new GamepadEx(gamepad2);
         intake = robot.intake;
       //  slides = robot.slides;
-      //  fourbar = robot.fourbar;
+        fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
       //  turret = robot.turret;
         keyReaders = new KeyReader[]{
@@ -49,12 +49,12 @@ public class practiceDriverCode extends LinearOpMode {
                 junction = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 deposit = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 align = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
-                reset = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                reset = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 activeGround = new ToggleButtonReader(secondary, GamepadKeys.Button.A),
         };
         waitForStart();
     //    slides.setState(Slides.State.INTAKE);
-     //   fourbar.setState(vfourb.State.PRIMED);
+        fourbar.setState(vfourb.State.PRIMED);
         while (opModeIsActive()) {
             robot.update();
             for (KeyReader reader : keyReaders) {
@@ -77,7 +77,7 @@ public class practiceDriverCode extends LinearOpMode {
                 );
                 if (intakeButton.isDown()) {
                     intake.setState(Intake.State.INTAKING);
-          /*          fourbar.setState(vfourb.State.INTAKE_POSITION);*/
+                    fourbar.setState(vfourb.State.INTAKE_POSITION);
                 }
            else if (deposit.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
@@ -85,10 +85,11 @@ public class practiceDriverCode extends LinearOpMode {
                 else{
                     intake.setState(Intake.State.OFF);
                 }
-            /*    if (liftHigh.wasJustPressed()) {
-                    slides.setState(Slides.State.HIGH);
+                if (liftHigh.wasJustPressed()) {
+                    //slides.setState(Slides.State.HIGH);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 }
+                /*
                 if (liftMedium.wasJustPressed()) {
                     slides.setState(Slides.State.MID);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
@@ -105,17 +106,23 @@ public class practiceDriverCode extends LinearOpMode {
                     turret.setState(Turret.State.ALIGNING);
                 }*/
 
-                if (activeGround.getState()) {
+                if (activeGround.isDown()) {
                     groundIntake.setState(GroundIntake.State.INTAKING);
                 } else {
                     groundIntake.setState(GroundIntake.State.OFF);
                 }
-/*                if (reset.wasJustPressed()) {
+                telemetry.addData("gi state", groundIntake.getState());
+                telemetry.addData("fesoijfesioj",fourbar.getState());
+                telemetry.addData("run",fourbar.runPos());
+            telemetry.addData("sup",fourbar.supPos());
+telemetry.update();
+
+                if (reset.wasJustPressed()) {
              //       turret.setState(Turret.State.RESET);
                //     slides.setState(Slides.State.INTAKE);
-                 //   fourbar.setState(vfourb.State.PRIMED);
-                    intake.setState(Intake.State.OFF);
-                }*/
+                    fourbar.setState(vfourb.State.PRIMED);
+                 //   intake.setState(Intake.State.OFF);
+                }
             }
         }
     }
