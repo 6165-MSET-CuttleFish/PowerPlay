@@ -76,16 +76,16 @@ public class Robot extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront, slidesLeft, slidesRight;
     private Servo odoRaise;
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
-        normal,
-        ninja,
-        straight
+        NORMAL,
+        NINJA,
+        STRAIGHT
     }
     public boolean isOdoRaised = false;
     public driveState state;
@@ -121,6 +121,10 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
+
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+
         //odoRaise = hardwareMap.get(Servo.class, "midOdo");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);

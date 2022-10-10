@@ -23,6 +23,7 @@ public class TurretTestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         turret= hardwareMap.get(DcMotor.class, "hturret");
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -30,6 +31,7 @@ public class TurretTestTele extends LinearOpMode {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         camInit();
         waitForStart();
+
         while (opModeIsActive()){
             position=turret.getCurrentPosition();
             if(gamepad1.right_bumper){
