@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Camera;
+import org.firstinspires.ftc.teamcode.vision.Camera;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

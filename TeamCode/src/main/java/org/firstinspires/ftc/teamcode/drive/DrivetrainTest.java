@@ -16,42 +16,58 @@ public class DrivetrainTest extends LinearOpMode {
     //public HardwareMap hardwareMap;
     public Robot robot;
     public GamepadEx gm1;
-    public ToggleButtonReader cycle;
+    public ToggleButtonReader ninja, straight;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
         robot.setState(Robot.driveState.normal);
-        cycle = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
-
+        gm1 = new GamepadEx(gamepad1);
+        ninja = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
+        straight = new ToggleButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
         waitForStart();
 
         while(opModeIsActive()){
             if(robot.getState()== Robot.driveState.normal) normal();
             else if(robot.getState()== Robot.driveState.straight) straight();
             else if(robot.getState()== Robot.driveState.ninja) ninja();
-            if(cycle.wasJustPressed()){
+            if(ninja.wasJustPressed()){
 
-                switch (robot.getState()){
+                switch (robot.state){
                     case normal:
-                        robot.setState(Robot.driveState.ninja);
+                        robot.state = Robot.driveState.ninja;
                         break;
                     case ninja:
-                        robot.setState(Robot.driveState.straight);
+                        robot.state = Robot.driveState.normal;
                         break;
                     case straight:
-                        robot.setState(Robot.driveState.normal);
+                        robot.state = Robot.driveState.ninja;
                         break;
                 }
             }
+            else if(straight.wasJustPressed()){
 
+                switch (robot.state){
+                    case normal:
+                        robot.state = Robot.driveState.straight;
+                        break;
+                    case ninja:
+                        robot.state = Robot.driveState.straight;
+                        break;
+                    case straight:
+                        robot.state = Robot.driveState.normal;
+                        break;
+                }
+            }
+            telemetry.addData("State", robot.getState());
+            telemetry.update();
         }
     }
     private void normal(){
         robot.setWeightedDrivePower(
                 new Pose2d(
-                        -gm1.getLeftY(),
-                        -gm1.getLeftX(),
-                        -gm1.getRightX()
+                        -gamepad1.left_stick_y,
+                        gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x
                 )
         );
     }
@@ -59,9 +75,9 @@ public class DrivetrainTest extends LinearOpMode {
         if(Math.abs(gm1.getLeftY()) > Math.abs(gm1.getLeftX())){
             robot.setWeightedDrivePower(
                     new Pose2d(
-                            -gm1.getLeftY(),
+                            -gamepad1.left_stick_y,
                             0,
-                            -gm1.getRightX()
+                            -gamepad1.right_stick_x
                     )
             );
         }
@@ -69,8 +85,8 @@ public class DrivetrainTest extends LinearOpMode {
             robot.setWeightedDrivePower(
                     new Pose2d(
                             0,
-                            -gm1.getLeftX(),
-                            -gm1.getRightX()
+                            gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
                     )
             );
         }
@@ -78,9 +94,9 @@ public class DrivetrainTest extends LinearOpMode {
     private void ninja(){
         robot.setWeightedDrivePower(
                 new Pose2d(
-                        -gm1.getLeftY()*0.2,
-                        -gm1.getLeftX()*0.2,
-                        -gm1.getRightX()*0.2
+                        -gamepad1.left_stick_y * 0.1,
+                        gamepad1.left_stick_x * 0.1,
+                        -gamepad1.right_stick_x * 0.1
                 )
         );
     }
