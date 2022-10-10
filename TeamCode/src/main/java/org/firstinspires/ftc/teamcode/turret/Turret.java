@@ -1,47 +1,47 @@
-package org.firstinspires.ftc.teamcode.turret;
-import com.arcrobotics.ftclib.hardware.ServoEx;
+
+package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Module;
+public class Turret
+{
 
-public class Turret {
+    DcMotor turretMotor;
     public Turret.State state;
-    private DcMotor turret;
-    public enum State {
-        IDLE,
-        ROTATING_LEFT,
-        ROTATING_RIGHT,
+    public enum State
+    {
+        IDLE, MOVING
     }
-    public Turret(HardwareMap hardwareMap){
-        turret = hardwareMap.get(DcMotor.class, "turret");
+
+    public Turret(HardwareMap hardwareMap)
+    {
+        turretMotor = hardwareMap.get(DcMotor.class, "hturret");
         setState(State.IDLE);
     }
-    public void update(){
-        switch (getState()) {
+
+    public void update()
+    {
+        switch(state)
+        {
+            case MOVING:
+
             case IDLE:
-                break;
-            case ROTATING_LEFT:
-                turret.setPower(-1.0);
-                break;
-            case ROTATING_RIGHT:
-                turret.setPower(1.0);
-                break;
+
+
         }
     }
+
     public Turret.State getState() {
         return this.state;
     }
-    public void setState(State state){
+
+
+    public void setState(Turret.State state)
+    {
         this.state = state;
+        update();
     }
-    public void leftRotate() {
-        setState(State.ROTATING_LEFT);
-    }
-    public void idle() {
-        setState(State.IDLE);
-    }
-    public void rightRotate() {
-        setState(State.ROTATING_RIGHT);
-    }
+
+
 }
