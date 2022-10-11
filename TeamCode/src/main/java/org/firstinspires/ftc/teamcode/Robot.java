@@ -88,9 +88,9 @@ public class Robot extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
-        normal,
-        ninja,
-        straight
+        NORMAL,
+        NINJA,
+        STRAIGHT
     }
 
    public Intake intake;

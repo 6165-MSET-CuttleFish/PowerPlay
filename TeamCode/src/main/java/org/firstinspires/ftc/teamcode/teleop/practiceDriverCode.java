@@ -9,8 +9,10 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.transfer.Intake;
 import org.firstinspires.ftc.teamcode.transfer.vfourb;
@@ -20,18 +22,24 @@ public class practiceDriverCode extends LinearOpMode {
     Robot robot;
     Intake intake;
     //Slides slides;
+    Slides slide;
+    DcMotorEx slidesLeft;
+    DcMotorEx slidesRight;
     vfourb fourbar;
     GroundIntake groundIntake;
     // Turret turret;
     GamepadEx primary;
     GamepadEx secondary;
     KeyReader[] keyReaders;
-    TriggerReader intakeButton, ninjaMode, reset, deposit;
-    ButtonReader liftHigh, liftMedium, liftLow, junction, align;
+    TriggerReader intakeButton, deposit;
+    ButtonReader liftHigh, liftMedium, liftLow, junction, align ,reset,raiseLift,lowerLift,ninjaMode;
     ToggleButtonReader activeGround;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        slide = new Slides(hardwareMap);
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
         robot = new Robot(hardwareMap);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -42,15 +50,17 @@ public class practiceDriverCode extends LinearOpMode {
       //  turret = robot.turret;
         keyReaders = new KeyReader[]{
                 intakeButton = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
-                ninjaMode = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
-                liftHigh = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
-                liftMedium = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
-                liftLow = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
-                junction = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
-                deposit = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
-                align = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
-                reset = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
-                activeGround = new ToggleButtonReader(secondary, GamepadKeys.Button.A),
+                ninjaMode = new ButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
+                liftHigh = new ButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
+              //  liftMedium = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
+            //    liftLow = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
+           //     junction = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
+                deposit = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+             //   align = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
+                reset = new ButtonReader(primary, GamepadKeys.Button.B),
+                raiseLift = new ButtonReader(primary, GamepadKeys.Button.DPAD_UP),
+                lowerLift = new ButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
+                activeGround = new ToggleButtonReader(primary, GamepadKeys.Button.A),
         };
         waitForStart();
     //    slides.setState(Slides.State.INTAKE);
@@ -89,6 +99,14 @@ public class practiceDriverCode extends LinearOpMode {
                     //slides.setState(Slides.State.HIGH);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 }
+                if(raiseLift.isDown()){
+slidesRight.setPower(-1);
+slidesLeft.setPower(1);
+                }
+            if(lowerLift.isDown()){
+                slidesRight.setPower(1);
+                slidesLeft.setPower(-1);
+            }
                 /*
                 if (liftMedium.wasJustPressed()) {
                     slides.setState(Slides.State.MID);
@@ -106,15 +124,17 @@ public class practiceDriverCode extends LinearOpMode {
                     turret.setState(Turret.State.ALIGNING);
                 }*/
 
-                if (activeGround.isDown()) {
-                    groundIntake.setState(GroundIntake.State.INTAKING);
-                } else {
-                    groundIntake.setState(GroundIntake.State.OFF);
+                if (activeGround.wasJustPressed()) {
+                    if(groundIntake.getState() == GroundIntake.State.INTAKING){
+                        groundIntake.setState(GroundIntake.State.OFF);
+                    }
+                    else {
+                        groundIntake.setState(GroundIntake.State.INTAKING);
+                    }
                 }
-                telemetry.addData("gi state", groundIntake.getState());
-                telemetry.addData("fesoijfesioj",fourbar.getState());
-                telemetry.addData("run",fourbar.runPos());
-            telemetry.addData("sup",fourbar.supPos());
+                telemetry.addData("V4B State: ",fourbar.getState());
+            telemetry.addData("Left Ticks: ", slidesLeft.getCurrentPosition());
+            telemetry.addData("Right Ticks: ", slidesRight.getCurrentPosition());
 telemetry.update();
 
                 if (reset.wasJustPressed()) {
