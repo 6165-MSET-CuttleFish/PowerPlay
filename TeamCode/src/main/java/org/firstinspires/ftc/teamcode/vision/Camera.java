@@ -15,13 +15,6 @@ public class Camera
     OpenCvWebcam camera;
     colorDetection pipeline;
 
-    public Camera.State state;
-    public enum State
-    {
-        ONE,
-        TWO,
-        THREE
-    }
     public Camera(HardwareMap hardwareMap, Telemetry telemetry)
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -44,12 +37,13 @@ public class Camera
             }
         });
     }
-    public void update()
+
+    public OpenCvWebcam streamSource()
     {
-        state=pipeline.getOutput();
+        return camera;
     }
-    public Camera.State getState()
+    public int getState()
     {
-        return state;
+        return pipeline.getOutput();
     }
 }
