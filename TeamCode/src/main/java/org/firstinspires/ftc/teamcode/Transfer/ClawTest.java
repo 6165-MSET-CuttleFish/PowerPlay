@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.transfer;
+package org.firstinspires.ftc.teamcode.Transfer;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.transfer.Claw;
 
 public class ClawTest extends LinearOpMode
 {

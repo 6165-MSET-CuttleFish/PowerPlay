@@ -34,9 +34,11 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -46,8 +48,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -76,9 +83,11 @@ public class Robot extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront, slidesLeft, slidesRight;
-    private Servo odoRaise;
-    private List<DcMotorEx> motors;
+    public final DcMotorEx leftFront, leftRear, rightRear, rightFront, slides1, slides2, hturret;
+    public final Servo v4bSup, v4bRun;
+    public final CRServo intakeSup, intakeRun, groundLeft, groundRight;
+    public Servo odoRaise;
+    public List<DcMotorEx> motors;
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -87,6 +96,11 @@ public class Robot extends MecanumDrive {
         NINJA,
         STRAIGHT
     }
+    public Intake intake;
+    public Slides slides;
+    public vfourb fourbar;
+    public Turret turret;
+    public GroundIntake groundIntake;
     public boolean isOdoRaised = false;
     public driveState state;
     public driveState getState() {
@@ -116,16 +130,26 @@ public class Robot extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-
         leftFront = hardwareMap.get(DcMotorEx.class, "fl");
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
 
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
-        //odoRaise = hardwareMap.get(Servo.class, "midOdo");
+        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
+        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
+        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
+        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
+
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

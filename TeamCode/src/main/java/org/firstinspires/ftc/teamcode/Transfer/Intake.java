@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.transfer;
+package org.firstinspires.ftc.teamcode.Transfer;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
