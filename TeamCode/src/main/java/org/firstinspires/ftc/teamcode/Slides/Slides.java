@@ -17,8 +17,8 @@ public class Slides {
         HIGH, MID, LOW
     }
     public Slides(HardwareMap hardwareMap) {
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         setState(State.LOW);
     }
 
@@ -40,7 +40,7 @@ public class Slides {
         this.state = state;
     }
     public double ticksToInches(double ticks) {
-
-        return ticks;
+        //336 ticks:10 inches
+        return 10 * (ticks/336);
     }
 }
