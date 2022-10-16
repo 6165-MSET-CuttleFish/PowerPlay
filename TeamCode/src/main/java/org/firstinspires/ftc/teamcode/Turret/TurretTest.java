@@ -1,4 +1,3 @@
-
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -36,8 +35,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.Turret.Turret;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -85,7 +82,7 @@ public class TurretTest extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 1.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     TURN_SPEED             = 0.5;
+    static final double     TURN_SPEED             = 0.8;
 
     static double endPosition;
 
@@ -116,8 +113,8 @@ public class TurretTest extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(TURN_SPEED, setTargetPosition(1000.0), 10.0);
-        encoderDrive(-TURN_SPEED, setTargetPosition(-360.0), 20.0);
+        encoderDrive(TURN_SPEED, setTargetPosition(100.0));
+        encoderDrive(-TURN_SPEED, setTargetPosition(-360.0));
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -137,9 +134,9 @@ public class TurretTest extends LinearOpMode {
         return endPosition;
     }
     public void encoderDrive(double speed,
-                             double leftInches,
-                             double timeoutS) {
+                             double leftInches) {
         int newLeftTarget;
+        double timeoutS=20.0;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
@@ -184,4 +181,3 @@ public class TurretTest extends LinearOpMode {
         }
     }
 }
-

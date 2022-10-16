@@ -23,7 +23,6 @@ public class TurretTestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         turret= hardwareMap.get(DcMotor.class, "hturret");
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -31,7 +30,6 @@ public class TurretTestTele extends LinearOpMode {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         camInit();
         waitForStart();
-
         while (opModeIsActive()){
             position=turret.getCurrentPosition();
             if(gamepad1.right_bumper){
@@ -41,9 +39,9 @@ public class TurretTestTele extends LinearOpMode {
             }
             if(toggleAutoAlign==false){
                 if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<390.0){
-                    turret.setPower(0.25);
+                    turret.setPower(0.8);
                 }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-390.0){
-                    turret.setPower(-0.25);
+                    turret.setPower(-0.8);
                 }else{
                     turret.setPower(0);
                 }
@@ -52,9 +50,9 @@ public class TurretTestTele extends LinearOpMode {
                     turret.setPower(0);
                     toggleAutoAlign=false;
                 }else if(detector.getLocation()== Detector.Location.RIGHT){
-                    turret.setPower(0.25);
+                    turret.setPower(0.8);
                 }else if(detector.getLocation()== Detector.Location.LEFT){
-                    turret.setPower(-0.25);
+                    turret.setPower(-0.8);
                 }else{
                     turret.setPower(0);
                 }
@@ -80,7 +78,7 @@ public class TurretTestTele extends LinearOpMode {
                 );
         webcam = OpenCvCameraFactory
                 .getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "rnjlow"), cameraMonitorViewId);
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(detector = new Detector());
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
