@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp(group = "slides")
 public class TestSlides extends LinearOpMode {
     Slides slide;
@@ -35,6 +37,10 @@ public class TestSlides extends LinearOpMode {
             telemetry.addData("Left Ticks: ", slidesLeft.getCurrentPosition());
             telemetry.addData("Right Ticks: ", slidesRight.getCurrentPosition());
             telemetry.addData("Power: ", slidesRight.getPower());
+            telemetry.addData("InchesL: ", slide.ticksToInches(slidesLeft.getCurrentPosition()));
+            telemetry.addData("InchesR: ", slide.ticksToInches(slidesRight.getCurrentPosition()));
+            telemetry.addData("currentR: ", slide.ticksToInches(slidesRight.getCurrent(CurrentUnit.AMPS)));
+            telemetry.addData("currentL: ", slide.ticksToInches(slidesLeft.getCurrent(CurrentUnit.AMPS)));
 
             telemetry.update();
 
