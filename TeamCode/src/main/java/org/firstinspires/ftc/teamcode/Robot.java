@@ -103,13 +103,14 @@ public class Robot extends MecanumDrive {
     public GroundIntake groundIntake;
     public boolean isOdoRaised = false;
     public driveState state;
-    public driveState getState() {
-        return state;
-    }
+
     public void setState(driveState state){
         this.state = state;
     }
 
+    public driveState getState() {
+        return state;
+    }
     public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -168,8 +169,8 @@ public class Robot extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.FORWARD);
+        leftRear.setDirection(DcMotorEx.Direction.FORWARD);
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method

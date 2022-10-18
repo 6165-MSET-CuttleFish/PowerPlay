@@ -87,7 +87,7 @@ public class DriverControl extends LinearOpMode {
             else if (deposit.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
             }
-            else{
+            else {
                 intake.setState(Intake.State.OFF);
             }
             if (slidesHigh.wasJustPressed()) {
