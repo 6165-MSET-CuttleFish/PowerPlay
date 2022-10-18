@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
@@ -23,31 +24,44 @@ public class DrivetrainTest extends LinearOpMode {
         robot = new Robot(hardwareMap);
         robot.setState(Robot.driveState.NORMAL);
         gm1 = new GamepadEx(gamepad1);
-        ninja = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
-        straight = new ToggleButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
-        boolean isNinja = false;
-        boolean isStraight = false; //:)
+        ninja = new ButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
+        straight = new ButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
+        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
 
-        while(opModeIsActive()){
-            if (!isNinja && !isStraight)
+        while(!isStopRequested()){
+            
+            if (robot.getState() == Robot.driveState.NORMAL)
                 normal();
-            else if (!isNinja && isStraight)
+            if (robot.getState() == Robot.driveState.STRAIGHT)
                 straight();
-            else if (isNinja && !isStraight)
+            if (robot.getState() == Robot.driveState.NINJA)
                 ninja();
-            else{
-                combined();
+
+            if (ninja.isDown()) {
+                switch (robot.state){
+                    case NORMAL:
+                    case STRAIGHT:
+                        robot.setState(Robot.driveState.NINJA);
+                        break;
+                    case NINJA:
+                        robot.setState(Robot.driveState.NORMAL);
+                        break;
+                }
             }
 
-            if (ninja.wasJustPressed()) {
-                if(isNinja) isNinja = false;
-                else isNinja = true;
+            else if(straight.isDown()){
+                switch (robot.state){
+                    case NORMAL:
+                    case NINJA:
+                        robot.setState(Robot.driveState.STRAIGHT);
+                        break;
+                    case STRAIGHT:
+                        robot.state = Robot.driveState.NORMAL;
+                        break;
+                }
             }
-            if (straight.wasJustPressed()) {
-                if(isStraight) isStraight = false;
-                else isStraight = true;
-            }
+            robot.update();
             telemetry.addData("State", robot.getState());
             telemetry.update();
         }
@@ -55,9 +69,9 @@ public class DrivetrainTest extends LinearOpMode {
     private void normal(){
         robot.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad1.right_stick_x, //Math.abs(-gamepad1.left_stick_y) < 0.1 ? 0 :
+                        -gamepad1.left_stick_y, //Math.abs(-gamepad1.left_stick_y) < 0.1 ? 0 :
                         gamepad1.left_stick_x,
-                        -gamepad1.left_stick_y
+                        -gamepad1.right_stick_x
                 )
         );
         //robot.setMotorPowers(1,1,1,1);
@@ -82,16 +96,17 @@ public class DrivetrainTest extends LinearOpMode {
             );
         }
     }
+
     private void ninja(){
         robot.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad1.left_stick_y * 0.1,
-                        gamepad1.left_stick_x * 0.1,
-                        -gamepad1.right_stick_x * 0.1
+                        -gamepad1.left_stick_y * 0.5,
+                        gamepad1.left_stick_x * 0.5,
+                        -gamepad1.right_stick_x * 0.5
                 )
         );
-        //robot.setMotorPowers(0.2,0.2,0.2,0.2);
     }
+
     private void combined(){
         if(Math.abs(gm1.getLeftY()) > Math.abs(gm1.getLeftX())){
             robot.setWeightedDrivePower(

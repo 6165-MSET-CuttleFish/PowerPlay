@@ -26,8 +26,7 @@ public class DriverControl extends LinearOpMode {
     vfourb fourbar;
     GroundIntake groundIntake;
     Turret turret;
-    GamepadEx primary;
-    GamepadEx secondary;
+    GamepadEx primary, secondary;
     KeyReader[] keyReaders;
     TriggerReader intakeButton, deposit;
     ButtonReader slidesHigh, slidesMid, slidesLow, junction, align, reset, raiseSlides, lowerSlides, ninjaMode;
@@ -43,8 +42,8 @@ public class DriverControl extends LinearOpMode {
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        keyReaders = new KeyReader[]{
-                intakeButton = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+        keyReaders = new KeyReader[] {
+                intakeButton = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 ninjaMode = new ButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 slidesHigh = new ButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 //  slidesMid = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
