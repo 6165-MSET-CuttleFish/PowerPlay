@@ -38,10 +38,10 @@ public class TurretTestTele extends LinearOpMode {
                 toggleAutoAlign=true;
             }
             if(toggleAutoAlign==false){
-                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<390.0){
-                    turret.setPower(0.8);
-                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-390.0){
-                    turret.setPower(-0.8);
+                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<50.0){
+                    turret.setPower(0.7);
+                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-50.0){
+                    turret.setPower(-0.7);
                 }else{
                     turret.setPower(0);
                 }
@@ -50,9 +50,9 @@ public class TurretTestTele extends LinearOpMode {
                     turret.setPower(0);
                     toggleAutoAlign=false;
                 }else if(detector.getLocation()== Detector.Location.RIGHT){
-                    turret.setPower(0.8);
+                    turret.setPower(0.7);
                 }else if(detector.getLocation()== Detector.Location.LEFT){
-                    turret.setPower(-0.8);
+                    turret.setPower(-0.7);
                 }else{
                     turret.setPower(0);
                 }
