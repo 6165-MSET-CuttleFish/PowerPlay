@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -19,11 +20,14 @@ public class TestSlides extends LinearOpMode {
         slide = new Slides(hardwareMap);
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
+        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slidesRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-
         while (opModeIsActive()) {
-            slidesLeft.setPower(-gamepad1.left_stick_y);
+            slidesLeft.setPower(gamepad1.left_stick_y);
             slidesRight.setPower(gamepad1.right_stick_y);
 
             if (gamepad1.left_bumper) {

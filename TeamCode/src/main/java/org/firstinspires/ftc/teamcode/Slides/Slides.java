@@ -40,7 +40,7 @@ public class Slides {
         this.state = state;
     }
     public double ticksToInches(double ticks) {
-        //336 ticks:10 inches
-        return 10 * (ticks/336);
+        //950 ticks:22 inches
+        return -ticks / 43.39;
     }
 }
