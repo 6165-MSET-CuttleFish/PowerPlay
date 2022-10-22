@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Turret
 {
 
-    DcMotor turretMotor;
+    public DcMotor turretMotor;
     public Turret.State state;
     public enum State
     {
