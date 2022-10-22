@@ -77,7 +77,7 @@ public class TurretTest extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 100;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 120;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 7.91;   // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -97,7 +97,7 @@ public class TurretTest extends LinearOpMode {
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         turret.turretMotor.setDirection(DcMotor.Direction.REVERSE);
-
+        turret.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -130,7 +130,7 @@ public class TurretTest extends LinearOpMode {
      *  3) Driver stops the opmode running.
      */
     public double setTargetPosition(double targetTurnAngle){
-        endPosition = targetTurnAngle/360*COUNTS_PER_MOTOR_REV*(1.0/6.0);
+        endPosition = targetTurnAngle/360*COUNTS_PER_MOTOR_REV;
         return endPosition;
     }
     public void encoderDrive(double speed,
@@ -146,10 +146,9 @@ public class TurretTest extends LinearOpMode {
 
             // Turn On RUN_TO_POSITION
             turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             // reset the timeout time and start motion.
             runtime.reset();
-            turret.turretMotor.setPower(Math.abs(speed));
+            turret.turretMotor.setPower(speed);
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
