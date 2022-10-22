@@ -59,6 +59,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,9 +84,9 @@ public class Robot extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    public final DcMotorEx leftFront, leftRear, rightRear, rightFront, slides1, slides2, hturret;
-    public final Servo v4bSup, v4bRun;
-    public final CRServo intakeSup, intakeRun, groundLeft, groundRight;
+    public final DcMotorEx leftFront, leftRear, rightRear, rightFront; // slides1, slides2, hturret;
+    /*public final Servo v4bSup, v4bRun;
+    public final CRServo intakeSup, intakeRun, groundLeft, groundRight;*/
     public Servo odoRaise;
     public List<DcMotorEx> motors;
 
@@ -101,6 +102,7 @@ public class Robot extends MecanumDrive {
     public vfourb fourbar;
     public Turret turret;
     public GroundIntake groundIntake;
+    public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
 
@@ -113,7 +115,12 @@ public class Robot extends MecanumDrive {
     }
     public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
+        slides = new Slides(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
+        intake = new Intake(hardwareMap);
+        turret = new Turret(hardwareMap);
+        groundIntake = new GroundIntake(hardwareMap);
+        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -135,7 +142,7 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-
+        /*
         slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
@@ -148,7 +155,7 @@ public class Robot extends MecanumDrive {
 
         groundLeft = hardwareMap.get(CRServo.class, "gl");
         groundRight = hardwareMap.get(CRServo.class, "gr");
-
+        */
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
 
         isOdoRaised = false;
