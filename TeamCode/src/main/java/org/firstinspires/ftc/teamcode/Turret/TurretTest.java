@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -36,6 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Turret.Turret;
+
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
@@ -62,7 +65,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Turret Auton", group="Robot")
+@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
 public class TurretTest extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -77,12 +80,12 @@ public class TurretTest extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 120;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 7.91;   // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 1.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     TURN_SPEED             = 0.3;
+    static final double     TURN_SPEED             = 0.5;
 
     static double endPosition;
 
@@ -97,7 +100,7 @@ public class TurretTest extends LinearOpMode {
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         turret.turretMotor.setDirection(DcMotor.Direction.REVERSE);
-        turret.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -113,8 +116,8 @@ public class TurretTest extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(TURN_SPEED, setTargetPosition(90.0));
-        encoderDrive(-TURN_SPEED, setTargetPosition(-135.0));
+        encoderDrive(TURN_SPEED, setTargetPosition(1000.0), 10.0);
+        encoderDrive(-TURN_SPEED, setTargetPosition(-360.0), 20.0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -130,13 +133,13 @@ public class TurretTest extends LinearOpMode {
      *  3) Driver stops the opmode running.
      */
     public double setTargetPosition(double targetTurnAngle){
-        endPosition = targetTurnAngle/360*COUNTS_PER_MOTOR_REV;
+        endPosition = targetTurnAngle /360;
         return endPosition;
     }
     public void encoderDrive(double speed,
-                             double leftInches) {
+                             double leftInches,
+                             double timeoutS) {
         int newLeftTarget;
-        double timeoutS=20.0;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
@@ -146,9 +149,10 @@ public class TurretTest extends LinearOpMode {
 
             // Turn On RUN_TO_POSITION
             turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             // reset the timeout time and start motion.
             runtime.reset();
-            turret.turretMotor.setPower(speed);
+            turret.turretMotor.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -180,3 +184,4 @@ public class TurretTest extends LinearOpMode {
         }
     }
 }
+
