@@ -18,6 +18,8 @@ import java.util.List;
 
 public class colorDetection extends OpenCvPipeline
 {
+    Rect rect=new Rect(50, 100, 100, 100);
+
     Mat finalMat;
     int state=1;
 
@@ -67,7 +69,8 @@ public class colorDetection extends OpenCvPipeline
         Imgproc.cvtColor(colorSpace2, LAB, Imgproc.COLOR_RGB2Lab);
 
         Mat temp2=new Mat();
-        Rect rect=new Rect(50, 100, 100, 100);
+
+
 
         temp2=LAB.submat(rect);
 
@@ -138,6 +141,7 @@ public class colorDetection extends OpenCvPipeline
         return input;
     }
 
+    //120
 
     @Override
     public Mat processFrame(Mat input)
@@ -149,7 +153,9 @@ public class colorDetection extends OpenCvPipeline
         tel.addData("State", state);
         tel.update();
 
-        return temp;
+        Mat preview=input.clone();
+        Imgproc.rectangle(preview, rect, new Scalar (0, 255, 0));
+        return preview;
     }
 
     public int getOutput()
