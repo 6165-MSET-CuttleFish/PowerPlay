@@ -17,8 +17,8 @@ public class Slides {
         HIGH, MID, LOW
     }
     public Slides(HardwareMap hardwareMap) {
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         setState(State.LOW);
     }
 

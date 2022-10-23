@@ -18,10 +18,9 @@ public class GroundIntake
         INTAKING, DEPOSITING, OFF
     }
 
-    public GroundIntake(HardwareMap hardwareMap)
-    {
-        intakeRunning=hardwareMap.get(CRServo.class, "intakeR");
-        intakeSupporting = hardwareMap.get(CRServo.class, "intakeL");
+    public GroundIntake(HardwareMap hardwareMap) {
+        intakeRunning = hardwareMap.get(CRServo.class, "gr");
+        intakeSupporting = hardwareMap.get(CRServo.class, "gl");
         intakeRunning.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }

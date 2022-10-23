@@ -15,8 +15,8 @@ public class TestSlides extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         slide = new Slides(hardwareMap);
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
 
         waitForStart();
 

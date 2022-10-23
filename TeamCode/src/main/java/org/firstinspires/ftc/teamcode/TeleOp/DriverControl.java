@@ -28,8 +28,8 @@ public class DriverControl extends LinearOpMode {
     Turret turret;
     GamepadEx primary, secondary;
     KeyReader[] keyReaders;
-    TriggerReader intakeButton, activeGround, deposit;
-    ButtonReader slidesHigh, turretRight, turretLeft, reset, raiseSlides, lowerSlides;
+    TriggerReader intakeTransfer, intakeGround, extakeGround, depositTransfer;
+    ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake;
     ToggleButtonReader  ninjaMode;
     int slidesTargetPosition = 0, turretTargetPosition = 0;
     @Override
@@ -45,17 +45,20 @@ public class DriverControl extends LinearOpMode {
         slides.slidesLeft.setTargetPosition(0);
         slides.slidesRight.setTargetPosition(0);
         keyReaders = new KeyReader[] {
-                intakeButton = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
-                //slidesHigh = new ButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
-                turretRight = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
-                turretLeft = new ButtonReader(secondary,GamepadKeys.Button.LEFT_BUMPER),
-                deposit = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
-
-                reset = new ButtonReader(primary, GamepadKeys.Button.B),
+                intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                extakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                
+                intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                fourBarPrimed = new ButtonReader(secondary, GamepadKeys.Button.B),
+                fourBarDeposit = new ButtonReader(secondary, GamepadKeys.Button.Y),
+                fourBarIntake= new ButtonReader(secondary, GamepadKeys.Button.A),
+                turretRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
+                turretLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
                 raiseSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
                 lowerSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
-                activeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+
         };
         waitForStart();
         //    slides.setState(Slides.State.INTAKE);
@@ -83,20 +86,19 @@ public class DriverControl extends LinearOpMode {
                     )
             );
 
-            if (intakeButton.isDown()) {
+            if (intakeTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
-                fourbar.setState(vfourb.State.INTAKE_POSITION);
             }
-            else if (deposit.isDown()) {
+            else if (depositTransfer.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
             }
             else {
                 intake.setState(Intake.State.OFF);
             }
-            if (slidesHigh.wasJustPressed()) {
-                //slides.setState(Slides.State.HIGH);
-                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-            }
+//            if (slidesHigh.wasJustPressed()) {
+//                //slides.setState(Slides.State.HIGH);
+//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+//            }
 
             //SLIDES
             if (Math.abs(slides.slidesLeft.getCurrentPosition())  >= slidesTargetPosition - 10
@@ -119,7 +121,7 @@ public class DriverControl extends LinearOpMode {
                 slidesTargetPosition -= 50;
             }
 
-            //SLIDES
+            //TURRET
             if (Math.abs(turret.turretMotor.getCurrentPosition())  >= turretTargetPosition - 10
                     && Math.abs(slides.slidesLeft.getCurrentPosition()) <= turretTargetPosition + 10){
                turret.turretMotor.setPower(0);
@@ -138,25 +140,40 @@ public class DriverControl extends LinearOpMode {
             }
 
             //GROUND INTAKE
-            if (activeGround.isDown()) {
+            if (intakeGround.isDown()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
             }
             else{
                 groundIntake.setState(GroundIntake.State.OFF);
             }
 
+            //DEPOSIT:
+            if (depositTransfer.isDown()) {
+                intake.setState(Intake.State.DEPOSITING);
+            }
+            else if (intakeTransfer.isDown()) {
+                intake.setState(Intake.State.INTAKING);
+            } else {
+                intake.setState(Intake.State.OFF);
+            }
+
+            //V4B:
+            if (fourBarIntake.wasJustPressed()) {
+                fourbar.setState(vfourb.State.INTAKE_POSITION);
+                }
+            if (fourBarDeposit.wasJustPressed()) {
+                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+            }
+            if (fourBarPrimed.wasJustPressed()) {
+                fourbar.setState(vfourb.State.PRIMED);
+            }
             //TELEMETRY
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("1 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
             telemetry.addData("2 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
             telemetry.update();
 
-            if (reset.wasJustPressed()) {
-                //       turret.setState(Turret.State.RESET);
-                //     slides.setState(Slides.State.INTAKE);
-                fourbar.setState(vfourb.State.PRIMED);
-                //   intake.setState(Intake.State.OFF);
-            }
+
         }
     }
 }

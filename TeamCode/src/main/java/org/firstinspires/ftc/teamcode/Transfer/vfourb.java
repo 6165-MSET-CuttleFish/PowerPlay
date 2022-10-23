@@ -20,8 +20,8 @@ public class vfourb
 
     public vfourb(HardwareMap hardwareMap)
     {
-        Running = hardwareMap.get(Servo.class, "v4brun");
-        Supporting = hardwareMap.get(Servo.class, "v4bsup");
+        Running = hardwareMap.get(Servo.class, "v4bRun");
+        Supporting = hardwareMap.get(Servo.class, "v4bSup");
         setState(State.INTAKE_POSITION);
     }
 
