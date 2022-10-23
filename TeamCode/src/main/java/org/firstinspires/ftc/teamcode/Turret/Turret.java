@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.Turret;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,20 +27,17 @@ public class Turret
 
             case IDLE:
 
-
         }
     }
 
     public Turret.State getState() {
-        return this.state;
+        return state;
     }
-
 
     public void setState(Turret.State state)
     {
         this.state = state;
         update();
     }
-
 
 }
