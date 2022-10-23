@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.Turret;
-import android.hardware.Sensor;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -22,19 +19,19 @@ public class TurretTestTele extends LinearOpMode {
     boolean toggleAutoAlign;
     public OpenCvWebcam webcam;
     private Detector detector;
-    private TouchSensor magnetic;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         turret= hardwareMap.get(DcMotor.class, "hturret");
-        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         toggleAutoAlign=false;
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         camInit();
         waitForStart();
+
         while (opModeIsActive()){
             position=turret.getCurrentPosition();
             if(gamepad1.right_bumper){
@@ -42,14 +39,11 @@ public class TurretTestTele extends LinearOpMode {
             }else if(gamepad1.left_bumper){
                 toggleAutoAlign=true;
             }
-            if(magnetic.isPressed()){
-                position=0.0;
-            }
             if(toggleAutoAlign==false){
-                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<50.0){
-                    turret.setPower(0.7);
-                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-50.0){
-                    turret.setPower(-0.7);
+                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<390.0){
+                    turret.setPower(0.25);
+                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-390.0){
+                    turret.setPower(-0.25);
                 }else{
                     turret.setPower(0);
                 }
@@ -58,9 +52,9 @@ public class TurretTestTele extends LinearOpMode {
                     turret.setPower(0);
                     toggleAutoAlign=false;
                 }else if(detector.getLocation()== Detector.Location.RIGHT){
-                    turret.setPower(0.7);
+                    turret.setPower(0.25);
                 }else if(detector.getLocation()== Detector.Location.LEFT){
-                    turret.setPower(-0.7);
+                    turret.setPower(-0.25);
                 }else{
                     turret.setPower(0);
                 }
@@ -86,7 +80,7 @@ public class TurretTestTele extends LinearOpMode {
                 );
         webcam = OpenCvCameraFactory
                 .getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+                .createWebcam(hardwareMap.get(WebcamName.class, "rnjlow"), cameraMonitorViewId);
         webcam.setPipeline(detector = new Detector());
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
