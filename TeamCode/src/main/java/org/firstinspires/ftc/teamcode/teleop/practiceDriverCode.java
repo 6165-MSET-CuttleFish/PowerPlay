@@ -23,8 +23,6 @@ public class practiceDriverCode extends LinearOpMode {
     Intake intake;
     //Slides slides;
     Slides slide;
-    DcMotorEx slidesLeft;
-    DcMotorEx slidesRight;
     vfourb fourbar;
     GroundIntake groundIntake;
     // Turret turret;
@@ -38,8 +36,6 @@ public class practiceDriverCode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         slide = new Slides(hardwareMap);
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
         robot = new Robot(hardwareMap);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -99,13 +95,9 @@ public class practiceDriverCode extends LinearOpMode {
                     //slides.setState(Slides.State.HIGH);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 }
-                if(raiseLift.isDown()){
-slidesRight.setPower(-1);
-slidesLeft.setPower(1);
-                }
-            if(lowerLift.isDown()){
-                slidesRight.setPower(1);
-                slidesLeft.setPower(-1);
+            if(groundIntake.gSensor()){
+                intake.setState(Intake.State.INTAKING);
+                fourbar.setState(vfourb.State.INTAKE_POSITION);
             }
                 /*
                 if (liftMedium.wasJustPressed()) {
@@ -133,15 +125,13 @@ slidesLeft.setPower(1);
                     }
                 }
                 telemetry.addData("V4B State: ",fourbar.getState());
-            telemetry.addData("Left Ticks: ", slidesLeft.getCurrentPosition());
-            telemetry.addData("Right Ticks: ", slidesRight.getCurrentPosition());
+            telemetry.addData("Left Ticks: ", slide.lpos());
+            telemetry.addData("Right Ticks: ", slide.rpos());
 telemetry.update();
 
                 if (reset.wasJustPressed()) {
-             //       turret.setState(Turret.State.RESET);
-               //     slides.setState(Slides.State.INTAKE);
+                    slide.setState(Slides.State.BOTTOM);
                     fourbar.setState(vfourb.State.PRIMED);
-                 //   intake.setState(Intake.State.OFF);
                 }
             }
         }

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Slides {
     DcMotorEx slidesLeft;
     DcMotorEx slidesRight;
+
     //slides is 17.5 inches tall
     static final double HIGH = 16; //in inches, 33.5 - 17.5 (high junction height - slides height)
     static final double MID = 6; //in inches, 23.5 - 17.5 (mid junction height - slides height)
@@ -14,7 +15,7 @@ public class Slides {
 
     public Slides.State state;
     public enum State{
-        HIGH, MID, LOW
+        HIGH, MID, LOW, BOTTOM
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
@@ -25,11 +26,19 @@ public class Slides {
     public void update(){
         switch(state) {
             case HIGH:
-                //TODO:
+                slidesLeft.setTargetPosition((int) HIGH);
+                slidesRight.setTargetPosition((int) HIGH);
+                slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             case MID:
                 //TODO
             case LOW:
                 //TODO;
+            case BOTTOM:
+                slidesLeft.setTargetPosition((int) 0);
+                slidesRight.setTargetPosition((int) 0);
+                slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
 
@@ -39,8 +48,10 @@ public class Slides {
     public void setState(Slides.State state){
         this.state = state;
     }
-    public double ticksToInches(double ticks) {
-
-        return ticks;
+    public double lpos(){
+        return slidesLeft.getCurrentPosition();
+    }
+    public double rpos(){
+        return slidesRight.getCurrentPosition();
     }
 }
