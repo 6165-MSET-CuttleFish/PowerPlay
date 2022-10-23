@@ -88,12 +88,10 @@ public class practiceDriverCode extends LinearOpMode {
            else if (deposit.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
             }
-                else{
-                    intake.setState(Intake.State.OFF);
-                }
                 if (liftHigh.wasJustPressed()) {
-                    //slides.setState(Slides.State.HIGH);
+                    slide.setState(Slides.State.HIGH);
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                    intake.setState(Intake.State.OFF);
                 }
             if(groundIntake.gSensor()){
                 intake.setState(Intake.State.INTAKING);
