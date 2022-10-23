@@ -42,6 +42,7 @@ public class DriverControl extends LinearOpMode {
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
+
         slides.slidesLeft.setTargetPosition(0);
         slides.slidesRight.setTargetPosition(0);
         keyReaders = new KeyReader[] {

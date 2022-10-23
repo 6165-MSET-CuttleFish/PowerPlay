@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Slides;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,6 +12,7 @@ public class Slides {
     static final double HIGH = 16; //in inches, 33.5 - 17.5 (high junction height - slides height)
     static final double MID = 6; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double LOW = 0; //in inches, low junction is 13.5 inches
+    public static PIDFController pidf = new PIDFController(0, 0, 0, 0);
 
     public Slides.State state;
     public enum State{
@@ -20,6 +22,7 @@ public class Slides {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         setState(State.LOW);
+        pidf.setTolerance(5, 10);
     }
 
     public void update(){
