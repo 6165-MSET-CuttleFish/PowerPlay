@@ -25,8 +25,8 @@ public class GroundIntake
 
     public GroundIntake(HardwareMap hardwareMap)
     {
-        intakeRunning=hardwareMap.get(CRServo.class, "intakeR");
-        intakeSupporting = hardwareMap.get(CRServo.class, "intakeL");
+        intakeRunning=hardwareMap.get(CRServo.class, "gr");
+        intakeSupporting = hardwareMap.get(CRServo.class, "gl");
         distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
         intakeRunning.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
