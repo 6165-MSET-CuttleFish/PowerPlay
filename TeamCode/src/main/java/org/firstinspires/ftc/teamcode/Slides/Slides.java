@@ -28,11 +28,17 @@ public class Slides {
     public void update(){
         switch(state) {
             case HIGH:
-                //TODO:
+                slidesLeft.setTargetPosition((int) inchesToTicks(21.5));
+                slidesRight.setTargetPosition((int) inchesToTicks(21.5));
+                break;
             case MID:
-                //TODO
+                slidesLeft.setTargetPosition((int) inchesToTicks(11.5));
+                slidesRight.setTargetPosition((int) inchesToTicks(11.5));
+                break;
             case LOW:
-                //TODO;
+                slidesLeft.setTargetPosition((int) inchesToTicks(1.5));
+                slidesRight.setTargetPosition((int) inchesToTicks(1.5));
+                break;
         }
     }
 
@@ -43,7 +49,9 @@ public class Slides {
         this.state = state;
     }
     public double ticksToInches(double ticks) {
-
-        return ticks;
+        return -ticks / 43.39;
+    }
+    public double inchesToTicks(double inches) {
+        return -(inches * 43.39);
     }
 }
