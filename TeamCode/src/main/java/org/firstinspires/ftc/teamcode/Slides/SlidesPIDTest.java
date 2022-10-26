@@ -12,11 +12,11 @@ public class SlidesPIDTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         slides = new Slides(hardwareMap);
         waitForStart();
-        slides.pidf.setSetPoint(targetPosition);
+        Slides.pidf.setSetPoint(targetPosition);
         while(!isStopRequested()){
 
-            while (!slides.pidf.atSetPoint()) {
-                double output = slides.pidf.calculate(
+            while (!Slides.pidf.atSetPoint()) {
+                double output = Slides.pidf.calculate(
                         slides.slidesLeft.getCurrentPosition()  // the measured value
                 );
                 slides.slidesLeft.setVelocity(output);
