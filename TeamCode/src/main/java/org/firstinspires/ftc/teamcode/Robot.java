@@ -59,6 +59,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,18 +102,25 @@ public class Robot extends MecanumDrive {
     public vfourb fourbar;
     public Turret turret;
     public GroundIntake groundIntake;
+    public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
-    public driveState getState() {
-        return state;
-    }
+
     public void setState(driveState state){
         this.state = state;
     }
 
+    public driveState getState() {
+        return state;
+    }
     public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
+        slides = new Slides(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
+        intake = new Intake(hardwareMap);
+        turret = new Turret(hardwareMap);
+        groundIntake = new GroundIntake(hardwareMap);
+//        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
@@ -168,8 +176,8 @@ public class Robot extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
