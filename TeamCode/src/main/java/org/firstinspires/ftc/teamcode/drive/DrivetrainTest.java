@@ -65,7 +65,7 @@ public class DrivetrainTest extends LinearOpMode {
         robot.setWeightedDrivePower(
                 new Pose2d(
                         Math.abs(-gamepad1.left_stick_y) < 0.2 ? 0 : -gamepad1.left_stick_y,
-                        gamepad1.left_stick_x,
+                        -gamepad1.left_stick_x,
                         -gamepad1.right_stick_x
                 )
         );

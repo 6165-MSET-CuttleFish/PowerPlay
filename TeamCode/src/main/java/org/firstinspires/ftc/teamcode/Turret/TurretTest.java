@@ -28,9 +28,6 @@
  */
 
 package org.firstinspires.ftc.teamcode.Turret;
-
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -77,14 +74,6 @@ public class TurretTest extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 120;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 7.91;   // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     TURN_SPEED             = 0.3;
-
-    static double endPosition;
 
     @Override
     public void runOpMode() {
@@ -97,15 +86,15 @@ public class TurretTest extends LinearOpMode {
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         turret.turretMotor.setDirection(DcMotor.Direction.REVERSE);
-        turret.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d",
                 turret.turretMotor.getCurrentPosition());
         telemetry.addData("Going to",
-                endPosition);
+                turret.endPosition);
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -113,8 +102,8 @@ public class TurretTest extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(TURN_SPEED, setTargetPosition(90.0));
-        encoderDrive(-TURN_SPEED, setTargetPosition(-135.0));
+        encoderDrive(turret.TURN_SPEED, setTargetPosition(90.0));
+        encoderDrive(-turret.TURN_SPEED, setTargetPosition(-135.0));
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -130,8 +119,8 @@ public class TurretTest extends LinearOpMode {
      *  3) Driver stops the opmode running.
      */
     public double setTargetPosition(double targetTurnAngle){
-        endPosition = targetTurnAngle/360*COUNTS_PER_MOTOR_REV;
-        return endPosition;
+        turret.endPosition = targetTurnAngle/360*turret.COUNTS_PER_MOTOR_REV;
+        return turret.endPosition;
     }
     public void encoderDrive(double speed,
                              double leftInches) {
@@ -141,7 +130,7 @@ public class TurretTest extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
             // Determine new target position, and pass to motor controller
-            newLeftTarget = (int)(leftInches * COUNTS_PER_INCH);
+            newLeftTarget = (int)(leftInches * turret.COUNTS_PER_INCH);
             turret.turretMotor.setTargetPosition(newLeftTarget);
 
             // Turn On RUN_TO_POSITION
