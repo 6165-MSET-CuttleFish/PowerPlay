@@ -20,7 +20,7 @@ public class TurretTestTele extends LinearOpMode {
     DcMotor turret;
     double position;
     boolean toggleAutoAlign;
-   // public OpenCvWebcam webcam;
+    public OpenCvWebcam webcam;
     private Detector detector;
     private TouchSensor magnetic;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -46,9 +46,9 @@ public class TurretTestTele extends LinearOpMode {
                 position=0.0;
             }
             if(toggleAutoAlign==false){
-                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<120){
+                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<20.0){
                     turret.setPower(1);
-                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-120.0){
+                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-20.0){
                     turret.setPower(-1);
                 }else{
                     turret.setPower(0);
@@ -64,8 +64,8 @@ public class TurretTestTele extends LinearOpMode {
                 }else{
                     turret.setPower(0);
                 }
-            }
-            telemetry.addData("Location", detector.getLocation());*/
+            }*/
+            //telemetry.addData("Location", detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");
             telemetry.addData("Current Position", position);
             telemetry.update();
