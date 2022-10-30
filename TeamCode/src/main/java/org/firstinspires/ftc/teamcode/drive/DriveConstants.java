@@ -45,7 +45,9 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 16; // in
+
+    public static double TRACK_WIDTH = 13.5; // in
+
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -63,8 +65,9 @@ public class DriveConstants {
      * Runner is designed to enable faster autonomous motion, it is a good idea for testing to start
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
-     */
-    public static double MAX_VEL = 65;
+*/
+    public static double MAX_VEL = 91.1;
+
     public static double MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = Math.toRadians(60);
     public static double MAX_ANG_ACCEL = Math.toRadians(60);

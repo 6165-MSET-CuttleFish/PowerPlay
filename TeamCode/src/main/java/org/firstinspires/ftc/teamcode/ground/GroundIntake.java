@@ -14,9 +14,8 @@ public class GroundIntake
     static final double OFF = 0;
     boolean runningTrigger = false;
     boolean temp2 = false;
-    CRServo intakeRunning;
-    CRServo intakeSupporting;
-    DistanceSensor distSens;
+    public CRServo groundLeft, groundRight;
+    public DistanceSensor distSens;
     public State state;
     public enum State
     {
@@ -25,10 +24,12 @@ public class GroundIntake
 
     public GroundIntake(HardwareMap hardwareMap)
     {
-        intakeRunning=hardwareMap.get(CRServo.class, "gr");
-        intakeSupporting = hardwareMap.get(CRServo.class, "gl");
+
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
+
         distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
-        intakeRunning.setDirection(CRServo.Direction.REVERSE);
+        groundRight.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
 
@@ -37,16 +38,16 @@ public class GroundIntake
         switch(state)
         {
             case INTAKING:
-                intakeRunning.setPower(INTAKING);
-                intakeSupporting.setPower(INTAKING);
+                groundLeft.setPower(INTAKING);
+                groundRight.setPower(INTAKING);
                 break;
             case DEPOSITING:
-                intakeRunning.setPower(REVERSE);
-                intakeSupporting.setPower(REVERSE);
+                groundLeft.setPower(REVERSE);
+                groundRight.setPower(REVERSE);
                 break;
             case OFF:
-                intakeRunning.setPower(OFF);
-                intakeSupporting.setPower(OFF);
+                groundLeft.setPower(OFF);
+                groundRight.setPower(OFF);
                 break;
         }
     }

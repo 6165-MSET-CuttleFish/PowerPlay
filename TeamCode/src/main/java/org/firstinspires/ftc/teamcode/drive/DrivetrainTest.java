@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.KeyReader;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,48 +20,41 @@ public class DrivetrainTest extends LinearOpMode {
     public Robot robot;
     public GamepadEx gm1;
     public ButtonReader ninja, straight;
+    ToggleButtonReader  ninjaMode;
+    KeyReader[] keyReaders;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
         robot.setState(Robot.driveState.NORMAL);
         gm1 = new GamepadEx(gamepad1);
-        ninja = new ButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
-        straight = new ButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
+        //ninja = new ButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);
+        //straight = new ButtonReader(gm1, GamepadKeys.Button.RIGHT_BUMPER);
+       // ToggleButtonReader
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        keyReaders = new KeyReader[] {
+                ninjaMode = new ToggleButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER)
+        };
         waitForStart();
 
         while(!isStopRequested()){
-            
-            if (robot.getState() == Robot.driveState.NORMAL)
-                normal();
-            if (robot.getState() == Robot.driveState.STRAIGHT)
-                straight();
-            if (robot.getState() == Robot.driveState.NINJA)
-                ninja();
-
-            if (ninja.isDown()) {
-                switch (robot.state){
-                    case NORMAL:
-                    case STRAIGHT:
-                        robot.setState(Robot.driveState.NINJA);
-                        break;
-                    case NINJA:
-                        robot.setState(Robot.driveState.NORMAL);
-                        break;
-                }
+            for (KeyReader reader : keyReaders) {
+                reader.readValue();
             }
-
-            else if(straight.isDown()){
-                switch (robot.state){
-                    case NORMAL:
-                    case NINJA:
-                        robot.setState(Robot.driveState.STRAIGHT);
-                        break;
-                    case STRAIGHT:
-                        robot.state = Robot.driveState.NORMAL;
-                        break;
-                }
-            }
+            if (ninjaMode.getState()) {
+                robot.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y * 0.5,
+                                gamepad1.left_stick_x * 0.5,
+                                -gamepad1.right_stick_x * 0.5
+                        )
+                );
+            } else robot.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
             robot.update();
             telemetry.addData("State", robot.getState());
             telemetry.update();

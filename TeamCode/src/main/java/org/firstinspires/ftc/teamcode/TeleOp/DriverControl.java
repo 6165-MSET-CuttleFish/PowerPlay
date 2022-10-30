@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -24,7 +25,7 @@ public class DriverControl extends LinearOpMode {
     Intake intake;
     Slides slides;
     vfourb fourbar;
-    GroundIntake groundIntake;
+    //GroundIntake groundIntake;
     Turret turret;
     GamepadEx primary, secondary;
     KeyReader[] keyReaders;
@@ -35,16 +36,17 @@ public class DriverControl extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
+        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
-        intake = robot.intake;
-        slides = robot.slides;
-        fourbar = robot.fourbar;
-        groundIntake = robot.groundIntake;
-        turret = robot.turret;
+        //intake = robot.intake;
+        //slides = robot.slides;
+        //fourbar = robot.fourbar;
+        //groundIntake = robot.groundIntake;
+        //turret = robot.turret;
 
-        slides.slidesLeft.setTargetPosition(0);
-        slides.slidesRight.setTargetPosition(0);
+        //slides.slidesLeft.setTargetPosition(0);
+        //slides.slidesRight.setTargetPosition(0);
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
@@ -63,7 +65,7 @@ public class DriverControl extends LinearOpMode {
         };
         waitForStart();
         //    slides.setState(Slides.State.INTAKE);
-        fourbar.setState(vfourb.State.PRIMED);
+        //fourbar.setState(vfourb.State.PRIMED);
         while (!isStopRequested()) {
 
             robot.update();
@@ -79,14 +81,15 @@ public class DriverControl extends LinearOpMode {
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
-            } else robot.setWeightedDrivePower(
+            }
+            else robot.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,
                             gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
             );
-
+/*
             if (intakeTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
             }
@@ -139,15 +142,18 @@ public class DriverControl extends LinearOpMode {
             if(turretRight.isDown()){
                 turretTargetPosition -= 50;
             }
-
+*/
             //GROUND INTAKE
             if (intakeGround.isDown()) {
-                groundIntake.setState(GroundIntake.State.INTAKING);
+                robot.groundLeft.setPower(-1);
+                robot.groundRight.setPower(1);
             }
             else{
-                groundIntake.setState(GroundIntake.State.OFF);
+                robot.groundLeft.setPower(0);
+                robot.groundRight.setPower(0);
             }
-
+            //robot.groundIntake.update();
+/*
             //DEPOSIT:
             if (depositTransfer.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
@@ -173,7 +179,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("1 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
             telemetry.addData("2 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
             telemetry.update();
-
+*/
 
         }
     }
