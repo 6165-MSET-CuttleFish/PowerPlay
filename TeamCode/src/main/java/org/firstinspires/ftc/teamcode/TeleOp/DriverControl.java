@@ -123,7 +123,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TURRET
-            if (Math.abs(turret.turretMotor.getCurrentPosition())  >= turretTargetPosition - 10
+            /*if (Math.abs(turret.turretMotor.getCurrentPosition())  >= turretTargetPosition - 10
                     && Math.abs(slides.slidesLeft.getCurrentPosition()) <= turretTargetPosition + 10){
                turret.turretMotor.setPower(0);
             }
@@ -138,7 +138,7 @@ public class DriverControl extends LinearOpMode {
             }
             if(turretRight.isDown()){
                 turretTargetPosition -= 50;
-            }
+            }*/
 
             //GROUND INTAKE
             if (intakeGround.isDown()) {

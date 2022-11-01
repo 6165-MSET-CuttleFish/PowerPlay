@@ -19,6 +19,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class TurretTestTele extends LinearOpMode {
     DcMotor turret;
     double position;
+    double prevPositionReset;
     boolean toggleAutoAlign;
     public OpenCvWebcam webcam;
     private Detector detector;
@@ -27,6 +28,7 @@ public class TurretTestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        prevPositionReset=0;
         turret= hardwareMap.get(DcMotor.class, "hturret");
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -36,19 +38,20 @@ public class TurretTestTele extends LinearOpMode {
         //camInit();
         waitForStart();
         while (opModeIsActive()){
-            position=turret.getCurrentPosition();
+            position=turret.getCurrentPosition()-prevPositionReset;
             if(gamepad1.right_bumper){
                 toggleAutoAlign=false;
             }else if(gamepad1.left_bumper){
                 toggleAutoAlign=true;
             }
             if(magnetic.isPressed()){
+                prevPositionReset=position;
                 position=0.0;
             }
             if(toggleAutoAlign==false){
-                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&turret.getCurrentPosition()<20.0){
+                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&position<20.0){
                     turret.setPower(1);
-                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&turret.getCurrentPosition()>-20.0){
+                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&position>-20.0){
                     turret.setPower(-1);
                 }else{
                     turret.setPower(0);
