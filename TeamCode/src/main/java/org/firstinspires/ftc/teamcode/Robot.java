@@ -103,7 +103,7 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
-    //public GroundIntake groundIntake;
+    public GroundIntake groundIntake;
     public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;

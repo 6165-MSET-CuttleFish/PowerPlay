@@ -19,7 +19,7 @@ public class Slides {
     public static double TICKS_PER_INCH = 43.39;
     public Slides.State state;
     public enum State{
-        HIGH, MID, LOW
+        HIGH, MID, LOW, BOTTOM
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -41,6 +41,10 @@ public class Slides {
             case LOW:
                 slidesLeft.setTargetPosition((int) inchesToTicks(1.5));
                 slidesRight.setTargetPosition((int) inchesToTicks(1.5));
+                break;
+            case BOTTOM:
+                slidesLeft.setTargetPosition((int) inchesToTicks(0));
+                slidesRight.setTargetPosition((int) inchesToTicks(0));
                 break;
         }
     }
