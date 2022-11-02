@@ -14,8 +14,9 @@ public class GroundIntake
     static final double OFF = 0;
     boolean runningTrigger = false;
     boolean temp2 = false;
-    public CRServo groundLeft, groundRight;
-    public DistanceSensor distSens;
+    CRServo intakeRunning;
+    CRServo intakeSupporting;
+    DistanceSensor distSens;
     public State state;
     public enum State
     {
@@ -24,12 +25,10 @@ public class GroundIntake
 
     public GroundIntake(HardwareMap hardwareMap)
     {
-
-        groundLeft = hardwareMap.get(CRServo.class, "gl");
-        groundRight = hardwareMap.get(CRServo.class, "gr");
-
+        intakeRunning=hardwareMap.get(CRServo.class, "gr");
+        intakeSupporting = hardwareMap.get(CRServo.class, "gl");
         distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
-        groundRight.setDirection(CRServo.Direction.REVERSE);
+        intakeSupporting.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
 
@@ -38,16 +37,16 @@ public class GroundIntake
         switch(state)
         {
             case INTAKING:
-                groundLeft.setPower(INTAKING);
-                groundRight.setPower(INTAKING);
+                intakeRunning.setPower(INTAKING);
+                intakeSupporting.setPower(INTAKING);
                 break;
             case DEPOSITING:
-                groundLeft.setPower(REVERSE);
-                groundRight.setPower(REVERSE);
+                intakeRunning.setPower(REVERSE);
+                intakeSupporting.setPower(REVERSE);
                 break;
             case OFF:
-                groundLeft.setPower(OFF);
-                groundRight.setPower(OFF);
+                intakeRunning.setPower(OFF);
+                intakeSupporting.setPower(OFF);
                 break;
         }
     }
@@ -68,6 +67,15 @@ public class GroundIntake
         }
         return runningTrigger;
 
+    }
+    public boolean temp2e() {
+        return temp2;
+    }
+    public double sensorVal(){
+        return distSens.getDistance(DistanceUnit.MM);
+    }
+    public boolean runningTriggere(){
+        return runningTrigger;
     }
     public void setState(State state)
     {
