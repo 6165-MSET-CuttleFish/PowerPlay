@@ -18,8 +18,10 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @TeleOp
 public class TurretTestTele extends LinearOpMode {
     DcMotor turret;
-    double position;
-    double prevPositionReset;
+    int position;
+    int prevPositionReset;
+    final double QUICK_POWER=1.0;
+    final double SLOW_POWER = 0.5;
     boolean toggleAutoAlign;
     public OpenCvWebcam webcam;
     private Detector detector;
@@ -35,7 +37,7 @@ public class TurretTestTele extends LinearOpMode {
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         toggleAutoAlign=false;
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //camInit();
+        camInit();
         waitForStart();
         while (opModeIsActive()){
             position=turret.getCurrentPosition()-prevPositionReset;
@@ -46,29 +48,30 @@ public class TurretTestTele extends LinearOpMode {
             }
             if(magnetic.isPressed()){
                 prevPositionReset=position;
-                position=0.0;
+                position=0;
             }
-            if(toggleAutoAlign==false){
-                if(gamepad1.right_trigger!=1&&gamepad1.left_trigger==1&&position<20.0){
-                    turret.setPower(1);
-                }else if(gamepad1.right_trigger==1&&gamepad1.left_trigger!=1&&position>-20.0){
-                    turret.setPower(-1);
-                }else{
-                    turret.setPower(0);
+            if(toggleAutoAlign==false) {
+                if (gamepad1.right_trigger != 1 && gamepad1.left_trigger == 1 && turret.getCurrentPosition() < 390) {
+                    turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.setPower(QUICK_POWER);
+                } else if (gamepad1.right_trigger == 1 && gamepad1.left_trigger != 1 && turret.getCurrentPosition() > -390) {
+                    turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.setPower(-QUICK_POWER);
+                } else {
+                    if (turret.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        turret.setTargetPosition(position);
+                    }
+                    if (turret.getCurrentPosition() < position) {
+                        turret.setPower(SLOW_POWER);
+                    } else if (turret.getCurrentPosition() > position) {
+                        turret.setPower(-SLOW_POWER);
+                    } else {
+                        turret.setPower(0);
+                    }
                 }
-            }/*else{
-                if(detector.getLocation()== Detector.Location.MIDDLE) {
-                    turret.setPower(0);
-                    toggleAutoAlign=false;
-                }else if(detector.getLocation()== Detector.Location.RIGHT){
-                    turret.setPower(0.3);
-                }else if(detector.getLocation()== Detector.Location.LEFT){
-                    turret.setPower(-0.3);
-                }else{
-                    turret.setPower(0);
-                }
-            }*/
-            //telemetry.addData("Location", detector.getLocation());
+            }
+            telemetry.addData("Location", detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");
             telemetry.addData("Current Position", position);
             telemetry.update();
@@ -76,7 +79,7 @@ public class TurretTestTele extends LinearOpMode {
         }
 
     }
-    /*public void camInit() {
+    public void camInit() {
         final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
         final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
         int cameraMonitorViewId = this
@@ -103,5 +106,5 @@ public class TurretTestTele extends LinearOpMode {
         dashboard.startCameraStream(webcam, 30);
         telemetry.addLine("waiting for start");
         telemetry.update();
-    }*/
+    }
 }
