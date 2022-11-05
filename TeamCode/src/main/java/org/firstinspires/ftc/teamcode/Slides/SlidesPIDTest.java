@@ -9,42 +9,30 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @TeleOp
 public class SlidesPIDTest extends LinearOpMode {
     Slides slides;
-    public static double targetPosition = 16;
-    FtcDashboard dashboard = FtcDashboard.getInstance();
     public void runOpMode() throws InterruptedException {
         slides = new Slides(hardwareMap);
-        slides.slidesRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slides.slidesLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slides.slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        slides.slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+     //   slides.slidesRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+       // slides.slidesLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
 
 
         waitForStart();
-        double output = 0;
         while(opModeIsActive()){
+          //  slides.update();
             if (gamepad1.y) {
-                targetPosition = Slides.HIGH;
+                slides.setState(Slides.State.HIGH);
             } else if (gamepad1.a) {
-                targetPosition = Slides.MID;
+                slides.setState(Slides.State.MID);
+            } else if (gamepad1.b) {
+                slides.setState(Slides.State.LOW);
+            } else if (gamepad1.x) {
+                slides.setState(Slides.State.BOTTOM);
             }
-            else if (gamepad1.b) {
-                targetPosition = Slides.LOW;
-            }
-            output = Slides.pidController.calculate(-Slides.inchesToTicks(targetPosition), -slides.slidesLeft.getCurrentPosition());
-            // assign motor the PID output
-            if (-Slides.inchesToTicks(targetPosition) < -slides.slidesLeft.getCurrentPosition())
-                output *= 0.8;
 
-            slides.slidesLeft.setPower(output);
-            slides.slidesRight.setPower(output);
-
-//            if (Slides.inchesToTicks(targetPosition) == -slides.slidesLeft.getCurrentPosition()) {
-//                slides.slidesLeft.setPower(0);
-//                slides.slidesRight.setPower(0);
-//            }
-
-            telemetry.addData("targetPos: ", targetPosition);
-            telemetry.addData("currentPos: ", Slides.ticksToInches(slides.slidesLeft.getCurrentPosition()));
+            telemetry.addData("targetPos: ", slides.getState());
+            telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
+            telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
+            telemetry.addData("currentVelo: ", slides.slidesLeft.getPower());
 
             telemetry.update();
         }

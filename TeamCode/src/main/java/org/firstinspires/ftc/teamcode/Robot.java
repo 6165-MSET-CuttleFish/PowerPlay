@@ -117,13 +117,13 @@ public class Robot extends MecanumDrive {
     }
     public Robot(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-        /*slides = new Slides(hardwareMap);
+        slides = new Slides(hardwareMap);
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap);
 
-         */
-        //groundIntake = new GroundIntake(hardwareMap);
+
+        groundIntake = new GroundIntake(hardwareMap);
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);

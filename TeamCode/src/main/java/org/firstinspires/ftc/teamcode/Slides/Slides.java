@@ -1,22 +1,24 @@
 package org.firstinspires.ftc.teamcode.Slides;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
 @Config
 public class Slides {
-    public DcMotorEx slidesLeft;
-    public DcMotorEx slidesRight;
+    DcMotorEx slidesLeft;
+    DcMotorEx slidesRight;
+
     //slides is 17.5 inches tall
-    static final double HIGH = 16; //in inches, 33.5 - 17.5 (high junction height - slides height)
-    static final double MID = 6; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final double LOW = 0; //in inches, low junction is 13.5 inches
-    public static double kp = 0.005, ki = 0, kd = 0.05, kf = 0;
-    public static PIDFController pidController = new PIDFController(kp, ki, kd, kf);
-    public static double TICKS_PER_INCH = 43.39;
+    static final double HIGH = 932.885; //in inches, 33.5 - 17.5 (high junction height - slides height)
+    static final double MID = 498.985; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final double LOW = 65.085; //in inches, low junction is 13.5 inches
+    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(4, 0, 0, 0);
+    public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2, 1.98, 0.75, 0);
+    public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
         HIGH, MID, LOW, BOTTOM
@@ -24,27 +26,53 @@ public class Slides {
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        setState(State.LOW);
-        pidController.setTolerance(inchesToTicks(0.2), 5);
+        slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //   setState(State.BOTTOM);
     }
 
     public void update(){
+        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
+        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
+        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
+        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
         switch(state) {
             case HIGH:
-                slidesLeft.setTargetPosition((int) inchesToTicks(21.5));
-                slidesRight.setTargetPosition((int) inchesToTicks(21.5));
+                slidesLeft.setTargetPosition((int) HIGH);
+                slidesRight.setTargetPosition((int) HIGH);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
                 break;
             case MID:
-                slidesLeft.setTargetPosition((int) inchesToTicks(11.5));
-                slidesRight.setTargetPosition((int) inchesToTicks(11.5));
+                slidesLeft.setTargetPosition((int) MID);
+                slidesRight.setTargetPosition((int) MID);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
                 break;
             case LOW:
-                slidesLeft.setTargetPosition((int) inchesToTicks(1.5));
-                slidesRight.setTargetPosition((int) inchesToTicks(1.5));
+                slidesLeft.setTargetPosition((int) LOW);
+                slidesRight.setTargetPosition((int) LOW);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
                 break;
             case BOTTOM:
-                slidesLeft.setTargetPosition((int) inchesToTicks(0));
-                slidesRight.setTargetPosition((int) inchesToTicks(0));
+
+                slidesLeft.setTargetPosition(0);
+                slidesRight.setTargetPosition(0);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(-1);
+                slidesRight.setPower(-1);
                 break;
         }
     }
@@ -54,11 +82,46 @@ public class Slides {
     }
     public void setState(Slides.State state){
         this.state = state;
+        update();
     }
-    public static double ticksToInches(double ticks) {
-        return -ticks / TICKS_PER_INCH;
+    public void up(){
+        slidesLeft.setTargetPosition((int) HIGH);
+        slidesRight.setTargetPosition((int) HIGH);
+        slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setPower(1);
+        slidesRight.setPower(1);
+    }
+    public void mid(){
+        slidesLeft.setTargetPosition((int) MID);
+        slidesRight.setTargetPosition((int) MID);
+        slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setPower(1);
+        slidesRight.setPower(1);
+    }
+    public void low(){
+        slidesLeft.setTargetPosition((int) LOW);
+        slidesRight.setTargetPosition((int) LOW);
+        slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setPower(1);
+        slidesRight.setPower(1);
+    }
+    public void down(){
+        slidesLeft.setTargetPosition(0);
+        slidesRight.setTargetPosition(0);
+        slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesLeft.setPower(-1);
+        slidesRight.setPower(-1);
     }
     public static double inchesToTicks(double inches) {
-        return -(inches * 43.39);
+        return (inches * TICKS_PER_INCH);
     }
+
+    public static double ticksToInches(double ticks) {
+        return ticks / TICKS_PER_INCH;
+    }
+
 }
