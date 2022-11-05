@@ -22,8 +22,8 @@ public class Detector extends OpenCvPipeline {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(100, 5, 57, 200);
-    public static  Rect POS_2_BLUE = new Rect(163, 5, 57, 200);
+    public static Rect POS_1_BLUE = new Rect(100, 5, 57, 190);
+    public static  Rect POS_2_BLUE = new Rect(163, 5, 57, 190);
 
     //Find numbers for actual place
 

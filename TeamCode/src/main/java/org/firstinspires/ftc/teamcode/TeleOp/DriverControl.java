@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
@@ -19,6 +21,10 @@ import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class DriverControl extends LinearOpMode {
@@ -26,10 +32,12 @@ public class DriverControl extends LinearOpMode {
     Intake intake;
     Slides slides;
     vfourb fourbar;
-    //GroundIntake groundIntake;
+    GroundIntake groundIntake;
     Turret turret;
     Detector detector1;
+    OpenCvWebcam webcam;
     GamepadEx primary, secondary;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, intakeGround, extakeGround, depositTransfer;
     ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake;
@@ -42,16 +50,16 @@ public class DriverControl extends LinearOpMode {
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
-        //intake = robot.intake;
-        //slides = robot.slides;
-        //fourbar = robot.fourbar;
-        //groundIntake = robot.groundIntake;
-        //turret = robot.turret;
+        intake = robot.intake;
+        slides = robot.slides;
+        fourbar = robot.fourbar;
+        groundIntake = robot.groundIntake;
+        turret = robot.turret;
 
 
-        slides.slidesLeft.setTargetPosition(0);
-        slides.slidesRight.setTargetPosition(0);
+
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        camInit();
 
 
         keyReaders = new KeyReader[] {
@@ -68,11 +76,12 @@ public class DriverControl extends LinearOpMode {
                 turretLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
                 raiseSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
                 lowerSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
+                autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
 
         };
         waitForStart();
-        //    slides.setState(Slides.State.INTAKE);
-        //fourbar.setState(vfourb.State.PRIMED);
+        //slides.setState(Slides.State.INTAKE);
+        fourbar.setState(vfourb.State.PRIMED);
         while (!isStopRequested()) {
 
             robot.update();
@@ -96,7 +105,7 @@ public class DriverControl extends LinearOpMode {
                             -gamepad1.right_stick_x
                     )
             );
-/*
+
             if (intakeTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
             }
@@ -106,41 +115,57 @@ public class DriverControl extends LinearOpMode {
             else {
                 intake.setState(Intake.State.OFF);
             }
-//            if (slidesHigh.wasJustPressed()) {
-//                //slides.setState(Slides.State.HIGH);
-//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-//            }
+            if (raiseSlides.wasJustPressed()) {
+                switch(slides.getState()) {
+                    case BOTTOM:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        break;
+                    case LOW:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        break;
+                    case HIGH_DROP:
+                    case MID:
+                        slides.setState(Slides.State.HIGH);
+                        fourbar.setState(vfourb.State.HIGH_POSITION);
+                        break;
+                }
 
-            //SLIDES
-            if (Math.abs(slides.slidesLeft.getCurrentPosition())  >= slidesTargetPosition - 10
-                    && Math.abs(slides.slidesLeft.getCurrentPosition()) <= slidesTargetPosition + 10){
-                slides.slidesLeft.setPower(0);
-                slides.slidesRight.setPower(0);
             }
-            else if(Math.abs(slides.slidesLeft.getCurrentPosition())  <= slidesTargetPosition - 10){
-                slides.slidesLeft.setPower(0.5);
-                slides.slidesRight.setPower(0.5);
-            }
-            else if(Math.abs(slides.slidesLeft.getCurrentPosition())  >= slidesTargetPosition + 10){
-                slides.slidesLeft.setPower(-0.5);
-                slides.slidesRight.setPower(-0.5);
-            }
-            if(raiseSlides.isDown()){
-                slidesTargetPosition += 50;
-            }
-            if(lowerSlides.isDown()){
-                slidesTargetPosition -= 50;
+
+            if (lowerSlides.wasJustPressed()) {
+                switch(slides.getState()) {
+                    case HIGH_DROP:
+                    case HIGH:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        break;
+                    case MID:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        break;
+                    case LOW:
+                        slides.setState(Slides.State.BOTTOM);
+                        fourbar.setState(vfourb.State.INTAKE_POSITION);
+                        break;
+                }
             }
 
             //TURRET
             turret.position=turret.turretMotor.getCurrentPosition()-turret.prevPositionReset;
+            if(autoAlign.wasJustPressed()){
+                autoAlignCheck=!autoAlignCheck;
+            }
+            telemetry.addData("AuoAlign", autoAlignCheck);
+            telemetry.addData("Pos", detector1.getLocation());
             if(!autoAlignCheck){
                 if(turretLeft.isDown()&& turret.turretMotor.getCurrentPosition() > -390){
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.turretMotor.setPower(-1);
+                    turret.turretMotor.setPower(0.75);
                 }else if(turretRight.isDown()&& turret.turretMotor.getCurrentPosition() < 390){
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.turretMotor.setPower(1);
+                    turret.turretMotor.setPower(-0.75);
                 }else {
                     turret.turretMotor.setTargetPosition(turret.position);
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -172,21 +197,25 @@ public class DriverControl extends LinearOpMode {
                 turret.prevPositionReset=turret.position;
                 turret.position=0;
             }
-*/
             //GROUND INTAKE
             if (intakeGround.isDown()) {
                 robot.groundLeft.setPower(-1);
-                robot.groundRight.setPower(1);
+                robot.groundRight.setPower(-1);
             }
-            else{
+            else if (extakeGround.isDown()){
+                robot.groundLeft.setPower(1);
+                robot.groundRight.setPower(1);
+            } else {
                 robot.groundLeft.setPower(0);
                 robot.groundRight.setPower(0);
             }
             //robot.groundIntake.update();
-/*
+
             //DEPOSIT:
             if (depositTransfer.isDown()) {
                 intake.setState(Intake.State.DEPOSITING);
+                if (slides.getState() == Slides.State.HIGH)
+                    slides.setState(Slides.State.HIGH_DROP);
             }
             else if (intakeTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
@@ -204,13 +233,42 @@ public class DriverControl extends LinearOpMode {
             if (fourBarPrimed.wasJustPressed()) {
                 fourbar.setState(vfourb.State.PRIMED);
             }
+
             //TELEMETRY
             telemetry.addData("V4B State: ",fourbar.getState());
-            telemetry.addData("1 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
-            telemetry.addData("2 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
+            //telemetry.addData("1 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
+            //telemetry.addData("2 Ticks: ", robot.slides.slidesLeft.getCurrentPosition());
             telemetry.update();
-*/
+
 
         }
+    }
+    public void camInit() {
+        final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
+        final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
+        int cameraMonitorViewId = this
+                .hardwareMap
+                .appContext
+                .getResources().getIdentifier(
+                        "cameraMonitorViewId",
+                        "id",
+                        hardwareMap.appContext.getPackageName()
+                );
+        webcam = OpenCvCameraFactory
+                .getInstance()
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam.setPipeline(detector1 = new Detector());
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                System.out.println("START");
+            }
+            public void onError(int errorCode) {
+            }
+        });
+        dashboard.startCameraStream(webcam, 30);
+        telemetry.addLine("waiting for start");
+        telemetry.update();
     }
 }

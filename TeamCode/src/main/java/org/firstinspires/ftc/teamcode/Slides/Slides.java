@@ -14,6 +14,7 @@ public class Slides {
 
     //slides is 17.5 inches tall
     static final double HIGH = 932.885; //in inches, 33.5 - 17.5 (high junction height - slides height)
+    static final double HIGH_DROP = 880;
     static final double MID = 498.985; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double LOW = 65.085; //in inches, low junction is 13.5 inches
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(4, 0, 0, 0);
@@ -21,7 +22,7 @@ public class Slides {
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, MID, LOW, BOTTOM
+        HIGH, HIGH_DROP, MID, LOW, BOTTOM
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -32,6 +33,7 @@ public class Slides {
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setState(State.BOTTOM);
         //   setState(State.BOTTOM);
     }
 
@@ -44,6 +46,14 @@ public class Slides {
             case HIGH:
                 slidesLeft.setTargetPosition((int) HIGH);
                 slidesRight.setTargetPosition((int) HIGH);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
+                break;
+            case HIGH_DROP:
+                slidesLeft.setTargetPosition((int) HIGH_DROP);
+                slidesRight.setTargetPosition((int) HIGH_DROP);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);

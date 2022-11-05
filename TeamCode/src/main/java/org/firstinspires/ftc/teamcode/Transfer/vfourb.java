@@ -6,16 +6,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class vfourb
 {
     //temporary values
-    static final double INTAKE_POSITION=1;
-    static final double DEPOSIT_POSITION=.25;
-    static final double PRIMED = .90;
+    static final double INTAKE_POSITION=.95;
+    static final double DEPOSIT_POSITION=.20;
+    static final double PRIMED = .80;
+    static final double HIGH_POSITION = 0.4;
 
     Servo Running;
     Servo Supporting;
     public State state;
     public enum State
     {
-        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED
+        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, HIGH_POSITION
     }
 
     public vfourb(HardwareMap hardwareMap)
@@ -40,6 +41,10 @@ public class vfourb
             case PRIMED:
                 Running.setPosition(PRIMED);
                 Supporting.setPosition(1-PRIMED);
+                break;
+            case HIGH_POSITION:
+                Running.setPosition(HIGH_POSITION);
+                Supporting.setPosition(1-HIGH_POSITION);
                 break;
         }
     }
