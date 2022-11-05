@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.Turret;
-import android.hardware.Sensor;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -16,64 +12,85 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
+@Config
 public class TurretTestTele extends LinearOpMode {
-    DcMotor turret;
-    int position;
-    int prevPositionReset;
+    Turret turret;
     final double QUICK_POWER=1.0;
-    final double SLOW_POWER = 0.5;
+    final double SLOW_POWER = 0.125;
     boolean toggleAutoAlign;
+    public static boolean v4bSlideSpoolSide;
     public OpenCvWebcam webcam;
     private Detector detector;
-    private TouchSensor magnetic;
+    public OpenCvWebcam webcam2;
+    private Detector detector2;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        prevPositionReset=0;
-        turret= hardwareMap.get(DcMotor.class, "hturret");
-        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
-        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret=new Turret(hardwareMap);
+        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         toggleAutoAlign=false;
-        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.prevPositionReset=0;
+        v4bSlideSpoolSide=true;
+        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         camInit();
         waitForStart();
         while (opModeIsActive()){
-            position=turret.getCurrentPosition()-prevPositionReset;
+            turret.position=turret.turretMotor.getCurrentPosition()-turret.prevPositionReset;
             if(gamepad1.right_bumper){
                 toggleAutoAlign=false;
             }else if(gamepad1.left_bumper){
                 toggleAutoAlign=true;
             }
-            if(magnetic.isPressed()){
-                prevPositionReset=position;
-                position=0;
+            if(turret.magnetic.isPressed()){
+                turret.prevPositionReset=turret.position;
+                turret.position=0;
             }
             if(toggleAutoAlign==false) {
-                if (gamepad1.right_trigger != 1 && gamepad1.left_trigger == 1 && turret.getCurrentPosition() < 390) {
-                    turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.setPower(QUICK_POWER);
-                } else if (gamepad1.right_trigger == 1 && gamepad1.left_trigger != 1 && turret.getCurrentPosition() > -390) {
-                    turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.setPower(-QUICK_POWER);
+                if (gamepad1.right_trigger != 1 && gamepad1.left_trigger == 1 && turret.turretMotor.getCurrentPosition() < 390) {
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(QUICK_POWER);
+                } else if (gamepad1.right_trigger == 1 && gamepad1.left_trigger != 1 && turret.turretMotor.getCurrentPosition() > -390) {
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(-QUICK_POWER);
                 } else {
-                    if (turret.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        turret.setTargetPosition(position);
+                    turret.turretMotor.setTargetPosition(turret.position);
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            }else if(toggleAutoAlign &&v4bSlideSpoolSide){
+                if(detector.getLocation()== Detector.Location.LEFT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(SLOW_POWER);
+                }else if(detector.getLocation()== Detector.Location.RIGHT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(-SLOW_POWER);
+                }else{
+                    turret.turretMotor.setTargetPosition(turret.position);
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            }/*else if(toggleAutoAlign &&!v4bSlideSpoolSide){
+                if(detector2.getLocation()== Detector.Location.LEFT){
+                    turret.turretMotor.setPower(SLOW_POWER);
+                }else if(detector2.getLocation()== Detector.Location.RIGHT){
+                    turret.turretMotor.setPower(-SLOW_POWER);
+                }else{
+                    if (turret.turretMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        turret.turretMotor.setTargetPosition(turret.position);
                     }
-                    if (turret.getCurrentPosition() < position) {
-                        turret.setPower(SLOW_POWER);
-                    } else if (turret.getCurrentPosition() > position) {
-                        turret.setPower(-SLOW_POWER);
+                    if (turret.turretMotor.getCurrentPosition() < turret.position) {
+                        turret.turretMotor.setPower(SLOW_POWER);
+                    } else if (turret.turretMotor.getCurrentPosition() > turret.position) {
+                        turret.turretMotor.setPower(-SLOW_POWER);
                     } else {
-                        turret.setPower(0);
+                        turret.turretMotor.setPower(0);
                     }
                 }
-            }
+            }*/
             telemetry.addData("Location", detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");
-            telemetry.addData("Current Position", position);
+            telemetry.addData("Current Position", turret.position);
             telemetry.update();
 
         }

@@ -22,18 +22,18 @@ public class Detector extends OpenCvPipeline {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(100, 5, 57, 230);
-    public static  Rect POS_2_BLUE = new Rect(163, 5, 57, 230);
+    public static Rect POS_1_BLUE = new Rect(100, 5, 57, 200);
+    public static  Rect POS_2_BLUE = new Rect(163, 5, 57, 200);
 
     //Find numbers for actual place
 
     public static int blueHLow = 0;
-    public static int blueSLow = 0;
-    public static int blueVLow = 100 ;
+    public static int blueSLow = 70;
+    public static int blueVLow = 120 ;
 
     public static int blueHHigh = 255;
     public static int blueSHigh = 255;
-    public static int blueVHigh = 160;
+    public static int blueVHigh = 230;
 
     public static boolean returnBlack = true;
     private double boxsize =0;
@@ -55,9 +55,9 @@ public class Detector extends OpenCvPipeline {
 
         double leftValue = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
         double rightValue = Core.sumElems(mat.submat(POS_2_BLUE)).val[0]/(POS_2_BLUE.height*POS_2_BLUE.width*255);
-        if(leftValue-rightValue>0.05){
+        if(leftValue-rightValue>0.15){
             location=Location.LEFT;
-        }else if(leftValue-rightValue<-0.05){
+        }else if(leftValue-rightValue<-0.15){
             location=Location.RIGHT;
         }else{
             location=Location.MIDDLE;

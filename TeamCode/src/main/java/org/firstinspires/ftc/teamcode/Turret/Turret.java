@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Turret;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Turret
 {
@@ -13,8 +14,11 @@ public class Turret
     static final double     TURN_SPEED             = 1;
 
     double endPosition;
-    DcMotor turretMotor;
+    public DcMotor turretMotor;
+    public TouchSensor magnetic;
     public Turret.State state;
+    public int prevPositionReset=0, position = 0;
+
     public enum State
     {
         IDLE, MOVING
@@ -23,6 +27,8 @@ public class Turret
     public Turret(HardwareMap hardwareMap)
     {
         turretMotor = hardwareMap.get(DcMotor.class, "hturret");
+        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setState(State.IDLE);
     }
 
