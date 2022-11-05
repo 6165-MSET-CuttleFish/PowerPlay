@@ -27,8 +27,10 @@ public class Turret
     public Turret(HardwareMap hardwareMap)
     {
         turretMotor = hardwareMap.get(DcMotor.class, "hturret");
+
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         setState(State.IDLE);
     }
 
@@ -41,6 +43,11 @@ public class Turret
             case IDLE:
 
         }
+    }
+    public void zero(){
+        turretMotor.setTargetPosition(0);
+        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretMotor.setPower(1);
     }
 
     public Turret.State getState() {

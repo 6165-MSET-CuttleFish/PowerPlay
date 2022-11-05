@@ -3,27 +3,38 @@ package org.firstinspires.ftc.teamcode.Slides;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
 public class SlidesPIDTest extends LinearOpMode {
     Slides slides;
-    public static double targetPosition;
-    FtcDashboard dashboard = FtcDashboard.getInstance();
     public void runOpMode() throws InterruptedException {
         slides = new Slides(hardwareMap);
-        waitForStart();
-        slides.pidf.setSetPoint(targetPosition);
-        while(!isStopRequested()){
+     //   slides.slidesRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+       // slides.slidesLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-            while (!slides.pidf.atSetPoint()) {
-                double output = slides.pidf.calculate(
-                        slides.slidesLeft.getCurrentPosition()  // the measured value
-                );
-                slides.slidesLeft.setVelocity(output);
-                slides.slidesRight.setVelocity(output);
+
+
+        waitForStart();
+        while(opModeIsActive()){
+          //  slides.update();
+            if (gamepad1.y) {
+                slides.setState(Slides.State.HIGH);
+            } else if (gamepad1.a) {
+                slides.setState(Slides.State.MID);
+            } else if (gamepad1.b) {
+                slides.setState(Slides.State.LOW);
+            } else if (gamepad1.x) {
+                slides.setState(Slides.State.BOTTOM);
             }
-            slides.slidesLeft.setPower(0.03);
-            slides.slidesRight.setPower(0.03);
+
+            telemetry.addData("targetPos: ", slides.getState());
+            telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
+            telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
+            telemetry.addData("currentVelo: ", slides.slidesLeft.getPower());
+
+            telemetry.update();
         }
 
     }

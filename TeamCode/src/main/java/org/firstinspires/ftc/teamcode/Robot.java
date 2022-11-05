@@ -84,9 +84,11 @@ public class Robot extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    public final DcMotorEx leftFront, leftRear, rightRear, rightFront, slides1, slides2, hturret;
-    public final Servo v4bSup, v4bRun;
-    public final CRServo intakeSup, intakeRun, groundLeft, groundRight;
+    public CRServo groundLeft, groundRight;
+    public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
+    //public final Servo v4bSup, v4bRun;
+    //public final CRServo intakeSup, intakeRun;
+    //public final CRServo  groundLeft, groundRight;
     public Servo odoRaise;
     public List<DcMotorEx> motors;
 
@@ -119,6 +121,8 @@ public class Robot extends MecanumDrive {
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap);
+
+
         groundIntake = new GroundIntake(hardwareMap);
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -143,7 +147,7 @@ public class Robot extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
 
-        slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
         hturret = hardwareMap.get(DcMotorEx.class, "hturret");
@@ -152,12 +156,12 @@ public class Robot extends MecanumDrive {
         v4bRun = hardwareMap.get(Servo.class, "v4bRun");
         intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
         intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+*/
 
+
+        //odoRaise = hardwareMap.get(Servo.class, "midOdom");
         groundLeft = hardwareMap.get(CRServo.class, "gl");
         groundRight = hardwareMap.get(CRServo.class, "gr");
-
-        odoRaise = hardwareMap.get(Servo.class, "midOdom");
-
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
