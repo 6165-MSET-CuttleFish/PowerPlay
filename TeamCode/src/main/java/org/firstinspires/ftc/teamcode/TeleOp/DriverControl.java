@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
@@ -27,12 +28,14 @@ public class DriverControl extends LinearOpMode {
     vfourb fourbar;
     //GroundIntake groundIntake;
     Turret turret;
+    Detector detector1;
     GamepadEx primary, secondary;
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, intakeGround, extakeGround, depositTransfer;
     ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake;
-    ToggleButtonReader  ninjaMode;
-    int slidesTargetPosition = 0, turretTargetPosition = 0;
+    ToggleButtonReader  ninjaMode, autoAlign;
+    int slidesTargetPosition = 0;
+    boolean autoAlignCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
@@ -45,8 +48,12 @@ public class DriverControl extends LinearOpMode {
         //groundIntake = robot.groundIntake;
         //turret = robot.turret;
 
-        //slides.slidesLeft.setTargetPosition(0);
-        //slides.slidesRight.setTargetPosition(0);
+
+        slides.slidesLeft.setTargetPosition(0);
+        slides.slidesRight.setTargetPosition(0);
+        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
@@ -126,21 +133,44 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TURRET
-            if (Math.abs(turret.turretMotor.getCurrentPosition())  >= turretTargetPosition - 10
-                    && Math.abs(slides.slidesLeft.getCurrentPosition()) <= turretTargetPosition + 10){
-               turret.turretMotor.setPower(0);
-            }
-            else if(Math.abs(slides.slidesLeft.getCurrentPosition())  <= turretTargetPosition - 10){
-                turret.turretMotor.setPower(0.2);
-            }
-            else if(Math.abs(slides.slidesLeft.getCurrentPosition())  >= slidesTargetPosition + 10){
-                turret.turretMotor.setPower(-0.2);
-            }
-            if(turretLeft.isDown()){
-                turretTargetPosition += 50;
-            }
-            if(turretRight.isDown()){
-                turretTargetPosition -= 50;
+            turret.position=turret.turretMotor.getCurrentPosition()-turret.prevPositionReset;
+            if(!autoAlignCheck){
+                if(turretLeft.isDown()&& turret.turretMotor.getCurrentPosition() > -390){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(-1);
+                }else if(turretRight.isDown()&& turret.turretMotor.getCurrentPosition() < 390){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(1);
+                }else {
+                    turret.turretMotor.setTargetPosition(turret.position);
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            }else if((autoAlignCheck)&&(fourbar.getState()==vfourb.State.PRIMED)){
+                if(detector1.getLocation()== Detector.Location.LEFT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(0.125);
+                }else if(detector1.getLocation()== Detector.Location.RIGHT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(-0.125);
+                }else{
+                    turret.turretMotor.setTargetPosition(turret.position);
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            }/*else if((autoAlignCheck)&&(fourbar.getState()==vfourb.State.DEPOSIT_POSITION)){
+                if(detector2.getLocation()== Detector.Location.LEFT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(0.125);
+                }else if(detector2.getLocation()== Detector.Location.RIGHT){
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    turret.turretMotor.setPower(-0.125);
+                }else{
+                    turret.turretMotor.setTargetPosition(turret.position);
+                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+            }*/
+            if(turret.magnetic.isPressed()){
+                turret.prevPositionReset=turret.position;
+                turret.position=0;
             }
 */
             //GROUND INTAKE
