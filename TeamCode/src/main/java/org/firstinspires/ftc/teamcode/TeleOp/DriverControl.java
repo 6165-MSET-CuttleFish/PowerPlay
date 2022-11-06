@@ -49,8 +49,8 @@ public class DriverControl extends LinearOpMode {
         //turret = robot.turret;
 
 
-        slides.slidesLeft.setTargetPosition(0);
-        slides.slidesRight.setTargetPosition(0);
+        //slides.slidesLeft.setTargetPosition(0);
+        //slides.slidesRight.setTargetPosition(0);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -172,7 +172,7 @@ public class DriverControl extends LinearOpMode {
                 turret.prevPositionReset=turret.position;
                 turret.position=0;
             }
-*/
+
             //GROUND INTAKE
             if (intakeGround.isDown()) {
                 robot.groundLeft.setPower(-1);
