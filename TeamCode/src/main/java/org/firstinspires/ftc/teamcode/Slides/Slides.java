@@ -14,7 +14,7 @@ public class Slides {
 
     //slides is 17.5 inches tall
     static final double HIGH = 932.885; //in inches, 33.5 - 17.5 (high junction height - slides height)
-    static final double HIGH_DROP = 880;
+    static final double HIGH_DROP = 800;
     static final double MID = 498.985; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double LOW = 65.085; //in inches, low junction is 13.5 inches
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(4, 0, 0, 0);
@@ -76,7 +76,6 @@ public class Slides {
                 slidesRight.setPower(1);
                 break;
             case BOTTOM:
-
                 slidesLeft.setTargetPosition(0);
                 slidesRight.setTargetPosition(0);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
