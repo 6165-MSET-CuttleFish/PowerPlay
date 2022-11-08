@@ -13,12 +13,12 @@ public class Slides {
     DcMotorEx slidesRight;
 
     //slides is 17.5 inches tall
-    static final double HIGH = 932.885; //in inches, 33.5 - 17.5 (high junction height - slides height)
-    static final double HIGH_DROP = 800;
-    static final double MID = 498.985; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final double LOW = 65.085; //in inches, low junction is 13.5 inches
-    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(4, 0, 0, 0);
-    public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2, 1.98, 0.75, 0);
+    static final double HIGH = 1800;
+    static final double HIGH_DROP = 1500;
+    static final double MID = 946; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final double LOW = 124; //in inches, low junction is 13.5 inches
+    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
+    public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(0.5, 2.27, 0.1, 2);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
@@ -33,7 +33,7 @@ public class Slides {
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        setState(State.BOTTOM);
+       // setState(State.BOTTOM);
         //   setState(State.BOTTOM);
     }
 

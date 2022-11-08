@@ -154,7 +154,7 @@ public class DriverControl extends LinearOpMode {
 
             //TURRET
             turret.position=turret.turretMotor.getCurrentPosition()-turret.prevPositionReset;
-            if(autoAlign.wasJustPressed()){
+            if(autoAlign.isDown()){
                 turret.zero();
             }
             if(turretLeft.isDown()&& turret.turretMotor.getCurrentPosition() > -390){
