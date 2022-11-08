@@ -19,7 +19,7 @@ import java.util.List;
 
 public class colorDetection extends OpenCvPipeline
 {
-    Rect rect=new Rect(50, 100, 100, 100);
+    Rect rect=new Rect(80, 140, 100, 100);
 
     Mat finalMat;
     int state=1;
