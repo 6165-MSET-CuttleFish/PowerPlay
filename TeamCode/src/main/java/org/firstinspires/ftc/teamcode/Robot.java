@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -91,7 +92,7 @@ public class Robot extends MecanumDrive {
     //public final CRServo  groundLeft, groundRight;
     public Servo odoRaise;
     public List<DcMotorEx> motors;
-
+    public DigitalChannel slidesLimitSwitch;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
@@ -124,6 +125,7 @@ public class Robot extends MecanumDrive {
 
 
         groundIntake = new GroundIntake(hardwareMap);
+        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class Slides {
     DcMotorEx slidesLeft;
     DcMotorEx slidesRight;
+    DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
     static final double HIGH = 1800;
@@ -27,6 +29,7 @@ public class Slides {
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
+        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
         slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -80,10 +83,16 @@ public class Slides {
                 slidesRight.setTargetPosition(0);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                slidesLeft.setPower(-1);
-                slidesRight.setPower(-1);
+                while (slidesLimitSwitch.getState()) {
+                    slidesLeft.setPower(-1);
+                    slidesRight.setPower(-1);
+
+                }
+                    slidesLeft.setPower(0);
+                    slidesRight.setPower(0);
                 break;
         }
+
     }
 
     public Slides.State getState() {

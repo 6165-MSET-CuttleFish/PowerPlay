@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode.Transfer;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
+@Config
 public class vfourb
 {
     //temporary values
-    static final double INTAKE_POSITION=.95;
-    static final double DEPOSIT_POSITION=.20;
-    static final double PRIMED = .80;
-    static final double HIGH_POSITION = 0.4;
+    public static double INTAKE_POSITION=.95;
+    public static double DEPOSIT_POSITION=.20;
+    public static double PRIMED = .80;
+    public static double HIGH_POSITION = 0.4;
 
     Servo Running;
     Servo Supporting;

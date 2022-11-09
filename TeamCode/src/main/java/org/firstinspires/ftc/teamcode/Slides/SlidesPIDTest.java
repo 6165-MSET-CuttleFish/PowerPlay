@@ -34,6 +34,7 @@ public class SlidesPIDTest extends LinearOpMode {
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
             telemetry.addData("currentPower: ", slides.slidesLeft.getPower());
             telemetry.addData("PID: ", slides.slidesLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
+            telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getState());
 
 
             telemetry.update();
