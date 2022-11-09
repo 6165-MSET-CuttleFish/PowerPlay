@@ -125,8 +125,8 @@ public class Slides {
         slidesRight.setTargetPosition(0);
         slidesRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slidesLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slidesLeft.setPower(-1);
-        slidesRight.setPower(-1);
+        slidesLeft.setPower(1);
+        slidesRight.setPower(1);
     }
     public static double inchesToTicks(double inches) {
         return (inches * TICKS_PER_INCH);
