@@ -16,8 +16,8 @@ public class Slides {
 
     //slides is 17.5 inches tall
     static final double HIGH = 1850;
-    static final double HIGH_DROP = 1600;
-    static final double MID = 1500; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final double HIGH_DROP = 1650;
+    static final double MID = 1650; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double LOW = 700; //in inches, low junction is 13.5 inches
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(0.5, 2.27, 0.1, 2);
