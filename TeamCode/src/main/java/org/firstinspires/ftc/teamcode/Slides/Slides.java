@@ -36,8 +36,7 @@ public class Slides {
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       // setState(State.BOTTOM);
-        //   setState(State.BOTTOM);
+
     }
 
     public void update(){
@@ -83,13 +82,8 @@ public class Slides {
                 slidesRight.setTargetPosition(0);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                while (slidesLimitSwitch.getState()) {
-                    slidesLeft.setPower(-1);
-                    slidesRight.setPower(-1);
-
-                }
-                    slidesLeft.setPower(0);
-                    slidesRight.setPower(0);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
                 break;
         }
 

@@ -80,7 +80,7 @@ public class DriverControl extends LinearOpMode {
                 highJunctionScore = new ToggleButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         };
         waitForStart();
-        //slides.setState(Slides.State.INTAKE);
+        slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
         while (!isStopRequested()) {
 
