@@ -69,7 +69,7 @@ public class TurretTestTele extends LinearOpMode {
                     turret.turretMotor.setTargetPosition(turret.position);
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-            }/*else if(toggleAutoAlign &&!v4bSlideSpoolSide){
+            }else if(toggleAutoAlign &&!v4bSlideSpoolSide){
                 if(detector2.getLocation()== Detector.Location.LEFT){
                     turret.turretMotor.setPower(SLOW_POWER);
                 }else if(detector2.getLocation()== Detector.Location.RIGHT){
@@ -87,7 +87,7 @@ public class TurretTestTele extends LinearOpMode {
                         turret.turretMotor.setPower(0);
                     }
                 }
-            }*/
+            }
             telemetry.addData("Location", detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");
             telemetry.addData("Current Position", turret.position);
@@ -107,20 +107,50 @@ public class TurretTestTele extends LinearOpMode {
                         "id",
                         hardwareMap.appContext.getPackageName()
                 );
-        webcam = OpenCvCameraFactory
-                .getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        webcam.setPipeline(detector = new Detector());
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
+                .splitLayoutForMultipleViewports(
+                        cameraMonitorViewId, //The container we're splitting
+                        2, //The number of sub-containers to create
+                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY); //Whether to split the container vertically or horizontally
+
+        webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
+
+        webcam2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
-            public void onOpened() {
-                webcam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-                System.out.println("START");
+            public void onOpened()
+            {
+                webcam2.setPipeline(detector= new Detector());
+                webcam2.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
-            public void onError(int errorCode) {
+
+            @Override
+            public void onError(int errorCode)
+            {
+                /*
+                 * This will be called if the camera could not be opened
+                 */
             }
         });
-        dashboard.startCameraStream(webcam, 30);
+
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.setPipeline(detector2=new Detector());
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+                /*
+                 * This will be called if the camera could not be opened
+                 */
+            }
+        });
         telemetry.addLine("waiting for start");
         telemetry.update();
     }
