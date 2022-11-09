@@ -93,7 +93,7 @@ public class DriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                gamepad1.left_stick_x * 0.5,
+                                -gamepad1.left_stick_x * 0.5,
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
@@ -101,7 +101,7 @@ public class DriverControl extends LinearOpMode {
             else robot.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,
-                            gamepad1.left_stick_x,
+                            -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
             );
