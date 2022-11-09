@@ -153,6 +153,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TURRET
+            turret.position=turret.turretMotor.getCurrentPosition();
             if(turret.magnetic.isPressed()){
                 turret.prevPositionReset=turret.position;
                 turret.position=0;
@@ -162,7 +163,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Pos", detector1.getLocation());
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
-            if(!autoAlignCheck&&groundIntake.sensorVal()>130) {
+            if(!autoAlignCheck) {
                 if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     turret.turretMotor.setPower(0.25);
@@ -176,10 +177,10 @@ public class DriverControl extends LinearOpMode {
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     turret.setState(Turret.State.IDLE);
                 }
-            }else if(!autoAlignCheck){
+            }/*else if(!autoAlignCheck){
                 turret.zero();
                 turret.setState(Turret.State.IDLE);
-            }
+            }*/
             else if((autoAlignCheck)&&(fourbar.getState()==vfourb.State.DEPOSIT_POSITION||fourbar.getState()==vfourb.State.HIGH_POSITION)){
                 if(detector1.getLocation()== Detector.Location.LEFT){
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -208,10 +209,6 @@ public class DriverControl extends LinearOpMode {
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
             }*/
-            if(turret.magnetic.isPressed()){
-                turret.prevPositionReset=turret.position;
-                turret.position=0;
-            }
             //GROUND INTAKE
             if (intakeGround.isDown()) {
                 robot.groundLeft.setPower(-1);
