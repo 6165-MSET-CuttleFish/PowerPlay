@@ -106,15 +106,7 @@ public class DriverControl extends LinearOpMode {
                     )
             );
 
-            if (intakeTransfer.isDown()) {
-                intake.setState(Intake.State.INTAKING);
-            }
-            else if (depositTransfer.isDown()) {
-                intake.setState(Intake.State.DEPOSITING);
-            }
-            else {
-                intake.setState(Intake.State.OFF);
-            }
+            //slides
             if (raiseSlides.wasJustPressed()) {
                 switch(slides.getState()) {
                     case LOW_DROP:

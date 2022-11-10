@@ -103,7 +103,6 @@ public class Slides {
                 slidesRight.setPower(1);
                 break;
         }
-
     }
 
     public Slides.State getState() {
@@ -145,6 +144,9 @@ public class Slides {
         slidesLeft.setPower(1);
         slidesRight.setPower(1);
     }
+
+
+
     public static double inchesToTicks(double inches) {
         return (inches * TICKS_PER_INCH);
     }
