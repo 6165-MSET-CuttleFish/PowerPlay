@@ -18,13 +18,15 @@ public class Slides {
     static final double HIGH = 1850;
     static final double HIGH_DROP = 1650;
     static final double MID = 1650; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final double LOW = 700; //in inches, low junction is 13.5 inches
+    static final double MID_DROP = 1500;
+    static final double LOW = 650; //in inches, low junction is 13.5 inches
+    static final double LOW_DROP = 575;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(0.5, 2.27, 0.1, 2);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, LOW, BOTTOM
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -69,9 +71,24 @@ public class Slides {
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
+            case MID_DROP:
+                slidesLeft.setTargetPosition((int) MID_DROP);
+                slidesRight.setTargetPosition((int) MID_DROP);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
             case LOW:
                 slidesLeft.setTargetPosition((int) LOW);
                 slidesRight.setTargetPosition((int) LOW);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
+                break;
+            case LOW_DROP:
+                slidesLeft.setTargetPosition((int) LOW_DROP);
+                slidesRight.setTargetPosition((int) LOW_DROP);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
