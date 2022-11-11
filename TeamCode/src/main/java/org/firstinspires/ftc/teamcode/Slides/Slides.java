@@ -15,8 +15,8 @@ public class Slides {
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
-    static final double HIGH = 1850;
-    static final double HIGH_DROP = 1650;
+    static final double HIGH = 1900; //old = 1850
+    static final double HIGH_DROP = 1850; //old = 1650
     static final double MID = 1150; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double MID_DROP = 950;
     static final double LOW = 450; //in inches, low junction is 13.5 inches
