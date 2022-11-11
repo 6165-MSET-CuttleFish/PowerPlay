@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Turret;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -80,7 +81,7 @@ public class TurretTest extends LinearOpMode {
 
         // Initialize the drive system variables.
         turret = new Turret(hardwareMap);
-        turret.turretMotor  = hardwareMap.get(DcMotor.class, "hturret");
+        turret.turretMotor  = hardwareMap.get(DcMotorEx.class, "hturret");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

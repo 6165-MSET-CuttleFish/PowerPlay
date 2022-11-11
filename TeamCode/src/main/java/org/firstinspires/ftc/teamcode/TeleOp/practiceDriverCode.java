@@ -133,6 +133,10 @@ telemetry.update();
                 //    slide.setState(Slides.State.BOTTOM);
                     fourbar.setState(vfourb.State.PRIMED);
                 }
+                telemetry.addData("jgo",turret.turretMotor.getTargetPositionTolerance());
+                telemetry.addData("jgo1",turret.turretMotor.getTargetPosition());
+                telemetry.addData("jgo2",turret.turretMotor.getCurrentPosition());
+                telemetry.addData("jgo3",turret.turretMotor.getVelocity());
             }
         }
     }
