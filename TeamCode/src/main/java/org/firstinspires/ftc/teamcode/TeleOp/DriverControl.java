@@ -56,7 +56,6 @@ public class DriverControl extends LinearOpMode {
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        robot.odoRaise.setPosition(.5);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         camInit();
@@ -81,6 +80,7 @@ public class DriverControl extends LinearOpMode {
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
+        robot.odoRaise.setPosition(0);
         while (!isStopRequested()) {
 
             robot.update();
