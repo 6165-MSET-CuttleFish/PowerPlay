@@ -153,12 +153,12 @@ public class DriverControl extends LinearOpMode {
                 turret.prevPositionReset=turret.position;
                 turret.position = 0;
             }if(autoAlign.isDown()){
-                turret.zero();
+                turret.setState(Turret.State.ZERO);
             }
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Pos", detector1.getLocation());
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
-            /*
+
             if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
                 turret.setState(Turret.State.LEFT);
             } else if (turretRight.isDown() && turret.turretMotor.getCurrentPosition() < 390) {
@@ -168,7 +168,7 @@ public class DriverControl extends LinearOpMode {
                 //turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 //turret.setState(Turret.State.IDLE);
                 turret.turretMotor.setPower(0);
-            }*/
+            }
 //            if(!autoAlignCheck && groundIntake.sensorVal()>130) {
 //                if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
 //                    turret.setState(Turret.State.LEFT);
