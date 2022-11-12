@@ -68,9 +68,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Robot extends MecanumDrive {
-    //public DcMotorEx fl, bl, fr, br;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.745;
 
@@ -84,6 +83,7 @@ public class Robot extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
+
 
     public CRServo groundLeft, groundRight;
     public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
