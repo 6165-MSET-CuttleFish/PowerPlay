@@ -10,18 +10,27 @@ import org.firstinspires.ftc.teamcode.Robot;
 @Autonomous
 public class RightSideAuto extends LinearOpMode {
     Robot robot;
-    Pose2d startPose = new Pose2d(0,0,Math.toRadians(0));
-    Trajectory preload = robot.trajectoryBuilder(new Pose2d())
-            .lineToConstantHeading(new Vector2d(2, 24))
-            .lineToConstantHeading(new Vector2d(30, 24))
-            .lineToConstantHeading(new Vector2d(30,26))
-            .build();
+    Pose2d startPose = new Pose2d(0,0,0);
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
+        Trajectory preload1 = robot.trajectoryBuilder(new Pose2d())
+                .lineToConstantHeading(new Vector2d(24, -2)).build();
+
+        Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
+                .strafeRight(36)
+
+                .build();
+        Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
+                .forward(2)
+
+                .build();
         waitForStart();
         if(isStopRequested()) return;
         robot.setPoseEstimate(startPose);
-        robot.followTrajectory(preload);
+        robot.followTrajectory(preload1);
+        robot.followTrajectory(preload2);
+        robot.followTrajectory(preload3);
     }
 }
