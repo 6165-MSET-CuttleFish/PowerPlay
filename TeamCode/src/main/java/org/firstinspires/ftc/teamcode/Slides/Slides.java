@@ -17,7 +17,7 @@ public class Slides {
     //slides is 17.5 inches tall
     static final double HIGH = 2040; //old = 1850
     static final double HIGH_DROP = 1950; //old = 1650
-    static final double MID = 1150; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final double MID = 1620; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final double MID_DROP = 950;
     static final double LOW = 450; //in inches, low junction is 13.5 inches
     static final double LOW_DROP = 250;
@@ -42,10 +42,10 @@ public class Slides {
     }
 
     public void update(){
-        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
-        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
-        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
+//        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
+//        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
+//        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
+//        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
         switch(state) {
             case HIGH:
                 slidesLeft.setTargetPosition((int) HIGH);
@@ -109,7 +109,12 @@ public class Slides {
 //            slidesRight.setPower(0);
 //        }
     }
-
+public void resetcheck(){
+        if(slidesLimitSwitch.getState()){
+            slidesLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            slidesRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        }
+}
     public Slides.State getState() {
         return state;
     }

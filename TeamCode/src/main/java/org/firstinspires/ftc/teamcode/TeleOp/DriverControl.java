@@ -116,7 +116,7 @@ public class DriverControl extends LinearOpMode {
                     case MID_DROP:
                     case LOW:
                         slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         break;
                     case HIGH_DROP:
                     case MID:
@@ -132,7 +132,7 @@ public class DriverControl extends LinearOpMode {
                     case HIGH_DROP:
                     case HIGH:
                         slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         break;
                     case MID_DROP:
                     case MID:
@@ -142,7 +142,7 @@ public class DriverControl extends LinearOpMode {
                     case LOW_DROP:
                     case LOW:
                         slides.setState(Slides.State.BOTTOM);
-                        fourbar.setState(vfourb.State.INTAKE_POSITION);
+                        fourbar.setState(vfourb.State.PRIMED);
                         break;
                 }
             }
@@ -162,9 +162,9 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
 
             if(!autoAlignCheck){
-                if(groundIntake.sensorVal()<100){
+                /*if(groundIntake.sensorVal()<100){
                     turret.zero();
-                }else if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
+                }else*/ if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
                     turret.setState(Turret.State.LEFT);
                 } else if (turretRight.isDown() && turret.turretMotor.getCurrentPosition() < 390) {
                     turret.setState(Turret.State.RIGHT);
@@ -173,13 +173,13 @@ public class DriverControl extends LinearOpMode {
                     turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     turret.setState(Turret.State.IDLE);
                 }
-            }else{
+            } else {
                 if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
                     if(detector1.getLocation()== Detector.Location.LEFT){
                         turret.setState(Turret.State.LEFT);
-                    }else if(detector1.getLocation()== Detector.Location.RIGHT){
+                    } else if(detector1.getLocation()== Detector.Location.RIGHT){
                         turret.setState(Turret.State.RIGHT);
-                    }else{
+                    } else {
                         turret.turretMotor.setTargetPosition(turret.position);
                         turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
@@ -214,15 +214,15 @@ public class DriverControl extends LinearOpMode {
 
             //SCORING:
             if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.HIGH) {
-                slides.setState(Slides.State.HIGH_DROP);
+//                slides.setState(Slides.State.HIGH_DROP);
                 fourbar.setState(vfourb.State.DEPOSIT_POSITION);
             }
             if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.MID){
-                slides.setState(Slides.State.MID_DROP);
+//                slides.setState(Slides.State.MID_DROP);
                 fourbar.setState(vfourb.State.DEPOSIT_POSITION);
             }
             if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.LOW) {
-                slides.setState(Slides.State.LOW_DROP);
+//                slides.setState(Slides.State.LOW_DROP);
             }
             //DEPOSIT:
             if (depositTransfer.isDown()) {
