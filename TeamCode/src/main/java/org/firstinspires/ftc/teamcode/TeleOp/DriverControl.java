@@ -40,9 +40,9 @@ public class DriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
-    TriggerReader intakeTransfer, intakeGround, extakeGround, depositTransfer;
+    TriggerReader intakeTransfer, depositTransfer;
     ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake;
-    ToggleButtonReader junctionScore, ninjaMode, autoAlign;
+    ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign, intakeGround, extakeGround;
     int slidesTargetPosition = 0;
     boolean autoAlignCheck=false;
     @Override
@@ -62,8 +62,9 @@ public class DriverControl extends LinearOpMode {
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
-                intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
-                extakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.Y),
+                extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.A),
+                straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 
                 intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
@@ -93,6 +94,14 @@ public class DriverControl extends LinearOpMode {
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
                                 -gamepad1.left_stick_x * 0.5,
+                                -gamepad1.right_stick_x * 0.5
+                        )
+                );
+            } else if (straightMode.getState()) {
+                robot.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y * 0.5,
+                                0,
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
@@ -199,11 +208,11 @@ public class DriverControl extends LinearOpMode {
                 }
             }*/
             //GROUND INTAKE
-            if (intakeGround.isDown()) {
+            if (intakeGround.getState()) {
                 robot.groundLeft.setPower(-1);
                 robot.groundRight.setPower(-1);
             }
-            else if (extakeGround.isDown()){
+            else if (extakeGround.getState()){
                 robot.groundLeft.setPower(1);
                 robot.groundRight.setPower(1);
             } else {
@@ -214,7 +223,7 @@ public class DriverControl extends LinearOpMode {
 
             //SCORING:
             if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.HIGH) {
-//                slides.setState(Slides.State.HIGH_DROP);
+                slides.setState(Slides.State.HIGH_DROP);
                 fourbar.setState(vfourb.State.DEPOSIT_POSITION);
             }
             if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.MID){
