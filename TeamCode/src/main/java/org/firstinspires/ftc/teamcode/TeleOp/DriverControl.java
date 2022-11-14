@@ -211,8 +211,11 @@ public class DriverControl extends LinearOpMode {
             if (intakeGround.getState()) {
                 robot.groundLeft.setPower(-1);
                 robot.groundRight.setPower(-1);
+            } else {
+                robot.groundLeft.setPower(0);
+                robot.groundRight.setPower(0);
             }
-            else if (extakeGround.getState()){
+            if (extakeGround.getState()){
                 robot.groundLeft.setPower(1);
                 robot.groundRight.setPower(1);
             } else {
