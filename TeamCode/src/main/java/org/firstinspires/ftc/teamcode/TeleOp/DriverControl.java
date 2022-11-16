@@ -209,19 +209,17 @@ public class DriverControl extends LinearOpMode {
             }*/
             //GROUND INTAKE
             if (intakeGround.getState()) {
-                robot.groundLeft.setPower(-1);
-                robot.groundRight.setPower(-1);
+                groundIntake.setState(GroundIntake.State.INTAKING);
             } else {
-                robot.groundLeft.setPower(0);
-                robot.groundRight.setPower(0);
+                groundIntake.setState(GroundIntake.State.OFF);
             }
+
             if (extakeGround.getState()){
-                robot.groundLeft.setPower(1);
-                robot.groundRight.setPower(1);
+                groundIntake.setState(GroundIntake.State.DEPOSITING);
             } else {
-                robot.groundLeft.setPower(0);
-                robot.groundRight.setPower(0);
+                groundIntake.setState(GroundIntake.State.OFF);
             }
+
             //robot.groundIntake.update();
 
             //SCORING:
