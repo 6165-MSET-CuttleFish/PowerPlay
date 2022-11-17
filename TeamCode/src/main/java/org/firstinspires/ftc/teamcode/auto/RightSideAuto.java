@@ -46,7 +46,7 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
 
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToConstantHeading(new Vector2d(-24, 38))
+                .lineToConstantHeading(new Vector2d(-24, 37.5))
                 .addDisplacementMarker(2, ()->{
                             slides.setState(Slides.State.HIGH);
                             fourbar.setState(vfourb.State.ALIGN_POSITION);
@@ -55,19 +55,19 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
 
-                .lineToConstantHeading(new Vector2d(-29,38), robot.getVelocityConstraint(6, 5.939, 14.48),
+                .lineToConstantHeading(new Vector2d(-29.9,37.5), robot.getVelocityConstraint(10, 5.939, 14.48),
                         robot.getAccelerationConstraint(45))
                 .addTemporalMarker(1.5,()->{
-                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                    //fourbar.setState(vfourb.State.DEPOSIT_POSITION);
 
                 })
-                .addTemporalMarker(3, ()->{
+                .addTemporalMarker(2.5, ()->{
                     intake.setState(Intake.State.DEPOSITING);
                 })
 
                 .build();
         Trajectory preload4 = robot.trajectoryBuilder(preload3.end())
-                .lineToConstantHeading(new Vector2d(-22,50))
+                .lineToConstantHeading(new Vector2d(-22,48))
                 .addDisplacementMarker(2,()->{
                     fourbar.setState(vfourb.State.PRIMED);
                     intake.setState(Intake.State.OFF);
@@ -83,9 +83,9 @@ public class RightSideAuto extends LinearOpMode {
         robot.setPoseEstimate(startPose);
         robot.turn(Math.toRadians(45));
         robot.followTrajectory(preload1);
-        robot.followTrajectory(preload2);
-        robot.followTrajectory(preload3);
-        robot.followTrajectory(preload4);
+        //robot.followTrajectory(preload2);
+        //robot.followTrajectory(preload3);
+        //robot.followTrajectory(preload4);
         while (!isStopRequested() && opModeIsActive()) ;
     }
 }
