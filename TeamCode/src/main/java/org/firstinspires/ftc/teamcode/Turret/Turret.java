@@ -64,7 +64,11 @@ public class Turret
         turretMotor.setTargetPosition(0);
         turretMotor.setTargetPositionTolerance(0);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(1);
+        if(getState()==State.LEFT) {
+            turretMotor.setPower(1);
+        }else{
+            turretMotor.setPower(-1);
+        }
     }
 
 

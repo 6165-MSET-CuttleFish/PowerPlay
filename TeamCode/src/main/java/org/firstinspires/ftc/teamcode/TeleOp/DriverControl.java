@@ -162,7 +162,8 @@ public class DriverControl extends LinearOpMode {
                 turret.prevPositionReset=turret.position;
                 turret.position = 0;
             }if(autoAlign.isDown()){
-                turret.setState(Turret.State.ZERO);
+                //turret.setState(Turret.State.ZERO);
+                autoAlignCheck=!autoAlignCheck;
             }
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
@@ -171,9 +172,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
 
             if(!autoAlignCheck){
-                /*if(groundIntake.sensorVal()<100){
-                    turret.zero();
-                }else*/ if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
+                if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
                     turret.setState(Turret.State.LEFT);
                 } else if (turretRight.isDown() && turret.turretMotor.getCurrentPosition() < 390) {
                     turret.setState(Turret.State.RIGHT);
@@ -183,30 +182,32 @@ public class DriverControl extends LinearOpMode {
                     turret.setState(Turret.State.IDLE);
                 }
             } else {
-                if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
+                if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION||fourbar.getState()==vfourb.State.ALIGN_POSITION){
                     if(detector1.getLocation()== Detector.Location.LEFT){
-                        turret.setState(Turret.State.LEFT);
+                        turret.turretMotor.setTargetPosition(367);
+                        turret.turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                        turret.turretMotor.setPower(0.1);
                     } else if(detector1.getLocation()== Detector.Location.RIGHT){
+                        turret.turretMotor.setTargetPosition(-367);
+                        turret.turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                        turret.turretMotor.setPower(-0.1);
+                    } else {
+                        turret.turretMotor.setTargetPosition(turret.position);
+                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        turret.setState(Turret.State.IDLE);
+                    }
+                }/*else if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
+                    if(detector2.getLocation()== Detector.Location.LEFT){
+                        turret.setState(Turret.State.LEFT);
+                    } else if(detector2.getLocation()== Detector.Location.RIGHT){
                         turret.setState(Turret.State.RIGHT);
                     } else {
                         turret.turretMotor.setTargetPosition(turret.position);
                         turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                }
+                        turret.setState(Turret.State.IDLE);
+                    }*/
             }
-//
-            /*else if((autoAlignCheck)&&(fourbar.getState()==vfourb.State.DEPOSIT_POSITION)){
-                if(detector2.getLocation()== Detector.Location.LEFT){
-                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.turretMotor.setPower(0.125);
-                }else if(detector2.getLocation()== Detector.Location.RIGHT){
-                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.turretMotor.setPower(-0.125);
-                }else{
-                    turret.turretMotor.setTargetPosition(turret.position);
-                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-            }*/
+
             //GROUND INTAKE
             if (intakeGround.getState()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
