@@ -61,14 +61,11 @@ public class Turret
         }
     }
     public void zero(){
-        turretMotor.setTargetPosition(0);
-        turretMotor.setTargetPositionTolerance(0);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if(getState()==State.LEFT) {
-            turretMotor.setPower(1);
-        }else{
-            turretMotor.setPower(-1);
+        if(turretMotor.getMode()!=(DcMotor.RunMode.RUN_TO_POSITION)){
+            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+        turretMotor.setTargetPosition(0);
+        turretMotor.setPower(0.5);
     }
 
 

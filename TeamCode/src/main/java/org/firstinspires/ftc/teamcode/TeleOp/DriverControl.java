@@ -41,7 +41,7 @@ public class DriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
-    ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake;
+    ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
     ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign, intakeGround, extakeGround;
     int slidesTargetPosition = 0;
     boolean autoAlignCheck=false;
@@ -76,6 +76,7 @@ public class DriverControl extends LinearOpMode {
                 raiseSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
                 lowerSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
+                turretZero = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 junctionScore = new ToggleButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         };
         waitForStart();
@@ -162,8 +163,10 @@ public class DriverControl extends LinearOpMode {
                 turret.prevPositionReset=turret.position;
                 turret.position = 0;
             }if(autoAlign.isDown()){
-                //turret.setState(Turret.State.ZERO);
                 autoAlignCheck=!autoAlignCheck;
+            }
+            if(turretZero.isDown()){
+                turret.zero();
             }
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
