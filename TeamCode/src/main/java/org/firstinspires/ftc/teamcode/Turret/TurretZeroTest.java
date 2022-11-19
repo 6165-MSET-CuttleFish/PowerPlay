@@ -27,7 +27,11 @@ public class TurretZeroTest extends LinearOpMode {
             counter++;
             int targetPos = (int) randomPos;
             turret.turretMotor.setTargetPosition(targetPos);
-            turret.turretMotor.setPower(0.5);
+            while(turret.turretMotor.getCurrentPosition()>turret.turretMotor.getTargetPosition()+5 ||
+                    turret.turretMotor.getCurrentPosition() < turret.turretMotor.getTargetPosition()-5){
+                turret.turretMotor.setPower(0.25);
+            }
+           
         }
     }
 }
