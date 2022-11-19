@@ -83,9 +83,9 @@ public class RightSideAuto extends LinearOpMode {
         robot.setPoseEstimate(startPose);
         robot.turn(Math.toRadians(45));
         robot.followTrajectory(preload1);
-        //robot.followTrajectory(preload2);
-        //robot.followTrajectory(preload3);
-        //robot.followTrajectory(preload4);
+        robot.followTrajectory(preload2);
+        robot.followTrajectory(preload3);
+        robot.followTrajectory(preload4);
         while (!isStopRequested() && opModeIsActive()) ;
     }
 }
