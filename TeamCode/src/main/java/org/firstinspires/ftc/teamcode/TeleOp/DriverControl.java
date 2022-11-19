@@ -158,6 +158,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TURRET
+            /*
             turret.position=turret.turretMotor.getCurrentPosition();
             if(turret.magnetic.isPressed()){
                 turret.prevPositionReset=turret.position;
@@ -167,13 +168,13 @@ public class DriverControl extends LinearOpMode {
             }
             if(turretZero.wasJustPressed()){
                 zeroCheck=!zeroCheck;
-            }
+            }*/
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Pos", detector1.getLocation());
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
-
+            /*
             if(!autoAlignCheck){
                 if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
                     turret.setState(Turret.State.LEFT);
@@ -202,8 +203,8 @@ public class DriverControl extends LinearOpMode {
                         turret.turretMotor.setTargetPosition(turret.position);
                         turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         turret.setState(Turret.State.IDLE);
-                    }
-                }/*else if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
+                    }*/
+               /* }else if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
                     if(detector2.getLocation()== Detector.Location.LEFT){
                         turret.setState(Turret.State.LEFT);
                     } else if(detector2.getLocation()== Detector.Location.RIGHT){
@@ -212,8 +213,8 @@ public class DriverControl extends LinearOpMode {
                         turret.turretMotor.setTargetPosition(turret.position);
                         turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         turret.setState(Turret.State.IDLE);
-                    }*/
-            }
+                    }
+            }*/
 
             //GROUND INTAKE
             if (intakeGround.getState()) {

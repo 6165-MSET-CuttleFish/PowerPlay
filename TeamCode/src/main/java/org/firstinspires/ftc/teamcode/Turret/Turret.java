@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +20,7 @@ public class Turret
     public TouchSensor magnetic;
     public Turret.State state;
     public int prevPositionReset = 0, position = 0;
-
+    public PIDController pidController;
     public enum State
     {
         IDLE, MOVING, LEFT, RIGHT, ZERO
@@ -59,7 +60,7 @@ public class Turret
                 turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(ZERO_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(1);
+                turretMotor.setPower(.93);
                 break;
 
 

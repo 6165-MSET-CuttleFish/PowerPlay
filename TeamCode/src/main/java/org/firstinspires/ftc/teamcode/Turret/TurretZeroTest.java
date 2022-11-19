@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Config
 public class TurretZeroTest extends LinearOpMode {
     public static int target=0;
-    @Override
+
+
     public void runOpMode() throws InterruptedException {
         Turret turret = new Turret(hardwareMap);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
