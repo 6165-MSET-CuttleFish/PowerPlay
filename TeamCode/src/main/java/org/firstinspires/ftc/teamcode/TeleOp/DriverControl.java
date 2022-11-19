@@ -168,9 +168,6 @@ public class DriverControl extends LinearOpMode {
             if(turretZero.wasJustPressed()){
                 zeroCheck=!zeroCheck;
             }
-            if(zeroCheck){
-                turret.setState(Turret.State.ZERO);
-            }
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
@@ -183,9 +180,13 @@ public class DriverControl extends LinearOpMode {
                 } else if (turretRight.isDown() && turret.turretMotor.getCurrentPosition() < 390) {
                     turret.setState(Turret.State.RIGHT);
                 } else {
-                    turret.turretMotor.setTargetPosition(turret.position);
-                    turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    turret.setState(Turret.State.IDLE);
+                    if(!zeroCheck) {
+                        turret.turretMotor.setTargetPosition(turret.position);
+                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        turret.setState(Turret.State.IDLE);
+                    }else{
+                        turret.setState(Turret.State.ZERO);
+                    }
                 }
             } else {
                 if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION||fourbar.getState()==vfourb.State.ALIGN_POSITION){
