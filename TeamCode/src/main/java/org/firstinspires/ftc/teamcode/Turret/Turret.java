@@ -32,6 +32,7 @@ public class Turret
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         setState(State.IDLE);
     }
 
@@ -39,6 +40,11 @@ public class Turret
     {
         switch(state)
         {
+            case MOVING:
+                break;
+            case IDLE:
+                turretMotor.setPower(0);
+                break;
             case RIGHT:
                 turretMotor.setTargetPosition(RIGHT_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -50,24 +56,18 @@ public class Turret
                 turretMotor.setPower(.4);
                 break;
             case ZERO:
+                turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(ZERO_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.4);
+                turretMotor.setPower(1);
                 break;
-            case MOVING:
 
-            case IDLE:
 
         }
     }
     public void zero(){
-        if(turretMotor.getMode()!=(DcMotor.RunMode.RUN_TO_POSITION)){
-            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        turretMotor.setTargetPosition(0);
-        turretMotor.setPower(0.5);
-    }
 
+    }
 
     public Turret.State getState() {
         return state;

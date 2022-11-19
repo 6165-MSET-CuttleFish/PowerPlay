@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class vfourb
 {
     //temporary values
-    public static double INTAKE_POSITION = 0.9;
+    public static double INTAKE_POSITION = 0.95;
     public static double DEPOSIT_POSITION = 0.15;
     public static double PRIMED = 0.7;
     public static double ALIGN_POSITION = 0.275;

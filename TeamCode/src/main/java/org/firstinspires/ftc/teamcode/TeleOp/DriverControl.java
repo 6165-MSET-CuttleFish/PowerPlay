@@ -44,7 +44,7 @@ public class DriverControl extends LinearOpMode {
     ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
     ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign, intakeGround, extakeGround;
     int slidesTargetPosition = 0;
-    boolean autoAlignCheck=false;
+    boolean autoAlignCheck=false, zeroCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(hardwareMap);
@@ -162,11 +162,14 @@ public class DriverControl extends LinearOpMode {
             if(turret.magnetic.isPressed()){
                 turret.prevPositionReset=turret.position;
                 turret.position = 0;
-            }if(autoAlign.isDown()){
+            }if(autoAlign.wasJustPressed()){
                 autoAlignCheck=!autoAlignCheck;
             }
-            if(turretZero.isDown()){
-                turret.zero();
+            if(turretZero.wasJustPressed()){
+                zeroCheck=!zeroCheck;
+            }
+            if(zeroCheck){
+                turret.setState(Turret.State.ZERO);
             }
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
