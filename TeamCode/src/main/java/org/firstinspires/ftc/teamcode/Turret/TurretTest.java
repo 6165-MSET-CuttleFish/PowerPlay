@@ -28,8 +28,10 @@
  */
 
 package org.firstinspires.ftc.teamcode.Turret;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -60,12 +62,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Turret Auton", group="Robot")
+@TeleOp(name="Turret PID Testing", group="Robot")
+@Config
 public class TurretTest extends LinearOpMode {
 
     /* Declare OpMode members. */
     //private DcMotor turret   = null;
-    private Turret turret;
+    private DcMotorEx turret;
+
+    double integralSum=0;
+    public double Kp=0, Ki=0, Kd=0, Kf=0;
+    private double lastError=0;
 
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -80,93 +87,20 @@ public class TurretTest extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        turret = new Turret(hardwareMap);
-        turret.turretMotor  = hardwareMap.get(DcMotorEx.class, "hturret");
-
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        turret.turretMotor.setDirection(DcMotor.Direction.REVERSE);
-        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        turret.turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at",  "%7d",
-                turret.turretMotor.getCurrentPosition());
-        telemetry.addData("Going to",
-                turret.endPosition);
-        telemetry.update();
-
-        // Wait for the game to start (driver presses PLAY)
+        turret =  hardwareMap.get(DcMotorEx.class, "hturret");
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(turret.TURN_SPEED, setTargetPosition(90.0));
-        encoderDrive(-turret.TURN_SPEED, setTargetPosition(-135.0));
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
-    }
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-    public double setTargetPosition(double targetTurnAngle){
-        turret.endPosition = targetTurnAngle/360*turret.COUNTS_PER_MOTOR_REV;
-        return turret.endPosition;
-    }
-    public void encoderDrive(double speed,
-                             double leftInches) {
-        int newLeftTarget;
-        double timeoutS=20.0;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = (int)(leftInches * turret.COUNTS_PER_INCH);
-            turret.turretMotor.setTargetPosition(newLeftTarget);
-
-            // Turn On RUN_TO_POSITION
-            turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // reset the timeout time and start motion.
-            runtime.reset();
-            turret.turretMotor.setPower(speed);
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (turret.turretMotor.isBusy())) {
-
-                // Display it for the driver.
-                turret.setState(Turret.State.MOVING);
-                telemetry.addData("STATE", turret.getState());
-                telemetry.addData("Running to",  " %7d", newLeftTarget);
-                telemetry.addData("Currently at",  " at %7d",
-                        turret.turretMotor.getCurrentPosition());
-                telemetry.update();
-            }
-            // Stop all motion;
-            turret.turretMotor.setPower(0);
-            turret.setState(Turret.State.IDLE);
-            telemetry.addData("STATE", turret.getState());
-            telemetry.update();
-            // Turn off RUN_TO_POSITION
-            turret.turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(2500);   // optional pause after each move.
+        while (opModeIsActive()){
+            turret.setPower(PIDController(1000,turret.getVelocity()));
         }
+    }
+
+    public double PIDController (double reference, double state){
+        double error=reference-state;
+        integralSum+=error*runtime.seconds();
+        double derivative = (error-lastError) / runtime.seconds();
+        lastError=error;
+        runtime.reset();
+        return ((error*Kp) + (derivative*Kd) + (integralSum*Ki) + (reference*Kf));
     }
 }
