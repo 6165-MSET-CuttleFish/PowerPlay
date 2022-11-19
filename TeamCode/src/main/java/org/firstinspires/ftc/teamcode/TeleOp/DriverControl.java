@@ -40,9 +40,9 @@ public class DriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
-    TriggerReader intakeTransfer, depositTransfer;
+    TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
     ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
-    ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign, intakeGround, extakeGround;
+    ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign;
     int slidesTargetPosition = 0;
     boolean autoAlignCheck=false, zeroCheck=false;
     @Override
@@ -62,8 +62,8 @@ public class DriverControl extends LinearOpMode {
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
-                intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.Y),
-                extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.A),
+                intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                extakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 
                 intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
@@ -217,13 +217,9 @@ public class DriverControl extends LinearOpMode {
             }*/
 
             //GROUND INTAKE
-            if (intakeGround.getState()) {
+            if (intakeGround.isDown()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
-            } else {
-                groundIntake.setState(GroundIntake.State.OFF);
-            }
-
-            if (extakeGround.getState()){
+            } else if (extakeGround.isDown()){
                 groundIntake.setState(GroundIntake.State.DEPOSITING);
             } else {
                 groundIntake.setState(GroundIntake.State.OFF);
