@@ -94,7 +94,7 @@ public class Robot extends MecanumDrive {
     public Servo odoRaise;
     public List<DcMotorEx> motors;
     public DigitalChannel slidesLimitSwitch;
-    private BNO055IMU imu;
+    //private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
         NORMAL,
@@ -340,12 +340,12 @@ public class Robot extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        return 0;
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getAngularVelocity().zRotationRate;
+        return (double) 0;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
