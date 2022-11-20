@@ -71,9 +71,9 @@ import java.util.List;
 public class Robot extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
-
     public static double LATERAL_MULTIPLIER = 1.745;
 
+    public static double odomServoPos = 0.3;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
@@ -163,7 +163,7 @@ public class Robot extends MecanumDrive {
 
 
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
-        odoRaise.setPosition(0.3);
+        odoRaise.setPosition(odomServoPos);
         groundLeft = hardwareMap.get(CRServo.class, "gl");
         groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;

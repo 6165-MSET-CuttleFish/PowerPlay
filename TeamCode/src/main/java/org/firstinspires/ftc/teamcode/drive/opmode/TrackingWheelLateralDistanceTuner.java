@@ -44,7 +44,6 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * StandardTrackingWheelLocalizer.java class.
  *
  * 9. If this value is incorrect, run the routine again while adjusting the LATERAL_DISTANCE value
- * yourself. Read the heading output and follow the advice stated in the note below to manually
  * nudge the values yourself.
  *
  * Note:
