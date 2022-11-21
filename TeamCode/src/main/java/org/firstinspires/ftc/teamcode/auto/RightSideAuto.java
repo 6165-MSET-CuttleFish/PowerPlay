@@ -26,7 +26,7 @@ public class RightSideAuto extends LinearOpMode {
     Turret turret;
     Detector detector1;
     OpenCvWebcam webcam;
-    Pose2d startPose = new Pose2d(-61,-32,Math.toRadians(180));
+    Pose2d startPose = new Pose2d(-39,61,Math.toRadians(270));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,35 +39,39 @@ public class RightSideAuto extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fourbar.setState(vfourb.State.INTAKE_POSITION);
-        Trajectory preload1 = robot.trajectoryBuilder(new Pose2d(-61,-32, Math.toRadians(270)))
-
-                .lineToConstantHeading(new Vector2d(-59, -12))
-
+        Trajectory fastPreload1 = robot.trajectoryBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(-11,56, Math.toRadians(180)))
+                .build();
+        Trajectory preloadInit = robot.trajectoryBuilder(startPose)
+                .lineToConstantHeading(new Vector2d(-39,56))
+                .build();
+        Trajectory preload1 = robot.trajectoryBuilder(new Pose2d(-39,56,Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-11, 56))
                 .build();
 
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToConstantHeading(new Vector2d(-25, -12))
+                .lineToConstantHeading(new Vector2d(-11, 19))
                 .addDisplacementMarker(2, ()->{
-                            slides.setState(Slides.State.HIGH);
-                            fourbar.setState(vfourb.State.ALIGN_POSITION);
+                            //slides.setState(Slides.State.HIGH);
+                            //fourbar.setState(vfourb.State.ALIGN_POSITION);
                         }
                 )
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
 
-                .lineToConstantHeading(new Vector2d(-25,-8), robot.getVelocityConstraint(10, 5.939, 14.48),
+                .lineToConstantHeading(new Vector2d(-9,19), robot.getVelocityConstraint(10, 5.939, 14.48),
                         robot.getAccelerationConstraint(45))
                 .addTemporalMarker(0.25,()->{
                     //fourbar.setState(vfourb.State.DEPOSIT_POSITION);
 
                 })
                 .addTemporalMarker(2.5, ()->{
-                    intake.setState(Intake.State.DEPOSITING);
+                    //intake.setState(Intake.State.DEPOSITING);
                 })
 
                 .build();
         Trajectory preload4 = robot.trajectoryBuilder(preload3.end())
-                .lineToConstantHeading(new Vector2d(-22,48))
+                .lineToConstantHeading(new Vector2d(-11,9))
                 .addDisplacementMarker(2,()->{
                     fourbar.setState(vfourb.State.PRIMED);
                     intake.setState(Intake.State.OFF);
@@ -81,12 +85,14 @@ public class RightSideAuto extends LinearOpMode {
         if(isStopRequested()) return;
 
         robot.setPoseEstimate(startPose);
-        robot.turn(Math.toRadians(100));
-        robot.updatePoseEstimate();
-        robot.followTrajectory(preload1);
+        //robot.followTrajectory(preloadInit);
+        //robot.turn(Math.toRadians(-93.4));
+        //robot.updatePoseEstimate();
+        //robot.followTrajectory(preload1);
+        robot.followTrajectory(fastPreload1);
         robot.followTrajectory(preload2);
-        //robot.followTrajectory(preload3);
-        //robot.followTrajectory(preload4);
+        robot.followTrajectory(preload3);
+        robot.followTrajectory(preload4);
         while (!isStopRequested() && opModeIsActive()) ;
     }
 }

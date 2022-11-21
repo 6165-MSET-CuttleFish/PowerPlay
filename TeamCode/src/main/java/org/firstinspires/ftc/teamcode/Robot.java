@@ -56,9 +56,11 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class Robot extends MecanumDrive {
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
-    public static double LATERAL_MULTIPLIER = 1.04347;
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
+    public static double LATERAL_MULTIPLIER = .99;
+
 
     public static double odomServoPos = 0.28;
     public static double VX_WEIGHT = 1;

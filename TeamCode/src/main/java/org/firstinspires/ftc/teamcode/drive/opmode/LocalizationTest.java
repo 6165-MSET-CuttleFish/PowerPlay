@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
+import java.util.List;
+
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
  * teleop routine and make sure the robot's estimated pose matches the robot's actual pose (slight
@@ -47,7 +49,10 @@ public class LocalizationTest extends LinearOpMode {
             {
                 biggestDelta=Math.abs(prevHeading-poseEstimate.getHeading());
             }
-
+            List<Double> wheelPos = drive.getWheelPositions();
+            telemetry.addData("Left Encoder", wheelPos.get(0));
+            telemetry.addData("Right Encoder", wheelPos.get(1));
+            telemetry.addData("Back Encoder", wheelPos.get(2));
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
