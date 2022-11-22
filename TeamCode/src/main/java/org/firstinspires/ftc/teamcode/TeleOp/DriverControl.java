@@ -41,9 +41,10 @@ public class DriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
-    ButtonReader turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
+    ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
     ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign;
-    int slidesTargetPosition = 0;
+    int cycleValue = 0;
+    boolean slidesZero = false;
     boolean autoAlignCheck=false, zeroCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -71,13 +72,15 @@ public class DriverControl extends LinearOpMode {
                 fourBarPrimed = new ButtonReader(secondary, GamepadKeys.Button.B),
                 fourBarDeposit = new ButtonReader(secondary, GamepadKeys.Button.Y),
                 fourBarIntake= new ButtonReader(secondary, GamepadKeys.Button.A),
-                turretRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
-                turretLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
-                raiseSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
-                lowerSlides = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
+                actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
+                actuateLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
+                actuateUp = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
+                reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
-                turretZero = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
-                junctionScore = new ToggleButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
+                cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
+                cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
+        //turretZero: zeros turret
+        //junctionScore: lowers v4b on high junction
         };
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
@@ -115,47 +118,150 @@ public class DriverControl extends LinearOpMode {
                     )
             );
 
-            //slides
-            if (raiseSlides.wasJustPressed()) {
-                switch(slides.getState()) {
-                    case LOW_DROP:
-                    case BOTTOM:
-                        slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        break;
-                    case MID_DROP:
-                    case LOW:
-                        slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        break;
-                    case HIGH_DROP:
-                    case MID:
-                        slides.setState(Slides.State.HIGH);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        break;
-                }
+            //CYCLING:
+            //0: ground/terminal, 1: low, 2: mid, 3: high
+            if (cycleUp.wasJustPressed())
+                cycleValue++;
+            if (cycleDown.wasJustPressed())
+                cycleValue--;
+            //keeps the integer range between 0 and 3
+            if (cycleValue < 0)
+                cycleValue = 3;
+            if (cycleValue > 3)
+                cycleValue = 0;
 
-            }
+            //setting states based off of cycleValue
 
-            if (lowerSlides.wasJustPressed()) {
-                switch(slides.getState()) {
-                    case HIGH_DROP:
-                    case HIGH:
-                        slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        break;
-                    case MID_DROP:
-                    case MID:
-                        slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        break;
-                    case LOW_DROP:
-                    case LOW:
+
+            //POWER RANGERS, ASSEMBLE (idek)
+            //turret left
+            if (actuateLeft.wasJustPressed()) {
+                switch (cycleValue) {
+                    case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.HIGH);
+                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        turret.setState(Turret.State.LEFT);
                         break;
                 }
             }
+
+            //turret right
+            if (actuateRight.wasJustPressed()) {
+                switch (cycleValue) {
+                    case 0:
+                        slides.setState(Slides.State.BOTTOM);
+                        fourbar.setState(vfourb.State.PRIMED);
+                        turret.setState(Turret.State.RIGHT);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.RIGHT);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.RIGHT);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.HIGH);
+                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        turret.setState(Turret.State.RIGHT);
+                        break;
+                }
+            }
+
+            //turret left
+            if (actuateLeft.wasJustPressed()) {
+                switch (cycleValue) {
+                    case 0:
+                        slides.setState(Slides.State.BOTTOM);
+                        fourbar.setState(vfourb.State.PRIMED);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.HIGH);
+                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        turret.setState(Turret.State.LEFT);
+                        break;
+                }
+            }
+
+            //turret mid
+            if (actuateUp.wasJustPressed()) {
+                switch (cycleValue) {
+                    case 0:
+                        slides.setState(Slides.State.BOTTOM);
+                        fourbar.setState(vfourb.State.PRIMED);
+                        turret.setState(Turret.State.ZERO);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.LOW);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.ZERO);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.MID);
+                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                        turret.setState(Turret.State.ZERO);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.HIGH);
+                        fourbar.setState(vfourb.State.ALIGN_POSITION);
+                        turret.setState(Turret.State.ZERO);
+                        break;
+                }
+            }
+            //reset
+            if (reset.wasJustPressed()) {
+                cycleValue = 0;
+                slides.setState(Slides.State.BOTTOM);
+                fourbar.setState(vfourb.State.PRIMED);
+                turret.setState(Turret.State.ZERO);
+            }
+
+            //manual turret control:
+
+            //manual slides control:
+            if (Math.abs(gamepad2.left_stick_y) > 0) {
+                slides.setState(Slides.State.MANUAL);
+                slides.slidesLeft.setPower(gamepad2.left_stick_y);
+                slides.slidesRight.setPower(gamepad2.left_stick_y);
+                    slidesZero = true;
+            }
+            if (slidesZero && gamepad2.left_stick_y == 0) {
+                slides.setState(Slides.State.MANUAL);
+                slides.slidesLeft.setPower(0);
+                slides.slidesRight.setPower(0);
+                slidesZero = false;
+            }
+
+
 
             //TURRET
             /*
@@ -169,11 +275,7 @@ public class DriverControl extends LinearOpMode {
             if(turretZero.wasJustPressed()){
                 zeroCheck=!zeroCheck;
             }*/
-            telemetry.addData("AutoAlign", autoAlignCheck);
-            telemetry.addData("Turret", turret.getState());
-            telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            telemetry.addData("Pos", detector1.getLocation());
-            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+
             /*
             if(!autoAlignCheck){
                 if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
@@ -228,17 +330,17 @@ public class DriverControl extends LinearOpMode {
             //robot.groundIntake.update();
 
             //SCORING:
-            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.HIGH) {
-                slides.setState(Slides.State.HIGH_DROP);
-                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-            }
-            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.MID){
-//                slides.setState(Slides.State.MID_DROP);
-                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-            }
-            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.LOW) {
-//                slides.setState(Slides.State.LOW_DROP);
-            }
+//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.HIGH) {
+//                slides.setState(Slides.State.HIGH_DROP);
+//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+//            }
+//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.MID){
+////                slides.setState(Slides.State.MID_DROP);
+//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+//            }
+//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.LOW) {
+////                slides.setState(Slides.State.LOW_DROP);
+//            }
             //DEPOSIT:
             if (depositTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
@@ -260,7 +362,14 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TELEMETRY
+            telemetry.addData("cycle: ", cycleValue);
+            telemetry.addData("AutoAlign", autoAlignCheck);
+            telemetry.addData("Turret", turret.getState());
+            telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
+            telemetry.addData("Pos", detector1.getLocation());
+            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
+            telemetry.addData("Slides State: ", slides.getState());
             telemetry.update();
 
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Slides;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,23 +12,22 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Config
 public class Slides {
-    DcMotorEx slidesLeft;
-    DcMotorEx slidesRight;
+    public DcMotorEx slidesLeft, slidesRight;
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
-    static final double HIGH = 2080; //old = 1850
-    static final double HIGH_DROP = 2080; //old = 1650
-    static final double MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final double MID_DROP = 950;
-    static final double LOW = 625; //in inches, low junction is 13.5 inches
-    static final double LOW_DROP = 250;
+    static final int HIGH = 2080; //old = 1850
+    static final int HIGH_DROP = 2080; //old = 1650
+    static final int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    static final int MID_DROP = 950;
+    static final int LOW = 625; //in inches, low junction is 13.5 inches
+    static final int LOW_DROP = 250;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2.5, 2.43, .075, .025);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -48,48 +49,48 @@ public class Slides {
 //        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
         switch(state) {
             case HIGH:
-                slidesLeft.setTargetPosition((int) HIGH);
-                slidesRight.setTargetPosition((int) HIGH);
+                slidesLeft.setTargetPosition(HIGH);
+                slidesRight.setTargetPosition(HIGH);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
             case HIGH_DROP:
-                slidesLeft.setTargetPosition((int) HIGH_DROP);
-                slidesRight.setTargetPosition((int) HIGH_DROP);
+                slidesLeft.setTargetPosition(HIGH_DROP);
+                slidesRight.setTargetPosition(HIGH_DROP);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
             case MID:
-                slidesLeft.setTargetPosition((int) MID);
-                slidesRight.setTargetPosition((int) MID);
+                slidesLeft.setTargetPosition(MID);
+                slidesRight.setTargetPosition(MID);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
             case MID_DROP:
-                slidesLeft.setTargetPosition((int) MID_DROP);
-                slidesRight.setTargetPosition((int) MID_DROP);
+                slidesLeft.setTargetPosition(MID_DROP);
+                slidesRight.setTargetPosition(MID_DROP);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
             case LOW:
-                slidesLeft.setTargetPosition((int) LOW);
-                slidesRight.setTargetPosition((int) LOW);
+                slidesLeft.setTargetPosition(LOW);
+                slidesRight.setTargetPosition(LOW);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
             case LOW_DROP:
-                slidesLeft.setTargetPosition((int) LOW_DROP);
-                slidesRight.setTargetPosition((int) LOW_DROP);
+                slidesLeft.setTargetPosition(LOW_DROP);
+                slidesRight.setTargetPosition(LOW_DROP);
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
@@ -102,6 +103,10 @@ public class Slides {
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
+                break;
+            case MANUAL:
+                slidesRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slidesLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 break;
         }
 //        if (slidesLimitSwitch.getState()) {

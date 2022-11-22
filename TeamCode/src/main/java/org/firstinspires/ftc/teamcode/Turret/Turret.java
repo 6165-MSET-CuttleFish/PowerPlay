@@ -47,14 +47,16 @@ public class Turret
                 turretMotor.setPower(0);
                 break;
             case RIGHT:
+                turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(RIGHT_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.4);
+                turretMotor.setPower(.5);
                 break;
             case LEFT:
+                turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(LEFT_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.4);
+                turretMotor.setPower(.5);
                 break;
             case ZERO:
                 turretMotor.setTargetPositionTolerance(5);
