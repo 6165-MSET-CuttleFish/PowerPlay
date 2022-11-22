@@ -14,7 +14,7 @@ public class Turret
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                         (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     TURN_SPEED             = 1;
-    static final int LEFT_POS = 367, RIGHT_POS = -367, ZERO_POS = 0;
+    static final int LEFT_POS = 367, RIGHT_POS = -380, ZERO_POS = 0;
     double endPosition;
     public DcMotorEx turretMotor;
     public TouchSensor magnetic;

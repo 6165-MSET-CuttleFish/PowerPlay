@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class GroundIntake
 {
     //temporary values
-    static final double INTAKING = -1;
-    static final double REVERSE = 1;
+    static final double INTAKING = 1;
+    static final double REVERSE = -1;
     static final double OFF = 0;
     boolean runningTrigger = false;
     boolean temp2 = false;
