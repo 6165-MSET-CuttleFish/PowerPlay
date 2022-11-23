@@ -71,10 +71,10 @@ public class LeftSideAuto extends LinearOpMode {
                 .build();
 
         Trajectory toIntake = robot.trajectoryBuilder(new Pose2d(34,12,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(60  , 12))
+                .lineToConstantHeading(new Vector2d(61  , 12))
                 .addDisplacementMarker(0, () -> {
                     intake.setState(Intake.State.INTAKING);
-                    slides.setState(Slides.State.INTAKE_AUTO);
+                    slides.setState(Slides.State.LOW_DROP);
                 })
                 .build();
 
@@ -97,11 +97,11 @@ public class LeftSideAuto extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                 })
-                .lineToConstantHeading(new Vector2d(60,12), Robot.getVelocityConstraint(35,
+                .lineToConstantHeading(new Vector2d(61,12), Robot.getVelocityConstraint(35,
                         DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), Robot.getAccelerationConstraint(15))
-                .addDisplacementMarker(0, () -> {
+                .addDisplacementMarker(5, () -> {
                     intake.setState(Intake.State.INTAKING);
-                    slides.setState(Slides.State.INTAKE_AUTO);
+                    slides.setState(Slides.State.LOW_DROP);
                 })
                 .build();
 
