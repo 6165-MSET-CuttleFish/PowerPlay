@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
@@ -15,14 +16,16 @@ import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.util.Async;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class LeftSideAuto extends LinearOpMode {
+public class LeftSideAutoMatew extends LinearOpMode {
     Robot robot;
     Intake intake;
     Slides slides;
     vfourb fourbar;
+    ElapsedTime t;
     GroundIntake groundIntake;
     Turret turret;
     Detector detector1;
@@ -31,6 +34,7 @@ public class LeftSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        t=new ElapsedTime();
         robot = new Robot(hardwareMap);
         intake = robot.intake;
         slides = robot.slides;
@@ -42,19 +46,13 @@ public class LeftSideAuto extends LinearOpMode {
         fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         Trajectory scorePreload = robot.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(34, 23, Math.toRadians(270)))
                 .addDisplacementMarker(2, () -> {
-                    groundIntake.setState(GroundIntake.State.INTAKING);
-                    turret.setState(Turret.State.LEFT);
-                    slides.setState(Slides.State.MID_DROP);
-                    fourbar.setState(vfourb.State.ALIGN_POSITION);
+                    prepDepositInitial();
                 })
-                .addTemporalMarker(2, () -> {
-                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                })
-                .addTemporalMarker(2.1, () -> {
-                    intake.setState(Intake.State.DEPOSITING);
-                })
+                .lineToSplineHeading(new Pose2d(34, 23, Math.toRadians(270)))
+                .addDisplacementMarker(()->
+                        deposit()
+                )
                 .build();
 
         Trajectory removeSignal = robot.trajectoryBuilder(scorePreload.end())
@@ -67,41 +65,39 @@ public class LeftSideAuto extends LinearOpMode {
                 .addTemporalMarker(1, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     intake.setState(Intake.State.OFF);
+                    waitSec(0.5);
+                    groundIntake.setState(GroundIntake.State.OFF);
                 })
                 .build();
 
         Trajectory toIntake = robot.trajectoryBuilder(new Pose2d(34,12,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(61  , 12))
                 .addDisplacementMarker(0, () -> {
-                    intake.setState(Intake.State.INTAKING);
-                    slides.setState(Slides.State.LOW_DROP);
+                    prepIntake();
+                })
+                .lineToConstantHeading(new Vector2d(60  , 12))
+                .addDisplacementMarker(() -> {
+                    intake();
                 })
                 .build();
 
         Trajectory scoreMidCycle = robot.trajectoryBuilder(toIntake.end())
                 .addDisplacementMarker(0, () -> {
-                    turret.setState(Turret.State.RIGHT);
-                    slides.setState(Slides.State.MID_DROP);
+                    prepDeposit();
                 })
                 .lineToConstantHeading(new Vector2d(23.5, 14))
-                .addTemporalMarker(2, () -> {
-                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                })
-                .addTemporalMarker(2.1, () -> {
-                    intake.setState(Intake.State.DEPOSITING);
-                })
+                .addDisplacementMarker(()->
+                        deposit()
+                )
+
                 .build();
         Trajectory toIntakePostCycle = robot.trajectoryBuilder(new Pose2d(23.5,14,Math.toRadians(0)))
                 .addTemporalMarker(0, () -> {
-                    fourbar.setState(vfourb.State.PRIMED);
-                    slides.setState(Slides.State.BOTTOM);
-                    turret.setState(Turret.State.ZERO);
+                    prepIntake();
                 })
-                .lineToConstantHeading(new Vector2d(61,12), Robot.getVelocityConstraint(35,
+                .lineToConstantHeading(new Vector2d(60,12), Robot.getVelocityConstraint(35,
                         DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), Robot.getAccelerationConstraint(15))
-                .addTemporalMarker(1, () -> {
-                    intake.setState(Intake.State.INTAKING);
-                    slides.setState(Slides.State.LOW_DROP);
+                .addDisplacementMarker(()->{
+                    intake();
                 })
                 .build();
 
@@ -110,7 +106,17 @@ public class LeftSideAuto extends LinearOpMode {
 
         waitForStart();
         if (isStopRequested()) return;
+
         robot.setPoseEstimate(startPose);
+        robot.followTrajectory(scorePreload);
+        robot.followTrajectory(removeSignal);
+        robot.turn(Math.toRadians(90));
+
+        robot.followTrajectory(toIntake);
+        robot.followTrajectory(scoreMidCycle);
+
+
+        /*robot.setPoseEstimate(startPose);
         robot.followTrajectory(scorePreload);
         robot.followTrajectory(removeSignal);
         sleep(500);
@@ -133,7 +139,6 @@ public class LeftSideAuto extends LinearOpMode {
         robot.followTrajectory(scoreMidCycle);
         sleep(500);
         robot.followTrajectory(toIntakePostCycle);
-
         robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
         sleep(1000);
         robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
@@ -141,6 +146,47 @@ public class LeftSideAuto extends LinearOpMode {
         robot.followTrajectory(scoreMidCycle);
         sleep(500);
         robot.followTrajectory(toIntakePostCycle);
-        while (!isStopRequested() && opModeIsActive()) ;
+        while (!isStopRequested() && opModeIsActive()) ;*/
+    }
+
+    public void prepIntake()
+    {
+        slides.setState(Slides.State.INTAKE_AUTO);
+        fourbar.setState(vfourb.State.PRIMED);
+        turret.setState(Turret.State.ZERO);
+    }
+    public void prepDeposit()
+    {
+        slides.setState(Slides.State.MID_DROP);
+        fourbar.setState(vfourb.State.ALIGN_POSITION);
+        turret.setState(Turret.State.RIGHT);
+    }
+    public void prepDepositInitial()
+    {
+        groundIntake.setState(GroundIntake.State.INTAKING);
+        turret.setState(Turret.State.LEFT);
+        slides.setState(Slides.State.MID_DROP);
+        fourbar.setState(vfourb.State.ALIGN_POSITION);
+    }
+    public void intake()
+    {
+        fourbar.setState(vfourb.State.INTAKE_POSITION);
+        intake.setState(Intake.State.INTAKING);
+        waitSec(1);
+    }
+    public void deposit()
+    {
+        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+        waitSec(1);
+        this.intake.setState(Intake.State.DEPOSITING);
+        waitSec(0.5);
+    }
+    public void waitSec(double seconds)
+    {
+        t.reset();
+        while(t.milliseconds()<seconds*1000)
+        {
+            //stall
+        }
     }
 }
