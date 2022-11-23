@@ -88,7 +88,7 @@ public class DriverControl extends LinearOpMode {
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         //junctionScore: lowers v4b on high junction
         };
-
+        camInit();
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
@@ -182,14 +182,12 @@ public class DriverControl extends LinearOpMode {
 
             //setting states based off of cycleValue
 
-
-            //POWER RANGERS, ASSEMBLE (idek)
             //reset
             if (reset.wasJustPressed()) {
+                autoAlignCheck=false;
                 slides.setState(Slides.State.BOTTOM);
                 fourbar.setState(vfourb.State.PRIMED);
                 turret.setState(Turret.State.ZERO);
-                autoAlignCheck=false;
             }
 
             if(autoAlign.wasJustPressed()){
@@ -303,16 +301,16 @@ public class DriverControl extends LinearOpMode {
             }
 
             //manual turret control:
-//            if (Math.abs(gamepad2.right_stick_x) > 0) {
-//                turret.setState(Turret.State.MANUAL);
-//                turret.turretMotor.setPower(gamepad2.right_stick_x);
-//                turretStop = true;
-//            }
-//            if (slidesZero && gamepad2.left_stick_y == 0) {
-//                turret.setState(Turret.State.MANUAL);
-//                turret.turretMotor.setPower(0);
-//                turretStop = false;
-//            }
+            if (Math.abs(gamepad2.right_stick_x) > 0) {
+                turret.setState(Turret.State.MANUAL);
+                turret.turretMotor.setPower(gamepad2.right_stick_x);
+                turretStop = true;
+            }
+            if (slidesZero && gamepad2.left_stick_y == 0) {
+                turret.setState(Turret.State.MANUAL);
+                turret.turretMotor.setPower(0);
+                turretStop = false;
+            }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);

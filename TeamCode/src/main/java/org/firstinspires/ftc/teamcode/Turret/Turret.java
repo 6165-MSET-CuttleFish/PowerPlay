@@ -86,12 +86,10 @@ public class Turret
 
     public void autoAlign(){
         if (detector1.getLocation()== Detector.Location.LEFT && turretMotor.getCurrentPosition() > -390) {
-            setState(Turret.State.LEFT);
+            setState(State.LEFT);
         } else if (detector1.getLocation()== Detector.Location.RIGHT && turretMotor.getCurrentPosition() < 390) {
-            setState(Turret.State.RIGHT);
+            setState(State.RIGHT);
         }else{
-            turretMotor.setTargetPosition(turretMotor.getCurrentPosition());
-            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             setState(State.IDLE);
         }
     }
