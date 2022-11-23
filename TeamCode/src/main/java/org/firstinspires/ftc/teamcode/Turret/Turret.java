@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.openftc.easyopencv.OpenCvWebcam;
+
 public class Turret
 {
     static final double     COUNTS_PER_MOTOR_REV    = 65;    // eg: TETRIX Motor Encoder
@@ -17,12 +19,13 @@ public class Turret
     static final int LEFT_POS = 367, RIGHT_POS = -380, ZERO_POS = 0;
     double endPosition;
     public DcMotorEx turretMotor;
+    Detector detector1;
+    OpenCvWebcam webcam;
     public TouchSensor magnetic;
     public Turret.State state;
     public int prevPositionReset = 0, position = 0;
     public PIDController pidController;
-    public enum State
-    {
+    public enum State {
         IDLE, MOVING, LEFT, RIGHT, ZERO, MANUAL
     }
 
@@ -70,9 +73,6 @@ public class Turret
 
         }
     }
-    public void zero(){
-
-    }
 
     public Turret.State getState() {
         return state;
@@ -82,6 +82,18 @@ public class Turret
     {
         this.state = state;
         update();
+    }
+
+    public void autoAlign(){
+        if (detector1.getLocation()== Detector.Location.LEFT && turretMotor.getCurrentPosition() > -390) {
+            setState(Turret.State.LEFT);
+        } else if (detector1.getLocation()== Detector.Location.RIGHT && turretMotor.getCurrentPosition() < 390) {
+            setState(Turret.State.RIGHT);
+        }else{
+            turretMotor.setTargetPosition(turretMotor.getCurrentPosition());
+            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            setState(State.IDLE);
+        }
     }
 
 }
