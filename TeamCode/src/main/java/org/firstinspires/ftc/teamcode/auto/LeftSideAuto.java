@@ -26,7 +26,7 @@ public class LeftSideAuto extends LinearOpMode {
     Turret turret;
     Detector detector1;
     OpenCvWebcam webcam;
-    Pose2d startPose =new Pose2d(36, 62, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(36, 62, Math.toRadians(270));
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,7 +41,7 @@ public class LeftSideAuto extends LinearOpMode {
         fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         Trajectory scorePreload = robot.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(34,23,Math.toRadians(270)))
+                .lineToSplineHeading(new Pose2d(34, 23, Math.toRadians(270)))
                 .addDisplacementMarker(2, () -> {
                     groundIntake.setState(GroundIntake.State.INTAKING);
                     turret.setState(Turret.State.LEFT);
@@ -62,15 +62,15 @@ public class LeftSideAuto extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                 })
-                .lineToConstantHeading(new Vector2d(34,12))
-                .addTemporalMarker(1,()->{
+                .lineToConstantHeading(new Vector2d(34, 12))
+                .addTemporalMarker(1, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();
 
         Trajectory toIntake = robot.trajectoryBuilder(robot.getPoseEstimate())
-                .lineToConstantHeading(new Vector2d(59,12))
+                .lineToConstantHeading(new Vector2d(59, 12))
                 .addDisplacementMarker(0, () -> {
                     intake.setState(Intake.State.INTAKING);
                 })
@@ -82,7 +82,7 @@ public class LeftSideAuto extends LinearOpMode {
                     turret.setState(Turret.State.LEFT);
                     slides.setState(Slides.State.MID_DROP);
                 })
-                .lineToConstantHeading(new Vector2d(23.5,14))
+                .lineToConstantHeading(new Vector2d(23.5, 14))
                 .addTemporalMarker(2, () -> {
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 })
@@ -90,11 +90,7 @@ public class LeftSideAuto extends LinearOpMode {
                     intake.setState(Intake.State.DEPOSITING);
                 })
                 .build();
-
-        /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())
-                        .lineToConstantHeading(new Vector2d(-48,10))
-                                .build();*/
-
+        
         waitForStart();
         if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
