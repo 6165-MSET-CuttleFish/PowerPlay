@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class LeftSideAuto extends LinearOpMode {
+public class LeftSidePathOnly extends LinearOpMode {
     Robot robot;
     Intake intake;
     Slides slides;
@@ -42,68 +42,30 @@ public class LeftSideAuto extends LinearOpMode {
 
         Trajectory scorePreload = robot.trajectoryBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(34, 23, Math.toRadians(270)))
-                .addDisplacementMarker(2, () -> {
-                    groundIntake.setState(GroundIntake.State.INTAKING);
-                    turret.setState(Turret.State.LEFT);
-                    slides.setState(Slides.State.MID_DROP);
-                    fourbar.setState(vfourb.State.ALIGN_POSITION);
-                })
-                .addTemporalMarker(2, () -> {
-                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                })
-                .addTemporalMarker(2.1, () -> {
-                    intake.setState(Intake.State.DEPOSITING);
-                })
                 .build();
 
         Trajectory removeSignal = robot.trajectoryBuilder(scorePreload.end())
-                .addTemporalMarker(0, () -> {
-                    fourbar.setState(vfourb.State.PRIMED);
-                    slides.setState(Slides.State.BOTTOM);
-                    turret.setState(Turret.State.ZERO);
-                })
                 .lineToConstantHeading(new Vector2d(34, 12))
-                .addTemporalMarker(1, () -> {
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
-                    intake.setState(Intake.State.OFF);
-                })
                 .build();
 
-        Trajectory toIntake = robot.trajectoryBuilder(new Pose2d(34,12,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(61.5, 12))
-                .addDisplacementMarker(0, () -> {
-                    intake.setState(Intake.State.INTAKING);
-                })
+        Trajectory toIntake = robot.trajectoryBuilder(robot.getPoseEstimate())
+                .lineToConstantHeading(new Vector2d(59, 12))
                 .build();
 
         Trajectory scoreMidCycle = robot.trajectoryBuilder(toIntake.end())
-                .addDisplacementMarker(0, () -> {
-                    groundIntake.setState(GroundIntake.State.INTAKING);
-                    turret.setState(Turret.State.RIGHT);
-                    slides.setState(Slides.State.MID_DROP);
-                })
-                .lineToConstantHeading(new Vector2d(23.5, 14))
-                .addTemporalMarker(2, () -> {
-                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                })
-                .addTemporalMarker(2.1, () -> {
-                    intake.setState(Intake.State.DEPOSITING);
-                })
+                .lineToConstantHeading(new Vector2d(23.5, 13))
                 .build();
-
+        
         waitForStart();
         if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(scorePreload);
         robot.followTrajectory(removeSignal);
         sleep(200);
-        robot.groundIntake.setState(GroundIntake.State.OFF);
         robot.turn(Math.toRadians(90));
-
         robot.followTrajectory(toIntake);
-        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
-        sleep(1000);
-        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(200);
+        sleep(200);
         robot.followTrajectory(scoreMidCycle);
         while (!isStopRequested() && opModeIsActive()) ;
     }

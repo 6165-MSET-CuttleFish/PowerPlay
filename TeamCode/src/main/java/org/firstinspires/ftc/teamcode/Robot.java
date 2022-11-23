@@ -62,7 +62,7 @@ public class Robot extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double odomServoPos = 0.28;
+    public static double odomServoPos = 0.3;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
