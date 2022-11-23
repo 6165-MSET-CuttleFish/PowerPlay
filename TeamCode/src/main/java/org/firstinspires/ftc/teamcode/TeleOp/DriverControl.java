@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -43,8 +44,13 @@ public class DriverControl extends LinearOpMode {
     TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
     ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
     ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign;
+    Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect2;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect3;    // Use to build a custom rumble sequence.
+
     int cycleValue = 0;
-    boolean slidesZero = false;
+    boolean slidesZero = false, turretStop = false;
     boolean autoAlignCheck=false, zeroCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,6 +65,7 @@ public class DriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         camInit();
 
         keyReaders = new KeyReader[] {
@@ -79,9 +86,38 @@ public class DriverControl extends LinearOpMode {
                 autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
-        //turretZero: zeros turret
         //junctionScore: lowers v4b on high junction
         };
+
+        customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect1 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect2 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect3 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
@@ -129,6 +165,20 @@ public class DriverControl extends LinearOpMode {
                 cycleValue = 3;
             if (cycleValue > 3)
                 cycleValue = 0;
+            switch(cycleValue) {
+                case 0:
+                    gamepad2.runRumbleEffect(customRumbleEffect0);
+                    break;
+                case 1:
+                    gamepad2.runRumbleEffect(customRumbleEffect1);
+                    break;
+                case 2:
+                    gamepad2.runRumbleEffect(customRumbleEffect2);
+                    break;
+                case 3:
+                    gamepad2.runRumbleEffect(customRumbleEffect3);
+                    break;
+            }
 
             //setting states based off of cycleValue
 
@@ -246,7 +296,16 @@ public class DriverControl extends LinearOpMode {
             }
 
             //manual turret control:
-
+            if (Math.abs(gamepad2.right_stick_x) > 0) {
+                turret.setState(Turret.State.MANUAL);
+                turret.turretMotor.setPower(gamepad2.right_stick_x);
+                turretStop = true;
+            }
+            if (slidesZero && gamepad2.left_stick_y == 0) {
+                turret.setState(Turret.State.MANUAL);
+                turret.turretMotor.setPower(0);
+                turretStop = false;
+            }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);

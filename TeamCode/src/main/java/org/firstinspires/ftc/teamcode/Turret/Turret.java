@@ -23,7 +23,7 @@ public class Turret
     public PIDController pidController;
     public enum State
     {
-        IDLE, MOVING, LEFT, RIGHT, ZERO
+        IDLE, MOVING, LEFT, RIGHT, ZERO, MANUAL
     }
 
     public Turret(HardwareMap hardwareMap)
@@ -64,7 +64,9 @@ public class Turret
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 turretMotor.setPower(.93);
                 break;
-
+            case MANUAL:
+                turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                break;
 
         }
     }
