@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.util.Async;
+//import org.firstinspires.ftc.teamcode.util.Async;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
