@@ -186,7 +186,6 @@ public class DriverControl extends LinearOpMode {
             //POWER RANGERS, ASSEMBLE (idek)
             //reset
             if (reset.wasJustPressed()) {
-                cycleValue = 0;
                 slides.setState(Slides.State.BOTTOM);
                 fourbar.setState(vfourb.State.PRIMED);
                 turret.setState(Turret.State.ZERO);
@@ -304,16 +303,16 @@ public class DriverControl extends LinearOpMode {
             }
 
             //manual turret control:
-            if (Math.abs(gamepad2.right_stick_x) > 0) {
-                turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.right_stick_x);
-                turretStop = true;
-            }
-            if (slidesZero && gamepad2.left_stick_y == 0) {
-                turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(0);
-                turretStop = false;
-            }
+//            if (Math.abs(gamepad2.right_stick_x) > 0) {
+//                turret.setState(Turret.State.MANUAL);
+//                turret.turretMotor.setPower(gamepad2.right_stick_x);
+//                turretStop = true;
+//            }
+//            if (slidesZero && gamepad2.left_stick_y == 0) {
+//                turret.setState(Turret.State.MANUAL);
+//                turret.turretMotor.setPower(0);
+//                turretStop = false;
+//            }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
@@ -373,6 +372,7 @@ public class DriverControl extends LinearOpMode {
 
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
+            telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());

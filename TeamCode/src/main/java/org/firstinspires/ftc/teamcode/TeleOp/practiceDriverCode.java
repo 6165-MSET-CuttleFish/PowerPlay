@@ -115,7 +115,7 @@ public class practiceDriverCode extends LinearOpMode {
                 }
                 //this is not a good impl
                 if(align.isDown()){
-                    turret.zero();
+//                    turret.zero();
                 }
                 /*
 */
