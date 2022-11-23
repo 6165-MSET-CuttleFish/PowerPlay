@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.openftc.easyopencv.OpenCvWebcam;
+
 public class Turret
 {
     static final double     COUNTS_PER_MOTOR_REV    = 65;    // eg: TETRIX Motor Encoder
@@ -14,16 +16,17 @@ public class Turret
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                         (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     TURN_SPEED             = 1;
-    static final int LEFT_POS = 367, RIGHT_POS = -380, ZERO_POS = 0;
+    static final int LEFT_POS = 320, RIGHT_POS = -366, ZERO_POS = 0;
     double endPosition;
     public DcMotorEx turretMotor;
+    Detector detector1;
+    OpenCvWebcam webcam;
     public TouchSensor magnetic;
     public Turret.State state;
     public int prevPositionReset = 0, position = 0;
     public PIDController pidController;
-    public enum State
-    {
-        IDLE, MOVING, LEFT, RIGHT, ZERO
+    public enum State {
+        IDLE, MOVING, LEFT, RIGHT, ZERO, MANUAL
     }
 
     public Turret(HardwareMap hardwareMap)
@@ -64,12 +67,11 @@ public class Turret
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 turretMotor.setPower(.93);
                 break;
-
+//            case MANUAL:
+//                turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+//                break;
 
         }
-    }
-    public void zero(){
-
     }
 
     public Turret.State getState() {
@@ -80,6 +82,18 @@ public class Turret
     {
         this.state = state;
         update();
+    }
+
+    public void autoAlign(){
+        if (detector1.getLocation()== Detector.Location.LEFT && turretMotor.getCurrentPosition() > -390) {
+            setState(Turret.State.LEFT);
+        } else if (detector1.getLocation()== Detector.Location.RIGHT && turretMotor.getCurrentPosition() < 390) {
+            setState(Turret.State.RIGHT);
+        }else{
+            turretMotor.setTargetPosition(turretMotor.getCurrentPosition());
+            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            setState(State.IDLE);
+        }
     }
 
 }

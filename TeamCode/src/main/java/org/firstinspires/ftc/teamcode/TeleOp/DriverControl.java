@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -43,8 +44,13 @@ public class DriverControl extends LinearOpMode {
     TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
     ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
     ToggleButtonReader junctionScore, ninjaMode, straightMode, autoAlign;
+    Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect2;    // Use to build a custom rumble sequence.
+    Gamepad.RumbleEffect customRumbleEffect3;    // Use to build a custom rumble sequence.
+
     int cycleValue = 0;
-    boolean slidesZero = false;
+    boolean slidesZero = false, turretStop = false;
     boolean autoAlignCheck=false, zeroCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,6 +65,7 @@ public class DriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         camInit();
 
         keyReaders = new KeyReader[] {
@@ -79,9 +86,38 @@ public class DriverControl extends LinearOpMode {
                 autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
-        //turretZero: zeros turret
         //junctionScore: lowers v4b on high junction
         };
+
+        customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect1 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect2 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+        customRumbleEffect3 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .build();
+
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
@@ -129,13 +165,38 @@ public class DriverControl extends LinearOpMode {
                 cycleValue = 3;
             if (cycleValue > 3)
                 cycleValue = 0;
+            switch(cycleValue) {
+                case 0:
+                    gamepad2.runRumbleEffect(customRumbleEffect0);
+                    break;
+                case 1:
+                    gamepad2.runRumbleEffect(customRumbleEffect1);
+                    break;
+                case 2:
+                    gamepad2.runRumbleEffect(customRumbleEffect2);
+                    break;
+                case 3:
+                    gamepad2.runRumbleEffect(customRumbleEffect3);
+                    break;
+            }
 
             //setting states based off of cycleValue
 
 
             //POWER RANGERS, ASSEMBLE (idek)
+            //reset
+            if (reset.wasJustPressed()) {
+                slides.setState(Slides.State.BOTTOM);
+                fourbar.setState(vfourb.State.PRIMED);
+                turret.setState(Turret.State.ZERO);
+                autoAlignCheck=false;
+            }
+
+            if(autoAlign.wasJustPressed()){
+                autoAlignCheck=!autoAlignCheck;
+            }
             //turret left
-            if (actuateLeft.wasJustPressed()) {
+            if (actuateLeft.wasJustPressed()&&autoAlignCheck==false) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -161,7 +222,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret right
-            if (actuateRight.wasJustPressed()) {
+            if (actuateRight.wasJustPressed()&&autoAlignCheck==false) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -187,7 +248,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret left
-            if (actuateLeft.wasJustPressed()) {
+            if (actuateLeft.wasJustPressed()&&autoAlignCheck==false) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -213,7 +274,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret mid
-            if (actuateUp.wasJustPressed()) {
+            if (actuateUp.wasJustPressed()&&autoAlignCheck==false) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -237,16 +298,21 @@ public class DriverControl extends LinearOpMode {
                         break;
                 }
             }
-            //reset
-            if (reset.wasJustPressed()) {
-                cycleValue = 0;
-                slides.setState(Slides.State.BOTTOM);
-                fourbar.setState(vfourb.State.PRIMED);
-                turret.setState(Turret.State.ZERO);
+            if(autoAlignCheck){
+                turret.autoAlign();
             }
 
             //manual turret control:
-
+//            if (Math.abs(gamepad2.right_stick_x) > 0) {
+//                turret.setState(Turret.State.MANUAL);
+//                turret.turretMotor.setPower(gamepad2.right_stick_x);
+//                turretStop = true;
+//            }
+//            if (slidesZero && gamepad2.left_stick_y == 0) {
+//                turret.setState(Turret.State.MANUAL);
+//                turret.turretMotor.setPower(0);
+//                turretStop = false;
+//            }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
@@ -260,63 +326,6 @@ public class DriverControl extends LinearOpMode {
                 slides.slidesRight.setPower(0);
                 slidesZero = false;
             }
-
-
-
-            //TURRET
-            /*
-            turret.position=turret.turretMotor.getCurrentPosition();
-            if(turret.magnetic.isPressed()){
-                turret.prevPositionReset=turret.position;
-                turret.position = 0;
-            }if(autoAlign.wasJustPressed()){
-                autoAlignCheck=!autoAlignCheck;
-            }
-            if(turretZero.wasJustPressed()){
-                zeroCheck=!zeroCheck;
-            }*/
-
-            /*
-            if(!autoAlignCheck){
-                if (turretLeft.isDown() && turret.turretMotor.getCurrentPosition() > -390) {
-                    turret.setState(Turret.State.LEFT);
-                } else if (turretRight.isDown() && turret.turretMotor.getCurrentPosition() < 390) {
-                    turret.setState(Turret.State.RIGHT);
-                } else {
-                    if(!zeroCheck) {
-                        turret.turretMotor.setTargetPosition(turret.position);
-                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        turret.setState(Turret.State.IDLE);
-                    }else{
-                        turret.setState(Turret.State.ZERO);
-                    }
-                }
-            } else {
-                if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION||fourbar.getState()==vfourb.State.ALIGN_POSITION){
-                    if(detector1.getLocation()== Detector.Location.LEFT){
-                        turret.turretMotor.setTargetPosition(367);
-                        turret.turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                        turret.turretMotor.setPower(0.1);
-                    } else if(detector1.getLocation()== Detector.Location.RIGHT){
-                        turret.turretMotor.setTargetPosition(-367);
-                        turret.turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                        turret.turretMotor.setPower(-0.1);
-                    } else {
-                        turret.turretMotor.setTargetPosition(turret.position);
-                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        turret.setState(Turret.State.IDLE);
-                    }*/
-               /* }else if(fourbar.getState()==vfourb.State.DEPOSIT_POSITION){
-                    if(detector2.getLocation()== Detector.Location.LEFT){
-                        turret.setState(Turret.State.LEFT);
-                    } else if(detector2.getLocation()== Detector.Location.RIGHT){
-                        turret.setState(Turret.State.RIGHT);
-                    } else {
-                        turret.turretMotor.setTargetPosition(turret.position);
-                        turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        turret.setState(Turret.State.IDLE);
-                    }
-            }*/
 
             //GROUND INTAKE
             if (intakeGround.isDown()) {
@@ -363,6 +372,7 @@ public class DriverControl extends LinearOpMode {
 
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
+            telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
