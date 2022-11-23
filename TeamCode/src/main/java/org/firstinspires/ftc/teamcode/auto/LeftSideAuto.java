@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
@@ -70,15 +71,15 @@ public class LeftSideAuto extends LinearOpMode {
                 .build();
 
         Trajectory toIntake = robot.trajectoryBuilder(new Pose2d(34,12,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(61.5, 12))
+                .lineToConstantHeading(new Vector2d(60  , 12))
                 .addDisplacementMarker(0, () -> {
                     intake.setState(Intake.State.INTAKING);
+                    slides.setState(Slides.State.INTAKE_AUTO);
                 })
                 .build();
 
         Trajectory scoreMidCycle = robot.trajectoryBuilder(toIntake.end())
                 .addDisplacementMarker(0, () -> {
-                    groundIntake.setState(GroundIntake.State.INTAKING);
                     turret.setState(Turret.State.RIGHT);
                     slides.setState(Slides.State.MID_DROP);
                 })
@@ -90,13 +91,29 @@ public class LeftSideAuto extends LinearOpMode {
                     intake.setState(Intake.State.DEPOSITING);
                 })
                 .build();
+        Trajectory toIntakePostCycle = robot.trajectoryBuilder(new Pose2d(23.5,14,Math.toRadians(0)))
+                .addTemporalMarker(0, () -> {
+                    fourbar.setState(vfourb.State.PRIMED);
+                    slides.setState(Slides.State.BOTTOM);
+                    turret.setState(Turret.State.ZERO);
+                })
+                .lineToConstantHeading(new Vector2d(60,12), Robot.getVelocityConstraint(35,
+                        DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), Robot.getAccelerationConstraint(15))
+                .addDisplacementMarker(0, () -> {
+                    intake.setState(Intake.State.INTAKING);
+                    slides.setState(Slides.State.INTAKE_AUTO);
+                })
+                .build();
+
+
+
 
         waitForStart();
         if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(scorePreload);
         robot.followTrajectory(removeSignal);
-        sleep(200);
+        sleep(500);
         robot.groundIntake.setState(GroundIntake.State.OFF);
         robot.turn(Math.toRadians(90));
 
@@ -104,7 +121,25 @@ public class LeftSideAuto extends LinearOpMode {
         robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
         sleep(1000);
         robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
         robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
+
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        sleep(1000);
+        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
+        robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        sleep(1000);
+        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
+        robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
         while (!isStopRequested() && opModeIsActive()) ;
     }
 }

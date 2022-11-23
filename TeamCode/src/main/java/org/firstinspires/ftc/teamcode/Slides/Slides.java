@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Slides;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,12 +20,13 @@ public class Slides {
     static final int MID_DROP = 950;
     static final int LOW = 625; //in inches, low junction is 13.5 inches
     static final int LOW_DROP = 250;
+    static final int INTAKE_AUTO =100;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2.5, 2.43, .075, .025);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -96,6 +95,14 @@ public class Slides {
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
+            case INTAKE_AUTO:
+                slidesLeft.setTargetPosition(INTAKE_AUTO);
+                slidesRight.setTargetPosition(INTAKE_AUTO);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
+                break;
             case BOTTOM:
                 slidesLeft.setTargetPosition(0);
                 slidesRight.setTargetPosition(0);
@@ -107,7 +114,6 @@ public class Slides {
             case MANUAL:
                 slidesRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                break;
         }
 //        if (slidesLimitSwitch.getState()) {
 //            slidesLeft.setPower(0);
