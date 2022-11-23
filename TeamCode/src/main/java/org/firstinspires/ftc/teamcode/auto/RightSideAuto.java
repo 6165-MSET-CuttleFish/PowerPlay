@@ -47,7 +47,7 @@ public class RightSideAuto extends LinearOpMode {
                 .build();*/
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
 
-                .lineToConstantHeading(new Vector2d(-35, 22.25))
+                .lineToConstantHeading(new Vector2d(-35.5, 21.5))
                         .addDisplacementMarker(2, ()->{
                             groundIntake.setState(GroundIntake.State.DEPOSITING);
                             turret.setState(Turret.State.RIGHT);
@@ -69,7 +69,7 @@ public class RightSideAuto extends LinearOpMode {
                     turret.setState(Turret.State.ZERO);
 
                 })
-                .lineToConstantHeading(new Vector2d(-38.5, 10))
+                .lineToConstantHeading(new Vector2d(-40, 10))
 
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
@@ -96,9 +96,11 @@ public class RightSideAuto extends LinearOpMode {
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
         robot.followTrajectory(preload2);
-        robot.followTrajectory(preload3);
-        robot.setPoseEstimate(new Pose2d(-42,10,Math.toRadians(180)));
-        robot.followTrajectory(initCycle);
+        robot.turn(Math.toRadians(-90));
+
+        //robot.followTrajectory(preload3);
+        //robot.setPoseEstimate(new Pose2d(-42,10,Math.toRadians(180)));
+        //robot.followTrajectory(initCycle);
         //robot.updatePoseEstimate();
         //robot.followTrajectory(cycleIntake);
         while (!isStopRequested() && opModeIsActive()) ;
