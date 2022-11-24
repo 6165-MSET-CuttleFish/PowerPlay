@@ -10,14 +10,14 @@ public class vfourb
     public static double INTAKE_POSITION = 0.95;
     public static double DEPOSIT_POSITION = 0.15;
     public static double PRIMED = 0.7;
-    public static double ALIGN_POSITION = 0.275;
-
+    public static double ALIGN_POSITION = 0.3;
+    public static double STACK_PRIMED = 0.75;
+    public static double VERTICAL = 0.5;
     Servo Running;
     Servo Supporting;
     public State state;
-    public enum State
-    {
-        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, ALIGN_POSITION
+    public enum State {
+        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, ALIGN_POSITION, STACK_PRIMED, VERTICAL
     }
 
     public vfourb(HardwareMap hardwareMap)
@@ -46,6 +46,14 @@ public class vfourb
             case ALIGN_POSITION:
                 Running.setPosition(ALIGN_POSITION);
                 Supporting.setPosition(1-ALIGN_POSITION);
+                break;
+            case STACK_PRIMED:
+                Running.setPosition(STACK_PRIMED);
+                Supporting.setPosition(1-STACK_PRIMED);
+                break;
+            case VERTICAL:
+                Running.setPosition(VERTICAL);
+                Supporting.setPosition(1-VERTICAL);
                 break;
         }
     }

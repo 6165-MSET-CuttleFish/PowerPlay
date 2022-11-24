@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
+//@Autonomous
 public class LeftSidePathOnly extends LinearOpMode {
     Robot robot;
     Intake intake;
