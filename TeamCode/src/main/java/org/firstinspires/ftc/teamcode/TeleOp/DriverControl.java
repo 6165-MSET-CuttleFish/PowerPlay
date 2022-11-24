@@ -36,8 +36,8 @@ public class DriverControl extends LinearOpMode {
     vfourb fourbar;
     GroundIntake groundIntake;
     Turret turret;
-    Detector detector1;
-    OpenCvWebcam webcam;
+    //Detector detector1;
+    //OpenCvWebcam webcam;
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
@@ -66,7 +66,7 @@ public class DriverControl extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        camInit();
+        //camInit();
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
@@ -88,7 +88,7 @@ public class DriverControl extends LinearOpMode {
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         //junctionScore: lowers v4b on high junction
         };
-        camInit();
+        //camInit();
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
@@ -374,7 +374,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            telemetry.addData("Pos", detector1.getLocation());
+            //telemetry.addData("Pos", detector1.getLocation());
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
@@ -383,6 +383,7 @@ public class DriverControl extends LinearOpMode {
 
         }
     }
+    /*
     public void camInit() {
         final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
         final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
@@ -410,5 +411,5 @@ public class DriverControl extends LinearOpMode {
         dashboard.startCameraStream(webcam, 30);
         telemetry.addLine("waiting for start");
         telemetry.update();
-    }
+    }*/
 }

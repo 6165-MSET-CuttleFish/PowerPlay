@@ -17,7 +17,7 @@ public class Slides {
     public static int HIGH = 2080; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
     static final int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final int MID_DROP = 960;
+    static final int MID_DROP = 1010;
     static final int LOW = 625; //in inches, low junction is 13.5 inches
     static final int LOW_DROP = 250;
     static final int INTAKE_AUTO =  128;
@@ -32,8 +32,8 @@ public class Slides {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
-        slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

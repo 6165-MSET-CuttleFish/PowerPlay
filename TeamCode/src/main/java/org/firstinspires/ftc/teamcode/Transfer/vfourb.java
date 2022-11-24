@@ -10,8 +10,8 @@ public class vfourb
     public static double INTAKE_POSITION = 0.95;
     public static double DEPOSIT_POSITION = 0.15;
     public static double PRIMED = 0.7;
-    public static double ALIGN_POSITION = 0.3;
-    public static double STACK_PRIMED = 0.75;
+    public static double ALIGN_POSITION = 0.34;
+    public static double STACK_PRIMED = 0.735;
     public static double VERTICAL = 0.5;
     Servo Running;
     Servo Supporting;

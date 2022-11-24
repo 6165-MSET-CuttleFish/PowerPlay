@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Transfer.vfourb;
+
 @Autonomous
 @Config
 public class TurretZeroTest extends LinearOpMode {
@@ -19,6 +21,8 @@ public class TurretZeroTest extends LinearOpMode {
         turret.turretMotor.setTargetPositionTolerance(5);
         turret.turretMotor.setTargetPosition(target);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        vfourb fourbar = new vfourb(hardwareMap);
+        fourbar.setState(vfourb.State.PRIMED);
         waitForStart();
         double randomPos = start;
         int counter = 0;
@@ -26,7 +30,10 @@ public class TurretZeroTest extends LinearOpMode {
 
             //turret.turretMotor.setTargetPosition();
             turret.turretMotor.setTargetPosition(target);
+            turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.turretMotor.setPower(0.5);
+            telemetry.addData("Current Position", turret.turretMotor.getCurrentPosition());
+            telemetry.update();
         }
     }
 }
