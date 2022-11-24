@@ -88,7 +88,6 @@ public class DriverControl extends LinearOpMode {
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         //junctionScore: lowers v4b on high junction
         };
-        //camInit();
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
