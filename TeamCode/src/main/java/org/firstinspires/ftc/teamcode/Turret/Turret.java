@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.openftc.easyopencv.OpenCvWebcam;
-
+@Config
 public class Turret
 {
     static final double     COUNTS_PER_MOTOR_REV    = 65;    // eg: TETRIX Motor Encoder
@@ -17,7 +19,7 @@ public class Turret
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                         (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     TURN_SPEED             = 1;
-    static final int LEFT_POS = 370, RIGHT_POS = -370, ZERO_POS = 0;
+    static final int LEFT_POS = -2049, RIGHT_POS = 1990, ZERO_POS = 20;
     double endPosition;
     public DcMotorEx turretMotor;
     Detector detector1;
@@ -25,6 +27,7 @@ public class Turret
     public TouchSensor magnetic;
     public Turret.State state;
     public int prevPositionReset = 0, position = 0;
+    public static PIDFCoefficients TURRET_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public PIDController pidController;
     public enum State {
         IDLE, MOVING, LEFT, RIGHT, ZERO, MANUAL
@@ -33,9 +36,10 @@ public class Turret
     public Turret(HardwareMap hardwareMap)
     {
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        turretMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        turretMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         //turretMotor.setDirection(DcMotor.Direction.REVERSE);
         setState(State.IDLE);
@@ -43,6 +47,7 @@ public class Turret
 
     public void update()
     {
+        turretMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, TURRET_PIDF);
         switch(state)
         {
             case MOVING:
@@ -51,13 +56,11 @@ public class Turret
                 turretMotor.setPower(0);
                 break;
             case RIGHT:
-                turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(RIGHT_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 turretMotor.setPower(.5);
                 break;
             case LEFT:
-                turretMotor.setTargetPositionTolerance(5);
                 turretMotor.setTargetPosition(LEFT_POS);
                 turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 turretMotor.setPower(.5);

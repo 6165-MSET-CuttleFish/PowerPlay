@@ -36,7 +36,6 @@ public class SafeDriverControl extends LinearOpMode {
     vfourb fourbar;
     GroundIntake groundIntake;
     Turret turret;
-    Detector detector1;
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
@@ -64,8 +63,6 @@ public class SafeDriverControl extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        camInit();
-
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
@@ -84,7 +81,6 @@ public class SafeDriverControl extends LinearOpMode {
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         };
-        camInit();
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
@@ -363,7 +359,7 @@ public class SafeDriverControl extends LinearOpMode {
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            telemetry.addData("Pos", detector1.getLocation());
+            telemetry.addData("Turret", turret.turretMotor.getTargetPosition());
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
@@ -371,20 +367,5 @@ public class SafeDriverControl extends LinearOpMode {
 
 
         }
-    }
-    public void camInit() {
-        final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
-        final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
-        int cameraMonitorViewId = this
-                .hardwareMap
-                .appContext
-                .getResources().getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hardwareMap.appContext.getPackageName()
-                );
-
-        telemetry.addLine("waiting for start");
-        telemetry.update();
     }
 }
