@@ -22,8 +22,6 @@ public class Turret
     static final int LEFT_POS = -380, RIGHT_POS = 380, ZERO_POS = 0;//through bore L = -2049, R = 1990, 0 = 20
     double endPosition;
     public DcMotorEx turretMotor;
-    //Detector detector1;
-    //OpenCvWebcam webcam;
     public TouchSensor magnetic;
     public Turret.State state;
     public int prevPositionReset = 0, position = 0;
@@ -86,16 +84,6 @@ public class Turret
     {
         this.state = state;
         update();
-    }
-
-    public void autoAlign(){
-        /*if (detector1.getLocation()== Detector.Location.LEFT && turretMotor.getCurrentPosition() > -390) {
-            setState(State.LEFT);
-        } else if (detector1.getLocation()== Detector.Location.RIGHT && turretMotor.getCurrentPosition() < 390) {
-            setState(State.RIGHT);
-        }else{
-            setState(State.IDLE);
-        }*/
     }
 
 }

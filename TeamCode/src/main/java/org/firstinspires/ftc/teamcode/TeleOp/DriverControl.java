@@ -54,6 +54,8 @@ public class DriverControl extends LinearOpMode {
     boolean autoAlignCheck=false, zeroCheck=false;
     @Override
     public void runOpMode() throws InterruptedException {
+        camInit();
+
         robot = new Robot(hardwareMap);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
@@ -65,8 +67,6 @@ public class DriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        camInit();
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
@@ -296,7 +296,13 @@ public class DriverControl extends LinearOpMode {
                 }
             }
             if(autoAlignCheck){
-                turret.autoAlign();
+                if (detector1.getLocation()== Detector.Location.LEFT && turret.turretMotor.getCurrentPosition() > -390) {
+                    turret.setState(Turret.State.LEFT);
+                } else if (detector1.getLocation()== Detector.Location.RIGHT && turret.turretMotor.getCurrentPosition() < 390) {
+                    turret.setState(Turret.State.RIGHT);
+                }else{
+                    turret.setState(Turret.State.IDLE);
+                }
             }
 
             //manual turret control:

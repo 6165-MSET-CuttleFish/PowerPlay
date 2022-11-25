@@ -49,7 +49,7 @@ public class LeftSideAutoAutonAlign extends LinearOpMode {
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
                 })
                 .addTemporalMarker(2, () -> {
-                    turret.autoAlign();
+                    //turret.autoAlign();
                     fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                 })
                 .addTemporalMarker(2.1, () -> {
