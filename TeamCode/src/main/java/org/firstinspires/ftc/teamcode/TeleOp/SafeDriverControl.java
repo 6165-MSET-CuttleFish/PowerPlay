@@ -11,22 +11,14 @@ import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Turret.Detector;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.Turret.TurretOld;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class SafeDriverControl extends LinearOpMode {
@@ -35,7 +27,7 @@ public class SafeDriverControl extends LinearOpMode {
     Slides slides;
     vfourb fourbar;
     GroundIntake groundIntake;
-    Turret turret;
+    TurretOld turret;
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
@@ -178,7 +170,7 @@ public class SafeDriverControl extends LinearOpMode {
             if (reset.wasJustPressed()) {
                 slides.setState(Slides.State.BOTTOM);
                 fourbar.setState(vfourb.State.PRIMED);
-                turret.setState(Turret.State.ZERO);
+                turret.setState(TurretOld.State.ZERO);
             }
 
 
@@ -188,22 +180,22 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                 }
             }
@@ -214,22 +206,22 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(TurretOld.State.RIGHT);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(TurretOld.State.RIGHT);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(TurretOld.State.RIGHT);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(TurretOld.State.RIGHT);
                         break;
                 }
             }
@@ -240,22 +232,22 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(TurretOld.State.LEFT);
                         break;
                 }
             }
@@ -266,34 +258,34 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.ZERO);
+                        turret.setState(TurretOld.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        turret.setState(TurretOld.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        turret.setState(TurretOld.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        turret.setState(TurretOld.State.ZERO);
                         break;
                 }
             }
 
             //manual turret control:
             if (Math.abs(gamepad2.right_stick_x) > 0) {
-                turret.setState(Turret.State.MANUAL);
+                turret.setState(TurretOld.State.MANUAL);
                 turret.turretMotor.setPower(gamepad2.right_stick_x);
                 turretStop = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                turret.setState(Turret.State.MANUAL);
+                turret.setState(TurretOld.State.MANUAL);
                 turret.turretMotor.setPower(0);
                 turretStop = false;
             }

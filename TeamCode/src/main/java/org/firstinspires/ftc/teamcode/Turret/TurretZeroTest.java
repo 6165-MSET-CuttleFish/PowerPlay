@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Turret;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
@@ -15,7 +14,7 @@ public class TurretZeroTest extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        Turret turret = new Turret(hardwareMap);
+        TurretOld turret = new TurretOld(hardwareMap);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double start = turret.turretMotor.getCurrentPosition();
         turret.turretMotor.setTargetPositionTolerance(5);

@@ -126,6 +126,39 @@ public class LeftSideAutoMatew extends LinearOpMode {
         robot.followTrajectory(scoreMidCycle);
         robot.followTrajectory(toIntakePostCycle);
         robot.followTrajectory(scoreMidCycle);
+
+
+        /*robot.setPoseEstimate(startPose);
+        robot.followTrajectory(scorePreload);
+        robot.followTrajectory(removeSignal);
+        sleep(500);
+        robot.groundIntake.setState(GroundIntake.State.OFF);
+        robot.turn(Math.toRadians(90));
+
+        robot.followTrajectory(toIntake);
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        sleep(1000);
+        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
+        robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
+
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        sleep(1000);
+        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
+        robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        sleep(1000);
+        robot.fourbar.setState(vfourb.State.ALIGN_POSITION);
+        sleep(1000);
+        robot.followTrajectory(scoreMidCycle);
+        sleep(500);
+        robot.followTrajectory(toIntakePostCycle);
+        while (!isStopRequested() && opModeIsActive()) ;*/
     }
 
     public void prepIntake()

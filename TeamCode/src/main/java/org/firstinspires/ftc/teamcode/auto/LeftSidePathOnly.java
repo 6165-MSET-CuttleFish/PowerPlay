@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -12,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.Turret.TurretOld;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
@@ -23,7 +22,7 @@ public class LeftSidePathOnly extends LinearOpMode {
     Slides slides;
     vfourb fourbar;
     GroundIntake groundIntake;
-    Turret turret;
+    TurretOld turret;
     Detector detector1;
     OpenCvWebcam webcam;
     Pose2d startPose = new Pose2d(36, 62, Math.toRadians(270));

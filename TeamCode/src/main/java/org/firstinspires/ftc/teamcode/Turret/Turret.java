@@ -1,89 +1,142 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.PIDCoeff;
+import org.firstinspires.ftc.teamcode.util.PIDControl;
+
 @Config
 public class Turret
 {
-    static final double     COUNTS_PER_MOTOR_REV    = 65;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 8.26771654;   // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                        (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     TURN_SPEED             = 1;
-    static final int LEFT_POS = -380, RIGHT_POS = 380, ZERO_POS = 0;//through bore L = -2049, R = 1990, 0 = 20
-    double endPosition;
+    public static double kp=0.0502;
+    public static double ki=0.183;
+    public static double kd=3.74;
+    public static double iSumMax=43.2;
+    public static double stabThresh=40;
+
+    PIDControl controller;
+    PIDCoeff coeff;
+
+    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0;
+    public static double closePower = 0.1;
+    public static double farPower = 0.5;
+    double targetPos=0;
+    double posAtZero=0;
     public DcMotorEx turretMotor;
+    public Encoder encoder;
     public TouchSensor magnetic;
     public Turret.State state;
-    public int prevPositionReset = 0, position = 0;
-    public static PIDFCoefficients TURRET_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
-    public PIDController pidController;
-    public enum State {
-        IDLE, MOVING, LEFT, RIGHT, ZERO, MANUAL
+    TurretThread thread;
+
+    public double motorOil=0;
+
+    public enum State
+    {
+        IDLE, LEFT, RIGHT, ZERO, MANUAL
     }
 
     public Turret(HardwareMap hardwareMap)
     {
+        coeff=new PIDCoeff(kp ,ki, kd, iSumMax, stabThresh);
+        controller=new PIDControl(coeff);
+
+
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
-        turretMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        turretMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        turretMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //turretMotor.setDirection(DcMotor.Direction.REVERSE);
+        thread=new TurretThread(this);
+
+
         setState(State.IDLE);
+        thread.start();
     }
 
-    public void update()
+    public void update(double time)
     {
-        turretMotor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, TURRET_PIDF);
-        switch(state)
+        /*if(magnetic.isPressed())
         {
-            case MOVING:
-                break;
-            case IDLE:
-                turretMotor.setPower(0);
-                break;
-            case RIGHT:
-                turretMotor.setTargetPosition(RIGHT_POS);
-                turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.5);
-                break;
-            case LEFT:
-                turretMotor.setTargetPosition(LEFT_POS);
-                turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.5);
-                break;
-            case ZERO:
-                turretMotor.setTargetPositionTolerance(5);
-                turretMotor.setTargetPosition(ZERO_POS);
-                turretMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                turretMotor.setPower(.93);
-                break;
-//            case MANUAL:
-//                turretMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-//                break;
+            posAtZero=turretMotor.getCurrentPosition();
+        }*/
 
+        updateTarget();
+        double sign=Math.signum(targetPos- encoder.getCurrentPosition());
+        double errorAbs=Math.abs(targetPos-encoder.getCurrentPosition());
+        //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
+        if(state!=State.MANUAL)
+        {
+            if(errorAbs<15)
+            {
+                motorOil=0;
+            }
+            else if(errorAbs<200)
+            {
+                motorOil=sign*closePower;
+            }
+            else if(errorAbs>200)
+            {
+                motorOil=sign*farPower;
+            }
         }
+        turretMotor.setPower(motorOil);
     }
 
-    public Turret.State getState() {
-        return state;
-    }
 
     public void setState(Turret.State state)
     {
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.state = state;
-        update();
     }
 
+    private void updateTarget()
+    {
+        //if hall effect then reset pos at zero
+
+        switch(state)
+        {
+            case MANUAL:
+                targetPos = encoder.getCurrentPosition();
+            case IDLE:
+                targetPos = encoder.getCurrentPosition()+posAtZero;
+                break;
+            case RIGHT:
+                targetPos=RIGHT_POS+posAtZero;
+                break;
+            case LEFT:
+                targetPos=LEFT_POS+posAtZero;
+                break;
+            case ZERO:
+                targetPos=ZERO_POS+posAtZero;
+                break;
+        }
+    }
+
+    public boolean isBusy()
+    {
+        if(state==State.IDLE)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public Turret.State getState()
+    {
+        return state;
+    }
+
+    public void stop()
+    {
+        thread.kill();
+    }
 }

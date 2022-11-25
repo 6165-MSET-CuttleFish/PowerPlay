@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @TeleOp
 @Config
 public class TurretTestTele extends LinearOpMode {
-    Turret turret;
+    TurretOld turret;
     final double QUICK_POWER=1.0;
     final double SLOW_POWER = 0.125;
     boolean toggleAutoAlign;
@@ -27,7 +27,7 @@ public class TurretTestTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        turret=new Turret(hardwareMap);
+        turret=new TurretOld(hardwareMap);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         toggleAutoAlign=false;
         turret.prevPositionReset=0;
