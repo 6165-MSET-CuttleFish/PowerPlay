@@ -20,7 +20,7 @@ public class Slides {
     static final int MID_DROP = 1010;
     static final int LOW = 625; //in inches, low junction is 13.5 inches
     static final int LOW_DROP = 250;
-    static final int INTAKE_AUTO =  128;
+    static final int INTAKE_AUTO =  113;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2.5, 2.43, .075, .025);
     public static final double TICKS_PER_INCH = 43.3935;
