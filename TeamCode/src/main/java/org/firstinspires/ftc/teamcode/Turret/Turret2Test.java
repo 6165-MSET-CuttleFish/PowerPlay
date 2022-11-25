@@ -13,10 +13,11 @@ public class Turret2Test extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         turret=new Turret2(hardwareMap);
+        telemetry.addData("encoder", turret.encoder.getCurrentPosition());
         waitForStart();
 
 
-        turret.setState(Turret2.State.LEFT);
+        //turret.setState(Turret2.State.LEFT);
         while(opModeIsActive())
         {
             if(gamepad1.a)
@@ -27,18 +28,15 @@ public class Turret2Test extends LinearOpMode
             {
                 turret.setState(Turret2.State.LEFT);
             }
-            else if(gamepad1.dpad_left)
+            else if(gamepad1.y)
             {
-                turret.setState(Turret2.State.MIDRIGHT);
-            }
-            else if(gamepad1.dpad_right)
-            {
-                turret.setState(Turret2.State.MIDLEFT);
+                turret.setState(Turret2.State.ZERO);
             }
 
             turret.update();
             telemetry.addData("State", turret.getState());
-            telemetry.addData("Error", turret.motorPower());
+            telemetry.addData("power", turret.motorPower());
+            telemetry.addData("encoder", turret.encoder.getCurrentPosition());
             telemetry.update();
         }
     }
