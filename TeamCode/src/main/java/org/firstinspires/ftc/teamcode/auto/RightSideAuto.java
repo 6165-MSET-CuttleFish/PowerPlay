@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
@@ -18,6 +19,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
 public class RightSideAuto extends LinearOpMode {
+    ElapsedTime t;
     Robot robot;
     Intake intake;
     Slides slides;
@@ -30,6 +32,7 @@ public class RightSideAuto extends LinearOpMode {
     double timer = 0;
     @Override
     public void runOpMode() throws InterruptedException {
+        t=new ElapsedTime();
         robot = new Robot(hardwareMap);
         intake = robot.intake;
         slides = robot.slides;
@@ -50,7 +53,7 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-34.5, 20.88))
                         .addDisplacementMarker(2, ()->{
                             groundIntake.setState(GroundIntake.State.DEPOSITING);
-                            //turret.setState(Turret.State.RIGHT);
+                            turret.setState(Turret.State.RIGHT);
                             slides.setState(Slides.State.MID_DROP);
                             fourbar.setState(vfourb.State.ALIGN_POSITION);
                         })
@@ -61,6 +64,11 @@ public class RightSideAuto extends LinearOpMode {
                 .addTemporalMarker(2.1, ()->{
                     intake.setState(Intake.State.DEPOSITING);
                 })
+                .addDisplacementMarker(()->
+                {
+                    fourbar.setState(vfourb.State.ALIGN_POSITION);
+                    waitSec(0.25);
+                })
                 .build();
 
         //RESET EVERYTHING, MOVE TO STACK, READY FOR PICK UP
@@ -68,14 +76,14 @@ public class RightSideAuto extends LinearOpMode {
                 .addTemporalMarker(0,()->{
                     fourbar.setState(vfourb.State.STACK_PRIMED);
                     slides.setState(Slides.State.BOTTOM);
-                    //turret.setState(Turret.State.ZERO);
+                    turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .lineToConstantHeading(new Vector2d(-40, 11.76))
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
 
-                .lineToLinearHeading(new Pose2d(-43, 11.76, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-45, 11.76, Math.toRadians(180)))
                 .build();
         //MOVE TO STACK, PICK UP FIRST CONE
         Trajectory initCycle = robot.trajectoryBuilder(preload3.end())
@@ -92,9 +100,9 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-25.75,13.7))
                 .addDisplacementMarker(2, ()->{
 
-                    //turret.setState(Turret.State.LEFT);
+                    turret.setState(Turret.State.LEFT);
                     slides.setState(Slides.State.MID_DROP);
-                    //fourbar.setState(vfourb.State.ALIGN_POSITION);
+                    fourbar.setState(vfourb.State.ALIGN_POSITION);
                 })
                 .build();
 
@@ -102,11 +110,11 @@ public class RightSideAuto extends LinearOpMode {
         Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleDropOff1.end())
 
                 .lineToConstantHeading(new Vector2d(-63,11.76),
-                        robot.getVelocityConstraint(45, 5.939, 14.48),
-                        robot.getAccelerationConstraint(25))
+                        robot.getVelocityConstraint(28, 5.939, 14.48),
+                        robot.getAccelerationConstraint(13))
 
                 .addTemporalMarker(0, ()->{
-                    //turret.setState(Turret.State.ZERO);
+                    turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
                     intake.setState(Intake.State.OFF);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
@@ -119,11 +127,11 @@ public class RightSideAuto extends LinearOpMode {
         Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleDropOff1.end())
 
                 .lineToConstantHeading(new Vector2d(-63,11.76),
-                        robot.getVelocityConstraint(45, 5.939, 14.48),
-                        robot.getAccelerationConstraint(25))
+                        robot.getVelocityConstraint(28, 5.939, 14.48),
+                        robot.getAccelerationConstraint(13))
 
                 .addTemporalMarker(0, ()->{
-                    //turret.setState(Turret.State.ZERO);
+                    turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
                     intake.setState(Intake.State.OFF);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
@@ -134,7 +142,7 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDropOff1.end())
                 .addTemporalMarker(0,()->{
-                    //turret.setState(Turret.State.ZERO);
+                    turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
                 })
@@ -145,7 +153,7 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-13,11.98)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDropOff1.end())
                 .addTemporalMarker(0,()->{
-                    //turret.setState(Turret.State.ZERO);
+                    turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
                 })
@@ -254,4 +262,12 @@ public class RightSideAuto extends LinearOpMode {
         telemetry.addLine("waiting for start");
         telemetry.update();
     }*/
+    public void waitSec(double seconds)
+    {
+        t.reset();
+        while(t.milliseconds()<seconds*1000)
+        {
+            //stall
+        }
+    }
 }

@@ -385,6 +385,7 @@ public class DriverControl extends LinearOpMode {
 
 
         }
+        turret.stop();
     }
 
     public void camInit() {
