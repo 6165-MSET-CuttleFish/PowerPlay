@@ -27,7 +27,7 @@ public class GroundIntake
     {
         intakeRunning=hardwareMap.get(CRServo.class, "gr");
         intakeSupporting = hardwareMap.get(CRServo.class, "gl");
-        distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
+//        distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
         intakeSupporting.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
@@ -54,26 +54,26 @@ public class GroundIntake
     public State getState() {
         return state;
     }
-    public boolean gSensor(){
-        if(runningTrigger){
-            runningTrigger = false;
-        }
-        else if(distSens.getDistance(DistanceUnit.MM)<22&& !temp2){
-            runningTrigger = true;
-            temp2 = true;
-        }
-        if(distSens.getDistance(DistanceUnit.MM)>50){
-            temp2 = false;
-        }
-        return runningTrigger;
-
-    }
+//    public boolean gSensor(){
+//        if(runningTrigger){
+//            runningTrigger = false;
+//        }
+//        else if(distSens.getDistance(DistanceUnit.MM)<22&& !temp2){
+//            runningTrigger = true;
+//            temp2 = true;
+//        }
+//        if(distSens.getDistance(DistanceUnit.MM)>50){
+//            temp2 = false;
+//        }
+//        return runningTrigger;
+//
+//    }
     public boolean temp2e() {
         return temp2;
     }
-    public double sensorVal(){
-        return distSens.getDistance(DistanceUnit.MM);
-    }
+//    public double sensorVal(){
+//        return distSens.getDistance(DistanceUnit.MM);
+//    }
     public boolean runningTriggere(){
         return runningTrigger;
     }

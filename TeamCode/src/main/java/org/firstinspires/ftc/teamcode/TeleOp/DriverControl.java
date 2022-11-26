@@ -384,7 +384,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
             telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
-            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+//            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.update();
