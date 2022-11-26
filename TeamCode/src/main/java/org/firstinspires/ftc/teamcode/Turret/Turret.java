@@ -87,8 +87,8 @@ public class Turret
             {
                 motorOil=sign*farPower;
             }
+            turretMotor.setPower(motorOil);
         }
-        turretMotor.setPower(motorOil);
     }
 
 

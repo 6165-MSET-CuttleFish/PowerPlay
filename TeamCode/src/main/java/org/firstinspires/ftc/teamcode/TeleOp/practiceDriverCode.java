@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.TurretOld;
+import org.firstinspires.ftc.teamcode.Turret.Turret;
 
 @TeleOp
 public class practiceDriverCode extends LinearOpMode {
@@ -24,7 +24,7 @@ public class practiceDriverCode extends LinearOpMode {
     Slides slide;
     vfourb fourbar;
     GroundIntake groundIntake;
-     TurretOld turret;
+     Turret turret;
     GamepadEx primary;
     GamepadEx secondary;
     KeyReader[] keyReaders;
