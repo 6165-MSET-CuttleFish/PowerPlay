@@ -29,7 +29,7 @@ public class RightSideAutoWow extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;

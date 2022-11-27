@@ -43,7 +43,7 @@ public class SafeDriverControl extends LinearOpMode {
     boolean slidesZero = false, turretStop = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);

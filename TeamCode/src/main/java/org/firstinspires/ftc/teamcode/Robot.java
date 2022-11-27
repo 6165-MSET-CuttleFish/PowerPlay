@@ -31,6 +31,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -50,6 +51,7 @@ import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.HardwareThread;
 import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
@@ -95,6 +97,7 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
+    public HardwareThread thread;
     public GroundIntake groundIntake;
     public Camera camera;
     public boolean isOdoRaised = false;
@@ -107,12 +110,17 @@ public class Robot extends MecanumDrive {
     public driveState getState() {
         return state;
     }
-    public Robot(HardwareMap hardwareMap) {
+    public Robot(LinearOpMode l) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+
         slides = new Slides(hardwareMap);
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap);
+
+        thread=new HardwareThread(turret, slides, l);
+        thread.start();
 
 
         groundIntake = new GroundIntake(hardwareMap);
@@ -183,6 +191,8 @@ public class Robot extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

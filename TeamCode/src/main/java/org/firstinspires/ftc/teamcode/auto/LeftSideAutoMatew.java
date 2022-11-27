@@ -35,7 +35,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;
@@ -61,7 +61,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                 })
-                .lineToConstantHeading(new Vector2d(34, 12))
+                .lineToSplineHeading(new Pose2d(34, 12, Math.toRadians(0)))
                 .addTemporalMarker(1, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     intake.setState(Intake.State.OFF);
@@ -118,7 +118,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(scorePreload);
         robot.followTrajectory(removeSignal);
-        robot.turn(Math.toRadians(90));
+        //robot.turn(Math.toRadians(90));
 
         robot.followTrajectory(toIntake);
         robot.followTrajectory(scoreMidCycle);

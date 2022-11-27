@@ -3,14 +3,18 @@ package org.firstinspires.ftc.teamcode.Turret;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Robot;
+
 @TeleOp
 public class Turret2Test extends LinearOpMode
 {
     Turret turret;
+    Robot robot;
     @Override
     public void runOpMode() throws InterruptedException
     {
-        turret=new Turret(hardwareMap);
+        robot=new Robot(this);
+        turret=robot.turret;
         telemetry.addData("encoder", turret.encoder.getCurrentPosition());
         waitForStart();
 
@@ -36,6 +40,5 @@ public class Turret2Test extends LinearOpMode
             //telemetry.addData("pid", turret.pidMotorOil);
             telemetry.update();
         }
-        turret.stop();
     }
 }

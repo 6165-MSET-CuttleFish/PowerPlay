@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -32,7 +33,6 @@ public class Turret
     public Encoder encoder;
     public TouchSensor magnetic;
     public Turret.State state;
-    TurretThread thread;
 
     public double motorOil=0;
 
@@ -54,15 +54,10 @@ public class Turret
         magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        thread=new TurretThread(this);
-
-
         setState(State.IDLE);
-        thread.start();
     }
 
-    public void update(double time)
+    public void update(/*double time*/)
     {
         /*if(magnetic.isPressed())
         {
@@ -133,10 +128,5 @@ public class Turret
     public Turret.State getState()
     {
         return state;
-    }
-
-    public void stop()
-    {
-        thread.kill();
     }
 }

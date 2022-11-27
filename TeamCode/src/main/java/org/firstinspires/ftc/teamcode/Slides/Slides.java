@@ -14,6 +14,7 @@ public class Slides {
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
+    boolean switchPressed=false;
     public static int HIGH = 2080; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
     static final int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
@@ -26,7 +27,7 @@ public class Slides {
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO
     }
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
@@ -38,7 +39,6 @@ public class Slides {
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
     }
 
     public void update(){
@@ -46,7 +46,8 @@ public class Slides {
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
 //        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-        switch(state) {
+        switch(state)
+        {
             case HIGH:
                 slidesLeft.setTargetPosition(HIGH);
                 slidesRight.setTargetPosition(HIGH);
@@ -111,21 +112,42 @@ public class Slides {
                 slidesLeft.setPower(1);
                 slidesRight.setPower(1);
                 break;
+            case ZERO:
+                slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                slidesLeft.setPower(0);
+                slidesRight.setPower(0);
             case MANUAL:
-                slidesRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
 //        if (slidesLimitSwitch.getState()) {
 //            slidesLeft.setPower(0);
 //            slidesRight.setPower(0);
 //        }
     }
-public void resetcheck(){
-        if(slidesLimitSwitch.getState()){
-            slidesLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            slidesRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        }
+
+
+public void checkLimit()
+{
+    //switchPressed=slidesLimitSwitch.getState();
+    if(switchPressed&&state==State.BOTTOM)
+    {
+        setState(State.ZERO);
+    }
 }
+public void setPowerManual(double power)
+{
+    setState(State.MANUAL);
+    /*if(switchPressed&&power<0)
+    {
+        power = 0;
+    }*/
+    slidesLeft.setPower(power);
+    slidesRight.setPower(power);
+}
+
     public Slides.State getState() {
         return state;
     }

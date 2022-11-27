@@ -54,7 +54,7 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -316,15 +316,12 @@ public class DriverControl extends LinearOpMode {
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(gamepad2.left_stick_y);
-                slides.slidesRight.setPower(gamepad2.left_stick_y);
+                slides.setPowerManual(gamepad2.left_stick_y);
+                //slides.setPowerManual(gamepad2.left_stick_y);
                     slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(0);
-                slides.slidesRight.setPower(0);
+                slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = false;
             }
 
@@ -381,11 +378,12 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
+            telemetry.addData("Slide power", gamepad2.left_stick_y);
+            telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
             telemetry.update();
 
 
         }
-        turret.stop();
     }
 
     public void camInit() {

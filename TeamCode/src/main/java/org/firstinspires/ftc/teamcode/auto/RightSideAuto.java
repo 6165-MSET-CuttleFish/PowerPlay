@@ -33,7 +33,7 @@ public class RightSideAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;
