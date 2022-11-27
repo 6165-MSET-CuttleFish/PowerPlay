@@ -27,7 +27,7 @@ public class LocalizationTest extends LinearOpMode {
         prevHeading=0;
 
         //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Robot drive = new Robot(hardwareMap);
+        Robot drive = new Robot(this);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();

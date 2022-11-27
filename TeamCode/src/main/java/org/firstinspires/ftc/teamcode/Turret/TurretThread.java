@@ -1,32 +1,27 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TurretThread extends Thread
 {
-    ElapsedTime t;
+    LinearOpMode l;
     Turret turret;
-    boolean online=false;
 
-    public TurretThread (Turret turret)
+    public TurretThread (Turret turret, LinearOpMode l)
     {
         this.turret=turret;
-        online=true;
+        this.l=l;
     }
 
-    public void kill()
-    {
-        online=false;
-    }
+
 
     @Override
     public void run()
     {
-        t=new ElapsedTime();
-        while(online)
+        while(l.opModeIsActive())
         {
-            turret.update(t.seconds());
-            t.reset();
+            turret.update();
         }
     }
 

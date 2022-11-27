@@ -43,7 +43,7 @@ public class SafeDriverControl extends LinearOpMode {
     boolean slidesZero = false, turretStop = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -352,7 +352,7 @@ public class SafeDriverControl extends LinearOpMode {
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Turret", turret.turretMotor.getTargetPosition());
-            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+//            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.update();

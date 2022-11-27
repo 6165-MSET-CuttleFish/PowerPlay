@@ -54,7 +54,7 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new Robot(hardwareMap);
+        robot = new Robot(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -87,32 +87,32 @@ public class DriverControl extends LinearOpMode {
         //junctionScore: lowers v4b on high junction
         };
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
-                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect1 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000)  //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect2 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect3 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
 
         waitForStart();
@@ -157,26 +157,31 @@ public class DriverControl extends LinearOpMode {
                 cycleValue++;
             if (cycleDown.wasJustPressed())
                 cycleValue--;
+
             //keeps the integer range between 0 and 3
             if (cycleValue < 0)
                 cycleValue = 3;
             if (cycleValue > 3)
                 cycleValue = 0;
-            switch(cycleValue) {
-                case 0:
-                    gamepad2.runRumbleEffect(customRumbleEffect0);
-                    break;
-                case 1:
-                    gamepad2.runRumbleEffect(customRumbleEffect1);
-                    break;
-                case 2:
-                    gamepad2.runRumbleEffect(customRumbleEffect2);
-                    break;
-                case 3:
-                    gamepad2.runRumbleEffect(customRumbleEffect3);
-                    break;
+            if(cycleDown.wasJustPressed()||cycleUp.wasJustPressed()){
+                gamepad2.stopRumble();
+                if(!gamepad2.isRumbling()) {
+                    switch (cycleValue) {
+                        case 0:
+                          //  gamepad2.runRumbleEffect(customRumbleEffect0);
+                            break;
+                        case 1:
+                            gamepad2.runRumbleEffect(customRumbleEffect0);
+                            break;
+                        case 2:
+                            gamepad2.runRumbleEffect(customRumbleEffect1);
+                            break;
+                        case 3:
+                            gamepad2.runRumbleEffect(customRumbleEffect2);
+                            break;
+                    }
+                }
             }
-
             //setting states based off of cycleValue
 
             //reset
@@ -217,7 +222,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret right
-            if (actuateRight.wasJustPressed()&&autoAlignCheck==false) {
+            if (actuateRight.wasJustPressed()&& !autoAlignCheck) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -243,7 +248,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret left
-            if (actuateLeft.wasJustPressed()&&autoAlignCheck==false) {
+            if (actuateLeft.wasJustPressed()&& !autoAlignCheck) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -269,7 +274,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //turret mid
-            if (actuateUp.wasJustPressed()&&autoAlignCheck==false) {
+            if (actuateUp.wasJustPressed()&& !autoAlignCheck) {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -317,15 +322,12 @@ public class DriverControl extends LinearOpMode {
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(gamepad2.left_stick_y);
-                slides.slidesRight.setPower(gamepad2.left_stick_y);
+                slides.setPowerManual(gamepad2.left_stick_y);
+                //slides.setPowerManual(gamepad2.left_stick_y);
                     slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(0);
-                slides.slidesRight.setPower(0);
+                slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = false;
             }
 
@@ -378,15 +380,17 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            //telemetry.addData("Pos", detector1.getLocation());
-            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+            telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
+            telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
+//            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
+            telemetry.addData("Slide power", gamepad2.left_stick_y);
+            telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
             telemetry.update();
 
 
         }
-        turret.stop();
     }
 
     public void camInit() {
