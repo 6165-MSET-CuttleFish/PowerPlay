@@ -51,7 +51,7 @@ public class Turret
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
+//        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         setState(State.IDLE);

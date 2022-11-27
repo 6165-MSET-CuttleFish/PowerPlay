@@ -38,7 +38,8 @@ public class TestSlides extends LinearOpMode {
             }
             telemetry.addData("Left Ticks: ", slidesLeft.getCurrentPosition());
             telemetry.addData("Right Ticks: ", slidesRight.getCurrentPosition());
-            telemetry.addData("Power: ", slidesRight.getPower());
+            telemetry.addData("1 Power: ", slidesLeft.getPower());
+            telemetry.addData("2 Power: ", slidesRight.getPower());
             telemetry.addData("Target Pos:", slidesRight.getTargetPosition());
             telemetry.addData("InchesL: ", slide.slidesLeft.getCurrentPosition());
             telemetry.addData("InchesR: ", slide.slidesRight.getCurrentPosition());
