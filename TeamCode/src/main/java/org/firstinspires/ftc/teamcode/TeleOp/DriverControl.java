@@ -294,11 +294,12 @@ public class DriverControl extends LinearOpMode {
                 }
             }
             if(autoAlignCheck){
-                if (detector1.getLocation()== Detector.Location.LEFT && turret.turretMotor.getCurrentPosition() > -390) {
-                    turret.setState(Turret.State.LEFT);
-                } else if (detector1.getLocation()== Detector.Location.RIGHT && turret.turretMotor.getCurrentPosition() < 390) {
-                    turret.setState(Turret.State.RIGHT);
+                if (detector1.getLocation()== Detector.Location.LEFT) {
+                    turret.turretMotor.setPower(-0.2);
+                } else if (detector1.getLocation()== Detector.Location.RIGHT) {
+                    turret.turretMotor.setPower(0.2);
                 }else{
+                    turret.turretMotor.setPower(0);
                     turret.setState(Turret.State.IDLE);
                 }
             }
