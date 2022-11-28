@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
@@ -28,7 +29,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class DriverControl extends LinearOpMode {
-    Robot robot;
+    RobotTemp robot;
     Intake intake;
     Slides slides;
     vfourb fourbar;
@@ -54,7 +55,7 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new Robot(this);
+        robot = new RobotTemp(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -389,7 +390,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
             telemetry.update();
 
-
+            turret.update();
         }
     }
 
