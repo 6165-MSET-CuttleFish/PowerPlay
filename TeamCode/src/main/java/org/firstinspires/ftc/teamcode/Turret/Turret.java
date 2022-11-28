@@ -38,7 +38,7 @@ public class Turret
 
     public enum State
     {
-        IDLE, LEFT, RIGHT, ZERO, MANUAL
+        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN
     }
 
     public Turret(HardwareMap hardwareMap)
@@ -112,6 +112,8 @@ public class Turret
                 break;
             case ZERO:
                 targetPos=ZERO_POS+posAtZero;
+                break;
+            case AUTOALIGN:
                 break;
         }
     }
