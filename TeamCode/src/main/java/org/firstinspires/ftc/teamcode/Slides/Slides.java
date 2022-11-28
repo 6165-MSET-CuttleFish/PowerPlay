@@ -14,11 +14,11 @@ public class Slides {
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
-    public static int HIGH = 2080; //old = 1850
-    static final int HIGH_DROP = 2080; //old = 1650
-    static final int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int HIGH = 1840; //old = 1850
+    static final int HIGH_DROP = 1700; //old = 1650
+    static final int MID = 1520; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final int MID_DROP = 1010;
-    static final int LOW = 625; //in inches, low junction is 13.5 inches
+    static final int LOW = 677; //in inches, low junction is 13.5 inches
     static final int LOW_DROP = 250;
     static final int INTAKE_AUTO =  113;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
