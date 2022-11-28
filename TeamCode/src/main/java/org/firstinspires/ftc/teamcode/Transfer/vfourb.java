@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.Transfer;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.util.Module;
+
 @Config
-public class vfourb
+public class vfourb extends Module
 {
     //temporary values
     public static double INTAKE_POSITION = 0.95;
@@ -27,6 +30,7 @@ public class vfourb
         setState(State.INTAKE_POSITION);
     }
 
+    @Override
     public void update()
     {
         switch(state)
@@ -70,7 +74,7 @@ public class vfourb
     public void setState(State state)
     {
         this.state = state;
-        update();
+        //update();
     }
 
 }

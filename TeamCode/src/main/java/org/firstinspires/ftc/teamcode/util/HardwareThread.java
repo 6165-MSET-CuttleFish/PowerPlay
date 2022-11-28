@@ -3,20 +3,19 @@ package org.firstinspires.ftc.teamcode.util;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 
 public class HardwareThread extends Thread
 {
     LinearOpMode l;
-    Turret turret;
-    Slides slides;
+    Robot r;
 
-    public HardwareThread (Turret turret, Slides slides, LinearOpMode l)
+    public HardwareThread (LinearOpMode l, Robot r)
     {
-        this.turret=turret;
-        this.slides=slides;
         this.l=l;
+        this.r=r;
     }
 
     @Override
@@ -24,8 +23,11 @@ public class HardwareThread extends Thread
     {
         while(l.opModeIsActive())
         {
-            turret.update();
-            slides.checkLimit();
+            for(Module m:r.modules)
+            {
+                m.update();
+            }
+            r.updateManual();
         }
     }
 }

@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.util.Module;
 
-public class GroundIntake
+public class GroundIntake extends Module
 {
     //temporary values
     static final double INTAKING = 1;
@@ -32,6 +33,7 @@ public class GroundIntake
         setState(State.OFF);
     }
 
+    @Override
     public void update()
     {
         switch(state)
@@ -80,7 +82,7 @@ public class GroundIntake
     public void setState(State state)
     {
         this.state = state;
-        update();
+        //update();
     }
 
 }

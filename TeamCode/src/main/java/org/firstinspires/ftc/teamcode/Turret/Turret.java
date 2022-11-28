@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.Module;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
-public class Turret
+public class Turret extends Module
 {
     public static double kp=0.0502;
     public static double ki=0.183;
@@ -57,6 +58,7 @@ public class Turret
         setState(State.IDLE);
     }
 
+    @Override
     public void update(/*double time*/)
     {
         /*if(magnetic.isPressed())

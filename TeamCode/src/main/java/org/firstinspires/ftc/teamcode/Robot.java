@@ -52,6 +52,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.HardwareThread;
+import org.firstinspires.ftc.teamcode.util.Module;
 import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
@@ -60,10 +61,12 @@ import java.util.List;
 @Config
 public class Robot extends MecanumDrive {
 
+    Pose2d manualVel;
+    boolean velChanged=false;
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
     public static double LATERAL_MULTIPLIER = .99;
-
 
     public static double odomServoPos = 0.32;
     public static double VX_WEIGHT = 1;
@@ -97,8 +100,11 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
-    public HardwareThread thread;
     public GroundIntake groundIntake;
+
+    public List<Module> modules;
+
+    public HardwareThread thread;
     public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
@@ -118,13 +124,19 @@ public class Robot extends MecanumDrive {
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap);
+        groundIntake = new GroundIntake(hardwareMap);
 
-        thread=new HardwareThread(turret, slides, l);
+        modules=new ArrayList<Module>();
+        modules.add(slides);
+        modules.add(fourbar);
+        modules.add(intake);
+        modules.add(turret);
+        modules.add(groundIntake);
+
+        thread=new HardwareThread(l, this);
         thread.start();
 
 
-        groundIntake = new GroundIntake(hardwareMap);
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -162,8 +174,6 @@ public class Robot extends MecanumDrive {
 
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
         odoRaise.setPosition(odomServoPos);
-        groundLeft = hardwareMap.get(CRServo.class, "gl");
-        groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -191,8 +201,6 @@ public class Robot extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
-
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -308,8 +316,18 @@ public class Robot extends MecanumDrive {
                     OMEGA_WEIGHT * drivePower.getHeading()
             ).div(denom);
         }
+        manualVel=vel;
+        velChanged=true;
+        //setDrivePower(vel);
+    }
 
-        setDrivePower(vel);
+    public void updateManual()
+    {
+        if(velChanged)
+        {
+            setDrivePower(manualVel);
+            velChanged=false;
+        }
     }
 
     @NonNull

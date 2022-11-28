@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.Transfer;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake
+import org.firstinspires.ftc.teamcode.util.Module;
+
+public class Intake extends Module
 {
     //temporary values
     static final double INTAKING = 1;
@@ -26,6 +28,7 @@ public class Intake
         setState(State.OFF);
     }
 
+    @Override
     public void update()
     {
         switch(state)
@@ -52,7 +55,7 @@ public class Intake
     public void setState(State state)
     {
         this.state = state;
-        update();
+        //update();
     }
 
 }
