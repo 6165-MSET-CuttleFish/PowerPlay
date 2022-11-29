@@ -28,6 +28,7 @@ public class HardwareThread extends Thread
                 m.update();
             }
             r.updateManual();
+            r.update();
         }
     }
 }
