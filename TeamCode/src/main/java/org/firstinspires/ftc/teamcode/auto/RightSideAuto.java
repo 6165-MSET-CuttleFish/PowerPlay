@@ -54,6 +54,7 @@ public class RightSideAuto extends LinearOpMode {
                         .addDisplacementMarker(2, ()->{
                             groundIntake.setState(GroundIntake.State.DEPOSITING);
                             turret.setState(Turret.State.RIGHT);
+                            //turret.update();
                             slides.setState(Slides.State.MID_DROP);
                             fourbar.setState(vfourb.State.ALIGN_POSITION);
                         })
@@ -170,14 +171,14 @@ public class RightSideAuto extends LinearOpMode {
         /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())
                         .lineToConstantHeading(new Vector2d(-48,10))
                                 .build();*/
-
+        robot.thread.run();
         waitForStart();
         if(opModeIsActive()){
             timer = System.currentTimeMillis();
             //preload
             robot.setPoseEstimate(startPose);
             robot.followTrajectory(preload1);
-            robot.followTrajectory(preload2);
+            /*robot.followTrajectory(preload2);
             robot.followTrajectory(preload3);
             //robot.turn(Math.toRadians(-100));
             //1st cycle
@@ -203,7 +204,7 @@ public class RightSideAuto extends LinearOpMode {
         cycleIntake();
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
-        robot.followTrajectory(cycleIntakeLow);
+        robot.followTrajectory(cycleIntakeLow);*/
         }
         //if(isStopRequested()) return;
 

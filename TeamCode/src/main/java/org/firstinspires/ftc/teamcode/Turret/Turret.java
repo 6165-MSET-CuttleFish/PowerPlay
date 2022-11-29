@@ -25,8 +25,8 @@ public class Turret
     PIDCoeff coeff;
 
     static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0;
-    public static double closePower = 0.1;
-    public static double farPower = 0.5;
+    public static double closePower = 0.17;
+    public static double farPower = 0.65;
     double targetPos=0;
     double posAtZero=0;
     public DcMotorEx turretMotor;
