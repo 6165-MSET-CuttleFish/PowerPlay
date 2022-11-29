@@ -62,7 +62,7 @@ public class RightSideAuto extends LinearOpMode {
 
                 })
                 .addTemporalMarker(2.1, ()->{
-                    intake.setState(Intake.State.DEPOSITING);
+                    //intake.setState(Intake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(()->
                 {
@@ -82,22 +82,27 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-40, 11.76))
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
-
+               /* .addTemporalMarker(0,()->{
+                    fourbar.setState(vfourb.State.STACK_PRIMED);
+                    slides.setState(Slides.State.BOTTOM);
+                    turret.setState(Turret.State.ZERO);
+                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                })*/
                 .lineToLinearHeading(new Pose2d(-45, 11.76, Math.toRadians(180)))
                 .build();
         //MOVE TO STACK, PICK UP FIRST CONE
         Trajectory initCycle = robot.trajectoryBuilder(preload3.end())
-                .lineToConstantHeading(new Vector2d(-63,11.76))
+                .lineToConstantHeading(new Vector2d(-62,11.76))
                 .addDisplacementMarker(2, ()->{
                     slides.setState(Slides.State.INTAKE_AUTO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
-                    intake.setState(Intake.State.OFF);
+                    //intake.setState(Intake.State.OFF);
                 })
                 .build();
 
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory cycleDropOff1 = robot.trajectoryBuilder(initCycle.end())
-                .lineToConstantHeading(new Vector2d(-25.75,13.7))
+                .lineToConstantHeading(new Vector2d(-25.75,13.4))
                 .addDisplacementMarker(2, ()->{
 
                     turret.setState(Turret.State.LEFT);
@@ -109,14 +114,14 @@ public class RightSideAuto extends LinearOpMode {
         //MOVE TO STACK, PICK UP ANOTHER CONE
         Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleDropOff1.end())
 
-                .lineToConstantHeading(new Vector2d(-63,11.76),
-                        robot.getVelocityConstraint(28, 5.939, 14.48),
-                        robot.getAccelerationConstraint(13))
+                .lineToConstantHeading(new Vector2d(-62,11.76),
+                        robot.getVelocityConstraint(37, 5.939, 13.44),
+                        robot.getAccelerationConstraint(35))
 
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
-                    intake.setState(Intake.State.OFF);
+                    //intake.setState(Intake.State.OFF);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(15,()->{
@@ -126,14 +131,14 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleDropOff1.end())
 
-                .lineToConstantHeading(new Vector2d(-63,11.76),
-                        robot.getVelocityConstraint(28, 5.939, 14.48),
-                        robot.getAccelerationConstraint(13))
+                .lineToConstantHeading(new Vector2d(-62,11.76),
+                        robot.getVelocityConstraint(37, 5.939, 13.44),
+                        robot.getAccelerationConstraint(35))
 
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
-                    intake.setState(Intake.State.OFF);
+                    //intake.setState(Intake.State.OFF);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(15,()->{
@@ -148,7 +153,7 @@ public class RightSideAuto extends LinearOpMode {
                 })
                 .addTemporalMarker(0.1,()->{
                     fourbar.setState(vfourb.State.VERTICAL);
-                    intake.setState(Intake.State.OFF);
+                    //intake.setState(Intake.State.OFF);
                 })
                 .lineToConstantHeading(new Vector2d(-13,11.98)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDropOff1.end())
@@ -159,7 +164,7 @@ public class RightSideAuto extends LinearOpMode {
                 })
                 .addTemporalMarker(0.1,()->{
                     fourbar.setState(vfourb.State.VERTICAL);
-                    intake.setState(Intake.State.OFF);
+                    //intake.setState(Intake.State.OFF);
                 })
                 .lineToConstantHeading(new Vector2d(-33,11.98)).build();
         /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())
@@ -209,11 +214,11 @@ public class RightSideAuto extends LinearOpMode {
         while(System.currentTimeMillis()-100 < timer){}
         robot.groundIntake.setState(GroundIntake.State.OFF);
         robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
-        robot.intake.setState(Intake.State.INTAKING);
+        //robot.intake.setState(Intake.State.INTAKING);
         robot.slides.setState(Slides.State.BOTTOM);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-300 < timer){}
-        robot.intake.setState(Intake.State.OFF);
+        //robot.intake.setState(Intake.State.OFF);
         fourbar.setState(vfourb.State.ALIGN_POSITION);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-40 < timer){}
@@ -225,7 +230,7 @@ public class RightSideAuto extends LinearOpMode {
         while(System.currentTimeMillis()-50< timer){
             //turret.autoAlign();
         }
-        intake.setState(Intake.State.DEPOSITING);
+        //intake.setState(Intake.State.DEPOSITING);
         timer = System.currentTimeMillis();
 
         while(System.currentTimeMillis()-100< timer){
