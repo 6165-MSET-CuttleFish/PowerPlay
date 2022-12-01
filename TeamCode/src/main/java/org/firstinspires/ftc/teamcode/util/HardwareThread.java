@@ -22,7 +22,7 @@ public class HardwareThread extends Thread
     @Override
     public void run()
     {
-        while(l.opModeIsActive())
+        while(!l.isStopRequested())
         {
             turret.update();
             slides.checkLimit();
