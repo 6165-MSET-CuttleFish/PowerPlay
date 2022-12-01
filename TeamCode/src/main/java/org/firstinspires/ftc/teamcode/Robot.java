@@ -102,12 +102,12 @@ public class Robot extends MecanumDrive {
     public Turret turret;
     public GroundIntake groundIntake;
 
-    public List<Module> modules;
-
     public HardwareThread thread;
     public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
+
+    List<Module> modules;
 
     public void setState(driveState state){
         this.state = state;
@@ -126,15 +126,6 @@ public class Robot extends MecanumDrive {
         turret = new Turret(hardwareMap);
         groundIntake = new GroundIntake(hardwareMap);
 
-        modules=new ArrayList<Module>();
-        modules.add(slides);
-        modules.add(fourbar);
-        modules.add(intake);
-        modules.add(turret);
-        modules.add(groundIntake);
-
-        thread=new HardwareThread(l, this);
-        thread.start();
 
 
 //        camera = new Camera(hardwareMap, telemetry);
@@ -201,7 +192,28 @@ public class Robot extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+        modules=new ArrayList<Module>();
+        modules.add(turret);
+        modules.add(intake);
+        modules.add(groundIntake);
+        modules.add(fourbar);
+        modules.add(slides);
+
+        thread=new HardwareThread(l, this);
     }
+
+    public void startThread()
+    {
+        thread.start();
+        thread.setPriority(1);
+    }
+
+    public List<Module> getModules()
+    {
+        return modules;
+    }
+
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
@@ -329,6 +341,8 @@ public class Robot extends MecanumDrive {
             velChanged=false;
         }
     }
+
+
 
     @NonNull
     @Override

@@ -8,16 +8,19 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Robot;
 
 @TeleOp(group = "slides")
 public class TestSlides extends LinearOpMode {
     Slides slide;
+    Robot robot;
     DcMotorEx slidesLeft;
     DcMotorEx slidesRight;
     @Override
     public void runOpMode() throws InterruptedException {
 
-        slide = new Slides(hardwareMap);
+        robot=new Robot(this);
+        slide = robot.slides;
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -26,9 +29,10 @@ public class TestSlides extends LinearOpMode {
         slidesRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
+        robot.startThread();
         while (opModeIsActive()) {
-            slidesLeft.setPower(gamepad1.left_stick_y);
-            slidesRight.setPower(gamepad1.right_stick_y);
+            //slidesLeft.setPower(gamepad1.left_stick_y);
+            //slidesRight.setPower(gamepad1.right_stick_y);
 
             if (gamepad1.left_bumper) {
                 slide.setState(Slides.State.HIGH);

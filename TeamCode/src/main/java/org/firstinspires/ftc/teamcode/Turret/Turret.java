@@ -120,14 +120,6 @@ public class Turret extends Module
         }
     }
 
-    public boolean isBusy()
-    {
-        if(state==State.IDLE)
-        {
-            return false;
-        }
-        return true;
-    }
 
     public Turret.State getState()
     {

@@ -11,9 +11,9 @@ public class vfourb extends Module
 {
     //temporary values
     public static double INTAKE_POSITION = 0.95;
-    public static double DEPOSIT_POSITION = 0.15;
-    public static double PRIMED = 0.7;
-    public static double ALIGN_POSITION = 0.34;
+    public static double DEPOSIT_POSITION = 0;
+    public static double PRIMED = 0.6;
+    public static double ALIGN_POSITION = 0.14;
     public static double STACK_PRIMED = 0.741;
     public static double VERTICAL = 0.5;
     Servo Running;
@@ -27,7 +27,7 @@ public class vfourb extends Module
     {
         Running = hardwareMap.get(Servo.class, "v4bRun");
         Supporting = hardwareMap.get(Servo.class, "v4bSup");
-        setState(State.INTAKE_POSITION);
+        setState(State.PRIMED);
     }
 
     @Override

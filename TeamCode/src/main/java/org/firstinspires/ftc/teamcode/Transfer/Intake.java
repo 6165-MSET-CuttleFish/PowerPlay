@@ -48,6 +48,8 @@ public class Intake extends Module
         }
     }
 
+
+
     public State getState() {
         return state;
     }
@@ -55,6 +57,7 @@ public class Intake extends Module
     public void setState(State state)
     {
         this.state = state;
+        
         //update();
     }
 

@@ -167,6 +167,8 @@ public class RightSideAuto extends LinearOpMode {
                                 .build();*/
 
         waitForStart();
+        robot.startThread();
+
         if(opModeIsActive()){
             timer = System.currentTimeMillis();
             //preload

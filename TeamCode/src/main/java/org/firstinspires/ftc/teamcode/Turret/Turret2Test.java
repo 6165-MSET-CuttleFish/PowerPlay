@@ -18,6 +18,7 @@ public class Turret2Test extends LinearOpMode
         telemetry.addData("encoder", turret.encoder.getCurrentPosition());
         waitForStart();
 
+        robot.startThread();
 
         //turret.setState(Turret2.State.LEFT);
         while(opModeIsActive())

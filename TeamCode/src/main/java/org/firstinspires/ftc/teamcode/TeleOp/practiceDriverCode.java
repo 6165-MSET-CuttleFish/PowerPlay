@@ -101,7 +101,7 @@ public class practiceDriverCode extends LinearOpMode {
                 fourbar.setState(vfourb.State.INTAKE_POSITION);
             }*/
             //cant go to deposit position as slides go up b/c robot can't go high enough
-                if(liftMedium.isDown()){
+               /* if(liftMedium.isDown()){
                     slide.up();
                 }
                 else if(junction.isDown()){
@@ -112,7 +112,7 @@ public class practiceDriverCode extends LinearOpMode {
                 }
                 else if(liftLow.isDown()){
                     slide.down();
-                }
+                }*/
                 //this is not a good impl
                 if(align.isDown()){
 //                    turret.zero();

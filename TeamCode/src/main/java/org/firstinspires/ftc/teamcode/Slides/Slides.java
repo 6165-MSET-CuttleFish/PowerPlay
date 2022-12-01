@@ -161,7 +161,7 @@ public void setPowerManual(double power)
     {
         power = 0;
     }
-    motorPower=power;
+    motorPower=-power;
     setState(State.MANUAL);
 }
 

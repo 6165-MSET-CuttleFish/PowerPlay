@@ -7,15 +7,19 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 
+import java.util.List;
+
 public class HardwareThread extends Thread
 {
     LinearOpMode l;
     Robot r;
+    List<Module> modules;
 
     public HardwareThread (LinearOpMode l, Robot r)
     {
         this.l=l;
         this.r=r;
+        modules=r.getModules();
     }
 
     @Override
@@ -23,12 +27,14 @@ public class HardwareThread extends Thread
     {
         while(l.opModeIsActive())
         {
-            for(Module m:r.modules)
+            l.telemetry.addData("working", "plz");
+            l.telemetry.update();
+            for(Module m:modules)
             {
                 m.update();
             }
-            r.updateManual();
-            r.update();
+            //r.updateManual();
+            //r.update();
         }
     }
 }
