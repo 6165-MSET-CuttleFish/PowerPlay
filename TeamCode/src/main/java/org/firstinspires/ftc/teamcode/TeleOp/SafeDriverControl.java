@@ -13,16 +13,23 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class SafeDriverControl extends LinearOpMode {
-    Robot robot;
+    RobotTemp robot;
     Intake intake;
     Slides slides;
     vfourb fourbar;
@@ -33,7 +40,7 @@ public class SafeDriverControl extends LinearOpMode {
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
     ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
-    ToggleButtonReader ninjaMode, straightMode;
+    ToggleButtonReader junctionScore, ninjaMode, straightMode;
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect2;    // Use to build a custom rumble sequence.
@@ -43,7 +50,8 @@ public class SafeDriverControl extends LinearOpMode {
     boolean slidesZero = false, turretStop = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this);
+
+        robot = new RobotTemp(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -74,32 +82,32 @@ public class SafeDriverControl extends LinearOpMode {
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
         };
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
-                .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(1.0, 1.0, 200)
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect1 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000)  //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect2 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         customRumbleEffect3 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
 
         waitForStart();
@@ -117,7 +125,7 @@ public class SafeDriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                -gamepad1.left_stick_x * 0.5,
+                                -gamepad1.left_stick_x * 0.85,
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
@@ -144,26 +152,31 @@ public class SafeDriverControl extends LinearOpMode {
                 cycleValue++;
             if (cycleDown.wasJustPressed())
                 cycleValue--;
+
             //keeps the integer range between 0 and 3
             if (cycleValue < 0)
                 cycleValue = 3;
             if (cycleValue > 3)
                 cycleValue = 0;
-            switch(cycleValue) {
-                case 0:
-                    gamepad2.runRumbleEffect(customRumbleEffect0);
-                    break;
-                case 1:
-                    gamepad2.runRumbleEffect(customRumbleEffect1);
-                    break;
-                case 2:
-                    gamepad2.runRumbleEffect(customRumbleEffect2);
-                    break;
-                case 3:
-                    gamepad2.runRumbleEffect(customRumbleEffect3);
-                    break;
+            if(cycleDown.wasJustPressed()||cycleUp.wasJustPressed()){
+                gamepad2.stopRumble();
+                if(!gamepad2.isRumbling()) {
+                    switch (cycleValue) {
+                        case 0:
+                            //  gamepad2.runRumbleEffect(customRumbleEffect0);
+                            break;
+                        case 1:
+                            gamepad2.runRumbleEffect(customRumbleEffect0);
+                            break;
+                        case 2:
+                            gamepad2.runRumbleEffect(customRumbleEffect1);
+                            break;
+                        case 3:
+                            gamepad2.runRumbleEffect(customRumbleEffect2);
+                            break;
+                    }
+                }
             }
-
             //setting states based off of cycleValue
 
             //reset
@@ -172,7 +185,6 @@ public class SafeDriverControl extends LinearOpMode {
                 fourbar.setState(vfourb.State.PRIMED);
                 turret.setState(Turret.State.ZERO);
             }
-
 
             //turret left
             if (actuateLeft.wasJustPressed()) {
@@ -284,22 +296,19 @@ public class SafeDriverControl extends LinearOpMode {
                 turret.turretMotor.setPower(gamepad2.right_stick_x);
                 turretStop = true;
             }
-            if (slidesZero && gamepad2.left_stick_y == 0) {
+            if (turretStop && gamepad2.right_stick_x == 0) {
                 turret.setState(Turret.State.MANUAL);
                 turret.turretMotor.setPower(0);
                 turretStop = false;
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(gamepad2.left_stick_y);
-                slides.slidesRight.setPower(gamepad2.left_stick_y);
+                slides.setPowerManual(gamepad2.left_stick_y);
+                //slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(0);
-                slides.slidesRight.setPower(0);
+                slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = false;
             }
 
@@ -312,21 +321,6 @@ public class SafeDriverControl extends LinearOpMode {
                 groundIntake.setState(GroundIntake.State.OFF);
             }
 
-            //robot.groundIntake.update();
-
-            //SCORING:
-//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.HIGH) {
-//                slides.setState(Slides.State.HIGH_DROP);
-//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-//            }
-//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.MID){
-////                slides.setState(Slides.State.MID_DROP);
-//                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-//            }
-//            if (junctionScore.wasJustPressed() && slides.getState() == Slides.State.LOW) {
-////                slides.setState(Slides.State.LOW_DROP);
-//            }
-            //DEPOSIT:
             if (depositTransfer.isDown()) {
                 intake.setState(Intake.State.INTAKING);
             } else if (intakeTransfer.isDown()) {
@@ -351,13 +345,13 @@ public class SafeDriverControl extends LinearOpMode {
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            telemetry.addData("Turret", turret.turretMotor.getTargetPosition());
-//            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+            telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
+            telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.update();
 
-
+            turret.update();
         }
     }
 }
