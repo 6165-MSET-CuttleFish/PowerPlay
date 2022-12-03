@@ -390,6 +390,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.update();
 
             turret.update();
+            slides.checkLimit();
         }
     }
 
