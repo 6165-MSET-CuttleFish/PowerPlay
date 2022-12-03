@@ -99,7 +99,7 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-61,11.76))
                 .addDisplacementMarker(2, ()->{
                     slides.setState(Slides.State.INTAKE_AUTO);
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();
@@ -109,7 +109,7 @@ public class RightSideAuto extends LinearOpMode {
 
                 .lineToConstantHeading(new Vector2d(-25.75,13.3))
                 .addDisplacementMarker(2, ()->{
-                    groundIntake.setState(GroundIntake.State.OFF);
+                    //groundIntake.setState(GroundIntake.State.OFF);
                     turret.setState(Turret.State.LEFT);
                     slides.setState(Slides.State.MID_DROP);
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
@@ -127,11 +127,11 @@ public class RightSideAuto extends LinearOpMode {
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    //groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(15,()->{
                     robot.slides.setState(Slides.State.INTAKE_AUTO);
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();
@@ -144,11 +144,11 @@ public class RightSideAuto extends LinearOpMode {
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
-                    //intake.setState(Intake.State.OFF);
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+
+                    //groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(15,()->{
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
         })
                 .build();
@@ -186,6 +186,7 @@ public class RightSideAuto extends LinearOpMode {
             robot.followTrajectory(preload1);
             robot.followTrajectory(preload2);
             robot.followTrajectory(preload3);
+            groundIntake.setState(GroundIntake.State.OFF);
             //robot.turn(Math.toRadians(-100));
             //1st cycle
             robot.followTrajectory(initCycle);
@@ -217,30 +218,31 @@ public class RightSideAuto extends LinearOpMode {
 
     private void cycleIntake(){
 
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-25 < timer){}
-        robot.groundIntake.setState(GroundIntake.State.DEPOSITING);
-        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+        //timer = System.currentTimeMillis();
         robot.intake.setState(Intake.State.INTAKING);
         robot.slides.setState(Slides.State.BOTTOM);
+        //while(System.currentTimeMillis()- < timer){}
+        //robot.groundIntake.setState(GroundIntake.State.DEPOSITING);
+        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
+
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-200 < timer){}
+        while(System.currentTimeMillis()-400 < timer){}
         robot.intake.setState(Intake.State.OFF);
         fourbar.setState(vfourb.State.ALIGN_POSITION);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-40 < timer){}
+        while(System.currentTimeMillis()-30 < timer){}
     }
     private void cycleDeposit(){
         robot.fourbar.setState(vfourb.State.DEPOSIT_POSITION);
         timer = System.currentTimeMillis();
 
-        while(System.currentTimeMillis()-60< timer){
+        while(System.currentTimeMillis()-40< timer){
             //turret.autoAlign();
         }
         intake.setState(Intake.State.DEPOSITING);
         timer = System.currentTimeMillis();
 
-        while(System.currentTimeMillis()-230< timer){
+        while(System.currentTimeMillis()-150< timer){
             //turret.autoAlign();
         }
         robot.fourbar.setState(vfourb.State.STACK_PRIMED);
