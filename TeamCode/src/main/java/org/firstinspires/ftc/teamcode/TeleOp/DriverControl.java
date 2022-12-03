@@ -85,7 +85,6 @@ public class DriverControl extends LinearOpMode {
                 autoAlign = new ToggleButtonReader(secondary, GamepadKeys.Button.X),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
-        //junctionScore: lowers v4b on high junction
         };
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)
@@ -131,7 +130,7 @@ public class DriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                -gamepad1.left_stick_x * 0.5,
+                                -gamepad1.left_stick_x * 0.85,
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
@@ -210,7 +209,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.LEFT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID_DROP);
+                        slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.LEFT);
                         break;
@@ -236,7 +235,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.RIGHT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID_DROP);
+                        slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.RIGHT);
                         break;
@@ -262,7 +261,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.LEFT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID_DROP);
+                        slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.LEFT);
                         break;
@@ -288,7 +287,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID_DROP);
+                        slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.ZERO);
                         break;
