@@ -18,7 +18,7 @@ public class Slides {
     public static int HIGH = 2080; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
     static final int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
-    static final int MID_DROP = 1010;
+    static final int MID_DROP = 1180;
     static final int LOW = 625; //in inches, low junction is 13.5 inches
     static final int LOW_DROP = 250;
     static final int INTAKE_AUTO =  113;

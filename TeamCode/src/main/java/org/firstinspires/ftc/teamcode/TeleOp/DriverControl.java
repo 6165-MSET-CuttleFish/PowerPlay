@@ -210,7 +210,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.LEFT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID);
+                        slides.setState(Slides.State.MID_DROP);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.LEFT);
                         break;
@@ -236,7 +236,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.RIGHT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID);
+                        slides.setState(Slides.State.MID_DROP);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.RIGHT);
                         break;
@@ -262,7 +262,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.LEFT);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID);
+                        slides.setState(Slides.State.MID_DROP);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.LEFT);
                         break;
@@ -288,7 +288,7 @@ public class DriverControl extends LinearOpMode {
                         turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
-                        slides.setState(Slides.State.MID);
+                        slides.setState(Slides.State.MID_DROP);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
                         turret.setState(Turret.State.ZERO);
                         break;
