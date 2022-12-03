@@ -46,10 +46,10 @@ public class LeftSideAutoMatew extends LinearOpMode {
         fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         Trajectory scorePreload = robot.trajectoryBuilder(startPose)
-                .addDisplacementMarker(2, () -> {
+                .addDisplacementMarker(0.75, () -> {
                     prepDepositInitial();
                 })
-                .lineToSplineHeading(new Pose2d(34, 23, Math.toRadians(270)))
+                .lineToConstantHeading(new Vector2d(36, 23))
                 .addDisplacementMarker(()->
                         deposit()
                 )
@@ -60,13 +60,39 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 })
                 .build();
 
-        Trajectory removeSignal = robot.trajectoryBuilder(scorePreload.end())
+        Trajectory preload1 = robot.trajectoryBuilder(startPose)
+                .lineToConstantHeading(new Vector2d(32.5, 23))
+                .addDisplacementMarker(1, ()->{
+                    fourbar.setState(vfourb.State.ALIGN_POSITION);
+                })
+                .addDisplacementMarker(2, ()->{
+                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    turret.setState(Turret.State.LEFT);
+                    //turret.update();
+                    slides.setState(Slides.State.MID_DROP);
+
+                })
+                .addTemporalMarker(2,()->{
+                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+
+                })
+                .addTemporalMarker(2.1, ()->{
+                    intake.setState(Intake.State.DEPOSITING);
+                })
+                .addDisplacementMarker(()->
+                {
+                    fourbar.setState(vfourb.State.ALIGN_POSITION);
+                    waitSec(0.25);
+                })
+                .build();
+
+        Trajectory removeSignal = robot.trajectoryBuilder(preload1.end())
                 .addTemporalMarker(0, () -> {
                     fourbar.setState(vfourb.State.PRIMED);
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                 })
-                .lineToSplineHeading(new Pose2d(34, 12, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(34, 12))
                 .addTemporalMarker(1, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     intake.setState(Intake.State.OFF);
@@ -79,7 +105,8 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 .addDisplacementMarker(0, () -> {
                     prepIntake();
                 })
-                .lineToConstantHeading(new Vector2d(60  , 12))
+                .lineToLinearHeading(new Pose2d(62  , 12, Math.toRadians(0)), robot.getVelocityConstraint(37, 5.939, 13.44),
+                        robot.getAccelerationConstraint(35))
                 .addDisplacementMarker(() -> {
                     intake();
                 })
@@ -91,15 +118,15 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 .build();
 
         Trajectory scoreMidCycle = robot.trajectoryBuilder(toIntake.end())
-                .addTemporalMarker(0.5, ()->
+                .addTemporalMarker(0, ()->
                 {
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .addTemporalMarker(1.25, ()->
+                .addTemporalMarker(0.5, ()->
                 {
                     prepDeposit();
                 })
-                .lineToConstantHeading(new Vector2d(23.5, 14))
+                .lineToConstantHeading(new Vector2d(26.5, 14))
                 .addDisplacementMarker(()->
                         deposit()
                 )
@@ -113,7 +140,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     prepIntake();
                 })
-                .lineToConstantHeading(new Vector2d(60,12), Robot.getVelocityConstraint(35,
+                .lineToConstantHeading(new Vector2d(62,12), Robot.getVelocityConstraint(35,
                         DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), Robot.getAccelerationConstraint(15))
                 .addDisplacementMarker(()->{
                     intake();
@@ -129,7 +156,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 .addTemporalMarker(0, () -> {
                     prepIntake();
                 })
-                .lineToConstantHeading(new Vector2d(60,12), Robot.getVelocityConstraint(35,
+                .lineToConstantHeading(new Vector2d(62,12), Robot.getVelocityConstraint(35,
                         DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), Robot.getAccelerationConstraint(15))
                 .addDisplacementMarker(()->{
                     intakeLow();
@@ -148,18 +175,18 @@ public class LeftSideAutoMatew extends LinearOpMode {
         if (isStopRequested()) return;
 
         robot.setPoseEstimate(startPose);
-        robot.followTrajectory(scorePreload);
+        robot.followTrajectory(preload1);
         robot.followTrajectory(removeSignal);
         //robot.turn(Math.toRadians(90));
 
         robot.followTrajectory(toIntake);
-        robot.followTrajectory(scoreMidCycle);
+        /*robot.followTrajectory(scoreMidCycle);
         robot.followTrajectory(toIntakePostCycle);
         robot.followTrajectory(scoreMidCycle);
         robot.followTrajectory(toIntakePostCycleLow);
         robot.followTrajectory(scoreMidCycle);
         robot.followTrajectory(toIntakePostCycleLow);
-        robot.followTrajectory(scoreMidCycle);
+        robot.followTrajectory(scoreMidCycle);*/
 
 
         /*robot.setPoseEstimate(startPose);
@@ -209,7 +236,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
     }
     public void prepDepositInitial()
     {
-        groundIntake.setState(GroundIntake.State.INTAKING);
+        //groundIntake.setState(GroundIntake.State.INTAKING);
         turret.setState(Turret.State.LEFT);
         slides.setState(Slides.State.MID_DROP);
         fourbar.setState(vfourb.State.ALIGN_POSITION);

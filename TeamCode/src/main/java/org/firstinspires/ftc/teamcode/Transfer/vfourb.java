@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class vfourb
 {
     //temporary values
-    public static double INTAKE_POSITION = 0.98;
+    public static double INTAKE_POSITION = 0.93;
     public static double DEPOSIT_POSITION = 0;
     public static double PRIMED = 0.6;
     public static double STACK_LOW=0.63;
@@ -35,31 +35,31 @@ public class vfourb
         {
             case INTAKE_POSITION:
                 Running.setPosition(INTAKE_POSITION);
-                Supporting.setPosition(1-INTAKE_POSITION+OFFSET);
+                Supporting.setPosition(1-INTAKE_POSITION/*+OFFSET*/);
                 break;
             case DEPOSIT_POSITION:
                 Running.setPosition(DEPOSIT_POSITION);
-                Supporting.setPosition(1-DEPOSIT_POSITION+OFFSET);
+                Supporting.setPosition(1-DEPOSIT_POSITION/*+OFFSET*/);
                 break;
             case PRIMED:
                 Running.setPosition(PRIMED);
-                Supporting.setPosition(1-PRIMED+OFFSET);
+                Supporting.setPosition(1-PRIMED/*+OFFSET*/);
                 break;
             case ALIGN_POSITION:
                 Running.setPosition(ALIGN_POSITION);
-                Supporting.setPosition(1-ALIGN_POSITION+OFFSET);
+                Supporting.setPosition(1-ALIGN_POSITION/*+OFFSET*/);
                 break;
             case STACK_PRIMED:
                 Running.setPosition(STACK_PRIMED);
-                Supporting.setPosition(1-STACK_PRIMED+OFFSET);
+                Supporting.setPosition(1-STACK_PRIMED/*+OFFSET*/);
                 break;
             case VERTICAL:
                 Running.setPosition(VERTICAL);
-                Supporting.setPosition(1-VERTICAL+OFFSET);
+                Supporting.setPosition(1-VERTICAL/*+OFFSET*/);
                 break;
             case STACK_LOW:
                 Running.setPosition(STACK_LOW);
-                Supporting.setPosition(1-STACK_LOW+OFFSET);
+                Supporting.setPosition(1-STACK_LOW/*+OFFSET*/);
                 break;
         }
     }
