@@ -158,7 +158,8 @@ public class SafeDriverControl extends LinearOpMode {
                 cycleValue = 3;
             if (cycleValue > 3)
                 cycleValue = 0;
-            if(cycleDown.wasJustPressed()||cycleUp.wasJustPressed()){
+
+            if(cycleDown.wasJustPressed()|| cycleUp.wasJustPressed()){
                 gamepad2.stopRumble();
                 if(!gamepad2.isRumbling()) {
                     switch (cycleValue) {
@@ -192,22 +193,22 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                 }
             }
@@ -218,48 +219,22 @@ public class SafeDriverControl extends LinearOpMode {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
                         fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.RIGHT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.RIGHT);
-                        break;
-                }
-            }
-
-            //turret left
-            if (actuateLeft.wasJustPressed()) {
-                switch (cycleValue) {
-                    case 0:
-                        slides.setState(Slides.State.BOTTOM);
-                        fourbar.setState(vfourb.State.PRIMED);
-                        turret.setState(Turret.State.LEFT);
-                        break;
-                    case 1:
-                        slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
-                        break;
-                    case 2:
-                        slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.LEFT);
-                        break;
-                    case 3:
-                        slides.setState(Slides.State.HIGH);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.LEFT);
+                        turret.setState(Turret.State.ZERO);
                         break;
                 }
             }
@@ -289,20 +264,25 @@ public class SafeDriverControl extends LinearOpMode {
                         break;
                 }
             }
+            //incremental turret control:
+            if (gamepad2.right_stick_x > 0)
+                turret.setState(Turret.State.RIGHT);
+            if (gamepad2.right_stick_x < 0)
+                turret.setState(Turret.State.LEFT);
 
             //manual turret control:
-            if (Math.abs(gamepad2.right_stick_x) > 0) {
+            if (Math.abs(gamepad2.left_stick_x) > 0.3) {
                 turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.right_stick_x);
+                turret.turretMotor.setPower(gamepad2.left_stick_x);
                 turretStop = true;
             }
-            if (turretStop && gamepad2.right_stick_x == 0) {
+            if (turretStop && gamepad2.left_stick_x == 0) {
                 turret.setState(Turret.State.MANUAL);
                 turret.turretMotor.setPower(0);
                 turretStop = false;
             }
             //manual slides control:
-            if (Math.abs(gamepad2.left_stick_y) > 0) {
+            if (Math.abs(gamepad2.left_stick_y) > 0.3) {
                 slides.setPowerManual(gamepad2.left_stick_y);
                 //slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = true;
