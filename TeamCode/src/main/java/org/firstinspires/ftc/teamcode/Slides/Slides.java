@@ -15,6 +15,7 @@ public class Slides {
 
     //slides is 17.5 inches tall
     boolean switchPressed=false;
+    boolean switchModified=false;
     public static int HIGH = 2080; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
     static final int MID = 1425; //in inches, 23.5 - 17.5 (mid junction height - slides height)
@@ -130,10 +131,22 @@ public class Slides {
 
 public void checkLimit()
 {
-    //switchPressed=slidesLimitSwitch.getState();
+    switchPressed=slidesLimitSwitch.getState();
+    if(!switchPressed)
+    {
+        switchModified=true;
+    }
+
+
     if(switchPressed&&state==State.BOTTOM)
     {
         setState(State.ZERO);
+    }
+    else if(switchPressed&&state==State.MANUAL&&switchModified)
+    {
+        switchModified=false;
+        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 public void setPowerManual(double power)
