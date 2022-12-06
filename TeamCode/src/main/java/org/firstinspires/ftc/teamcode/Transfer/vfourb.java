@@ -3,8 +3,12 @@ package org.firstinspires.ftc.teamcode.Transfer;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.util.Module;
+
 @Config
-public class vfourb
+public class vfourb extends Module
 {
     //temporary values
     public static double INTAKE_POSITION = 0.95;
@@ -20,10 +24,10 @@ public class vfourb
         INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, ALIGN_POSITION, STACK_PRIMED, VERTICAL
     }
 
-    public vfourb(HardwareMap hardwareMap)
+    public vfourb(Robot r)
     {
-        Running = hardwareMap.get(Servo.class, "v4bRun");
-        Supporting = hardwareMap.get(Servo.class, "v4bSup");
+        Running = r.hardwareMap.get(Servo.class, "v4bRun");
+        Supporting = r.hardwareMap.get(Servo.class, "v4bSup");
         setState(State.INTAKE_POSITION);
     }
 
@@ -70,7 +74,6 @@ public class vfourb
     public void setState(State state)
     {
         this.state = state;
-        update();
     }
 
 }

@@ -46,13 +46,13 @@ import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.HardwareThread;
+import org.firstinspires.ftc.teamcode.util.Hardware;
+import org.firstinspires.ftc.teamcode.util.ModuleController;
 import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
@@ -98,8 +98,12 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
-    public HardwareThread thread;
     public GroundIntake groundIntake;
+
+    public HardwareMap hardwareMap;
+    public Hardware hardware;
+    public ModuleController m;
+
     public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
@@ -111,21 +115,22 @@ public class Robot extends MecanumDrive {
     public driveState getState() {
         return state;
     }
-    public Robot(LinearOpMode l) {
+    public Robot(LinearOpMode l)
+    {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-        HardwareMap hardwareMap=l.hardwareMap;
+        hardwareMap=l.hardwareMap;
 
-        slides = new Slides(hardwareMap);
-        fourbar = new vfourb(hardwareMap);
-        intake = new Intake(hardwareMap);
-        turret = new Turret(hardwareMap);
+        slides = new Slides(this);
+        fourbar = new vfourb(this);
+        intake = new Intake(this);
+        turret = new Turret(this);
+        groundIntake = new GroundIntake(this);
 
-        thread=new HardwareThread(turret, slides, l);
-        thread.start();
+        m=new ModuleController();
+        hardware=new Hardware(this, l);
 
 
-        groundIntake = new GroundIntake(hardwareMap);
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
+
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -192,8 +197,11 @@ public class Robot extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+    }
 
-
+    public void startHW()
+    {
+        hardware.startHW();
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

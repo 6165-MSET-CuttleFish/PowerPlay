@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.Robot;
+
 @Config
 public class Slides {
     public DcMotorEx slidesLeft, slidesRight;
@@ -29,10 +31,10 @@ public class Slides {
     public enum State{
         HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO
     }
-    public Slides(HardwareMap hardwareMap) {
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
+    public Slides(Robot r) {
+        slidesLeft = r.hardwareMap.get(DcMotorEx.class, "s1");
+        slidesRight = r.hardwareMap.get(DcMotorEx.class, "s2");
+        slidesLimitSwitch = r.hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
         //slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
         //slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -151,9 +153,9 @@ public void setPowerManual(double power)
     public Slides.State getState() {
         return state;
     }
-    public void setState(Slides.State state){
+    public void setState(Slides.State state)
+    {
         this.state = state;
-        update();
     }
     public void up(){
         slidesLeft.setTargetPosition((int) HIGH);

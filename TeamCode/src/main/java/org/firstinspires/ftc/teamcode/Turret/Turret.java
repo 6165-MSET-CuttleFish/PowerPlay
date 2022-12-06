@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.Module;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
-public class Turret
+public class Turret extends Module
 {
     public static double kp=0.0502;
     public static double ki=0.183;
@@ -41,15 +43,15 @@ public class Turret
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN
     }
 
-    public Turret(HardwareMap hardwareMap)
+    public Turret(Robot r)
     {
         coeff=new PIDCoeff(kp ,ki, kd, iSumMax, stabThresh);
         controller=new PIDControl(coeff);
 
 
-        turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
+        turretMotor = r.hardwareMap.get(DcMotorEx.class, "hturret");
 
-        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
+        encoder=new Encoder(r.hardwareMap.get(DcMotorEx.class, "hturret"));
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -57,6 +59,7 @@ public class Turret
         setState(State.IDLE);
     }
 
+    @Override
     public void update(/*double time*/)
     {
         /*if(magnetic.isPressed())

@@ -46,12 +46,10 @@ import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.HardwareThread;
 import org.firstinspires.ftc.teamcode.vision.Camera;
 
 import java.util.ArrayList;
@@ -97,7 +95,6 @@ public class RobotTemp extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
-    public HardwareThread thread;
     public GroundIntake groundIntake;
     public Camera camera;
     public boolean isOdoRaised = false;
