@@ -34,7 +34,7 @@ public class practiceDriverCode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this);
+        robot = new Robot(this, true);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
         slide = robot.slides;

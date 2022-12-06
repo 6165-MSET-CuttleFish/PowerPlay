@@ -46,7 +46,6 @@ import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -61,7 +60,7 @@ import java.util.List;
 @Config
 public class Robot extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
     public static double LATERAL_MULTIPLIER = .99;
 
@@ -70,6 +69,7 @@ public class Robot extends MecanumDrive {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+    boolean teleop=false;
 
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -111,21 +111,24 @@ public class Robot extends MecanumDrive {
     public driveState getState() {
         return state;
     }
-    public Robot(LinearOpMode l) {
+    public Robot(LinearOpMode l, boolean teleop) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
+        teleop=this.teleop;
+
 
         slides = new Slides(hardwareMap);
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
-        turret = new Turret(hardwareMap);
-
-        thread=new HardwareThread(turret, slides, l);
-        thread.start();
-
-
+        turret = new Turret(hardwareMap, !teleop);
         groundIntake = new GroundIntake(hardwareMap);
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
+        thread=new HardwareThread(turret, slides, l);
+
+        if(!teleop)
+        {
+            thread.start();
+        }
+
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -134,7 +137,8 @@ public class Robot extends MecanumDrive {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+        {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 

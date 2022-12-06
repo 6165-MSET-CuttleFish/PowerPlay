@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
@@ -12,16 +14,27 @@ public class Turret2Test extends LinearOpMode
     Turret turret;
     Robot robot;
     vfourb fourbar;
+    ElapsedTime timer;
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot=new Robot(this);
+        robot=new Robot(this, false);
         turret=robot.turret;
-        telemetry.addData("encoder", turret.encoder.getCurrentPosition());
         fourbar = robot.fourbar;
+        timer=new ElapsedTime();
         fourbar.setState(vfourb.State.PRIMED);
+
+        while(!isStarted())
+        {
+            telemetry.addData("encoder", turret.encoder.getCurrentPosition());
+            telemetry.update();
+        }
         waitForStart();
 
+
+
+
+        //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //turret.setState(Turret2.State.LEFT);
         while(opModeIsActive())
@@ -38,7 +51,7 @@ public class Turret2Test extends LinearOpMode
             {
                 turret.setState(Turret.State.ZERO);
             }
-            turret.update();
+            //turret.update();
             telemetry.addData("State", turret.getState());
             telemetry.addData("power", turret.motorOil);
             telemetry.addData("encoder", turret.encoder.getCurrentPosition());

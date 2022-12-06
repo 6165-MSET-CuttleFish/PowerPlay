@@ -10,7 +10,7 @@ public class v4bTest extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot r=new Robot(this);
+        Robot r=new Robot(this, false);
         vfourb v4b=r.fourbar;
 
         waitForStart();
@@ -33,6 +33,10 @@ public class v4bTest extends LinearOpMode
             else if(gamepad1.x)
             {
                 v4b.setState(vfourb.State.VERTICAL);
+            }
+            else if(gamepad1.dpad_down)
+            {
+                v4b.setState(vfourb.State.INTAKE_POSITION);
             }
         }
     }

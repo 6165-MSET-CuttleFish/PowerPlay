@@ -35,21 +35,21 @@ public class LeftSideAutoMatew extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(this);
+        robot = new Robot(this, false);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fourbar.setState(vfourb.State.INTAKE_POSITION);
+        //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         Trajectory scorePreload = robot.trajectoryBuilder(startPose)
                 .addDisplacementMarker(0.75, () -> {
                     prepDepositInitial();
                 })
-                .lineToConstantHeading(new Vector2d(36, 23))
+                .lineToConstantHeading(new Vector2d(33, 23))
                 .addDisplacementMarker(()->
                         deposit()
                 )
@@ -61,7 +61,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 .build();
 
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(32.5, 23))
+                .lineToConstantHeading(new Vector2d(33, 23))
                 .addDisplacementMarker(1, ()->{
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
                 })
@@ -86,13 +86,13 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 })
                 .build();
 
-        Trajectory removeSignal = robot.trajectoryBuilder(preload1.end())
+        Trajectory removeSignal = robot.trajectoryBuilder(scorePreload.end())
                 .addTemporalMarker(0, () -> {
                     fourbar.setState(vfourb.State.PRIMED);
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                 })
-                .lineToConstantHeading(new Vector2d(34, 12))
+                .lineToConstantHeading(new Vector2d(33, 15.5))
                 .addTemporalMarker(1, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     intake.setState(Intake.State.OFF);
@@ -175,11 +175,11 @@ public class LeftSideAutoMatew extends LinearOpMode {
         if (isStopRequested()) return;
 
         robot.setPoseEstimate(startPose);
-        robot.followTrajectory(preload1);
+        robot.followTrajectory(scorePreload);
         robot.followTrajectory(removeSignal);
-        //robot.turn(Math.toRadians(90));
+        robot.turn(Math.toRadians(90));
 
-        robot.followTrajectory(toIntake);
+        //robot.followTrajectory(toIntake);
         /*robot.followTrajectory(scoreMidCycle);
         robot.followTrajectory(toIntakePostCycle);
         robot.followTrajectory(scoreMidCycle);

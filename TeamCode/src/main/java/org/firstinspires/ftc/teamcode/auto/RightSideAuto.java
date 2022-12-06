@@ -33,15 +33,15 @@ public class RightSideAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(this);
+        robot = new Robot(this, false);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fourbar.setState(vfourb.State.INTAKE_POSITION);
+        //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //fourbar.setState(vfourb.State.INTAKE_POSITION);
         //camInit();
         /*
         Trajectory preload1 = robot.trajectoryBuilder(startPose)

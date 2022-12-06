@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Turret;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -24,7 +23,7 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0;
+    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020;
     public static double closePower = 0.17;
     public static double farPower = 0.65;
     double targetPos=0;
@@ -38,23 +37,28 @@ public class Turret
 
     public enum State
     {
-        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN
+        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT
     }
 
-    public Turret(HardwareMap hardwareMap)
+    public Turret(HardwareMap hardwareMap, boolean auton)
     {
         coeff=new PIDCoeff(kp ,ki, kd, iSumMax, stabThresh);
         controller=new PIDControl(coeff);
 
-
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        setState(State.IDLE);
+        if(auton) {
+            setState(State.INIT);
+        }
+        else
+        {
+            setState(State.IDLE);
+        }
     }
 
     public void update(/*double time*/)
@@ -113,6 +117,8 @@ public class Turret
             case ZERO:
                 targetPos=ZERO_POS+posAtZero;
                 break;
+            case INIT:
+                targetPos=INIT+posAtZero;
             case AUTOALIGN:
                 break;
         }

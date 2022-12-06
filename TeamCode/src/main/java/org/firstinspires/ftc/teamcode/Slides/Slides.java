@@ -29,7 +29,8 @@ public class Slides {
     public enum State{
         HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO
     }
-    public Slides(HardwareMap hardwareMap) {
+    public Slides(HardwareMap hardwareMap)
+    {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
@@ -37,8 +38,6 @@ public class Slides {
         //slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void update(){

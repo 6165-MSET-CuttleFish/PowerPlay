@@ -7,30 +7,28 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class vfourb
 {
     //temporary values
-<<<<<<< Updated upstream
-    public static double INTAKE_POSITION = 0.93;
-=======
     public static double INTAKE_POSITION = 1;
->>>>>>> Stashed changes
+
     public static double DEPOSIT_POSITION = 0;
     public static double PRIMED = 0.6;
     public static double STACK_LOW=0.63;
     public static double ALIGN_POSITION = 0.22;
-    public static double STACK_PRIMED = 0.69;
+    public static double STACK_PRIMED = 0.75;
     public static double VERTICAL = 0.5;
+    public static double INIT=0.86;
     public static double OFFSET=0;
     Servo Running;
     Servo Supporting;
     public State state;
     public enum State {
-        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, ALIGN_POSITION, STACK_PRIMED, VERTICAL, STACK_LOW
+        INTAKE_POSITION,DEPOSIT_POSITION, PRIMED, ALIGN_POSITION, STACK_PRIMED, VERTICAL, STACK_LOW, INIT
     }
 
     public vfourb(HardwareMap hardwareMap)
     {
         Running = hardwareMap.get(Servo.class, "v4bRun");
         Supporting = hardwareMap.get(Servo.class, "v4bSup");
-        setState(State.INTAKE_POSITION);
+        setState(State.INIT);
     }
 
     public void update()
@@ -65,6 +63,9 @@ public class vfourb
                 Running.setPosition(STACK_LOW);
                 Supporting.setPosition(1-STACK_LOW/*+OFFSET*/);
                 break;
+            case INIT:
+                Running.setPosition(INIT);
+                Supporting.setPosition(1-INIT/*+OFFSET*/);
         }
     }
     public double runPos(){

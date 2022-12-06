@@ -29,7 +29,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class DriverControl extends LinearOpMode {
-    RobotTemp robot;
+    Robot robot;
     Intake intake;
     Slides slides;
     vfourb fourbar;
@@ -55,7 +55,7 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new RobotTemp(this);
+        robot = new Robot(this, true);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -138,8 +138,8 @@ public class DriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                0,
-                                -gamepad1.right_stick_x * 0.5
+                                -gamepad1.left_stick_x * 0.5,
+                                0
                         )
                 );
             }
