@@ -114,10 +114,12 @@ public class DriverControl extends LinearOpMode {
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
-
+        telemetry.addData("ready to start", 1);
+        telemetry.update();
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
+        turret.setState(Turret.State.ZERO);
         robot.odoRaise.setPosition(0);
         while (!isStopRequested()) {
 
@@ -390,7 +392,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.update();
 
             turret.update();
-            slides.checkLimit();
+            //slides.checkLimit();
         }
     }
 
