@@ -130,10 +130,22 @@ public class Slides {
 
 public void checkLimit()
 {
-    //switchPressed=slidesLimitSwitch.getState();
+    switchPressed=slidesLimitSwitch.getState();
+    if(!switchPressed)
+    {
+        switchModified=true;
+    }
+
+
     if(switchPressed&&state==State.BOTTOM)
     {
         setState(State.ZERO);
+    }
+    else if(switchPressed&&state==State.MANUAL&&switchModified)
+    {
+        switchModified=false;
+        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 public void setPowerManual(double power)
