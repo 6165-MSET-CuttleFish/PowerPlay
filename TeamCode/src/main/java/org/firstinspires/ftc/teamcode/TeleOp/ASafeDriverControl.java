@@ -28,7 +28,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
-public class SafeDriverControl extends LinearOpMode {
+public class ASafeDriverControl extends LinearOpMode {
     RobotTemp robot;
     Intake intake;
     Slides slides;
