@@ -9,7 +9,7 @@ public class vfourb
     //temporary values
     public static double INTAKE_POSITION = 1;
 
-    public static double DEPOSIT_POSITION = 0;
+    public static double DEPOSIT_POSITION = 0.16;
     public static double PRIMED = 0.6;
     public static double STACK_LOW=0.63;
     public static double ALIGN_POSITION = 0.22;

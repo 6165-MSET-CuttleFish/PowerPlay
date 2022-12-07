@@ -15,7 +15,7 @@ public class Slides {
 
     //slides is 17.5 inches tall
     boolean switchPressed=false;
-    public static int HIGH = 2080; //old = 1850
+    public static int HIGH = 1850; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
     static final int MID = 1425; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final int MID_DROP = 1180;
