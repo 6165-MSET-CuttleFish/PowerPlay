@@ -14,6 +14,7 @@ public class Slides {
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
+    boolean switchModified=false;
     boolean switchPressed=false;
     public static int HIGH = 1850; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
