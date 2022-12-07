@@ -30,7 +30,7 @@ public class Turret
     double posAtZero=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
-    //public TouchSensor limit;
+    public TouchSensor limit;
     public Turret.State state;
 
     public double motorOil=0;
@@ -49,7 +49,7 @@ public class Turret
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
 
-        //limit = hardwareMap.get(TouchSensor.class, "limit");
+        limit = hardwareMap.get(TouchSensor.class, "limit");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -96,10 +96,10 @@ public class Turret
     private void updateTarget()
     {
 
-        /*if(limit.isPressed())
+        if(limit.isPressed())
         {
-            posAtZero=/*some value based on where limit switch clicks0;
-        }*/
+            posAtZero=/*some value based on where limit switch clicks*/0;
+        }
         //if hall effect then reset pos at zero
 
         switch(state)
