@@ -81,10 +81,11 @@ public class Robot extends MecanumDrive {
 
     public CRServo groundLeft, groundRight;
     public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
+
     //public final Servo v4bSup, v4bRun;
     //public final CRServo intakeSup, intakeRun;
     //public final CRServo  groundLeft, groundRight;
-    public Servo odoRaise;
+    public Servo odoRaise, aligner;
     public List<DcMotorEx> motors;
     public DigitalChannel slidesLimitSwitch;
     private BNO055IMU imu;
@@ -152,7 +153,91 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        aligner = hardwareMap.get(Servo.class, "aligner");
+       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
+        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
+        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
+        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
+        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+*/
+
+
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+        odoRaise.setPosition(odomServoPos);
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
+        isOdoRaised = false;
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+        // TODO: reverse any motors using DcMotor.setDirection()
+
+        // TODO: if desired, use setLocalizer() to change the localization method
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+
+    }
+    public Robot(LinearOpMode l) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+        //teleop=this.teleop;
+
+
+        slides = new Slides(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
+        intake = new Intake(hardwareMap);
+        turret = new Turret(hardwareMap, !teleop);
+        groundIntake = new GroundIntake(hardwareMap);
+        thread=new HardwareThread(turret, slides, l);
+        thread.start();
+
+//        camera = new Camera(hardwareMap, telemetry);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+        {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
+        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
+        rightRear = hardwareMap.get(DcMotorEx.class, "fr");
+        rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        aligner = hardwareMap.get(Servo.class, "aligner");
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 

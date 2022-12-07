@@ -33,12 +33,14 @@ public class RightSideAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(this, false);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
+        turret.setState(Turret.State.INIT);
+        fourbar.setState(vfourb.State.STACK_PRIMED);
         //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //fourbar.setState(vfourb.State.INTAKE_POSITION);
@@ -92,7 +94,7 @@ public class RightSideAuto extends LinearOpMode {
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })*/
-                .lineToLinearHeading(new Pose2d(-45, 11.76, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-45, 11.5, Math.toRadians(180)))
                 .build();
         //MOVE TO STACK, PICK UP FIRST CONE
         Trajectory initCycle = robot.trajectoryBuilder(preload3.end())
@@ -115,25 +117,28 @@ public class RightSideAuto extends LinearOpMode {
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
                 })
                 .build();
-
-        //MOVE TO STACK, PICK UP ANOTHER CONE
-        Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleDropOff1.end())
-
-                .lineToConstantHeading(new Vector2d(-61,11.76),
-                        robot.getVelocityConstraint(37, 5.939, 13.44),
-                        robot.getAccelerationConstraint(35))
-
+        Trajectory cycleIntakePrep = robot.trajectoryBuilder(cycleDropOff1.end())
+                .lineToConstantHeading(new Vector2d(-40, 11.76))
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
                     //groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
-                .addDisplacementMarker(15,()->{
+
+                .build();
+        //MOVE TO STACK, PICK UP ANOTHER CONE
+        Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleDropOff1.end())
+                .addDisplacementMarker(0,()->{
                     robot.slides.setState(Slides.State.INTAKE_AUTO);
                     //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
+                .lineToConstantHeading(new Vector2d(-61,11.76),
+                        robot.getVelocityConstraint(37, 5.939, 13.44),
+                        robot.getAccelerationConstraint(35))
+
+
                 .build();
         Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleDropOff1.end())
 
@@ -193,7 +198,7 @@ public class RightSideAuto extends LinearOpMode {
             cycleIntake();
             robot.followTrajectory(cycleDropOff1);
             cycleDeposit();
-
+        robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeHigh);
         cycleIntake();
 
@@ -201,17 +206,19 @@ public class RightSideAuto extends LinearOpMode {
         cycleDeposit();
 
         //3rd cycle
+        robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeHigh);
         cycleIntake();
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
 
         //4th cycle
+        /*
         robot.followTrajectory(cycleIntakeLow);
         cycleIntake();
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
-        robot.followTrajectory(cycleIntakeLow);
+        robot.followTrajectory(cycleIntakeLow);*/
     }
         //if(isStopRequested()) return;
 
@@ -226,11 +233,11 @@ public class RightSideAuto extends LinearOpMode {
         robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-400 < timer){}
+        while(System.currentTimeMillis()-600 < timer){}
         robot.intake.setState(Intake.State.OFF);
-        fourbar.setState(vfourb.State.ALIGN_POSITION);
+        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-30 < timer){}
+        while(System.currentTimeMillis()-40 < timer){}
     }
     private void cycleDeposit(){
         robot.fourbar.setState(vfourb.State.DEPOSIT_POSITION);

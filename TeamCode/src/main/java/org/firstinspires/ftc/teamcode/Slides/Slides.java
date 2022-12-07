@@ -16,8 +16,12 @@ public class Slides {
     //slides is 17.5 inches tall
     boolean switchModified=false;
     boolean switchPressed=false;
+
     public static int HIGH = 1850; //old = 1850
     static final int HIGH_DROP = 2080; //old = 1650
+
+    boolean switchModified=false;
+
     static final int MID = 1425; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     static final int MID_DROP = 1180;
     static final int LOW = 625; //in inches, low junction is 13.5 inches
@@ -39,6 +43,8 @@ public class Slides {
         //slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void update(){
@@ -128,7 +134,7 @@ public class Slides {
 //        }
     }
 
-
+/*
 public void checkLimit()
 {
     switchPressed=slidesLimitSwitch.getState();
@@ -148,7 +154,7 @@ public void checkLimit()
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-}
+}*/
 public void setPowerManual(double power)
 {
     setState(State.MANUAL);

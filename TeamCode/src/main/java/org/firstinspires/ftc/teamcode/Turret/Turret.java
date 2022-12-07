@@ -49,17 +49,17 @@ public class Turret
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
 
-        limit = hardwareMap.get(TouchSensor.class, "limit");
+        //limit = hardwareMap.get(TouchSensor.class, "limit");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        if(auton) {
+        /*if(auton) {
             setState(State.INIT);
         }
         else
         {
-            setState(State.IDLE);
-        }
+            setState(State.ZERO);
+        }*/
     }
 
     public void update(/*double time*/)
