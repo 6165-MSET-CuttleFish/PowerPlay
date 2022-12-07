@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
@@ -15,7 +16,14 @@ import org.firstinspires.ftc.teamcode.Transfer.vfourb;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.ArrayList;
 
 @Autonomous
 public class RightSideAuto extends LinearOpMode {
@@ -30,7 +38,30 @@ public class RightSideAuto extends LinearOpMode {
     OpenCvWebcam webcam;
     Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));
     double timer = 0;
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+
+    static final double FEET_PER_METER = 3.28084;
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    int x = 1;
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
+
+    AprilTagDetection tagOfInterest = null;
+
     @Override
+
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
         robot = new Robot(this);
@@ -179,11 +210,93 @@ public class RightSideAuto extends LinearOpMode {
                     //intake.setState(Intake.State.OFF);
                 })
                 .lineToConstantHeading(new Vector2d(-33,11.98)).build();
+        Trajectory endRight = robot.trajectoryBuilder(cycleDropOff1.end())
+                .addTemporalMarker(0,()->{
+                    turret.setState(Turret.State.ZERO);
+                    slides.setState(Slides.State.BOTTOM);
+
+                })
+                .addTemporalMarker(0.1,()->{
+                    fourbar.setState(vfourb.State.VERTICAL);
+                    //intake.setState(Intake.State.OFF);
+                })
+                .lineToConstantHeading(new Vector2d(-55,11.98)).build();
         /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())
                         .lineToConstantHeading(new Vector2d(-48,10))
                                 .build();*/
         //robot.thread.run();
-        waitForStart();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
+        telemetry.setMsTransmissionInterval(50);
+
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
+        while (!isStarted() && !isStopRequested())
+        {
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+            telemetry.addLine(String.format("detections", currentDetections.size()));
+            if(currentDetections.size()>0) {
+                tagToTelemetry(currentDetections.get(0));
+            }
+            telemetry.update();
+            sleep(20);
+        }
+        if(tagOfInterest != null)
+        {
+            telemetry.addLine("Tag snapshot:\n");
+            tagToTelemetry(tagOfInterest);
+            telemetry.update();
+        }
+        else
+        {
+            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+            telemetry.update();
+        }
+
+        /* Actually do something useful */
+        if(tagOfInterest == null)
+        {
+            /*
+             * Insert your autonomous code here, presumably running some default configuration
+             * since the tag was never sighted during INIT
+             */
+        }
+        else
+        {
+
+            if(tagOfInterest.id == 6)
+            {
+                x =1;
+            }
+            else if(tagOfInterest.id == 4)
+            {
+                x=2;
+            }
+            else if(tagOfInterest.id == 9)
+            {
+                x=3;
+            }
+        }
         if (isStopRequested()) return;
         timer = System.currentTimeMillis();
         //preload
@@ -198,21 +311,31 @@ public class RightSideAuto extends LinearOpMode {
         cycleIntake();
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
+        //2nd cycle
         robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeHigh);
         cycleIntake();
-
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
-
         //3rd cycle
         robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeHigh);
         cycleIntake();
         robot.followTrajectory(cycleDropOff1);
         cycleDeposit();
+        //picking up 4th cone?
         robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeLow);
+        //park
+        if(x == 1){
+            robot.followTrajectory(endLeft);
+        }
+        else if( x==2){
+            robot.followTrajectory(endMiddle);
+        }
+        else if (x==3){
+            robot.followTrajectory(endRight);
+        }
         //4th cycle
         /*
         robot.followTrajectory(cycleIntakeLow);
@@ -291,5 +414,15 @@ public class RightSideAuto extends LinearOpMode {
         {
             //stall
         }
+    }
+    void tagToTelemetry(AprilTagDetection detection)
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
