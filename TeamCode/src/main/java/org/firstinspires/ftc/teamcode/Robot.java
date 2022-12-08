@@ -65,6 +65,10 @@ public class Robot extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
+    public static double align1Up=0;
+    public static double align1Down=0;
+    public static double align2Up=0;
+    public static double align2Down=0;
     public static double odomServoPos = 0.32;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -85,7 +89,7 @@ public class Robot extends MecanumDrive {
     //public final Servo v4bSup, v4bRun;
     //public final CRServo intakeSup, intakeRun;
     //public final CRServo  groundLeft, groundRight;
-    public Servo odoRaise, aligner;
+    public Servo odoRaise, alignerL, alignerR;
     public List<DcMotorEx> motors;
     public DigitalChannel slidesLimitSwitch;
     private BNO055IMU imu;
@@ -153,7 +157,8 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-        aligner = hardwareMap.get(Servo.class, "aligner");
+        alignerL = hardwareMap.get(Servo.class, "alignerL");
+        alignerR=hardwareMap.get(Servo.class, "alignerR");
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
@@ -200,6 +205,19 @@ public class Robot extends MecanumDrive {
 
 
     }
+
+    public void alignUp()
+    {
+        alignerL.setPosition(align1Up);
+        alignerR.setPosition(align2Up);
+    }
+
+    public void alignDown()
+    {
+        alignerL.setPosition(align1Down);
+        alignerR.setPosition(align2Down);
+    }
+
     public Robot(LinearOpMode l) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
@@ -237,7 +255,9 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-        aligner = hardwareMap.get(Servo.class, "aligner");
+        alignerL = hardwareMap.get(Servo.class, "alignerL");
+        alignerR = hardwareMap.get(Servo.class, "alignerR");
+
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
