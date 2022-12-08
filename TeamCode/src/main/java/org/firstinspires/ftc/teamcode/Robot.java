@@ -65,10 +65,10 @@ public class Robot extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double align1Up=0;
-    public static double align1Down=0;
+    //public static double align1Up=1;
+    //public static double align1Down=0;
     public static double align2Up=0;
-    public static double align2Down=0;
+    public static double align2Down=0.8;
     public static double odomServoPos = 0.32;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -157,7 +157,7 @@ public class Robot extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-        alignerL = hardwareMap.get(Servo.class, "alignerL");
+        //alignerL = hardwareMap.get(Servo.class, "alignerL");
         alignerR=hardwareMap.get(Servo.class, "alignerR");
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
@@ -208,14 +208,14 @@ public class Robot extends MecanumDrive {
 
     public void alignUp()
     {
-        alignerL.setPosition(align1Up);
-        alignerR.setPosition(align2Up);
+        //alignerL.setPosition(align1Up);
+        alignerR.setPosition(align2Down);
     }
 
     public void alignDown()
     {
-        alignerL.setPosition(align1Down);
-        alignerR.setPosition(align2Down);
+        //alignerL.setPosition(align1Down);
+        alignerR.setPosition(align2Up);
     }
 
     public Robot(LinearOpMode l) {
