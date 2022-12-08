@@ -53,7 +53,8 @@ public class Turret
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        if(auton) {
+        if(auton)
+        {
             setState(State.INIT);
         }
         else
@@ -107,7 +108,7 @@ public class Turret
             case MANUAL:
                 targetPos = encoder.getCurrentPosition();
             case IDLE:
-                targetPos = encoder.getCurrentPosition()+posAtZero;
+                targetPos = encoder.getCurrentPosition();
                 break;
             case RIGHT:
                 targetPos=RIGHT_POS+posAtZero;
