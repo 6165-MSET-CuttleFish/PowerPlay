@@ -89,7 +89,7 @@ public class RightSideAuto extends LinearOpMode {
                     robot.alignDown();
                 })
                 .addDisplacementMarker(2, ()->{
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    groundIntake.setState(GroundIntake.State.INTAKING);
                     turret.setState(Turret.State.RIGHT);
                     //turret.update();
                     slides.setState(Slides.State.MID_DROP);
@@ -116,6 +116,7 @@ public class RightSideAuto extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    robot.alignUp();
                 })
                 .lineToConstantHeading(new Vector2d(-40, 11.0))
                 .build();
@@ -132,6 +133,9 @@ public class RightSideAuto extends LinearOpMode {
         //MOVE TO STACK, PICK UP FIRST CONE
         Trajectory initCycle = robot.trajectoryBuilder(preload3.end())
                 .lineToConstantHeading(new Vector2d(-62,11.0))
+                .addTemporalMarker(0, ()->{
+                    robot.alignDown();
+                })
                 .addDisplacementMarker(2, ()->{
                     slides.setState(Slides.State.INTAKE_AUTO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
