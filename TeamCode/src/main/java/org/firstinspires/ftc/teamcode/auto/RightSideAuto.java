@@ -260,12 +260,15 @@ public class RightSideAuto extends LinearOpMode {
             telemetry.addLine(String.format("detections", currentDetections.size()));
             if(currentDetections.size()>0) {
                 tagToTelemetry(currentDetections.get(0));
+                tagOfInterest = currentDetections.get(0);
             }
             telemetry.update();
             sleep(20);
         }
+        
         if(tagOfInterest != null)
         {
+
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
             telemetry.update();
