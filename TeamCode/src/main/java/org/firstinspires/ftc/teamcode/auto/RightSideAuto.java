@@ -287,15 +287,15 @@ public class RightSideAuto extends LinearOpMode {
         else
         {
 
-            if(tagOfInterest.id == 6)
+            if(tagOfInterest.id == 4)
             {
                 x =1;
             }
-            else if(tagOfInterest.id == 4)
+            else if(tagOfInterest.id == 7)
             {
                 x=2;
             }
-            else if(tagOfInterest.id == 9)
+            else if(tagOfInterest.id == 8)
             {
                 x=3;
             }
