@@ -64,8 +64,8 @@ public class DriverControl extends LinearOpMode {
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
@@ -391,8 +391,6 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
             telemetry.update();
 
-            turret.update();
-            //slides.checkLimit();
         }
     }
 

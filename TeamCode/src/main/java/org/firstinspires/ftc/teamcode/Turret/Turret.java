@@ -40,7 +40,7 @@ public class Turret
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT
     }
 
-    public Turret(HardwareMap hardwareMap, boolean auton)
+    public Turret(HardwareMap hardwareMap, boolean teleop)
     {
         coeff=new PIDCoeff(kp ,ki, kd, iSumMax, stabThresh);
         controller=new PIDControl(coeff);
@@ -53,13 +53,13 @@ public class Turret
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        if(auton)
+        if(teleop)
         {
-            setState(State.INIT);
+            setState(State.ZERO);
         }
         else
         {
-            setState(State.ZERO);
+            setState(State.INIT);
         }
     }
 

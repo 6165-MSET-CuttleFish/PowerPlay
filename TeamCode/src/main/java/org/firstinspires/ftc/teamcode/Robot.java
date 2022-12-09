@@ -51,6 +51,7 @@ import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 import org.firstinspires.ftc.teamcode.util.HardwareThread;
 import org.firstinspires.ftc.teamcode.vision.Camera;
 
@@ -103,7 +104,10 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
+
     public HardwareThread thread;
+    public BackgroundCR hardware;
+
     public GroundIntake groundIntake;
     public Camera camera;
     public boolean isOdoRaised = false;
@@ -127,12 +131,10 @@ public class Robot extends MecanumDrive {
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap, !teleop);
         groundIntake = new GroundIntake(hardwareMap);
-        thread=new HardwareThread(turret, slides, l);
+        hardware=new BackgroundCR(this, l);
+        //thread=new HardwareThread(turret, slides, l);
 
-        if(!teleop)
-        {
-            thread.start();
-        }
+        hardware.startHW();
 
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -227,10 +229,12 @@ public class Robot extends MecanumDrive {
         slides = new Slides(hardwareMap);
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
-        turret = new Turret(hardwareMap, !teleop);
+        turret = new Turret(hardwareMap, teleop);
         groundIntake = new GroundIntake(hardwareMap);
         thread=new HardwareThread(turret, slides, l);
         thread.start();
+        //hardware=new BackgroundCR(this, l);
+        //hardware.startHW();
 
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,

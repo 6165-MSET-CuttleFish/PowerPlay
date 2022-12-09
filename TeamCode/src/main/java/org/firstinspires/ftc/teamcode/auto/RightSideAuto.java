@@ -92,7 +92,9 @@ public class RightSideAuto extends LinearOpMode {
                     //robot.aligDownn();
                 })
                 .addDisplacementMarker(2, ()->{
+
                     //groundIntake.setState(GroundIntake.State.INTAKING);
+
                     turret.setState(Turret.State.RIGHT);
                     //turret.update();
                     slides.setState(Slides.State.MID_DROP);
@@ -118,8 +120,10 @@ public class RightSideAuto extends LinearOpMode {
                     fourbar.setState(vfourb.State.STACK_PRIMED);
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
+
                     //groundIntake.setState(GroundIntake.State.DEPOSITING);
                     robot.alignUp();
+
                 })
                 .lineToConstantHeading(new Vector2d(-40, 8.0))
                 .build();
@@ -138,11 +142,13 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-41, 12, Math.toRadians(178.7)))
                 .build();
         //MOVE TO STACK, PICK UP FIRST CONE
+
         Trajectory initCycle = robot.trajectoryBuilder(preload4.end())
                 .lineToConstantHeading(new Vector2d(-63.25,11.2))
                 .addTemporalMarker(0, ()->{
                     robot.alignDown();
                 })
+
                 .addDisplacementMarker(2, ()->{
                     slides.setState(Slides.State.INTAKE_AUTO);
                     //groundIntake.setState(GroundIntake.State.INTAKING);
@@ -294,7 +300,7 @@ public class RightSideAuto extends LinearOpMode {
             telemetry.update();
             sleep(20);
         }
-        
+
         if(tagOfInterest != null)
         {
 
