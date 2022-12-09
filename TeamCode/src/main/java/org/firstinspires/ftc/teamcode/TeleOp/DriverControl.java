@@ -55,7 +55,8 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new Robot(this, true);
+        robot = new Robot(this);
+        turret.setState(Turret.State.ZERO);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);

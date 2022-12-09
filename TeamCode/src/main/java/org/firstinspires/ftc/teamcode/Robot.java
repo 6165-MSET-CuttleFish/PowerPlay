@@ -70,7 +70,7 @@ public class Robot extends MecanumDrive {
     //public static double align1Down=0;
     public static double align2Up=0;
     public static double align2Down=0.8;
-    public static double odomServoPos = 0.31;
+    public static double odomServoPos = 0.3;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
