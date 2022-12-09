@@ -12,7 +12,7 @@ public class vfourb
     public static double DEPOSIT_POSITION = 0.14;
     public static double PRIMED = 0.86;
     public static double STACK_LOW = 0.63;
-    public static double ALIGN_POSITION = 0.22;
+    public static double ALIGN_POSITION = 0.32;
     public static double STACK_PRIMED = 0.79;
 
     public static double VERTICAL = 0.5;
