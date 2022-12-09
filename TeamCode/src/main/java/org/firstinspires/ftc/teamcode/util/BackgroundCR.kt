@@ -14,8 +14,6 @@ class BackgroundCR(val r: Robot, val l: LinearOpMode)
         {
             while(!l.isStopRequested)
             {
-                l.telemetry.addData("working", r.turret.getState());
-                l.telemetry.update()
                 r.turret.update();
                 r.slides.checkLimit();
             }

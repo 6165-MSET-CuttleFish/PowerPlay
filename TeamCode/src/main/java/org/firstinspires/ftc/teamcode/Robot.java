@@ -233,6 +233,8 @@ public class Robot extends MecanumDrive {
         groundIntake = new GroundIntake(hardwareMap);
         thread=new HardwareThread(turret, slides, l);
         thread.start();
+        //hardware=new BackgroundCR(this, l);
+        //hardware.startHW();
 
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,

@@ -377,7 +377,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //TELEMETRY
-            /*telemetry.addData("cycle: ", cycleValue);
+            telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("AutoAlign", autoAlignCheck);
             telemetry.addData("Turret", turret.getState());
@@ -389,10 +389,8 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Slide power", gamepad2.left_stick_y);
             telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
-            telemetry.update();*/
+            telemetry.update();
 
-            //turret.update();
-            //slides.checkLimit();
         }
     }
 
