@@ -271,12 +271,12 @@ public class ASafeDriverControl extends LinearOpMode {
                 turret.setState(Turret.State.LEFT);
 
             //manual turret control:
-            if (Math.abs(gamepad2.left_stick_x) > 0.3) {
+            if (Math.abs(gamepad2.right_stick_y) > 0.3) {
                 turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.left_stick_x);
+                turret.turretMotor.setPower(gamepad2.right_stick_y);
                 turretStop = true;
             }
-            if (turretStop && gamepad2.left_stick_x == 0) {
+            if (turretStop && gamepad2.right_stick_y == 0) {
                 turret.setState(Turret.State.MANUAL);
                 turret.turretMotor.setPower(0);
                 turretStop = false;
