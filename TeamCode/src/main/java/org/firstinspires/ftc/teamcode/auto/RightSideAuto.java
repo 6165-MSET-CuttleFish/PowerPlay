@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.profile.VelocityConstraint;
@@ -69,8 +71,9 @@ public class RightSideAuto extends LinearOpMode {
         fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
-        turret.setState(Turret.State.INIT);
         fourbar.setState(vfourb.State.STACK_PRIMED);
+        turret.setState(Turret.State.INIT);
+
         robot.alignUp();
         //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -86,10 +89,10 @@ public class RightSideAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-34.2, 21.8))
                 .addDisplacementMarker(1, ()->{
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
-                    robot.alignDown();
+                    //robot.aligDownn();
                 })
                 .addDisplacementMarker(2, ()->{
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     turret.setState(Turret.State.RIGHT);
                     //turret.update();
                     slides.setState(Slides.State.MID_DROP);
@@ -115,12 +118,16 @@ public class RightSideAuto extends LinearOpMode {
                     fourbar.setState(vfourb.State.STACK_PRIMED);
                     slides.setState(Slides.State.BOTTOM);
                     turret.setState(Turret.State.ZERO);
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    //groundIntake.setState(GroundIntake.State.DEPOSITING);
                     robot.alignUp();
                 })
-                .lineToConstantHeading(new Vector2d(-40, 11.0))
+                .lineToConstantHeading(new Vector2d(-40, 8.0))
                 .build();
         Trajectory preload3 = robot.trajectoryBuilder(preload2.end())
+
+                .lineToConstantHeading(new Vector2d(-40, 11.5))
+                .build();
+        Trajectory preload4 = robot.trajectoryBuilder(preload3.end())
                 /* .addTemporalMarker(0,()->{
                      fourbar.setState(vfourb.State.STACK_PRIMED);
                      slides.setState(Slides.State.BOTTOM);
@@ -128,17 +135,17 @@ public class RightSideAuto extends LinearOpMode {
                      groundIntake.setState(GroundIntake.State.DEPOSITING);
                  })*/
 
-                .lineToLinearHeading(new Pose2d(-41, 11.0, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-41, 12, Math.toRadians(178.7)))
                 .build();
         //MOVE TO STACK, PICK UP FIRST CONE
-        Trajectory initCycle = robot.trajectoryBuilder(preload3.end())
-                .lineToConstantHeading(new Vector2d(-62,11.0))
+        Trajectory initCycle = robot.trajectoryBuilder(preload4.end())
+                .lineToConstantHeading(new Vector2d(-63.25,11.2))
                 .addTemporalMarker(0, ()->{
                     robot.alignDown();
                 })
                 .addDisplacementMarker(2, ()->{
                     slides.setState(Slides.State.INTAKE_AUTO);
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();
@@ -146,9 +153,22 @@ public class RightSideAuto extends LinearOpMode {
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory cycleDropOff1 = robot.trajectoryBuilder(initCycle.end())
 
-                .lineToConstantHeading(new Vector2d(-26.1,12.3))
+                .lineToConstantHeading(new Vector2d(-26.4,11.3))
                 .addDisplacementMarker(2, ()->{
-                    groundIntake.setState(GroundIntake.State.OFF);
+                    //groundIntake.setState(GroundIntake.State.OFF);
+                    turret.setState(Turret.State.LEFT);
+                    slides.setState(Slides.State.MID_DROP);
+                    fourbar.setState(vfourb.State.ALIGN_POSITION);
+                })
+                .addDisplacementMarker(13, ()->{
+                    intake.setState(Intake.State.OFF);
+                })
+                .build();
+        Trajectory cycleDropOff2 = robot.trajectoryBuilder(initCycle.end())
+
+                .lineToConstantHeading(new Vector2d(-27,11.3))
+                .addDisplacementMarker(2, ()->{
+                    //groundIntake.setState(GroundIntake.State.OFF);
                     turret.setState(Turret.State.LEFT);
                     slides.setState(Slides.State.MID_DROP);
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
@@ -158,12 +178,12 @@ public class RightSideAuto extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntakePrep = robot.trajectoryBuilder(cycleDropOff1.end())
-                .lineToConstantHeading(new Vector2d(-45, 11.0))
+                .lineToConstantHeading(new Vector2d(-45, 11.2))
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    //groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
 
                 .build();
@@ -171,11 +191,11 @@ public class RightSideAuto extends LinearOpMode {
         Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleIntakePrep.end())
                 .addDisplacementMarker(0,()->{
                     robot.slides.setState(Slides.State.INTAKE_AUTO);
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
 
-                .lineToConstantHeading(new Vector2d(-62,11.0),
+                .lineToConstantHeading(new Vector2d(-63.25,11.2),
                         robot.getVelocityConstraint(40, 5.939, 13.44),
                         robot.getAccelerationConstraint(37))
 
@@ -184,17 +204,17 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleIntakePrep.end())
 
-                .lineToConstantHeading(new Vector2d(-62.25,11.0),robot.getVelocityConstraint(40, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-63.25,11.2),robot.getVelocityConstraint(40, 5.939, 13.44),
                         robot.getAccelerationConstraint(37))
 
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    //groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addDisplacementMarker(15,()->{
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    //groundIntake.setState(GroundIntake.State.INTAKING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();
@@ -238,7 +258,7 @@ public class RightSideAuto extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-
+        FtcDashboard dashboard = FtcDashboard.getInstance();
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -254,13 +274,14 @@ public class RightSideAuto extends LinearOpMode {
 
             }
         });
-
+        dashboard.startCameraStream(webcam, 30);
         telemetry.setMsTransmissionInterval(50);
 
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+        TelemetryPacket packet =new TelemetryPacket();
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -269,6 +290,7 @@ public class RightSideAuto extends LinearOpMode {
                 tagToTelemetry(currentDetections.get(0));
                 tagOfInterest = currentDetections.get(0);
             }
+            dashboard.sendTelemetryPacket(packet);
             telemetry.update();
             sleep(20);
         }
@@ -317,6 +339,7 @@ public class RightSideAuto extends LinearOpMode {
         robot.followTrajectory(preload1);
         robot.followTrajectory(preload2);
         robot.followTrajectory(preload3);
+        robot.followTrajectory(preload4);
         groundIntake.setState(GroundIntake.State.OFF);
         //robot.turn(Math.toRadians(-100));
         //1st cycle
@@ -334,7 +357,7 @@ public class RightSideAuto extends LinearOpMode {
         robot.followTrajectory(cycleIntakePrep);
         robot.followTrajectory(cycleIntakeLow);
         cycleIntake();
-        robot.followTrajectory(cycleDropOff1);
+        robot.followTrajectory(cycleDropOff2);
         cycleDeposit();
         //picking up 4th cone?
         /*
@@ -348,13 +371,13 @@ public class RightSideAuto extends LinearOpMode {
             robot.followTrajectory(endLeft);
             robot.alignUp();
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-80 < timer){}
+            while(System.currentTimeMillis()-150 < timer){}
         }
         else if( x==2){
             robot.followTrajectory(endMiddle);
             robot.alignUp();
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-80 < timer){}
+            while(System.currentTimeMillis()-150 < timer){}
         }
         else if (x==3){
             robot.followTrajectory(cycleIntakePrep);
@@ -379,7 +402,7 @@ public class RightSideAuto extends LinearOpMode {
         robot.intake.setState(Intake.State.INTAKING);
         robot.slides.setState(Slides.State.BOTTOM);
         //while(System.currentTimeMillis()- < timer){}
-        robot.groundIntake.setState(GroundIntake.State.DEPOSITING);
+        //robot.groundIntake.setState(GroundIntake.State.DEPOSITING);
         robot.fourbar.setState(vfourb.State.INTAKE_POSITION);
 
         timer = System.currentTimeMillis();
