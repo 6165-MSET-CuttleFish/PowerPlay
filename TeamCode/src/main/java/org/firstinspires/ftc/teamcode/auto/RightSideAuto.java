@@ -479,7 +479,494 @@ public class RightSideAuto extends LinearOpMode {
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feepackage org.firstinspires.ftc.teamcode.auto;\n" +
+                "\n" +
+                "import com.acmerobotics.dashboard.FtcDashboard;\n" +
+                "import com.acmerobotics.dashboard.telemetry.TelemetryPacket;\n" +
+                "import com.acmerobotics.roadrunner.geometry.Pose2d;\n" +
+                "import com.acmerobotics.roadrunner.geometry.Vector2d;\n" +
+                "import com.acmerobotics.roadrunner.profile.VelocityConstraint;\n" +
+                "import com.acmerobotics.roadrunner.trajectory.Trajectory;\n" +
+                "import com.qualcomm.robotcore.eventloop.opmode.Autonomous;\n" +
+                "import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\n" +
+                "import com.qualcomm.robotcore.hardware.DcMotor;\n" +
+                "import com.qualcomm.robotcore.util.ElapsedTime;\n" +
+                "\n" +
+                "import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;\n" +
+                "import org.firstinspires.ftc.teamcode.Robot;\n" +
+                "import org.firstinspires.ftc.teamcode.Slides.Slides;\n" +
+                "import org.firstinspires.ftc.teamcode.Transfer.Intake;\n" +
+                "import org.firstinspires.ftc.teamcode.Transfer.vfourb;\n" +
+                "import org.firstinspires.ftc.teamcode.Turret.Detector;\n" +
+                "import org.firstinspires.ftc.teamcode.Turret.Turret;\n" +
+                "import org.firstinspires.ftc.teamcode.ground.GroundIntake;\n" +
+                "import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;\n" +
+                "import org.openftc.apriltag.AprilTagDetection;\n" +
+                "import org.openftc.easyopencv.OpenCvCamera;\n" +
+                "import org.openftc.easyopencv.OpenCvCameraFactory;\n" +
+                "import org.openftc.easyopencv.OpenCvCameraRotation;\n" +
+                "import org.openftc.easyopencv.OpenCvWebcam;\n" +
+                "\n" +
+                "import java.util.ArrayList;\n" +
+                "\n" +
+                "@Autonomous\n" +
+                "public class RightSideAuto extends LinearOpMode {\n" +
+                "    ElapsedTime t;\n" +
+                "    Robot robot;\n" +
+                "    Intake intake;\n" +
+                "    Slides slides;\n" +
+                "    vfourb fourbar;\n" +
+                "    GroundIntake groundIntake;\n" +
+                "    Turret turret;\n" +
+                "    Detector detector1;\n" +
+                "    OpenCvWebcam webcam;\n" +
+                "    Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));\n" +
+                "    double timer = 0;\n" +
+                "    OpenCvCamera camera;\n" +
+                "    AprilTagDetectionPipeline aprilTagDetectionPipeline;\n" +
+                "    double intakeY = 12.24;\n" +
+                "    static final double FEET_PER_METER = 3.28084;\n" +
+                "\n" +
+                "    // Lens intrinsics\n" +
+                "    // UNITS ARE PIXELS\n" +
+                "    // NOTE: this calibration is for the C920 webcam at 800x448.\n" +
+                "    // You will need to do your own calibration for other configurations!\n" +
+                "    int x = 1;\n" +
+                "    double fx = 578.272;\n" +
+                "    double fy = 578.272;\n" +
+                "    double cx = 402.145;\n" +
+                "    double cy = 221.506;\n" +
+                "\n" +
+                "    // UNITS ARE METERS\n" +
+                "    double tagsize = 0.166;\n" +
+                "\n" +
+                "    AprilTagDetection tagOfInterest = null;\n" +
+                "\n" +
+                "    @Override\n" +
+                "\n" +
+                "    public void runOpMode() throws InterruptedException {\n" +
+                "        t=new ElapsedTime();\n" +
+                "        robot = new Robot(this);\n" +
+                "        intake = robot.intake;\n" +
+                "        slides = robot.slides;\n" +
+                "        fourbar = robot.fourbar;\n" +
+                "        groundIntake = robot.groundIntake;\n" +
+                "        turret = robot.turret;\n" +
+                "        fourbar.setState(vfourb.State.STACK_PRIMED);\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "        while(System.currentTimeMillis()-200 < timer){}\n" +
+                "        turret.setState(Turret.State.INIT);\n" +
+                "\n" +
+                "        robot.alignUp();\n" +
+                "        //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\n" +
+                "        //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);\n" +
+                "        //fourbar.setState(vfourb.State.INTAKE_POSITION);\n" +
+                "        //camInit();\n" +
+                "        /*\n" +
+                "        Trajectory preload1 = robot.trajectoryBuilder(startPose)\n" +
+                "                .lineToConstantHeading(new Vector2d(-38,40))\n" +
+                "                .build();*/\n" +
+                "\n" +
+                "        //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION\n" +
+                "        Trajectory preload1 = robot.trajectoryBuilder(startPose)\n" +
+                "                .lineToConstantHeading(new Vector2d(-34.3, 21.6),robot.getVelocityConstraint(42.5, 5.939, 13.44),\n" +
+                "                        robot.getAccelerationConstraint(50))\n" +
+                "                .addDisplacementMarker(1, ()->{\n" +
+                "                    fourbar.setState(vfourb.State.ALIGN_POSITION);\n" +
+                "                    //robot.aligDownn();\n" +
+                "                })\n" +
+                "                .addDisplacementMarker(2, ()->{\n" +
+                "\n" +
+                "                    //groundIntake.setState(GroundIntake.State.INTAKING);\n" +
+                "\n" +
+                "                    turret.setState(Turret.State.RIGHT);\n" +
+                "                    //turret.update();\n" +
+                "                    slides.setState(Slides.State.MID_DROP);\n" +
+                "\n" +
+                "                })\n" +
+                "                .addTemporalMarker(2,()->{\n" +
+                "                    fourbar.setState(vfourb.State.DEPOSIT_POSITION);\n" +
+                "\n" +
+                "                })\n" +
+                "                .addTemporalMarker(2.1, ()->{\n" +
+                "                    intake.setState(Intake.State.DEPOSITING);\n" +
+                "                    waitSec(0.25);\n" +
+                "                })\n" +
+                "                .addDisplacementMarker(()->\n" +
+                "                {\n" +
+                "                    fourbar.setState(vfourb.State.ALIGN_POSITION);\n" +
+                "                    waitSec(0.115);\n" +
+                "                })\n" +
+                "                .build();\n" +
+                "\n" +
+                "        //RESET EVERYTHING, MOVE TO STACK, READY FOR PICK UP\n" +
+                "        Trajectory preload2 = robot.trajectoryBuilder(preload1.end())\n" +
+                "                .addTemporalMarker(0,()->{\n" +
+                "                    fourbar.setState(vfourb.State.STACK_PRIMED);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "\n" +
+                "                    //groundIntake.setState(GroundIntake.State.DEPOSITING);\n" +
+                "                    robot.alignUp();\n" +
+                "\n" +
+                "                })\n" +
+                "                .lineToConstantHeading(new Vector2d(-40, 8.0))\n" +
+                "                .build();\n" +
+                "        Trajectory preload3 = robot.trajectoryBuilder(preload2.end())\n" +
+                "\n" +
+                "                .lineToConstantHeading(new Vector2d(-40, intakeY))\n" +
+                "                .build();\n" +
+                "        Trajectory preload4 = robot.trajectoryBuilder(preload3.end())\n" +
+                "                /* .addTemporalMarker(0,()->{\n" +
+                "                     fourbar.setState(vfourb.State.STACK_PRIMED);\n" +
+                "                     slides.setState(Slides.State.BOTTOM);\n" +
+                "                     turret.setState(Turret.State.ZERO);\n" +
+                "                     groundIntake.setState(GroundIntake.State.DEPOSITING);\n" +
+                "                 })*/\n" +
+                "                .addTemporalMarker(0.5, ()->{\n" +
+                "                    robot.alignDown();\n" +
+                "                })\n" +
+                "                .lineToLinearHeading(new Pose2d(-41, intakeY, Math.toRadians(180)))\n" +
+                "                .build();\n" +
+                "        //MOVE TO STACK, PICK UP FIRST CONE\n" +
+                "\n" +
+                "        Trajectory initCycle = robot.trajectoryBuilder(preload4.end())\n" +
+                "                .lineToConstantHeading(new Vector2d(-63.25,intakeY),robot.getVelocityConstraint(25, 5.939, 13.44),\n" +
+                "                        robot.getAccelerationConstraint(30))\n" +
+                "\n" +
+                "\n" +
+                "                .addDisplacementMarker(2, ()->{\n" +
+                "                    slides.setState(Slides.State.INTAKE_AUTO);\n" +
+                "                    //groundIntake.setState(GroundIntake.State.INTAKING);\n" +
+                "                    intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .build();\n" +
+                "\n" +
+                "        //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE\n" +
+                "        Trajectory cycleDropOff1 = robot.trajectoryBuilder(initCycle.end())\n" +
+                "\n" +
+                "                .lineToConstantHeading(new Vector2d(-26.7,12.75))\n" +
+                "                .addDisplacementMarker(2, ()->{\n" +
+                "                    //groundIntake.setState(GroundIntake.State.OFF);\n" +
+                "                    turret.setState(Turret.State.LEFT);\n" +
+                "                    slides.setState(Slides.State.MID_DROP);\n" +
+                "                    fourbar.setState(vfourb.State.ALIGN_POSITION);\n" +
+                "                })\n" +
+                "                .addDisplacementMarker(13, ()->{\n" +
+                "                    intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .build();\n" +
+                "        Trajectory cycleDropOff2 = robot.trajectoryBuilder(initCycle.end())\n" +
+                "\n" +
+                "                .lineToConstantHeading(new Vector2d(-26.95,12.75))\n" +
+                "                .addDisplacementMarker(2, ()->{\n" +
+                "                    //groundIntake.setState(GroundIntake.State.OFF);\n" +
+                "                    turret.setState(Turret.State.LEFT);\n" +
+                "                    slides.setState(Slides.State.MID_DROP);\n" +
+                "                    fourbar.setState(vfourb.State.ALIGN_POSITION);\n" +
+                "                })\n" +
+                "                .addDisplacementMarker(13, ()->{\n" +
+                "                    intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .build();\n" +
+                "        Trajectory cycleIntakePrep = robot.trajectoryBuilder(cycleDropOff1.end())\n" +
+                "                .lineToConstantHeading(new Vector2d(-45, intakeY))\n" +
+                "                .addTemporalMarker(0, ()->{\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "\n" +
+                "                    //groundIntake.setState(GroundIntake.State.DEPOSITING);\n" +
+                "                })\n" +
+                "\n" +
+                "                .build();\n" +
+                "        //MOVE TO STACK, PICK UP ANOTHER CONE\n" +
+                "        Trajectory cycleIntakeHigh = robot.trajectoryBuilder(cycleIntakePrep.end())\n" +
+                "                .addDisplacementMarker(0,()->{\n" +
+                "                    robot.slides.setState(Slides.State.INTAKE_AUTO);\n" +
+                "                    //groundIntake.setState(GroundIntake.State.INTAKING);\n" +
+                "                    intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "\n" +
+                "                .lineToConstantHeading(new Vector2d(-63.25,intakeY),\n" +
+                "                        robot.getVelocityConstraint(25, 5.939, 13.44),\n" +
+                "                        robot.getAccelerationConstraint(30))\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "                .build();\n" +
+                "        Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleIntakePrep.end())\n" +
+                "\n" +
+                "                .lineToConstantHeading(new Vector2d(-63.5,12.0),robot.getVelocityConstraint(25, 5.939, 13.44),\n" +
+                "                        robot.getAccelerationConstraint(30))\n" +
+                "\n" +
+                "                .addTemporalMarker(0, ()->{\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "\n" +
+                "                    //groundIntake.setState(GroundIntake.State.DEPOSITING);\n" +
+                "                })\n" +
+                "                .addDisplacementMarker(15,()->{\n" +
+                "                    //groundIntake.setState(GroundIntake.State.INTAKING);\n" +
+                "                    intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .build();\n" +
+                "        Trajectory endLeft = robot.trajectoryBuilder(cycleDropOff2.end())\n" +
+                "                .addTemporalMarker(0,()->{\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "\n" +
+                "                })\n" +
+                "                .addTemporalMarker(0.1,()->{\n" +
+                "                    fourbar.setState(vfourb.State.VERTICAL);\n" +
+                "                    //intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .lineToConstantHeading(new Vector2d(-13,11.98)).build();\n" +
+                "        Trajectory endMiddle = robot.trajectoryBuilder(cycleDropOff2.end())\n" +
+                "                .addTemporalMarker(0,()->{\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "\n" +
+                "                })\n" +
+                "                .addTemporalMarker(0.1,()->{\n" +
+                "                    fourbar.setState(vfourb.State.VERTICAL);\n" +
+                "                    //intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .lineToConstantHeading(new Vector2d(-38,11.98)).build();\n" +
+                "        Trajectory endRight = robot.trajectoryBuilder(cycleDropOff1.end())\n" +
+                "                .addTemporalMarker(0,()->{\n" +
+                "                    turret.setState(Turret.State.ZERO);\n" +
+                "                    slides.setState(Slides.State.BOTTOM);\n" +
+                "\n" +
+                "                })\n" +
+                "                .addTemporalMarker(0.1,()->{\n" +
+                "                    fourbar.setState(vfourb.State.VERTICAL);\n" +
+                "                    //intake.setState(Intake.State.OFF);\n" +
+                "                })\n" +
+                "                .lineToConstantHeading(new Vector2d(-55,11.98)).build();\n" +
+                "        /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())\n" +
+                "                        .lineToConstantHeading(new Vector2d(-48,10))\n" +
+                "                                .build();*/\n" +
+                "        //robot.thread.run();\n" +
+                "        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(\"cameraMonitorViewId\", \"id\", hardwareMap.appContext.getPackageName());\n" +
+                "        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, \"Webcam 1\"), cameraMonitorViewId);\n" +
+                "        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);\n" +
+                "        //FtcDashboard dashboard = FtcDashboard.getInstance();\n" +
+                "        camera.setPipeline(aprilTagDetectionPipeline);\n" +
+                "        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()\n" +
+                "        {\n" +
+                "            @Override\n" +
+                "            public void onOpened()\n" +
+                "            {\n" +
+                "                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);\n" +
+                "            }\n" +
+                "\n" +
+                "            @Override\n" +
+                "            public void onError(int errorCode)\n" +
+                "            {\n" +
+                "\n" +
+                "            }\n" +
+                "        });\n" +
+                "        //dashboard.startCameraStream(webcam, 30);\n" +
+                "        telemetry.setMsTransmissionInterval(50);\n" +
+                "\n" +
+                "        /*\n" +
+                "         * The INIT-loop:\n" +
+                "         * This REPLACES waitForStart!\n" +
+                "         */\n" +
+                "        TelemetryPacket packet =new TelemetryPacket();\n" +
+                "        while (!isStarted() && !isStopRequested())\n" +
+                "        {\n" +
+                "            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();\n" +
+                "            telemetry.addLine(String.format(\"detections\", currentDetections.size()));\n" +
+                "            if(currentDetections.size()>0) {\n" +
+                "                tagToTelemetry(currentDetections.get(0));\n" +
+                "                tagOfInterest = currentDetections.get(0);\n" +
+                "            }\n" +
+                "            //dashboard.sendTelemetryPacket(packet);\n" +
+                "            telemetry.update();\n" +
+                "            sleep(20);\n" +
+                "        }\n" +
+                "\n" +
+                "        if(tagOfInterest != null)\n" +
+                "        {\n" +
+                "\n" +
+                "            telemetry.addLine(\"Tag snapshot:\\n\");\n" +
+                "            tagToTelemetry(tagOfInterest);\n" +
+                "            telemetry.update();\n" +
+                "        }\n" +
+                "        else\n" +
+                "        {\n" +
+                "            telemetry.addLine(\"No tag snapshot available, it was never sighted during the init loop :(\");\n" +
+                "            telemetry.update();\n" +
+                "        }\n" +
+                "\n" +
+                "        /* Actually do something useful */\n" +
+                "        if(tagOfInterest == null)\n" +
+                "        {\n" +
+                "            /*\n" +
+                "             * Insert your autonomous code here, presumably running some default configuration\n" +
+                "             * since the tag was never sighted during INIT\n" +
+                "             */\n" +
+                "        }\n" +
+                "        else\n" +
+                "        {\n" +
+                "\n" +
+                "            if(tagOfInterest.id == 4)\n" +
+                "            {\n" +
+                "                x =1;\n" +
+                "            }\n" +
+                "            else if(tagOfInterest.id == 7)\n" +
+                "            {\n" +
+                "                x=2;\n" +
+                "            }\n" +
+                "            else if(tagOfInterest.id == 8)\n" +
+                "            {\n" +
+                "                x=3;\n" +
+                "            }\n" +
+                "        }\n" +
+                "        if (isStopRequested()) return;\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "        //preload\n" +
+                "        robot.setPoseEstimate(startPose);\n" +
+                "        robot.followTrajectory(preload1);\n" +
+                "        robot.followTrajectory(preload2);\n" +
+                "        robot.followTrajectory(preload3);\n" +
+                "        robot.followTrajectory(preload4);\n" +
+                "        groundIntake.setState(GroundIntake.State.OFF);\n" +
+                "        //robot.turn(Math.toRadians(-100));\n" +
+                "        //1st cycle\n" +
+                "        robot.followTrajectory(initCycle);\n" +
+                "        cycleIntake();\n" +
+                "        robot.followTrajectory(cycleDropOff1);\n" +
+                "        cycleDeposit();\n" +
+                "        //2nd cycle\n" +
+                "        robot.followTrajectory(cycleIntakePrep);\n" +
+                "        robot.followTrajectory(cycleIntakeHigh);\n" +
+                "        cycleIntake();\n" +
+                "        robot.followTrajectory(cycleDropOff1);\n" +
+                "        cycleDeposit();\n" +
+                "        //3rd cycle\n" +
+                "        robot.followTrajectory(cycleIntakePrep);\n" +
+                "        robot.followTrajectory(cycleIntakeLow);\n" +
+                "        cycleIntake();\n" +
+                "        robot.followTrajectory(cycleDropOff2);\n" +
+                "        cycleDeposit();\n" +
+                "        //picking up 4th cone?\n" +
+                "        /*\n" +
+                "        robot.followTrajectory(cycleIntakePrep);\n" +
+                "        robot.followTrajectory(cycleIntakeLow);\n" +
+                "        cycleIntake();\n" +
+                "        robot.followTrajectory(cycleDropOff1);\n" +
+                "        cycleDeposit();*/\n" +
+                "        //park\n" +
+                "        if(x == 1){\n" +
+                "            robot.followTrajectory(endLeft);\n" +
+                "            robot.alignUp();\n" +
+                "            timer = System.currentTimeMillis();\n" +
+                "            while(System.currentTimeMillis()-150 < timer){}\n" +
+                "        }\n" +
+                "        else if( x==2){\n" +
+                "            robot.followTrajectory(endMiddle);\n" +
+                "            robot.alignUp();\n" +
+                "            timer = System.currentTimeMillis();\n" +
+                "            while(System.currentTimeMillis()-150 < timer){}\n" +
+                "        }\n" +
+                "        else if (x==3){\n" +
+                "            robot.followTrajectory(cycleIntakePrep);\n" +
+                "            robot.followTrajectory(cycleIntakeLow);\n" +
+                "            cycleIntake();\n" +
+                "\n" +
+                "        }\n" +
+                "        //4th cycle\n" +
+                "        /*\n" +
+                "        robot.followTrajectory(cycleIntakeLow);\n" +
+                "        cycleIntake();\n" +
+                "        robot.followTrajectory(cycleDropOff1);\n" +
+                "        cycleDeposit();\n" +
+                "        robot.followTrajectory(cycleIntakeLow);*/\n" +
+                "    }\n" +
+                "    //if(isStopRequested()) return;\n" +
+                "\n" +
+                "\n" +
+                "    private void cycleIntake(){\n" +
+                "\n" +
+                "        //timer = System.currentTimeMillis();\n" +
+                "        robot.intake.setState(Intake.State.INTAKING);\n" +
+                "        robot.slides.setState(Slides.State.BOTTOM);\n" +
+                "        //while(System.currentTimeMillis()- < timer){}\n" +
+                "        //robot.groundIntake.setState(GroundIntake.State.DEPOSITING);\n" +
+                "        robot.fourbar.setState(vfourb.State.INTAKE_POSITION);\n" +
+                "\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "        while(System.currentTimeMillis()-400 < timer){}\n" +
+                "        //robot.intake.setState(Intake.State.OFF);\n" +
+                "        fourbar.setState(vfourb.State.DEPOSIT_POSITION);\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "        while(System.currentTimeMillis()-40 < timer){}\n" +
+                "    }\n" +
+                "    private void cycleDeposit(){\n" +
+                "        robot.fourbar.setState(vfourb.State.DEPOSIT_POSITION);\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "\n" +
+                "        while(System.currentTimeMillis()-80< timer){\n" +
+                "            //turret.autoAlign();\n" +
+                "        }\n" +
+                "        intake.setState(Intake.State.DEPOSITING);\n" +
+                "        timer = System.currentTimeMillis();\n" +
+                "\n" +
+                "        while(System.currentTimeMillis()-300< timer){\n" +
+                "            //turret.autoAlign();\n" +
+                "        }\n" +
+                "        robot.fourbar.setState(vfourb.State.STACK_PRIMED);\n" +
+                "    }\n" +
+                "    /*\n" +
+                "    public void camInit() {\n" +
+                "        final int CAMERA_WIDTH = 320; // width  of wanted camera resolution\n" +
+                "        final int CAMERA_HEIGHT = 240; // height of wanted camera resolution\n" +
+                "        int cameraMonitorViewId = this\n" +
+                "                .hardwareMap\n" +
+                "                .appContext\n" +
+                "                .getResources().getIdentifier(\n" +
+                "                        \"cameraMonitorViewId\",\n" +
+                "                        \"id\",\n" +
+                "                        hardwareMap.appContext.getPackageName()\n" +
+                "                );\n" +
+                "        webcam = OpenCvCameraFactory\n" +
+                "                .getInstance()\n" +
+                "                .createWebcam(hardwareMap.get(WebcamName.class, \"Webcam 1\"), cameraMonitorViewId);\n" +
+                "        webcam.setPipeline(detector1 = new Detector());\n" +
+                "        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {\n" +
+                "            @Override\n" +
+                "            public void onOpened() {\n" +
+                "                webcam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);\n" +
+                "                System.out.println(\"START\");\n" +
+                "            }\n" +
+                "            public void onError(int errorCode) {\n" +
+                "            }\n" +
+                "        });\n" +
+                "        //dashboard.startCameraStream(webcam, 30);\n" +
+                "        telemetry.addLine(\"waiting for start\");\n" +
+                "        telemetry.update();\n" +
+                "    }*/\n" +
+                "    public void waitSec(double seconds)\n" +
+                "    {\n" +
+                "        t.reset();\n" +
+                "        while(t.milliseconds()<seconds*1000)\n" +
+                "        {\n" +
+                "            //stall\n" +
+                "        }\n" +
+                "    }\n" +
+                "    void tagToTelemetry(AprilTagDetection detection)\n" +
+                "    {\n" +
+                "        telemetry.addLine(String.format(\"\\nDetected tag ID=%d\", detection.id));\n" +
+                "        telemetry.addLine(String.format(\"Translation X: %.2f feet\", detection.pose.x*FEET_PER_METER));\n" +
+                "        telemetry.addLine(String.format(\"Translation Y: %.2f feet\", detection.pose.y*FEET_PER_METER));\n" +
+                "        telemetry.addLine(String.format(\"Translation Z: %.2f feet\", detection.pose.z*FEET_PER_METER));\n" +
+                "        telemetry.addLine(String.format(\"Rotation Yaw: %.2f degrees\", Math.toDegrees(detection.pose.yaw)));\n" +
+                "        telemetry.addLine(String.format(\"Rotation Pitch: %.2f degrees\", Math.toDegrees(detection.pose.pitch)));\n" +
+                "        telemetry.addLine(String.format(\"Rotation Roll: %.2f degrees\", Math.toDegrees(detection.pose.roll)));\n" +
+                "    }\n" +
+                "}\nt", detection.pose.y*FEET_PER_METER));
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
