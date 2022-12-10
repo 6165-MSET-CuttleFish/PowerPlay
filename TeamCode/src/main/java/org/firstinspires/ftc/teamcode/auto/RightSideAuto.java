@@ -43,7 +43,7 @@ public class RightSideAuto extends LinearOpMode {
     double timer = 0;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-    double intakeY = 11.94;
+    double intakeY = 11;
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -177,7 +177,7 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory cycleDropOff2 = robot.trajectoryBuilder(initCycle.end())
 
-                .lineToConstantHeading(new Vector2d(-26.5,12.25))
+                .lineToConstantHeading(new Vector2d(-26.3,12.25))
                 .addDisplacementMarker(2, ()->{
                     //groundIntake.setState(GroundIntake.State.OFF);
                     turret.setState(Turret.State.LEFT);

@@ -43,7 +43,7 @@ public class LeftSideAuto extends LinearOpMode {
     double timer = 0;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-    double intakeY = 11.4;
+    double intakeY = 11;
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -215,7 +215,7 @@ public class LeftSideAuto extends LinearOpMode {
                 .build();
         Trajectory cycleIntakeLow = robot.trajectoryBuilder(cycleIntakePrep.end())
 
-                .lineToConstantHeading(new Vector2d(67,12.0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(67,intakeY),robot.getVelocityConstraint(25, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
 
                 .addTemporalMarker(0, ()->{
