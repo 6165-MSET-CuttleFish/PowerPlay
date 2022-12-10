@@ -107,6 +107,7 @@ public class Turret
         {
             case MANUAL:
                 targetPos = encoder.getCurrentPosition();
+                break;
             case IDLE:
                 targetPos = encoder.getCurrentPosition();
                 break;
@@ -121,6 +122,7 @@ public class Turret
                 break;
             case INIT:
                 targetPos=INIT+posAtZero;
+                break;
             case AUTOALIGN:
                 break;
         }

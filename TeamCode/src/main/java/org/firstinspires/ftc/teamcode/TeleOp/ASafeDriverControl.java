@@ -48,6 +48,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     int cycleValue = 0;
     boolean slidesZero = false, turretStop = false;
+    boolean autoActuate = false;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -68,6 +69,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 extakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
+                turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
 
                 intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
@@ -114,6 +116,7 @@ public class ASafeDriverControl extends LinearOpMode {
         slides.setState(Slides.State.BOTTOM);
         fourbar.setState(vfourb.State.PRIMED);
         robot.odoRaise.setPosition(0);
+        turret.setState(Turret.State.ZERO);
         while (!isStopRequested()) {
 
             robot.update();
@@ -159,12 +162,40 @@ public class ASafeDriverControl extends LinearOpMode {
             if (cycleValue > 3)
                 cycleValue = 0;
 
-            if(cycleDown.wasJustPressed()|| cycleUp.wasJustPressed()){
+            if((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && autoActuate){
                 gamepad2.stopRumble();
                 if(!gamepad2.isRumbling()) {
                     switch (cycleValue) {
                         case 0:
-                            //  gamepad2.runRumbleEffect(customRumbleEffect0);
+                            slides.setState(Slides.State.BOTTOM);
+                            fourbar.setState(vfourb.State.PRIMED);
+                            turret.setState(Turret.State.ZERO);
+                            break;
+                        case 1:
+                            gamepad2.runRumbleEffect(customRumbleEffect0);
+                            slides.setState(Slides.State.LOW);
+                            fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                            turret.setState(Turret.State.ZERO);
+                            break;
+                        case 2:
+                            gamepad2.runRumbleEffect(customRumbleEffect1);
+                            slides.setState(Slides.State.MID);
+                            fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+                            turret.setState(Turret.State.ZERO);
+                            break;
+                        case 3:
+                            gamepad2.runRumbleEffect(customRumbleEffect2);
+                            slides.setState(Slides.State.HIGH);
+                            fourbar.setState(vfourb.State.ALIGN_POSITION);
+                            turret.setState(Turret.State.ZERO);
+                            break;
+                    }
+                }
+            } else if ((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && !autoActuate){
+                gamepad2.stopRumble();
+                if(!gamepad2.isRumbling()) {
+                    switch (cycleValue) {
+                        case 0:
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
@@ -182,6 +213,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             //reset
             if (reset.wasJustPressed()) {
+                autoActuate = false;
                 slides.setState(Slides.State.BOTTOM);
                 fourbar.setState(vfourb.State.PRIMED);
                 turret.setState(Turret.State.ZERO);
@@ -189,6 +221,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             //turret left
             if (actuateLeft.wasJustPressed()) {
+                autoActuate = true;
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -215,6 +248,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             //turret right
             if (actuateRight.wasJustPressed()) {
+                autoActuate = true;
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -241,6 +275,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             //turret mid
             if (actuateUp.wasJustPressed()) {
+                autoActuate = true;
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
@@ -264,6 +299,10 @@ public class ASafeDriverControl extends LinearOpMode {
                         break;
                 }
             }
+
+            if (turretZero.wasJustPressed()) {
+                turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
             //incremental turret control:
             if (gamepad2.right_stick_x > 0)
                 turret.setState(Turret.State.RIGHT);
@@ -271,7 +310,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 turret.setState(Turret.State.LEFT);
 
             //manual turret control:
-            if (Math.abs(gamepad2.right_stick_y) > 0.3) {
+            if (Math.abs(gamepad2.right_stick_y) > 0) {
                 turret.setState(Turret.State.MANUAL);
                 turret.turretMotor.setPower(gamepad2.right_stick_y);
                 turretStop = true;
@@ -282,7 +321,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 turretStop = false;
             }
             //manual slides control:
-            if (Math.abs(gamepad2.left_stick_y) > 0.3) {
+            if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setPowerManual(gamepad2.left_stick_y);
                 //slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = true;
@@ -329,8 +368,8 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
+            telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.update();
-
             turret.update();
         }
     }
