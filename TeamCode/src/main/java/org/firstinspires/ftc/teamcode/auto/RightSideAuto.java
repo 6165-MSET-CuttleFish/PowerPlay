@@ -164,7 +164,7 @@ public class RightSideAuto extends LinearOpMode {
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory cycleDropOff1 = robot.trajectoryBuilder(initCycle.end())
 
-                .lineToConstantHeading(new Vector2d(-26.7,12.95))
+                .lineToConstantHeading(new Vector2d(-26.7,12.75))
                 .addDisplacementMarker(2, ()->{
                     //groundIntake.setState(GroundIntake.State.OFF);
                     turret.setState(Turret.State.LEFT);
@@ -177,7 +177,7 @@ public class RightSideAuto extends LinearOpMode {
                 .build();
         Trajectory cycleDropOff2 = robot.trajectoryBuilder(initCycle.end())
 
-                .lineToConstantHeading(new Vector2d(-26.95,12.95))
+                .lineToConstantHeading(new Vector2d(-26.95,12.75))
                 .addDisplacementMarker(2, ()->{
                     //groundIntake.setState(GroundIntake.State.OFF);
                     turret.setState(Turret.State.LEFT);
