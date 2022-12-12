@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import android.widget.Button;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
@@ -39,7 +41,7 @@ public class ASafeDriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
-    ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero;
+    ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero, stackPickup;
     ToggleButtonReader junctionScore, ninjaMode, straightMode;
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
@@ -75,6 +77,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 fourBarPrimed = new ButtonReader(secondary, GamepadKeys.Button.B),
                 fourBarDeposit = new ButtonReader(secondary, GamepadKeys.Button.Y),
+                stackPickup = new ButtonReader(secondary, GamepadKeys.Button.X),
                 fourBarIntake= new ButtonReader(secondary, GamepadKeys.Button.A),
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
                 actuateLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
@@ -218,7 +221,10 @@ public class ASafeDriverControl extends LinearOpMode {
                 fourbar.setState(vfourb.State.PRIMED);
                 turret.setState(Turret.State.ZERO);
             }
-
+            if(stackPickup.wasJustPressed()){
+                fourbar.setState(vfourb.State.STACK_PRIMED);
+                slides.setState(Slides.State.INTAKE_AUTO);
+            }
             //turret left
             if (actuateLeft.wasJustPressed()) {
                 autoActuate = true;
