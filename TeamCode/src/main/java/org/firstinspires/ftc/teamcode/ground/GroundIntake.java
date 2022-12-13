@@ -11,7 +11,6 @@ public class GroundIntake extends HardwareModule
     //temporary values
     CRServo intakeRunning;
     CRServo intakeSupporting;
-    public State state;
     public enum State implements ModuleState
     {
         INTAKING(1), DEPOSITING(-1), OFF(0);
@@ -29,6 +28,7 @@ public class GroundIntake extends HardwareModule
 
     public GroundIntake(HardwareMap hardwareMap)
     {
+        super();
         intakeRunning=hardwareMap.get(CRServo.class, "gr");
         intakeSupporting = hardwareMap.get(CRServo.class, "gl");
 //        distSens = hardwareMap.get(DistanceSensor.class, "distanceG");

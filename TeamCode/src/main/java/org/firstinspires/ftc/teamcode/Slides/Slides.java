@@ -29,7 +29,6 @@ public class Slides extends HardwareModule {
     public static double INTAKE_AUTO =  125;
     public static double BOTTOM=0;
 
-    public Slides.State state;
     public enum State implements ModuleState {
         HIGH(Slides.HIGH), HIGH_DROP(Slides.HIGH_DROP),
         MID(Slides.MID), MID_DROP(Slides.MID_DROP),
@@ -50,6 +49,7 @@ public class Slides extends HardwareModule {
     }
     public Slides(HardwareMap hardwareMap)
     {
+        super();
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
@@ -64,7 +64,7 @@ public class Slides extends HardwareModule {
     public void update(){
         checkLimit();
 
-        if(state.position!=null)
+        if(state.getValue()!=null)
         {
             slidesLeft.setTargetPosition(state.getValue().intValue());
             slidesRight.setTargetPosition(state.getValue().intValue());

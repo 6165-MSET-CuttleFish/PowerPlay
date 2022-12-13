@@ -28,6 +28,7 @@ public class Intake extends HardwareModule
 
     public Intake(HardwareMap hardwareMap)
     {
+        super();
         intakeRunning = hardwareMap.get(CRServo.class, "intakeRun");
         intakeSupporting = hardwareMap.get(CRServo.class, "intakeSup");
         intakeSupporting.setDirection(CRServo.Direction.REVERSE);
