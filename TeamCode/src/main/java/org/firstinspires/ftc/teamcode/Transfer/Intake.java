@@ -3,19 +3,33 @@ package org.firstinspires.ftc.teamcode.Transfer;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake
+import org.firstinspires.ftc.teamcode.util.HardwareModule;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
+
+public class Intake extends HardwareModule
 {
     //temporary values
-    static final double INTAKING = 1;
-    static final double DEPOSITING = -1;
-    static final double OFF = 0;
 
     CRServo intakeRunning;
     CRServo intakeSupporting;
-    public State state;
-    public enum State
+    public enum State implements ModuleState
     {
-        INTAKING, DEPOSITING, OFF
+        INTAKING(1), DEPOSITING(-1), OFF(0);
+        private final double power;
+        State(double power)
+        {
+            this.power=power;
+        }
+        @Override
+        public Double getValue() {
+            return power;
+        }
+
+        //irrelevant
+        @Override
+        public Integer specialCode() {
+            return null;
+        }
     }
 
     public Intake(HardwareMap hardwareMap)
@@ -28,31 +42,7 @@ public class Intake
 
     public void update()
     {
-        switch(state)
-        {
-            case INTAKING:
-                intakeRunning.setPower(INTAKING);
-                intakeSupporting.setPower(INTAKING);
-                break;
-            case DEPOSITING:
-                intakeRunning.setPower(DEPOSITING);
-                intakeSupporting.setPower(DEPOSITING);
-                break;
-            case OFF:
-                intakeRunning.setPower(OFF);
-                intakeSupporting.setPower(OFF);
-                break;
-        }
+       intakeRunning.setPower(state.getValue());
+       intakeSupporting.setPower(state.getValue());
     }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state)
-    {
-        this.state = state;
-        update();
-    }
-
 }

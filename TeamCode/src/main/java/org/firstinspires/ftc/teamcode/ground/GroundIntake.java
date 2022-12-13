@@ -1,26 +1,34 @@
 package org.firstinspires.ftc.teamcode.ground;
 
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.util.HardwareModule;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
 
-public class GroundIntake
+public class GroundIntake extends HardwareModule
 {
     //temporary values
-    static final double INTAKING = 1;
-    static final double REVERSE = -1;
-    static final double OFF = 0;
-    boolean runningTrigger = false;
-    boolean temp2 = false;
     CRServo intakeRunning;
     CRServo intakeSupporting;
-    DistanceSensor distSens;
     public State state;
-    public enum State
+    public enum State implements ModuleState
     {
-        INTAKING, DEPOSITING, OFF
+        INTAKING(1), DEPOSITING(-1), OFF(0);
+        private final double power;
+        State(double power)
+        {
+            this.power=power;
+        }
+
+        @Override
+        public Double getValue() {
+            return power;
+        }
+        @Override
+        public Integer specialCode() {
+            return null;
+        }
     }
 
     public GroundIntake(HardwareMap hardwareMap)
@@ -34,53 +42,7 @@ public class GroundIntake
 
     public void update()
     {
-        switch(state)
-        {
-            case INTAKING:
-                intakeRunning.setPower(INTAKING);
-                intakeSupporting.setPower(INTAKING);
-                break;
-            case DEPOSITING:
-                intakeRunning.setPower(REVERSE);
-                intakeSupporting.setPower(REVERSE);
-                break;
-            case OFF:
-                intakeRunning.setPower(OFF);
-                intakeSupporting.setPower(OFF);
-                break;
-        }
+        intakeRunning.setPower(state.getValue());
+        intakeSupporting.setPower(state.getValue());
     }
-
-    public State getState() {
-        return state;
-    }
-//    public boolean gSensor(){
-//        if(runningTrigger){
-//            runningTrigger = false;
-//        }
-//        else if(distSens.getDistance(DistanceUnit.MM)<22&& !temp2){
-//            runningTrigger = true;
-//            temp2 = true;
-//        }
-//        if(distSens.getDistance(DistanceUnit.MM)>50){
-//            temp2 = false;
-//        }
-//        return runningTrigger;
-//
-//    }
-    public boolean temp2e() {
-        return temp2;
-    }
-//    public double sensorVal(){
-//        return distSens.getDistance(DistanceUnit.MM);
-//    }
-    public boolean runningTriggere(){
-        return runningTrigger;
-    }
-    public void setState(State state)
-    {
-        this.state = state;
-        update();
-    }
-
 }
