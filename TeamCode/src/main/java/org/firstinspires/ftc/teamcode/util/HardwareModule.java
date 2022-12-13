@@ -12,15 +12,15 @@ public abstract class HardwareModule
 
     public void setState(ModuleState s)
     {
-        state=s;
         w.interrupt();
+        state=s;
         w.start();
     }
 
     public void setState(ModuleState s, int delayMilis)
     {
-        state=s;
         w.interrupt();
+        state=s;
         w.startDelay(delayMilis);
     }
 

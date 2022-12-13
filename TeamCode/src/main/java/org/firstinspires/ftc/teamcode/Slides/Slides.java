@@ -62,6 +62,8 @@ public class Slides extends HardwareModule {
     }
 
     public void update(){
+        checkLimit();
+
         if(state.position!=null)
         {
             slidesLeft.setTargetPosition(state.getValue().intValue());
@@ -106,14 +108,11 @@ public void checkLimit()
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
-public void setPowerManual(double power)
+
+@Override public boolean isBusy()
 {
-    setState(State.MANUAL);
-    /*if(switchPressed&&power<0)
-    {
-        power = 0;
-    }*/
-    slidesLeft.setPower(power);
-    slidesRight.setPower(power);
+    if(state==State.MANUAL||state==State.BOTTOM)
+        return true;
+    return false;
 }
 }

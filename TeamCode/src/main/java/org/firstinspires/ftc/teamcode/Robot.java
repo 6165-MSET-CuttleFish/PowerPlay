@@ -105,8 +105,6 @@ public class Robot extends MecanumDrive {
     public vfourb fourbar;
     public Turret turret;
 
-    public HardwareThread thread;
-    public BackgroundCR hardware;
 
     public GroundIntake groundIntake;
     public Camera camera;
@@ -131,10 +129,7 @@ public class Robot extends MecanumDrive {
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap, !teleop);
         groundIntake = new GroundIntake(hardwareMap);
-        hardware=new BackgroundCR(this, l);
-        //thread=new HardwareThread(turret, slides, l);
 
-        hardware.startHW();
 
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -231,10 +226,6 @@ public class Robot extends MecanumDrive {
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap, teleop);
         groundIntake = new GroundIntake(hardwareMap);
-        thread=new HardwareThread(turret, slides, l);
-        thread.start();
-        //hardware=new BackgroundCR(this, l);
-        //hardware.startHW();
 
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,

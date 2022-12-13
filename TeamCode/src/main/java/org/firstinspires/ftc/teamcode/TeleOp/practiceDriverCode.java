@@ -102,16 +102,16 @@ public class practiceDriverCode extends LinearOpMode {
             }*/
             //cant go to deposit position as slides go up b/c robot can't go high enough
                 if(liftMedium.isDown()){
-                    slide.up();
+                    slide.setState(Slides.State.HIGH);
                 }
                 else if(junction.isDown()){
-                    slide.mid();
+                    slide.setState(Slides.State.MID);
                 }
                 else if(liftBot.isDown()){
-                    slide.low();
+                    slide.setState(Slides.State.LOW);
                 }
                 else if(liftLow.isDown()){
-                    slide.down();
+                    slide.setState(Slides.State.BOTTOM);
                 }
                 //this is not a good impl
                 if(align.isDown()){

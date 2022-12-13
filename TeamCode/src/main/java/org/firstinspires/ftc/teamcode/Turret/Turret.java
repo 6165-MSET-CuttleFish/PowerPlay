@@ -68,49 +68,56 @@ public class Turret extends HardwareModule
         double sign=Math.signum(targetPos-encoder.getCurrentPosition());
         double errorAbs=Math.abs(targetPos-encoder.getCurrentPosition());
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
-        if(state!=State.MANUAL)
-        {
-            if(errorAbs<15) {
-                motorOil = 0;
-                state = State.IDLE;
-            }
-            else if(errorAbs<200)
-                motorOil=sign*closePower;
-
-            else if(errorAbs>200)
-                motorOil=sign*farPower;
-
-            turretMotor.setPower(motorOil);
+        if(errorAbs<15) {
+            motorOil = 0;
+            state = State.IDLE;
         }
+        else if(errorAbs<200)
+            motorOil=sign*closePower;
+        else if(errorAbs>200)
+            motorOil=sign*farPower;
+
+        turretMotor.setPower(motorOil);
     }
 
     private void updateTarget()
     {
         if(limit.isPressed())
-        {
             posAtZero=/*some value based on where limit switch clicks*/0;
-        }
 
         if(state.getValue()!=null)
-        {
             targetPos=state.getValue()+posAtZero;
-        }
-        else if(state==State.MANUAL||state==State.IDLE)
-        {
-            targetPos=encoder.getCurrentPosition()+posAtZero;
-        }
         else if(state==State.AUTOALIGN)
+            targetPos=/*pos got from auto align*/0+posAtZero;
+    }
+
+    @Override
+    public void setState(ModuleState s)
+    {
+        w.interrupt();
+        state=s;
+        if(state!=State.MANUAL&&state!=State.IDLE)
         {
-            targetPos=/*pos got from auto align*/0;
+            w.start();
+        }
+    }
+
+    @Override
+    public void setState(ModuleState s, int delayMilis)
+    {
+        w.interrupt();
+        state=s;
+        if(state!=State.MANUAL&&state!=State.IDLE)
+        {
+            w.startDelay(delayMilis);
         }
     }
 
     public boolean isBusy()
     {
         if(state==State.IDLE)
-        {
             return false;
-        }
+
         return true;
     }
 }
