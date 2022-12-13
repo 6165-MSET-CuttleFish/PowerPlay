@@ -25,10 +25,6 @@ public class GroundIntake extends HardwareModule
         public Double getValue() {
             return power;
         }
-        @Override
-        public Integer specialCode() {
-            return null;
-        }
     }
 
     public GroundIntake(HardwareMap hardwareMap)

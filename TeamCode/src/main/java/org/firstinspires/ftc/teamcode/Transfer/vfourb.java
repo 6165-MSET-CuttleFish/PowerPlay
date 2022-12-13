@@ -38,12 +38,6 @@ public class vfourb extends HardwareModule
         public Double getValue() {
             return position;
         }
-
-        //irrelevant
-        @Override
-        public Integer specialCode() {
-            return null;
-        }
     }
 
     public vfourb(HardwareMap hardwareMap)

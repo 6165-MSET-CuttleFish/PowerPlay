@@ -24,12 +24,6 @@ public class Intake extends HardwareModule
         public Double getValue() {
             return power;
         }
-
-        //irrelevant
-        @Override
-        public Integer specialCode() {
-            return null;
-        }
     }
 
     public Intake(HardwareMap hardwareMap)

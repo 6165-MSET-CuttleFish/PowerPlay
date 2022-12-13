@@ -34,27 +34,20 @@ public class Turret extends HardwareModule
 
     public enum State implements ModuleState
     {
-        IDLE(null, 0), LEFT(LEFT_POS, null),
-        RIGHT(RIGHT_POS, null), ZERO(ZERO_POS, null),
-        MANUAL(null, 0), AUTOALIGN(null,1),
-        INIT(INIT_POS, null);
+        IDLE(null), LEFT(LEFT_POS),
+        RIGHT(RIGHT_POS), ZERO(ZERO_POS),
+        MANUAL(null), AUTOALIGN(null),
+        INIT(INIT_POS);
 
         private final Double position;
-        private final Integer specialCode;
-        State(Double position, Integer specialCode)
+        State(Double position)
         {
             this.position=position;
-            this.specialCode=specialCode;
         }
         @Override
         public Double getValue()
         {
             return position;
-        }
-        @Override
-        public Integer specialCode()
-        {
-            return specialCode;
         }
     }
 
@@ -102,11 +95,11 @@ public class Turret extends HardwareModule
         {
             targetPos=state.getValue()+posAtZero;
         }
-        else if(state.specialCode()==0)
+        else if(state==State.MANUAL||state==State.IDLE)
         {
             targetPos=encoder.getCurrentPosition()+posAtZero;
         }
-        else if(state.specialCode()==1)
+        else if(state==State.AUTOALIGN)
         {
             targetPos=/*pos got from auto align*/0;
         }
