@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Transfer;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.ModuleState;
@@ -23,6 +24,11 @@ public class Intake extends ServoModule
         @Override
         public Double getValue() {
             return power;
+        }
+
+        @Override
+        public DcMotor.RunMode runMode() {
+            return null;
         }
     }
 
