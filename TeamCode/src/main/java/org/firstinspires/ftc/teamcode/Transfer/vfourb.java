@@ -4,11 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.util.HardwareModule;
 import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.ServoModule;
 
 @Config
-public class vfourb extends HardwareModule
+public class vfourb extends ServoModule
 {
     //temporary values
     public static double INTAKE_POSITION = 1;

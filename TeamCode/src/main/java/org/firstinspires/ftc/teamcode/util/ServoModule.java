@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
-public abstract class HardwareModule
-{
-    public Worker w;
+public abstract class ServoModule{
+
+    public ServoWorker w;
     public ModuleState state;
 
-    public HardwareModule()
-    {
-        w=new Worker(this);
-    }
+    public ServoModule(){w=new ServoWorker(this);}
 
     public void setState(ModuleState s)
     {
@@ -29,9 +26,5 @@ public abstract class HardwareModule
         return state;
     }
 
-    public boolean isBusy()
-    {
-        return false;
-    }
     public abstract void update();
 }

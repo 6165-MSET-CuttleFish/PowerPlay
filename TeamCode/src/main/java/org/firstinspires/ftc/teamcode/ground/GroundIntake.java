@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.ground;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.HardwareModule;
 import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.ServoModule;
 
-public class GroundIntake extends HardwareModule
+public class GroundIntake extends ServoModule
 {
     //temporary values
     CRServo intakeRunning;

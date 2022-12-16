@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.Transfer;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.HardwareModule;
 import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.ServoModule;
 
-public class Intake extends HardwareModule
+public class Intake extends ServoModule
 {
     //temporary values
 

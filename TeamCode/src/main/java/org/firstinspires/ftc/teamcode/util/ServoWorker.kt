@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util
 
 import kotlinx.coroutines.*
 
-class Worker(val m: HardwareModule)
+class ServoWorker(val m: ServoModule)
 {
     var currentJob: Job? = null
 
@@ -11,10 +11,6 @@ class Worker(val m: HardwareModule)
         currentJob=GlobalScope.launch(Dispatchers.Main)
         {
             m.update();
-            while(m.isBusy&&isActive)
-            {
-                m.update();
-            }
         }
     }
 
@@ -24,10 +20,6 @@ class Worker(val m: HardwareModule)
         {
             delay(milis);
             m.update();
-            while(m.isBusy&&isActive)
-            {
-                m.update();
-            }
         }
     }
 
