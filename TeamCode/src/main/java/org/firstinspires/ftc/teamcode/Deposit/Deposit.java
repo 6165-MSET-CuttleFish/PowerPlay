@@ -13,8 +13,10 @@ public class Deposit {
     static double EXTENDED = 1;
     static double HALF = 0.5;
     static double ZERO = 0;
-    Servo deposit1;
-    Servo deposit2;
+    Servo leftDeposit1;
+    Servo leftDeposit2;
+    Servo rightDeposit1;
+    Servo rightDeposit2;
     public State state;
     public enum State
     {
@@ -22,8 +24,10 @@ public class Deposit {
     }
 
     public Deposit(HardwareMap hardwareMap) {
-        deposit1=hardwareMap.get(Servo.class, "deposit1");
-        deposit2 = hardwareMap.get(Servo.class, "deposit2");
+        leftDeposit1 =hardwareMap.get(Servo.class, "ld1");
+        leftDeposit2 = hardwareMap.get(Servo.class, "ld2");
+        rightDeposit1 =hardwareMap.get(Servo.class, "ld1");
+        rightDeposit2 = hardwareMap.get(Servo.class, "ld2");
         setState(State.RETRACT);
     }
 
@@ -31,16 +35,16 @@ public class Deposit {
     {
         switch(state) {
             case EXTEND:
-                deposit1.setPosition(EXTENDED);
-                deposit2.setPosition(EXTENDED);
-                break;
-            case MIDDLE:
-                deposit1.setPosition(HALF);
-                deposit2.setPosition(HALF);
+                leftDeposit1.setPosition(EXTENDED);
+                leftDeposit2.setPosition(EXTENDED);
+                rightDeposit1.setPosition(EXTENDED);
+                rightDeposit2.setPosition(EXTENDED);
                 break;
             case RETRACT:
-                deposit1.setPosition(ZERO);
-                deposit2.setPosition(ZERO);
+                leftDeposit1.setPosition(ZERO);
+                leftDeposit2.setPosition(ZERO);
+                rightDeposit1.setPosition(ZERO);
+                rightDeposit2.setPosition(ZERO);
                 break;
         }
     }
