@@ -12,30 +12,33 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp
 public class DepositTest extends LinearOpMode {
-    Servo deposit1;
-    Servo deposit2;
+    Servo leftExtension;
+    Servo leftAngular;
+    Servo rightExtension;
+    Servo rightAngular;
+    
     @Override
     public void runOpMode() throws InterruptedException {
         Deposit deposit = new Deposit(hardwareMap);
-
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)
-                deposit.setState(Deposit.State.EXTEND);
+                deposit.setExtension(Deposit.ExtensionState.EXTEND);
             if (gamepad1.b)
-                deposit.setState(Deposit.State.MIDDLE);
-            if (gamepad1.x)
-                deposit.setState(Deposit.State.RETRACT);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+            if(gamepad1.x)
+                deposit.setAngle(Deposit.AngleState.INTAKE);
+            if(gamepad1.y)
+                deposit.setAngle(Deposit.AngleState.VECTORING);
 
-            telemetry.addData("State: ", deposit.getState());
-            telemetry.addData("Position1: ", deposit.deposit1.getPosition());
-            telemetry.addData("Position2: ", deposit.deposit1.getPosition());
+            telemetry.addData("Ext State: ", deposit.getExtState());
+            telemetry.addData("Ang State: ", deposit.getAngState());
+            telemetry.addData("leftEXT: ", deposit.leftExtension.getPosition());
+            telemetry.addData("rightEXT: ", deposit.rightExtension.getPosition());
+            telemetry.addData("leftANG: ", deposit.leftAngular.getPosition());
+            telemetry.addData("rightANG: ", deposit.rightAngular.getPosition());
             telemetry.update();
 
         }
-
-
-
-
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Transfer;
+package org.firstinspires.ftc.teamcode.Deposit;
 
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +19,7 @@ public class Claw
 
     public Claw(HardwareMap hardwareMap)
     {
-        claw = hardwareMap.get(ServoEx.class, "Claw");
+        claw = hardwareMap.get(ServoEx.class, "claw");
         setState(State.OPEN);
     }
 

@@ -10,50 +10,81 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Config
 public class Deposit {
     //temporary values
-    static double EXTENDED = 1;
-    static double HALF = 0.5;
-    static double ZERO = 0;
-    Servo leftDeposit1;
-    Servo leftDeposit2;
-    Servo rightDeposit1;
-    Servo rightDeposit2;
-    public State state;
-    public enum State
+    public static double LEXTENDED = 0.28;
+    public static double REXTENDED = 0.22;
+    public static double LZERO = 0.06;
+    public static double RZERO = 0.01;
+    public static double LVECTORING = 0.25;
+    public static double RVECTORING = 0.26;
+    public static double LINTAKE = 0.37;
+    public static double RINTAKE = 0.36;
+
+
+    Servo leftExtension;
+    Servo leftAngular;
+    Servo rightExtension;
+    Servo rightAngular;
+    public ExtensionState extState=ExtensionState.RETRACT;
+    public AngleState angState=AngleState.INTAKE;
+    public enum ExtensionState
     {
-        EXTEND, MIDDLE, RETRACT
+        EXTEND, RETRACT
+    }
+    public enum AngleState
+    {
+        VECTORING, INTAKE
     }
 
     public Deposit(HardwareMap hardwareMap) {
-        leftDeposit1 =hardwareMap.get(Servo.class, "ld1");
-        leftDeposit2 = hardwareMap.get(Servo.class, "ld2");
-        rightDeposit1 =hardwareMap.get(Servo.class, "ld1");
-        rightDeposit2 = hardwareMap.get(Servo.class, "ld2");
-        setState(State.RETRACT);
+        leftExtension =hardwareMap.get(Servo.class, "lExt");
+        leftAngular = hardwareMap.get(Servo.class, "lAng");
+        rightExtension =hardwareMap.get(Servo.class, "rExt");
+        rightAngular= hardwareMap.get(Servo.class, "rAng");
+        rightAngular.setDirection(Servo.Direction.REVERSE);
+        rightExtension.setDirection(Servo.Direction.REVERSE);
+        setExtension(ExtensionState.RETRACT);
+        setAngle(AngleState.INTAKE);
+
     }
 
     public void update()
     {
-        switch(state) {
+        switch(extState) {
             case EXTEND:
-                leftDeposit1.setPosition(EXTENDED);
-                leftDeposit2.setPosition(EXTENDED);
-                rightDeposit1.setPosition(EXTENDED);
-                rightDeposit2.setPosition(EXTENDED);
+                leftExtension.setPosition(LEXTENDED);
+                rightExtension.setPosition(REXTENDED);
                 break;
             case RETRACT:
-                leftDeposit1.setPosition(ZERO);
-                leftDeposit2.setPosition(ZERO);
-                rightDeposit1.setPosition(ZERO);
-                rightDeposit2.setPosition(ZERO);
+                leftExtension.setPosition(LZERO);
+                rightExtension.setPosition(RZERO);
                 break;
         }
+        switch (angState){
+            case VECTORING:
+                leftAngular.setPosition(LVECTORING);
+                rightAngular.setPosition(RVECTORING);
+                break;
+            case INTAKE:
+                leftAngular.setPosition(LINTAKE);
+                rightAngular.setPosition(RINTAKE);
+                break;
+        }
+
     }
 
-    public State getState() {
-        return state;
+    public ExtensionState getExtState() {
+        return extState;
     }
-    public void setState(State state) {
-        this.state = state;
+    public AngleState getAngState(){
+        return angState;
+    }
+
+    public void setExtension(ExtensionState state) {
+        this.extState = state;
+        update();
+    }
+    public void setAngle(AngleState state){
+        this.angState = state;
         update();
     }
 
