@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.Deposit;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+@Config
 public class Claw
 {
     //temporary values

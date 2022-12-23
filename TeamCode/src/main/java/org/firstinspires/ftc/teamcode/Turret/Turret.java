@@ -23,7 +23,7 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020;
+    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200;
     public static double closePower = 0.17;
     public static double farPower = 0.65;
     double targetPos=0;
@@ -37,7 +37,7 @@ public class Turret
 
     public enum State
     {
-        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT
+        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK
     }
 
     public Turret(HardwareMap hardwareMap, boolean teleop)
@@ -117,6 +117,8 @@ public class Turret
             case LEFT:
                 targetPos=LEFT_POS+posAtZero;
                 break;
+            case BACK:
+                targetPos=BACK+posAtZero;
             case ZERO:
                 targetPos=ZERO_POS+posAtZero;
                 break;

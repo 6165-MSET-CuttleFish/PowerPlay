@@ -42,6 +42,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Deposit.Claw;
+import org.firstinspires.ftc.teamcode.Deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
@@ -96,6 +98,8 @@ public class RobotTemp extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
+    public Deposit deposit;
+    public Claw claw;
     public HardwareThread thread;
     public GroundIntake groundIntake;
     public Camera camera;
