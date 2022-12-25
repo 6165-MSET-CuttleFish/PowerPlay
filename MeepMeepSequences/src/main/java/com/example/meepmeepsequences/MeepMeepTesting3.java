@@ -20,15 +20,41 @@ public class MeepMeepTesting3 {
                 // Option: Set theme. Default = ColorSchemeRedDark()
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-40,65,Math.toRadians(270)))
-                                .lineToConstantHeading(new Vector2d(-12,63))
-                                .lineToConstantHeading(new Vector2d(-12,17))
-                                .turn(Math.toRadians(-55))
-                                .back(3)
-                                .setReversed(false)
-                                .splineTo(new Vector2d(-60,13),Math.toRadians(180))
-                                //.setReversed(true)
-                                //.splineTo(new Vector2d(-12,17),Math.toRadians(215))
+                        drive.trajectorySequenceBuilder(new Pose2d(-34.5,65,Math.toRadians(270)))
+                                //read signal
+                                .lineToConstantHeading(new Vector2d(-34.5,34.5))
+                                .turn(Math.toRadians(45)) //switch with turret
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-45)) //switch with turret
+                                .lineToConstantHeading(new Vector2d(-34.5,12))
+                                .turn(Math.toRadians(-90))
+                                .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
+                                .turn(Math.toRadians(225))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-225))
+                                .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
+                                .turn(Math.toRadians(225))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-225))
+                                .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
+                                .turn(Math.toRadians(225))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-225))
+                                .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
+                                .turn(Math.toRadians(225))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-45))
+                                .lineToConstantHeading(new Vector2d(-12,12)) //switch with extension
+
 
                                 .build()
 
