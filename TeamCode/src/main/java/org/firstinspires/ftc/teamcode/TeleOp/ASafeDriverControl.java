@@ -226,6 +226,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
                 turret.setState(Turret.State.ZERO);
+                claw.setState(Claw.State.OPEN);
             }
 
             //turret left

@@ -20,6 +20,7 @@ public class DepositTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Deposit deposit = new Deposit(hardwareMap);
+        Claw claw = new Claw(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)
@@ -30,9 +31,14 @@ public class DepositTest extends LinearOpMode {
                 deposit.setAngle(Deposit.AngleState.INTAKE);
             if(gamepad1.y)
                 deposit.setAngle(Deposit.AngleState.VECTORING);
+            if(gamepad1.right_bumper)
+                claw.setState(Claw.State.OPEN);
+            if(gamepad1.left_bumper)
+                claw.setState(Claw.State.CLOSE);
 
             telemetry.addData("Ext State: ", deposit.getExtState());
             telemetry.addData("Ang State: ", deposit.getAngState());
+            telemetry.addData("clawState: ",claw.getState());
             telemetry.addData("leftEXT: ", deposit.leftExtension.getPosition());
             telemetry.addData("rightEXT: ", deposit.rightExtension.getPosition());
             telemetry.addData("leftANG: ", deposit.leftAngular.getPosition());

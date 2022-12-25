@@ -3,15 +3,17 @@ package org.firstinspires.ftc.teamcode.Deposit;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 @Config
 public class Claw
 {
     //temporary values
-    static final double OPEN=0;
-    static final double CLOSE=0;
-    static final double PARTIAL=0;
+    public static double OPEN=0.4;
+    public static double CLOSE=0.65;
+    public static double PARTIAL=0;
 
-    ServoEx claw;
+    Servo claw;
     public Claw.State state;
     public enum State
     {
@@ -20,7 +22,7 @@ public class Claw
 
     public Claw(HardwareMap hardwareMap)
     {
-        claw = hardwareMap.get(ServoEx.class, "claw");
+        claw = hardwareMap.get(Servo.class, "claw");
         setState(State.OPEN);
     }
 
@@ -30,10 +32,13 @@ public class Claw
         {
             case OPEN:
                 claw.setPosition(OPEN);
+                break;
             case CLOSE:
                 claw.setPosition(CLOSE);
+                break;
             case PARTIAL:
                 claw.setPosition(PARTIAL);
+                break;
         }
     }
 
