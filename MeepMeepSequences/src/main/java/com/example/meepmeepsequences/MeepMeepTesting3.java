@@ -14,7 +14,7 @@ public class MeepMeepTesting3 {
         // With a field size of 800 pixels
         MeepMeep meepMeep = new MeepMeep(600);
 
-        RoadRunnerBotEntity blueLeft = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity rightAuto = new DefaultBotBuilder(meepMeep)
                 // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 // Option: Set theme. Default = ColorSchemeRedDark()
@@ -31,29 +31,29 @@ public class MeepMeepTesting3 {
                                 .turn(Math.toRadians(-90))
                                 .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
                                 .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
-                                .turn(Math.toRadians(225))
+                                .turn(Math.toRadians(-135))
                                 .forward(7) //switch with extension
                                 .back(7) //switch with extension
-                                .turn(Math.toRadians(-225))
+                                .turn(Math.toRadians(135))
                                 .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
                                 .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
-                                .turn(Math.toRadians(225))
+                                .turn(Math.toRadians(-135))
                                 .forward(7) //switch with extension
                                 .back(7) //switch with extension
-                                .turn(Math.toRadians(-225))
+                                .turn(Math.toRadians(135))
                                 .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
                                 .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
-                                .turn(Math.toRadians(225))
+                                .turn(Math.toRadians(-135))
                                 .forward(7) //switch with extension
                                 .back(7) //switch with extension
-                                .turn(Math.toRadians(-225))
+                                .turn(Math.toRadians(135))
                                 .lineToConstantHeading(new Vector2d(-58,12)) //switch with extension
                                 .lineToConstantHeading(new Vector2d(-34.5,12)) //switch with extension
-                                .turn(Math.toRadians(225))
+                                .turn(Math.toRadians(-135))
                                 .forward(7) //switch with extension
                                 .back(7) //switch with extension
                                 .turn(Math.toRadians(-45))
-                                .lineToConstantHeading(new Vector2d(-12,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(-12,12))
 
 
                                 .build()
@@ -63,6 +63,54 @@ public class MeepMeepTesting3 {
 
                 );
 
+        RoadRunnerBotEntity leftAuto = new DefaultBotBuilder(meepMeep)
+                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                // Option: Set theme. Default = ColorSchemeRedDark()
+                .setColorScheme(new ColorSchemeRedDark())
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(34.5,65,Math.toRadians(270)))
+                                //read signal
+                                .lineToConstantHeading(new Vector2d(34.5,34.5))
+                                .turn(Math.toRadians(-45)) //switch with turret
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(45)) //switch with turret
+                                .lineToConstantHeading(new Vector2d(34.5,12))
+                                .turn(Math.toRadians(90))
+                                .lineToConstantHeading(new Vector2d(58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(34.5,12)) //switch with extension
+                                .turn(Math.toRadians(135))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-135))
+                                .lineToConstantHeading(new Vector2d(58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(34.5,12)) //switch with extension
+                                .turn(Math.toRadians(135))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-135))
+                                .lineToConstantHeading(new Vector2d(58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(34.5,12)) //switch with extension
+                                .turn(Math.toRadians(135))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(-135))
+                                .lineToConstantHeading(new Vector2d(58,12)) //switch with extension
+                                .lineToConstantHeading(new Vector2d(34.5,12)) //switch with extension
+                                .turn(Math.toRadians(135))
+                                .forward(7) //switch with extension
+                                .back(7) //switch with extension
+                                .turn(Math.toRadians(45))
+                                .lineToConstantHeading(new Vector2d(60,12))
+
+
+                                .build()
+
+
+
+
+                );
 
         // Set field image
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_DARK)
@@ -70,7 +118,8 @@ public class MeepMeepTesting3 {
                 // Background opacity from 0-1
                 .setBackgroundAlpha(0.95f)
 
-                .addEntity(blueLeft)
+                .addEntity(rightAuto)
+                .addEntity(leftAuto)
 
                 .start();
     }
