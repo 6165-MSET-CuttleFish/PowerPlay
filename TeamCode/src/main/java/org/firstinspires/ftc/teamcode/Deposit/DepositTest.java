@@ -26,9 +26,9 @@ public class DepositTest extends LinearOpMode {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             if (gamepad1.b)
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
-            if(gamepad1.x)
+            if (gamepad1.x)
                 deposit.setAngle(Deposit.AngleState.INTAKE);
-            if(gamepad1.y)
+            if (gamepad1.y)
                 deposit.setAngle(Deposit.AngleState.VECTORING);
 
             telemetry.addData("Ext State: ", deposit.getExtState());

@@ -47,8 +47,7 @@ public class Deposit {
 
     }
 
-    public void update()
-    {
+    public void update() {
         switch(extState) {
             case EXTEND:
                 leftExtension.setPosition(LEXTENDED);
