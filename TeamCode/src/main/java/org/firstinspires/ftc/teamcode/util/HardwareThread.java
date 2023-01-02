@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 
 public class HardwareThread extends Thread
 {
