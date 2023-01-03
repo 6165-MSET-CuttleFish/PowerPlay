@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
@@ -17,15 +14,13 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -36,38 +31,50 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.HardwareThread;
+import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-
+@Config
 public class Robot extends MecanumDrive {
-    //public DcMotorEx fl, bl, fr, br;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
+    public static double LATERAL_MULTIPLIER = .99;
 
+
+    //public static double align1Up=1;
+    //public static double align1Down=0;
+    public static double align2Up=0;
+    public static double align2Down=0.8;
+    public static double odomServoPos = 0.3;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+    boolean teleop=false;
 
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -76,10 +83,16 @@ public class Robot extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront, slidesLeft, slidesRight;
-    private Servo odoRaise;
-    private List<DcMotorEx> motors;
 
+    public CRServo groundLeft, groundRight;
+    public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
+
+    //public final Servo v4bSup, v4bRun;
+    //public final CRServo intakeSup, intakeRun;
+    //public final CRServo  groundLeft, groundRight;
+    public Servo odoRaise, alignerL, alignerR;
+    public List<DcMotorEx> motors;
+    public DigitalChannel slidesLimitSwitch;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
@@ -87,26 +100,52 @@ public class Robot extends MecanumDrive {
         NINJA,
         STRAIGHT
     }
+    public Intake intake;
+    public Slides slides;
+    public vfourb fourbar;
+    public Turret turret;
+
+    public HardwareThread thread;
+    public BackgroundCR hardware;
+
+    public GroundIntake groundIntake;
+    public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
-    public driveState getState() {
-        return state;
-    }
+
     public void setState(driveState state){
         this.state = state;
     }
 
-    public Robot(HardwareMap hardwareMap) {
+    public driveState getState() {
+        return state;
+    }
+    public Robot(LinearOpMode l, boolean teleop) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+        teleop=this.teleop;
 
+
+        slides = new Slides(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
+        intake = new Intake(hardwareMap);
+        turret = new Turret(hardwareMap, !teleop);
+        groundIntake = new GroundIntake(hardwareMap);
+        hardware=new BackgroundCR(this, l);
+        //thread=new HardwareThread(turret, slides, l);
+
+        hardware.startHW();
+
+//        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+        //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+        {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
@@ -116,16 +155,28 @@ public class Robot extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-
         leftFront = hardwareMap.get(DcMotorEx.class, "fl");
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        //alignerL = hardwareMap.get(Servo.class, "alignerL");
+        alignerR=hardwareMap.get(Servo.class, "alignerR");
+       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
-        slidesLeft = hardwareMap.get(DcMotorEx.class, "sl");
-        slidesRight = hardwareMap.get(DcMotorEx.class, "sr");
+        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
 
-        //odoRaise = hardwareMap.get(Servo.class, "midOdo");
+        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
+        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
+        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
+        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+*/
+
+
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+        odoRaise.setPosition(odomServoPos);
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -144,14 +195,118 @@ public class Robot extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+
+    }
+
+    public void alignUp()
+    {
+        //alignerL.setPosition(align1Up);
+        alignerR.setPosition(align2Down);
+    }
+
+    public void alignDown()
+    {
+        //alignerL.setPosition(align1Down);
+        alignerR.setPosition(align2Up);
+    }
+
+    public Robot(LinearOpMode l) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+        //teleop=this.teleop;
+
+
+        slides = new Slides(hardwareMap);
+        fourbar = new vfourb(hardwareMap);
+        intake = new Intake(hardwareMap);
+        turret = new Turret(hardwareMap, teleop);
+        groundIntake = new GroundIntake(hardwareMap);
+        thread=new HardwareThread(turret, slides, l);
+        thread.start();
+        //hardware=new BackgroundCR(this, l);
+        //hardware.startHW();
+
+//        camera = new Camera(hardwareMap, telemetry);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+        {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
+        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
+        rightRear = hardwareMap.get(DcMotorEx.class, "fr");
+        rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        alignerL = hardwareMap.get(Servo.class, "alignerL");
+        alignerR = hardwareMap.get(Servo.class, "alignerR");
+
+       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
+
+        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
+        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
+        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
+        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+*/
+
+
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+        odoRaise.setPosition(odomServoPos);
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
+        isOdoRaised = false;
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+        // TODO: reverse any motors using DcMotor.setDirection()
+
+        // TODO: if desired, use setLocalizer() to change the localization method
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -305,7 +460,7 @@ public class Robot extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getAngularVelocity().zRotationRate;
+        return (double) imu.getAngularVelocity().xRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

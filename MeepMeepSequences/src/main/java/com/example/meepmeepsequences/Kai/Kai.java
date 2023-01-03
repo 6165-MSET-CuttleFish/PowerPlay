@@ -15,92 +15,36 @@ public class Kai {
         // With a field size of 600 pixels
         MeepMeep meepMeep = new MeepMeep(500);
 
-        RoadRunnerBotEntity lsopydil = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity lsopydil = new DefaultBotBuilder(meepMeep).setDimensions(16,17)
                 // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 // Option: Set theme. Default = ColorSchemeRedDark()
                 .setColorScheme(new ColorSchemeBlueDark())
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(0)))
-                                .lineToConstantHeading(new Vector2d(36,12))
-                                .lineToConstantHeading(new Vector2d(60,12))
-                                .lineToConstantHeading(new Vector2d(0,12))
-                                .lineToConstantHeading(new Vector2d(12,12))
-                                .lineToConstantHeading(new Vector2d(12,34))
-                                .lineToConstantHeading(new Vector2d(59,34))
+                        drive.trajectorySequenceBuilder(new Pose2d(36, 62, Math.toRadians(270)))
+                                .lineToSplineHeading(new Pose2d(34,23,Math.toRadians(270)))
+                                .lineToConstantHeading(new Vector2d(34,12))
+                                .turn(Math.toRadians(90))
+                                .lineToConstantHeading(new Vector2d(59,12))
+                                .lineToConstantHeading(new Vector2d(23.5,13))
+                                .lineToConstantHeading(new Vector2d(59,12))
+                                .lineToConstantHeading(new Vector2d(23.5,13))
+                                .lineToConstantHeading(new Vector2d(59,12))
+                                .lineToConstantHeading(new Vector2d(23.5,13))
+                                .lineToConstantHeading(new Vector2d(59,12))
+                                .lineToConstantHeading(new Vector2d(23.5,13))
+                                .lineToConstantHeading(new Vector2d(59,12))
+                                .lineToConstantHeading(new Vector2d(23.5,13))
+                                .lineToConstantHeading(new Vector2d(0,14))
+
                                 .build()
                 );
-        RoadRunnerBotEntity lsopydil2 = new DefaultBotBuilder(meepMeep)
-                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                // Option: Set theme. Default = ColorSchemeRedDark()
-                .setColorScheme(new ColorSchemeBlueDark())
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(180)))
-                                .lineToConstantHeading(new Vector2d(-36,12))
-                                .lineToConstantHeading(new Vector2d(-60,12))
-                                .lineToConstantHeading(new Vector2d(0,12))
-                                .lineToConstantHeading(new Vector2d(-60,12))
-                                .lineToConstantHeading(new Vector2d(0,12))
-                                .lineToConstantHeading(new Vector2d(-60,12))
-                                .lineToConstantHeading(new Vector2d(0,12))
-                                .lineToConstantHeading(new Vector2d(-12,12))
-                                .lineToConstantHeading(new Vector2d(-12,34))
-                                .lineToConstantHeading(new Vector2d(-59,34))
-                                .build()
-                );
-        RoadRunnerBotEntity lsopydil3 = new DefaultBotBuilder(meepMeep)
-                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                // Option: Set theme. Default = ColorSchemeRedDark()
-                .setColorScheme(new ColorSchemeBlueDark())
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(36, -60, Math.toRadians(0)))
-                                .lineToConstantHeading(new Vector2d(36,-12))
-                                .lineToConstantHeading(new Vector2d(60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(12,-12))
-                                .lineToConstantHeading(new Vector2d(12,-34))
-                                .lineToConstantHeading(new Vector2d(59,-34))
-                                .build()
-                );
-        RoadRunnerBotEntity lsopydil4 = new DefaultBotBuilder(meepMeep)
-                // Required: Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                // Option: Set theme. Default = ColorSchemeRedDark()
-                .setColorScheme(new ColorSchemeBlueDark())
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(180)))
-                                .lineToConstantHeading(new Vector2d(-36,-12))
-                                .lineToConstantHeading(new Vector2d(-60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(-60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(-60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(-60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(-60,-12))
-                                .lineToConstantHeading(new Vector2d(0,-12))
-                                .lineToConstantHeading(new Vector2d(-12,-12))
-                                .lineToConstantHeading(new Vector2d(-12,-34))
-                                .lineToConstantHeading(new Vector2d(-59,-34))
-                                .build()
-                );
+
         // Set field image
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_DARK)
                 .setDarkMode(true)
                 // Background opacity from 0-1
                 .addEntity(lsopydil)
-                .addEntity(lsopydil2)
-                .addEntity(lsopydil3)
-                .addEntity(lsopydil4)
                 .setBackgroundAlpha(0.95f)
                 .start();
     }
