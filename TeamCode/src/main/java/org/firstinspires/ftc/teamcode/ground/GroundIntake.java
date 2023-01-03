@@ -1,20 +1,18 @@
 package org.firstinspires.ftc.teamcode.ground;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.ModuleState;
-import org.firstinspires.ftc.teamcode.util.ServoModule;
+import org.firstinspires.ftc.teamcode.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.moduleUtil.BasicModule;
 
-public class GroundIntake extends ServoModule
+public class GroundIntake extends BasicModule
 {
     //temporary values
-    CRServo intakeRunning;
-    CRServo intakeSupporting;
+    DcMotor intakeRunning;
     public enum State implements ModuleState
     {
-        INTAKING(1), DEPOSITING(-1), OFF(0);
+        INTAKING(0.7), EXTAKING(-0.7), OFF(0);
         private final double power;
         State(double power)
         {
@@ -25,26 +23,18 @@ public class GroundIntake extends ServoModule
         public Double getValue() {
             return power;
         }
-
-        @Override
-        public DcMotor.RunMode runMode() {
-            return null;
-        }
     }
 
     public GroundIntake(HardwareMap hardwareMap)
     {
         super();
-        intakeRunning=hardwareMap.get(CRServo.class, "gr");
-        intakeSupporting = hardwareMap.get(CRServo.class, "gl");
+        intakeRunning=hardwareMap.get(DcMotor.class, "ground");
 //        distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
-        intakeSupporting.setDirection(CRServo.Direction.REVERSE);
         setState(State.OFF);
     }
 
     public void update()
     {
         intakeRunning.setPower(state.getValue());
-        intakeSupporting.setPower(state.getValue());
     }
 }

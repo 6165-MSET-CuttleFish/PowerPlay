@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -66,7 +65,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                     fourbar.setState(vfourb.State.ALIGN_POSITION);
                 })
                 .addDisplacementMarker(2, ()->{
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    groundIntake.setState(GroundIntake.State.EXTAKING);
                     turret.setState(Turret.State.LEFT);
                     //turret.update();
                     slides.setState(Slides.State.MID_DROP);
@@ -94,7 +93,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(33, 15.5))
                 .addTemporalMarker(1, () -> {
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    groundIntake.setState(GroundIntake.State.EXTAKING);
                     intake.setState(Intake.State.OFF);
                     waitSec(0.3);
                     groundIntake.setState(GroundIntake.State.OFF);

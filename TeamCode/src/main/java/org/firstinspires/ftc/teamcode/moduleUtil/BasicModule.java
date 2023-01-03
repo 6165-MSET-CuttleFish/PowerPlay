@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.moduleUtil;
 
-public abstract class ServoModule{
+public abstract class BasicModule {
 
-    public ServoWorker w;
+    public BasicModuleWorker w;
     public ModuleState state;
 
-    public ServoModule(){w=new ServoWorker(this);}
+    public BasicModule(){w=new BasicModuleWorker(this);}
 
     public void setState(ModuleState s)
     {

@@ -13,19 +13,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Transfer.Intake;
 import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class ASafeDriverControl extends LinearOpMode {
@@ -335,7 +328,7 @@ public class ASafeDriverControl extends LinearOpMode {
             if (intakeGround.isDown()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
             } else if (extakeGround.isDown()){
-                groundIntake.setState(GroundIntake.State.DEPOSITING);
+                groundIntake.setState(GroundIntake.State.EXTAKING);
             } else {
                 groundIntake.setState(GroundIntake.State.OFF);
             }

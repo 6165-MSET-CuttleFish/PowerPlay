@@ -65,7 +65,7 @@ public class LeftSideAutoOLD extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(34, 12))
                 .addTemporalMarker(1, () -> {
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+                    groundIntake.setState(GroundIntake.State.EXTAKING);
                     intake.setState(Intake.State.OFF);
                 })
                 .build();

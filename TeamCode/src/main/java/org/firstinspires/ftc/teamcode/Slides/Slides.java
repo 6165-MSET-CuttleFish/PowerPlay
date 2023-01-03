@@ -5,22 +5,26 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.util.MotorModule;
-import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.moduleUtil.MotorModule;
+import org.firstinspires.ftc.teamcode.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.moduleUtil.MotorWorker;
+import org.firstinspires.ftc.teamcode.util.PIDCoeff;
+import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
 public class Slides extends MotorModule
 {
     //maybe we can change slides to our pid later idk
 
+    PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
+    PIDControl controller=new PIDControl(coeff);
+
     public DcMotorEx slidesLeft, slidesRight;
     DigitalChannel slidesLimitSwitch;
 
     //slides is 17.5 inches tall
-    boolean switchModified=false;
-    boolean switchPressed=false;
-    ModuleState oldState=State.BOTTOM;
 
     public static double HIGH = 1850; //old = 1850
     public static double HIGH_DROP = 2080; //old = 1650
@@ -36,10 +40,7 @@ public class Slides extends MotorModule
         MID(Slides.MID), MID_DROP(Slides.MID_DROP),
         LOW(Slides.LOW), LOW_DROP(Slides.LOW_DROP),
         BOTTOM(Slides.BOTTOM),  INTAKE_AUTO(Slides.INTAKE_AUTO),
-        MANUAL(null){ @Override
-        public DcMotor.RunMode runMode(){return DcMotor.RunMode.RUN_USING_ENCODER;} },
-        ZERO(null){ @Override
-        public DcMotor.RunMode runMode(){return DcMotor.RunMode.STOP_AND_RESET_ENCODER;} };
+        MANUAL(null);
 
         private final Double position;
         State(Double position)
@@ -51,49 +52,33 @@ public class Slides extends MotorModule
         public Double getValue() {
             return position;
         }
-
-        public DcMotor.RunMode runMode(){return DcMotor.RunMode.RUN_TO_POSITION;}
-
     }
     public Slides(HardwareMap hardwareMap)
     {
-        super();
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         motors.add(slidesLeft);
         motors.add(slidesRight);
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
-        setState(State.ZERO);
+        timer=new ElapsedTime();
+
+        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        setState(State.BOTTOM);
+        w=new MotorWorker(this);
     }
 
-    public void update()
+    public double motorPower()
     {
-            slidesLeft.setTargetPosition(state.getValue().intValue());
-            slidesRight.setTargetPosition(state.getValue().intValue());
-            slidesLeft.setPower(1);
-            slidesRight.setPower(1);
+        if(state==State.MANUAL)
+            return manualPower;
+        return controller.calculate(currentPos(), targetPos, timer.milliseconds());
     }
 
-    public void updateTarget()
-{
-    switchPressed=slidesLimitSwitch.getState();
-    if(!switchPressed)
-    {
-        switchModified=true;
-    }
+    public boolean resetPressed() { return slidesLimitSwitch.getState();}
 
-    if(switchPressed&&switchModified)
-    {
-        setState(State.ZERO);
-        switchModified=false;
-    }
-}
-
-@Override public boolean isBusy()
-{
-    if(state==oldState||state==State.MANUAL||state==State.ZERO)
-        return false;
-    oldState = state;
-    return true;
-}
+    public double currentPos() { return slidesLeft.getCurrentPosition();}
 }

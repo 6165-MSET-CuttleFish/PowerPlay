@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.Transfer;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.util.ModuleState;
-import org.firstinspires.ftc.teamcode.util.ServoModule;
+import org.firstinspires.ftc.teamcode.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.moduleUtil.BasicModule;
 
 @Config
-public class vfourb extends ServoModule
+public class vfourb extends BasicModule
 {
     //temporary values
     public static double INTAKE_POSITION = 1;
@@ -38,11 +37,6 @@ public class vfourb extends ServoModule
         @Override
         public Double getValue() {
             return position;
-        }
-
-        @Override
-        public DcMotor.RunMode runMode() {
-            return null;
         }
     }
 

@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.Slides.Slides;
 import org.firstinspires.ftc.teamcode.Turret.Detector;
 import org.firstinspires.ftc.teamcode.Turret.Turret;
@@ -341,7 +340,7 @@ public class DriverControl extends LinearOpMode {
             if (intakeGround.isDown()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
             } else if (extakeGround.isDown()){
-                groundIntake.setState(GroundIntake.State.DEPOSITING);
+                groundIntake.setState(GroundIntake.State.EXTAKING);
             } else {
                 groundIntake.setState(GroundIntake.State.OFF);
             }
