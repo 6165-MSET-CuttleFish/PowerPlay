@@ -6,24 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
-
 
 @TeleOp(name = "Servo Tester")
 @Config
 public class ServoTest extends OpMode {
     private Servo servo;
-    public double position=1;
-    public String servoName="testServo";
+    public static double position=0;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void init() {
-        servo = hardwareMap.get(Servo.class, servoName);
+        servo = hardwareMap.get(Servo.class, "testServo");
     }
 
     @Override
