@@ -1,25 +1,23 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.Detector;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.turret.Detector;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -87,7 +85,7 @@ public class LeftSideAuto extends LinearOpMode {
                 .build();*/
 
         //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION
-        Trajectory preload1 = robot.trajectoryBuilder(startPose)
+        TrajectorySequence preload1 = robot.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(36.5, 20),robot.getVelocityConstraint(42.5, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addDisplacementMarker(1, ()->{
@@ -347,7 +345,7 @@ public class LeftSideAuto extends LinearOpMode {
         timer = System.currentTimeMillis();
         //preload
         robot.setPoseEstimate(startPose);
-        robot.followTrajectory(preload1);
+        robot.followTrajectorySequence(preload1);
         robot.followTrajectory(preload2);
         robot.followTrajectory(preload3);
         robot.followTrajectory(preload4);
