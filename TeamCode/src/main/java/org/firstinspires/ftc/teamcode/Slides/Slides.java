@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Turret.Turret;
 import org.firstinspires.ftc.teamcode.moduleUtil.MotorModule;
 import org.firstinspires.ftc.teamcode.moduleUtil.ModuleState;
 import org.firstinspires.ftc.teamcode.moduleUtil.MotorWorker;
@@ -16,15 +17,11 @@ import org.firstinspires.ftc.teamcode.util.PIDControl;
 @Config
 public class Slides extends MotorModule
 {
-    //maybe we can change slides to our pid later idk
-
     PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
     PIDControl controller=new PIDControl(coeff);
 
     public DcMotorEx slidesLeft, slidesRight;
     DigitalChannel slidesLimitSwitch;
-
-    //slides is 17.5 inches tall
 
     public static double HIGH = 1850; //old = 1850
     public static double HIGH_DROP = 2080; //old = 1650
@@ -40,7 +37,7 @@ public class Slides extends MotorModule
         MID(Slides.MID), MID_DROP(Slides.MID_DROP),
         LOW(Slides.LOW), LOW_DROP(Slides.LOW_DROP),
         BOTTOM(Slides.BOTTOM),  INTAKE_AUTO(Slides.INTAKE_AUTO),
-        MANUAL(null);
+        MANUAL(null), STOPPED(null);
 
         private final Double position;
         State(Double position)
@@ -69,13 +66,20 @@ public class Slides extends MotorModule
 
         setState(State.BOTTOM);
         w=new MotorWorker(this);
+        w.start();
     }
 
     public double motorPower()
     {
+        double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
+        if(Math.abs(power)<0.08)
+            setState(Turret.State.STOPPED);
+
         if(state==State.MANUAL)
             return manualPower;
-        return controller.calculate(currentPos(), targetPos, timer.milliseconds());
+        else if(state==State.STOPPED)
+            return 0;
+        return power;
     }
 
     public boolean resetPressed() { return slidesLimitSwitch.getState();}

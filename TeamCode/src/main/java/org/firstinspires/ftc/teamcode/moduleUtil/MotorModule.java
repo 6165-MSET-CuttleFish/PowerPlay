@@ -21,16 +21,13 @@ public abstract class MotorModule
 
     public void setState(ModuleState s)
     {
-        w.setDelay(0);
         timer.reset();
         state=s;
     }
 
     public void setState(ModuleState s, int delayMilis)
     {
-        w.setDelay(delayMilis);
-        timer.reset();
-        state=s;
+        w.setStateDelay(delayMilis, s);
     }
 
     public ModuleState getState() {return state;}
@@ -49,12 +46,6 @@ public abstract class MotorModule
     {
         updateTarget();
         for(DcMotor m: motors){m.setPower(motorPower());}
-        timer.reset();
-    }
-    public void dead()
-    {
-        updateTarget();
-        for(DcMotor m:motors){m.setPower(0);}
         timer.reset();
     }
     public abstract double motorPower();

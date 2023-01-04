@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 
+import org.firstinspires.ftc.teamcode.Slides.Slides;
+import org.firstinspires.ftc.teamcode.moduleUtil.MotorWorker;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.moduleUtil.MotorModule;
 import org.firstinspires.ftc.teamcode.moduleUtil.ModuleState;
@@ -27,12 +29,13 @@ public class Turret extends MotorModule
     public Encoder encoder;
     public TouchSensor limit;
 
+    double alignPos;
     Detector detector;
 
     public enum State implements ModuleState
     {
         LEFT(LEFT_POS), RIGHT(RIGHT_POS), ZERO(ZERO_POS),
-        MANUAL(null), AUTOALIGN(null), INIT(INIT_POS);
+        MANUAL(null), AUTOALIGN(null), STOPPED(null), INIT(INIT_POS);
 
         private final Double position;
 
@@ -63,24 +66,27 @@ public class Turret extends MotorModule
 
         //do the init state thing based on teleop
         setState(State.ZERO);
+        w=new MotorWorker(this);
+        w.start();
     }
 
-    public void updateTarget()
+    public void autoAlign()
     {
-        if(resetPressed())
-            posAtZero=currentPos();
-
-        if(state==State.AUTOALIGN)
-            targetPos=currentPos()+detector.getDistance();
-        else if(state!=State.MANUAL)
-            targetPos=state.getValue()+posAtZero;
+        setState(State.AUTOALIGN);
+        targetPos=currentPos()+detector.getDistance();
     }
 
     public double motorPower()
     {
+        double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
+        if(Math.abs(power)<0.08)
+            setState(State.STOPPED);
+
         if(state==State.MANUAL)
             return manualPower;
-        return controller.calculate(currentPos(), targetPos, timer.milliseconds());
+        else if(state==State.STOPPED)
+            return 0;
+        return power;
     }
     public boolean resetPressed() {return limit.isPressed();}
     public double currentPos() {return encoder.getCurrentPosition();}
