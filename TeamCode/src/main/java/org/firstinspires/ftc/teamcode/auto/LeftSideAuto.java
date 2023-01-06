@@ -1,25 +1,22 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.Detector;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.Modules.Turret.Detector;
+import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
+import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.Detection.pipelines.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;

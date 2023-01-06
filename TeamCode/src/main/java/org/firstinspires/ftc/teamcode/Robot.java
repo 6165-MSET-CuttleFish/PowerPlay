@@ -42,18 +42,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
-import org.firstinspires.ftc.teamcode.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
-import org.firstinspires.ftc.teamcode.util.HardwareThread;
-import org.firstinspires.ftc.teamcode.vision.Camera;
+import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.Detection.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;

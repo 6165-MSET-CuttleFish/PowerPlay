@@ -11,11 +11,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
+import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
 
 @TeleOp
 public class practiceDriverCode extends LinearOpMode {
