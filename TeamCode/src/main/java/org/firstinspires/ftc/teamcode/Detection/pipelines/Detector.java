@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Modules.Turret;
+package org.firstinspires.ftc.teamcode.Detection.pipelines;
 import static org.opencv.imgproc.Imgproc.rectangle;
 
 import com.acmerobotics.dashboard.FtcDashboard;

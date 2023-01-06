@@ -8,15 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Modules.moduleUtil.MotorWorker;
+import org.firstinspires.ftc.teamcode.Detection.pipelines.Detector;
+import org.firstinspires.ftc.teamcode.Modules.moduleUtil.AdvancedModuleWorker;
 import org.firstinspires.ftc.teamcode.util.Encoder;
-import org.firstinspires.ftc.teamcode.Modules.moduleUtil.MotorModule;
+import org.firstinspires.ftc.teamcode.Modules.moduleUtil.AdvancedModule;
 import org.firstinspires.ftc.teamcode.Modules.moduleUtil.ModuleState;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
-public class Turret extends MotorModule
+public class Turret extends AdvancedModule
 {
     PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
     PIDControl controller=new PIDControl(coeff);
@@ -64,7 +65,7 @@ public class Turret extends MotorModule
 
         //do the init state thing based on teleop
         setState(State.ZERO);
-        w=new MotorWorker(this);
+        w=new AdvancedModuleWorker(this);
         w.start();
     }
 

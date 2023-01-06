@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
-import org.firstinspires.ftc.teamcode.Modules.moduleUtil.MotorModule;
+import org.firstinspires.ftc.teamcode.Modules.moduleUtil.AdvancedModule;
 import org.firstinspires.ftc.teamcode.Modules.moduleUtil.ModuleState;
-import org.firstinspires.ftc.teamcode.Modules.moduleUtil.MotorWorker;
+import org.firstinspires.ftc.teamcode.Modules.moduleUtil.AdvancedModuleWorker;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
-public class Slides extends MotorModule
+public class Slides extends AdvancedModule
 {
     PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
     PIDControl controller=new PIDControl(coeff);
@@ -65,7 +65,7 @@ public class Slides extends MotorModule
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         setState(State.BOTTOM);
-        w=new MotorWorker(this);
+        w=new AdvancedModuleWorker(this);
         w.start();
     }
 

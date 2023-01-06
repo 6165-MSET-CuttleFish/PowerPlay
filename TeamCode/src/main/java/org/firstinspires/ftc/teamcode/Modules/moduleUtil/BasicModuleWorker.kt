@@ -5,11 +5,10 @@ import java.util.concurrent.Callable
 
 class BasicModuleWorker(val m: BasicModule)
 {
-    var currentJob: Job? = null
 
     fun start()
     {
-        currentJob=GlobalScope.launch(Dispatchers.Main)
+        GlobalScope.launch(Dispatchers.Main)
         {
             m.update();
         }
@@ -17,7 +16,7 @@ class BasicModuleWorker(val m: BasicModule)
 
     fun startDelay(milis: Long, state: ModuleState)
     {
-        currentJob=GlobalScope.launch(Dispatchers.Main)
+        GlobalScope.launch(Dispatchers.Main)
         {
             delay(milis);
             m.setState(state);
@@ -26,7 +25,7 @@ class BasicModuleWorker(val m: BasicModule)
 
     fun startSync(startCondition: Callable<Boolean>, state: ModuleState)
     {
-        currentJob=GlobalScope.launch(Dispatchers.Main)
+        GlobalScope.launch(Dispatchers.Main)
         {
             while(!startCondition.call())
             {
@@ -38,7 +37,7 @@ class BasicModuleWorker(val m: BasicModule)
 
     fun startSync(startCondition: Callable<Boolean>, delay:Long, state:ModuleState)
     {
-        currentJob=GlobalScope.launch(Dispatchers.Main)
+        GlobalScope.launch(Dispatchers.Main)
         {
             while(!startCondition.call())
             {

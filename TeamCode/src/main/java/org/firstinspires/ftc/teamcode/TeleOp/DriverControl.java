@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Modules.Turret.Detector;
+import org.firstinspires.ftc.teamcode.Detection.pipelines.Detector;
 import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
 import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;

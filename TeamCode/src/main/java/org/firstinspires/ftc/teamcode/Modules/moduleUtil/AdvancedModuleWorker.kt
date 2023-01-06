@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules.moduleUtil
 import kotlinx.coroutines.*
 import java.util.concurrent.Callable
 
-class MotorWorker(val m: MotorModule)
+class AdvancedModuleWorker(val m: AdvancedModule)
 {
     fun start()
     {

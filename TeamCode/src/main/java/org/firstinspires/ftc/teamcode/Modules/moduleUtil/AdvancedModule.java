@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-//TODO 1. Put auto-align detector in separate thread. 2. Test? 3. Modules for new servo modules. 4. Functioning PID w/ gain scheduling
-public abstract class MotorModule
+//TODO 1. Test? 2. Functioning PID w/ gain scheduling
+public abstract class AdvancedModule
 {
-    public MotorWorker w;
+    public AdvancedModuleWorker w;
     public ModuleState state;
     public List<DcMotor> motors;
     public double posAtZero;
