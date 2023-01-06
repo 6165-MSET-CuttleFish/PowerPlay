@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Transfer;
+package org.firstinspires.ftc.teamcode.modules.transfer;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
