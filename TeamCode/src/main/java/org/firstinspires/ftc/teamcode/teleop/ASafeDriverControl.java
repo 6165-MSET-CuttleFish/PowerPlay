@@ -15,6 +15,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Deposit.Claw;
+import org.firstinspires.ftc.teamcode.Deposit.Deposit;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
@@ -25,10 +29,10 @@ import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 @TeleOp
 public class ASafeDriverControl extends LinearOpMode {
     RobotTemp robot;
-    Intake intake;
     Slides slides;
-    vfourb fourbar;
+    Deposit deposit;
     GroundIntake groundIntake;
+    Claw claw;
     Turret turret;
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -51,9 +55,9 @@ public class ASafeDriverControl extends LinearOpMode {
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
-        intake = robot.intake;
         slides = robot.slides;
-        fourbar = robot.fourbar;
+        claw = robot.claw;
+        deposit = robot.deposit;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,7 +114,9 @@ public class ASafeDriverControl extends LinearOpMode {
 
         waitForStart();
         slides.setState(Slides.State.BOTTOM);
-        fourbar.setState(vfourb.State.PRIMED);
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+        claw.setState(Claw.State.OPEN);
         robot.odoRaise.setPosition(0);
         turret.setState(Turret.State.ZERO);
         while (!isStopRequested()) {
@@ -164,26 +170,30 @@ public class ASafeDriverControl extends LinearOpMode {
                     switch (cycleValue) {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
-                            fourbar.setState(vfourb.State.PRIMED);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setAngle(Deposit.AngleState.INTAKE);
                             turret.setState(Turret.State.ZERO);
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
-                            fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                            turret.setState(Turret.State.ZERO);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setAngle(Deposit.AngleState.VECTORING);
+                            turret.setState(Turret.State.BACK);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
-                            fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                            turret.setState(Turret.State.ZERO);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setAngle(Deposit.AngleState.VECTORING);
+                            turret.setState(Turret.State.BACK);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
                             slides.setState(Slides.State.HIGH);
-                            fourbar.setState(vfourb.State.ALIGN_POSITION);
-                            turret.setState(Turret.State.ZERO);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setAngle(Deposit.AngleState.VECTORING);
+                            turret.setState(Turret.State.BACK);
                             break;
                     }
                 }
@@ -211,8 +221,10 @@ public class ASafeDriverControl extends LinearOpMode {
             if (reset.wasJustPressed()) {
                 autoActuate = false;
                 slides.setState(Slides.State.BOTTOM);
-                fourbar.setState(vfourb.State.PRIMED);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                deposit.setAngle(Deposit.AngleState.INTAKE);
                 turret.setState(Turret.State.ZERO);
+                claw.setState(Claw.State.OPEN);
             }
             if(stackPickup.wasJustPressed()){
                 fourbar.setState(vfourb.State.STACK_PRIMED);
@@ -224,23 +236,27 @@ public class ASafeDriverControl extends LinearOpMode {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
-                        fourbar.setState(vfourb.State.PRIMED);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.INTAKE);
                         turret.setState(Turret.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                 }
             }
@@ -251,23 +267,27 @@ public class ASafeDriverControl extends LinearOpMode {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
-                        fourbar.setState(vfourb.State.PRIMED);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.INTAKE);
                         turret.setState(Turret.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                 }
             }
@@ -278,23 +298,27 @@ public class ASafeDriverControl extends LinearOpMode {
                 switch (cycleValue) {
                     case 0:
                         slides.setState(Slides.State.BOTTOM);
-                        fourbar.setState(vfourb.State.PRIMED);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.INTAKE);
                         turret.setState(Turret.State.ZERO);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
-                        fourbar.setState(vfourb.State.DEPOSIT_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
-                        fourbar.setState(vfourb.State.ALIGN_POSITION);
-                        turret.setState(Turret.State.ZERO);
+                        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                        deposit.setAngle(Deposit.AngleState.VECTORING);
+                        turret.setState(Turret.State.BACK);
                         break;
                 }
             }
@@ -340,22 +364,20 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (depositTransfer.isDown()) {
-                intake.setState(Intake.State.INTAKING);
+                claw.setState(Claw.State.OPEN);
             } else if (intakeTransfer.isDown()) {
-                intake.setState(Intake.State.DEPOSITING);
-            } else {
-                intake.setState(Intake.State.OFF);
+                claw.setState(Claw.State.CLOSE);
             }
 
             //V4B:
             if (fourBarIntake.wasJustPressed()) {
-                fourbar.setState(vfourb.State.INTAKE_POSITION);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
             if (fourBarDeposit.wasJustPressed()) {
-                fourbar.setState(vfourb.State.DEPOSIT_POSITION);
+               deposit.setAngle(Deposit.AngleState.INTAKE);
             }
             if (fourBarPrimed.wasJustPressed()) {
-                fourbar.setState(vfourb.State.PRIMED);
+                deposit.setExtension(Deposit.ExtensionState.EXTEND);
             }
 
             //TELEMETRY
@@ -365,7 +387,7 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
             telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
-            telemetry.addData("V4B State: ",fourbar.getState());
+            telemetry.addData("Extension State: ",deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.update();
