@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class PIDControl
 {
-    double kp;
-    double ki;
-    double kd;
+    PIDCoeff coeff;
     double iSumMax;
     double stabThresh;
 
@@ -14,16 +12,19 @@ public class PIDControl
 
     double motorOil;
 
-    public PIDControl(PIDCoeff coeff)
+    public PIDControl(PIDCoeff coeff, double iSumMax, double stabThresh)
     {
-        kp=coeff.kp;
-        ki=coeff.ki;
-        kd=coeff.kd;
-        iSumMax=coeff.iSumMax;
-        stabThresh=coeff.stabThresh;
+        this.coeff=coeff;
+        this.iSumMax=iSumMax;
+        this.stabThresh=stabThresh;
 
         integralSum=0;
         prevError=0;
+    }
+
+    public void gainSchedule(PIDCoeff coeff)
+    {
+        this.coeff=coeff;
     }
 
     public double calculate(double current, double target, double time)
@@ -46,11 +47,11 @@ public class PIDControl
 
         if(derivative>stabThresh)
         {
-            motorOil=(kp*error)+(kd*derivative);
+            motorOil=(coeff.kp*error)+(coeff.kd*derivative);
         }
         else
         {
-            motorOil=(kp*error)+(kd*derivative)+(ki*integralSum);
+            motorOil=(coeff.kp*error)+(coeff.kd*derivative)+(coeff.ki*integralSum);
         }
 
         prevError=error;

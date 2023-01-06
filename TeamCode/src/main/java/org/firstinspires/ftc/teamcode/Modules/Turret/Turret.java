@@ -19,8 +19,9 @@ import org.firstinspires.ftc.teamcode.util.PIDControl;
 @Config
 public class Turret extends AdvancedModule
 {
-    PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
-    PIDControl controller=new PIDControl(coeff);
+    PIDCoeff coeff=new PIDCoeff(0.1, 0, 0);
+    PIDCoeff coeff2=new PIDCoeff(0.2, 0, 0);
+    PIDControl controller=new PIDControl(coeff, 5, 0);
 
     static final double LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT_POS=1020;
 
@@ -81,6 +82,12 @@ public class Turret extends AdvancedModule
             return manualPower;
         else if(state==State.STOPPED)
             return 0;
+
+        //gain scheduling general idea/template
+        if(currentPos()+posAtZero<0)
+            controller.gainSchedule(coeff2);
+        else
+            controller.gainSchedule(coeff);
 
         double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
         if(Math.abs(power)<0.08)

@@ -307,32 +307,28 @@ public class DriverControl extends LinearOpMode {
                     turret.turretMotor.setPower(0.2);
                 }else{
                     turret.turretMotor.setPower(0);
-                    turret.setState(Turret.State.IDLE);
+                    turret.setState(Turret.State.STOPPED);
                 }
             }
 
             //manual turret control:
             if (Math.abs(gamepad2.right_stick_x) > 0) {
                 turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.right_stick_x);
+                turret.setManualPower(gamepad2.right_stick_x);
                 turretStop = true;
             }
             if (turretStop && gamepad2.right_stick_x == 0) {
-                turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(0);
+                turret.setState(Turret.State.STOPPED);
                 turretStop = false;
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(gamepad2.left_stick_y);
-                slides.slidesRight.setPower(gamepad2.left_stick_y);                //slides.setPowerManual(gamepad2.left_stick_y);
-                    slidesZero = true;
+                slides.setManualPower(gamepad2.left_stick_y);
+                slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.slidesLeft.setPower(gamepad2.left_stick_y);
-                slides.slidesRight.setPower(gamepad2.left_stick_y);
+                slides.setState(Slides.State.STOPPED);
                 slidesZero = false;
             }
 

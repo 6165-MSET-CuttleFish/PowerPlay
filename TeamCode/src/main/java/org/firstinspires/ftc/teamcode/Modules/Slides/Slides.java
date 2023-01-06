@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.util.PIDControl;
 @Config
 public class Slides extends AdvancedModule
 {
-    PIDCoeff coeff=new PIDCoeff(0.1, 0, 0, 0, 0);
-    PIDControl controller=new PIDControl(coeff);
+    PIDCoeff coeff=new PIDCoeff(0.1, 0, 0);
+    PIDControl controller=new PIDControl(coeff, 5, 0);
 
     public DcMotorEx slidesLeft, slidesRight;
     DigitalChannel slidesLimitSwitch;
@@ -71,14 +71,14 @@ public class Slides extends AdvancedModule
 
     public double motorPower()
     {
-        double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
-        if(Math.abs(power)<0.08)
-            setState(Turret.State.STOPPED);
-
         if(state==State.MANUAL)
             return manualPower;
         else if(state==State.STOPPED)
             return 0;
+
+        double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
+        if(Math.abs(power)<0.08)
+            setState(Turret.State.STOPPED);
         return power;
     }
 

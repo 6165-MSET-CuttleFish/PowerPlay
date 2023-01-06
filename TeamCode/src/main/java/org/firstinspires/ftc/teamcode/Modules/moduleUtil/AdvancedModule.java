@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-//TODO 1. Test? 2. Functioning PID w/ gain scheduling
+//TODO 1. Test? 2. Functioning auto align
 public abstract class AdvancedModule
 {
     public AdvancedModuleWorker w;
