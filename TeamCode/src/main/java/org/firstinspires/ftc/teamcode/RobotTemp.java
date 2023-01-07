@@ -42,15 +42,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
-import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.Turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.Detection.vision.Camera;
+import org.firstinspires.ftc.teamcode.detection.visionCamera.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -15,12 +15,12 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Detection.pipelines.Detector;
-import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
-import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.detection.visionProcessing.Detector;
+import org.firstinspires.ftc.teamcode.modules.Turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.Transfer.vfourb;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;

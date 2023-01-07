@@ -8,12 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Modules.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Detection.pipelines.Detector;
-import org.firstinspires.ftc.teamcode.Modules.Turret.Turret;
-import org.firstinspires.ftc.teamcode.Modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.Slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.Transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.Transfer.vfourb;
+import org.firstinspires.ftc.teamcode.detection.visionProcessing.Detector;
+import org.firstinspires.ftc.teamcode.modules.Turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
