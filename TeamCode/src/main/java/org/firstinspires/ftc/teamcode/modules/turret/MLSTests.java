@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
@@ -24,8 +25,8 @@ public class MLSTests extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("MLS Activated: ", magnetic.isPressed());
-        telemetry.addData("Hall Effect Voltage: ", hallEffect.getVoltage());
+        //telemetry.addData("MLS Activated: ", magnetic.isPressed());
+        //telemetry.addData("Hall Effect Voltage: ", hallEffect.getVoltage());
         telemetry.addData("Hall Effect Activated: ", (hallEffect.getVoltage()<tolerance));
         telemetry.update();
     }
