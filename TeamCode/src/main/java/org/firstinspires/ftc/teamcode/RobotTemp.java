@@ -42,13 +42,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.Deposit.Claw;
-import org.firstinspires.ftc.teamcode.Deposit.Deposit;
-import org.firstinspires.ftc.teamcode.Slides.Slides;
-import org.firstinspires.ftc.teamcode.Transfer.Intake;
-import org.firstinspires.ftc.teamcode.Transfer.vfourb;
-import org.firstinspires.ftc.teamcode.Turret.Turret;
-import org.firstinspires.ftc.teamcode.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
+import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
+import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -118,8 +118,8 @@ public class RobotTemp extends MecanumDrive {
         HardwareMap hardwareMap=l.hardwareMap;
 
         slides = new Slides(hardwareMap);
-        fourbar = new vfourb(hardwareMap);
-        intake = new Intake(hardwareMap);
+        deposit = new Deposit(hardwareMap);
+        claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
 
         //thread=new HardwareThread(turret, slides, l);
@@ -165,8 +165,6 @@ public class RobotTemp extends MecanumDrive {
 
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
         odoRaise.setPosition(odomServoPos);
-        groundLeft = hardwareMap.get(CRServo.class, "gl");
-        groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -187,6 +185,11 @@ public class RobotTemp extends MecanumDrive {
         }
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method

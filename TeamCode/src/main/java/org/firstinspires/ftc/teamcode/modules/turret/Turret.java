@@ -119,6 +119,7 @@ public class Turret
                 break;
             case BACK:
                 targetPos=BACK+posAtZero;
+                break;
             case ZERO:
                 targetPos=ZERO_POS+posAtZero;
                 break;

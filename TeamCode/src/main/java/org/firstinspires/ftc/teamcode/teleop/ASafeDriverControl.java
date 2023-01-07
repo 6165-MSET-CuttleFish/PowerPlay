@@ -16,8 +16,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Deposit.Claw;
-import org.firstinspires.ftc.teamcode.Deposit.Deposit;
+import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
+import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
@@ -37,9 +37,9 @@ public class ASafeDriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
-    TriggerReader intakeTransfer, depositTransfer,  intakeGround, extakeGround;
-    ButtonReader cycleDown, cycleUp, actuateLeft, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero, stackPickup;
-    ToggleButtonReader junctionScore, ninjaMode, straightMode;
+    TriggerReader intakeTransfer, depositTransfer;
+    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero, stackPickup;
+    ToggleButtonReader ninjaMode, straightMode;
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect2;    // Use to build a custom rumble sequence.
@@ -65,8 +65,8 @@ public class ASafeDriverControl extends LinearOpMode {
 
         keyReaders = new KeyReader[] {
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
-                intakeGround = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
-                extakeGround = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
+                extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
 
@@ -227,7 +227,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 claw.setState(Claw.State.OPEN);
             }
             if(stackPickup.wasJustPressed()){
-                fourbar.setState(vfourb.State.STACK_PRIMED);
+//                fourbar.setState(vfourb.State.STACK_PRIMED);
                 slides.setState(Slides.State.INTAKE_AUTO);
             }
             //turret left
@@ -244,19 +244,19 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                 }
             }
@@ -275,19 +275,19 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                 }
             }
@@ -306,19 +306,19 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.BACK);
+                        turret.setState(Turret.State.ZERO);
                         break;
                 }
             }
@@ -331,6 +331,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 turret.setState(Turret.State.RIGHT);
             if (gamepad2.right_stick_x < 0)
                 turret.setState(Turret.State.LEFT);
+            if (Math.abs(gamepad2.left_stick_x) > 0)
+                turret.setState(Turret.State.BACK);
 
             //manual turret control:
             if (Math.abs(gamepad2.right_stick_y) > 0) {
@@ -355,11 +357,12 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //GROUND INTAKE
-            if (intakeGround.isDown()) {
+            if (intakeGround.wasJustPressed()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
-            } else if (extakeGround.isDown()){
+            }
+            else if (extakeGround.wasJustPressed()){
                 groundIntake.setState(GroundIntake.State.DEPOSITING);
-            } else {
+            } else if(gamepad1.dpad_left){
                 groundIntake.setState(GroundIntake.State.OFF);
             }
 

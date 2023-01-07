@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.ground;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -22,8 +23,10 @@ public class GroundIntake
 
     public GroundIntake(HardwareMap hardwareMap)
     {
-        groundIntake = hardwareMap.get(DcMotor.class, "gi");
-//        distSens = hardwareMap.get(DistanceSensor.class, "distanceG");
+        groundIntake = hardwareMap.get(DcMotor.class, "gIntake");
+        groundIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        groundIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        groundIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setState(State.OFF);
     }
 

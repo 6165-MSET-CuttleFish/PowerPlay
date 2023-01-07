@@ -35,8 +35,8 @@ public class Slides {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
-        //slidesRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        //slidesLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        slidesRight.setDirection(DcMotor.Direction.REVERSE);
+        slidesLeft.setDirection(DcMotor.Direction.REVERSE);
         slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
