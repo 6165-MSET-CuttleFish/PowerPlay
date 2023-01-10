@@ -15,7 +15,7 @@ public class Deposit {
     public static double RVECTORING = 0.23;
     public static double LINTAKE = 0.37;
     public static double RINTAKE = 0.36;
-
+    public static double rightPos = 0;
 
     Servo leftExtension;
     Servo leftAngular;
@@ -65,7 +65,7 @@ public class Deposit {
                 rightAngular.setPosition(RINTAKE);
                 break;
         }
-
+        rightPos = rightExtension.getPosition();
     }
 
     public ExtensionState getExtState() {
