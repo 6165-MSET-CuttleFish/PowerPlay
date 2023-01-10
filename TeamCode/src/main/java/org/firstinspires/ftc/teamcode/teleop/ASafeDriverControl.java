@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import android.widget.Button;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -27,6 +28,7 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 
 @TeleOp
+@Config
 public class ASafeDriverControl extends LinearOpMode {
     RobotTemp robot;
     Slides slides;
@@ -48,6 +50,9 @@ public class ASafeDriverControl extends LinearOpMode {
     int cycleValue = 0;
     boolean slidesZero = false, turretStop = false;
     boolean autoActuate = false;
+    public static double slidesDelay = 0.3;
+    public static double turretDelay = 0.3;
+    public  boolean turretCheck, slidesCheck = false;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -179,6 +184,9 @@ public class ASafeDriverControl extends LinearOpMode {
                             slides.setState(Slides.State.LOW);
                             deposit.setExtension(Deposit.ExtensionState.EXTEND);
                             deposit.setAngle(Deposit.AngleState.VECTORING);
+                            while (slides.secondsSpentInState() < slidesDelay) {
+
+                            }
                             turret.setState(Turret.State.BACK);
                             break;
                         case 2:
@@ -186,6 +194,9 @@ public class ASafeDriverControl extends LinearOpMode {
                             slides.setState(Slides.State.MID);
                             deposit.setExtension(Deposit.ExtensionState.EXTEND);
                             deposit.setAngle(Deposit.AngleState.VECTORING);
+                            while (slides.secondsSpentInState() < slidesDelay) {
+
+                            }
                             turret.setState(Turret.State.BACK);
                             break;
                         case 3:
@@ -193,6 +204,9 @@ public class ASafeDriverControl extends LinearOpMode {
                             slides.setState(Slides.State.HIGH);
                             deposit.setExtension(Deposit.ExtensionState.EXTEND);
                             deposit.setAngle(Deposit.AngleState.VECTORING);
+                            while (slides.secondsSpentInState() < slidesDelay) {
+
+                            }
                             turret.setState(Turret.State.BACK);
                             break;
                     }
@@ -220,11 +234,15 @@ public class ASafeDriverControl extends LinearOpMode {
             //reset
             if (reset.wasJustPressed()) {
                 autoActuate = false;
-                slides.setState(Slides.State.BOTTOM);
+                turret.setState(Turret.State.ZERO);
+                while (turret.secondsSpentInState() < turretDelay) {
+                }
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
-                turret.setState(Turret.State.ZERO);
                 claw.setState(Claw.State.OPEN);
+
+                slides.setState(Slides.State.BOTTOM);
+
             }
             if(stackPickup.wasJustPressed()){
 //                fourbar.setState(vfourb.State.STACK_PRIMED);
@@ -238,25 +256,37 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.BOTTOM);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.INTAKE);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.LEFT);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.LEFT);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.LEFT);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.LEFT);
                         break;
                 }
             }
@@ -269,25 +299,35 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.BOTTOM);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.INTAKE);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.RIGHT);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.RIGHT);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.RIGHT);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        if (!slidesCheck)
+                        turret.setState(Turret.State.RIGHT);
                         break;
                 }
             }
@@ -300,25 +340,37 @@ public class ASafeDriverControl extends LinearOpMode {
                         slides.setState(Slides.State.BOTTOM);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.INTAKE);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 1:
                         slides.setState(Slides.State.LOW);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 2:
                         slides.setState(Slides.State.MID);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.BACK);
                         break;
                     case 3:
                         slides.setState(Slides.State.HIGH);
                         deposit.setExtension(Deposit.ExtensionState.EXTEND);
                         deposit.setAngle(Deposit.AngleState.VECTORING);
-                        turret.setState(Turret.State.ZERO);
+                        while (slides.secondsSpentInState() < slidesDelay) {
+
+                        }
+                        turret.setState(Turret.State.BACK);
                         break;
                 }
             }

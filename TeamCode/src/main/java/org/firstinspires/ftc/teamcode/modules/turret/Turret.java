@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
@@ -19,6 +20,7 @@ public class Turret
     public static double kd=3.74;
     public static double iSumMax=43.2;
     public static double stabThresh=40;
+    public static ElapsedTime time = new ElapsedTime();
 
     PIDControl controller;
     PIDCoeff coeff;
@@ -87,11 +89,17 @@ public class Turret
         }
     }
 
-
-    public void setState(Turret.State state)
-    {
+    public double secondsSpentInState() {
+        return time.seconds();
+    }
+    public double millisecondsSpentInState() {
+        return time.milliseconds();
+    }
+    public void setState(Turret.State state) {
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.state = state;
+        updateTarget();
+        time.reset();
     }
 
     private void updateTarget()

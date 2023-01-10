@@ -6,17 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class Slides {
     public DcMotorEx slidesLeft, slidesRight;
     DigitalChannel slidesLimitSwitch;
-
+    public static ElapsedTime time = new ElapsedTime();
     //slides is 17.5 inches tall
     boolean switchModified=false;
     boolean switchPressed=false;
+    public static boolean slidesCheck = false;
 
-    public static int HIGH = 1850; //old = 1850
+    public static int HIGH = 2050; //old = 1850
     public static int HIGH_DROP = 2080; //old = 1650
     public static int MID = 1400; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
@@ -48,8 +50,7 @@ public class Slides {
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
 //        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-        switch(state)
-        {
+        switch(state) {
             case HIGH:
                 slidesLeft.setTargetPosition(HIGH);
                 slidesRight.setTargetPosition(HIGH);
@@ -119,9 +120,11 @@ public class Slides {
                 slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 slidesLeft.setPower(0);
                 slidesRight.setPower(0);
+                break;
             case MANUAL:
                 slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                break;
 
         }
 //        if (slidesLimitSwitch.getState()) {
@@ -130,7 +133,12 @@ public class Slides {
 //        }
     }
 
-
+public double secondsSpentInState() {
+        return time.seconds();
+}
+    public double millisecondsSpentInState() {
+        return time.milliseconds();
+    }
 public void checkLimit()
 {
     switchPressed=slidesLimitSwitch.getState();
@@ -167,6 +175,7 @@ public void setPowerManual(double power)
     }
     public void setState(Slides.State state){
         this.state = state;
+        time.reset();
         update();
     }
     public void up(){
