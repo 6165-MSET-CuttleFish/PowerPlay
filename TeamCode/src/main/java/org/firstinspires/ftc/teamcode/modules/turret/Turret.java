@@ -7,10 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
-
+import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
@@ -83,7 +84,7 @@ public class Turret
             {
                 motorOil=sign*farPower;
             }
-            turretMotor.setPower(motorOil);
+            turretMotor.setPower(motorOil*IntertialCompensation.PIDMultiplier(Deposit.rightPos));
         }
     }
 
