@@ -25,12 +25,13 @@ public class Slides {
     public static int LOW = 650; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
+    public static int BOTTOM_RETRACTED = 100;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(1.502, 0, 0, 0);
     public static PIDFCoefficients VELOCITY_PIDF = new PIDFCoefficients(2.5, 2.43, .075, .025);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, BOTTOM_RETRACTED
     }
     public Slides(HardwareMap hardwareMap)
     {
@@ -124,6 +125,14 @@ public class Slides {
             case MANUAL:
                 slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                break;
+            case BOTTOM_RETRACTED:
+                slidesLeft.setTargetPosition(BOTTOM_RETRACTED);
+                slidesRight.setTargetPosition(BOTTOM_RETRACTED);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                slidesLeft.setPower(1);
+                slidesRight.setPower(1);
                 break;
 
         }

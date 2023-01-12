@@ -9,27 +9,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw
 {
     //temporary values
-    public static double OPEN=0.45;
-    public static double CLOSE=0.7;
+    public static double OPEN=0.7;
+    public static double CLOSE=0.05;
     public static double PARTIAL=0;
 
     Servo claw;
     public Claw.State state;
-    public enum State
-    {
+    public enum State {
         OPEN, CLOSE, PARTIAL
     }
 
-    public Claw(HardwareMap hardwareMap)
-    {
+    public Claw(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "claw");
         setState(State.OPEN);
     }
 
-    public void update()
-    {
-        switch(state)
-        {
+    public void update() {
+        switch(state) {
             case OPEN:
                 claw.setPosition(OPEN);
                 break;
@@ -46,10 +42,8 @@ public class Claw
         return state;
     }
 
-    public void setState(Claw.State state)
-    {
+    public void setState(Claw.State state) {
         this.state = state;
         update();
     }
-
 }

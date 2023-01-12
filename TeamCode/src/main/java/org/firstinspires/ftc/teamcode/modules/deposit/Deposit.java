@@ -4,17 +4,19 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+
 @Config
 public class Deposit {
     //temporary values
-    public static double LEXTENDED = 0.28;
+    public static double LEXTENDED = 0.5;
     public static double REXTENDED = 0.22;
-    public static double LZERO = 0.06;
+    public static double LZERO = 0.3;
     public static double RZERO = 0.01;
-    public static double LVECTORING = 0.22;
-    public static double RVECTORING = 0.23;
-    public static double LINTAKE = 0.37;
-    public static double RINTAKE = 0.36;
+    public static double LVECTORING = 0.25;
+    public static double RVECTORING = 0.26;
+    public static double LINTAKE = 0.34;
+    public static double RINTAKE = 0.33;
     public static double rightPos = 0;
 
     Servo leftExtension;
@@ -23,6 +25,7 @@ public class Deposit {
     Servo rightAngular;
     public ExtensionState extState=ExtensionState.RETRACT;
     public AngleState angState=AngleState.INTAKE;
+    Slides slides;
     public enum ExtensionState
     {
         EXTEND, RETRACT
@@ -53,6 +56,7 @@ public class Deposit {
             case RETRACT:
                 leftExtension.setPosition(LZERO);
                 rightExtension.setPosition(RZERO);
+                slides.setState(Slides.State.BOTTOM_RETRACTED);
                 break;
         }
         switch (angState){
