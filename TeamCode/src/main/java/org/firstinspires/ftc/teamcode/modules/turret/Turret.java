@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -30,10 +31,11 @@ public class Turret
     public static double closePower = 0.17;
     public static double farPower = 0.65;
     double targetPos=0;
-    double posAtZero=0;
+    public double posAtZero=0;
+    public double prevHall=0.0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
-    public TouchSensor limit;
+    public AnalogInput hallEffect;
     public Turret.State state;
 
     public double motorOil=0;
@@ -52,7 +54,8 @@ public class Turret
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
 
-//        limit = hardwareMap.get(TouchSensor.class, "limit");
+        hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
+
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -111,6 +114,10 @@ public class Turret
 //            posAtZero=/*some value based on where limit switch clicks*/0;
 //        }
         //if hall effect then reset pos at zero
+        if(hallEffect.getVoltage()<prevHall){
+            posAtZero = encoder.getCurrentPosition();
+        }
+        prevHall=hallEffect.getVoltage();
 
         switch(state)
         {
@@ -121,19 +128,19 @@ public class Turret
                 targetPos = encoder.getCurrentPosition();
                 break;
             case RIGHT:
-                targetPos=RIGHT_POS+posAtZero;
+                targetPos=RIGHT_POS/*+posAtZero*/;
                 break;
             case LEFT:
-                targetPos=LEFT_POS+posAtZero;
+                targetPos=LEFT_POS/*+posAtZero*/;
                 break;
             case BACK:
-                targetPos=BACK+posAtZero;
+                targetPos=BACK/*+posAtZero*/;
                 break;
             case ZERO:
-                targetPos=ZERO_POS+posAtZero;
+                targetPos=ZERO_POS/*+posAtZero*/;
                 break;
             case INIT:
-                targetPos=INIT+posAtZero;
+                targetPos=INIT/*+posAtZero*/;
                 break;
             case AUTOALIGN:
                 break;

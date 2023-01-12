@@ -5,29 +5,35 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 
 @TeleOp(name = "MLS")
 @Config
 public class MLSTests extends OpMode {
-    private TouchSensor magnetic;
     private AnalogInput hallEffect;
-    public double tolerance=1;
+    public double tolerance=0.5;
+    public double prev=5.0;
+    double targetPos, prevReset=0;
+    public Encoder encoder;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void init() {
+        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
-        magnetic = hardwareMap.get(TouchSensor.class, "MLS");
     }
 
     @Override
     public void loop() {
-        //telemetry.addData("MLS Activated: ", magnetic.isPressed());
-        //telemetry.addData("Hall Effect Voltage: ", hallEffect.getVoltage());
+        if(hallEffect.getVoltage()<prev){
+            telemetry.addData("Fall"," Detected");
+        }
         telemetry.addData("Hall Effect Activated: ", (hallEffect.getVoltage()<tolerance));
         telemetry.update();
+        prev=hallEffect.getVoltage();
+
     }
 }

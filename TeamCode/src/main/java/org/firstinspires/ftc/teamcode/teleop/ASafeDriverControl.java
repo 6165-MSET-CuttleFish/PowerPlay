@@ -445,6 +445,8 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Extension State: ",deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
+            telemetry.addData("Turret HE", turret.posAtZero);
+            telemetry.addData("Turret Hall", turret.prevHall);
             telemetry.update();
             turret.update();
         }
