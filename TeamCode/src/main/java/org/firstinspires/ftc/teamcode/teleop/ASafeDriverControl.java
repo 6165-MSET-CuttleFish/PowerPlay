@@ -55,7 +55,7 @@ public class ASafeDriverControl extends LinearOpMode {
     public  boolean turretCheck, slidesCheck = false;
     @Override
     public void runOpMode() throws InterruptedException {
-
+    //TODO: add delay to turret when raising slides, add delay to slides when lowering slides AND turning turret
         robot = new RobotTemp(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
@@ -234,14 +234,13 @@ public class ASafeDriverControl extends LinearOpMode {
             //reset
             if (reset.wasJustPressed()) {
                 autoActuate = false;
-                turret.setState(Turret.State.ZERO);
-                while (turret.secondsSpentInState() < turretDelay) {
-                }
+                slides.setState(Slides.State.BOTTOM);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
                 claw.setState(Claw.State.OPEN);
+                while(slides.secondsSpentInState() < slidesDelay)
+                    turret.setState(Turret.State.ZERO);
 
-                slides.setState(Slides.State.BOTTOM);
 
             }
             if(stackPickup.wasJustPressed()){
