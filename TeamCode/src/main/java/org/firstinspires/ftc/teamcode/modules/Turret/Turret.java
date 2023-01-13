@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.detection.visionProcessing.Detector;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleWorker;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModule;
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 
@@ -32,7 +32,7 @@ public class Turret extends AdvancedModule
     double alignPos;
     Detector detector;
 
-    public enum State implements ModuleState
+    public enum State implements AdvancedModuleState
     {
         LEFT(LEFT_POS), RIGHT(RIGHT_POS), ZERO(ZERO_POS),
         MANUAL(null), AUTOALIGN(null), STOPPED(null), INIT(INIT_POS);
@@ -50,7 +50,7 @@ public class Turret extends AdvancedModule
         }
     }
 
-    public Turret(HardwareMap hardwareMap, boolean teleop)
+    public Turret(HardwareMap hardwareMap)
     {
         turretMotor=hardwareMap.get(DcMotorEx.class, "hturret");
         motors.add(turretMotor);
@@ -83,15 +83,35 @@ public class Turret extends AdvancedModule
         else if(state==State.STOPPED)
             return 0;
 
+        double sign=Math.signum(targetPos-currentPos());
+        double errorAbs=Math.abs(targetPos-currentPos());
         //gain scheduling general idea/template
-        if(currentPos()+posAtZero<0)
+        /*if(currentPos()+posAtZero<0)
             controller.gainSchedule(coeff2);
         else
             controller.gainSchedule(coeff);
 
         double power=controller.calculate(currentPos(), targetPos, timer.milliseconds());
         if(Math.abs(power)<0.08)
+            setState(State.STOPPED);*/
+
+        double power=0;
+
+        if(errorAbs<15)
+        {
             setState(State.STOPPED);
+            return power;
+        }
+        else if(errorAbs<200)
+        {
+            power=sign*0.17;
+        }
+        else if(errorAbs>200)
+        {
+            power=sign*0.65;
+        }
+        //turretMotor.setPower(motorOil*IntertialCompensation.PIDMultiplier(Deposit.rightPos));
+
         return power;
     }
     public boolean resetPressed() {return limit.isPressed();}

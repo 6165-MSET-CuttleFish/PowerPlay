@@ -30,7 +30,7 @@ public class LeftSideAutoAutonAlign extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this, false);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;

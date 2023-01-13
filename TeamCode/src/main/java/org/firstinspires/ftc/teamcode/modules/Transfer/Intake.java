@@ -3,8 +3,9 @@ package org.firstinspires.ftc.teamcode.modules.Transfer;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModule;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModuleState;
 
 public class Intake extends BasicModule
 {
@@ -12,7 +13,7 @@ public class Intake extends BasicModule
 
     CRServo intakeRunning;
     CRServo intakeSupporting;
-    public enum State implements ModuleState
+    public enum State implements BasicModuleState
     {
         INTAKING(1), DEPOSITING(-1), OFF(0);
         private final double power;
@@ -21,8 +22,8 @@ public class Intake extends BasicModule
             this.power=power;
         }
         @Override
-        public Double getValue() {
-            return power;
+        public Double[] getValue() {
+            return new Double[]{power};
         }
     }
 
@@ -37,7 +38,7 @@ public class Intake extends BasicModule
 
     public void update()
     {
-       intakeRunning.setPower(state.getValue());
-       intakeSupporting.setPower(state.getValue());
+       intakeRunning.setPower(state.getValue()[0]);
+       intakeSupporting.setPower(state.getValue()[0]);
     }
 }

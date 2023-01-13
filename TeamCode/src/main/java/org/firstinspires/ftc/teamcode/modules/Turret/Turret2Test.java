@@ -17,7 +17,7 @@ public class Turret2Test extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot=new Robot(this, false);
+        robot=new Robot(this);
         turret=robot.turret;
         fourbar = robot.fourbar;
         timer=new ElapsedTime();
@@ -52,7 +52,6 @@ public class Turret2Test extends LinearOpMode
             }
             //turret.update();
             telemetry.addData("State", turret.getState());
-            telemetry.addData("power", turret.motorOil);
             telemetry.addData("encoder", turret.encoder.getCurrentPosition());
             //telemetry.addData("pid", turret.pidMotorOil);
             telemetry.update();

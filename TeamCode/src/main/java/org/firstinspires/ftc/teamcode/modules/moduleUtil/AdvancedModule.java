@@ -10,35 +10,35 @@ import java.util.concurrent.Callable;
 public abstract class AdvancedModule
 {
     public AdvancedModuleWorker w;
-    public ModuleState state;
+    public AdvancedModuleState state;
     public List<DcMotor> motors;
     public double posAtZero;
     public double targetPos;
     public double manualPower;
     public ElapsedTime timer;
 
-    public void setState(ModuleState s)
+    public void setState(AdvancedModuleState s)
     {
         timer.reset();
         state=s;
     }
 
-    public void setState(ModuleState s, int delayMilis)
+    public void setState(AdvancedModuleState s, int delayMilis)
     {
         w.setStateDelay(delayMilis, s);
     }
 
-    public void setState(ModuleState s, Callable<Boolean> startCondition)
+    public void setState(AdvancedModuleState s, Callable<Boolean> startCondition)
     {
         w.setStateSync(startCondition, s);
     }
 
-    public void setState(ModuleState s, Callable<Boolean> startCondition, int delayMilis)
+    public void setState(AdvancedModuleState s, Callable<Boolean> startCondition, int delayMilis)
     {
         w.setStateSync(startCondition, delayMilis, s);
     }
 
-    public ModuleState getState() {return state;}
+    public AdvancedModuleState getState() {return state;}
 
     public void updateTarget()
     {

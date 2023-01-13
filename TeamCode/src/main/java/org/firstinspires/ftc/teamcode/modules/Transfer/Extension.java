@@ -4,35 +4,49 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModule;
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModuleState;
 
 
 public class Extension extends BasicModule {
-    Servo servo;
-    public static double NEUTRAL_POSITION=0;
+    public static double LEXTENDED = 0.28;
+    public static double REXTENDED = 0.22;
+    public static double LZERO = 0.06;
+    public static double RZERO = 0.01;
 
-    public enum State implements ModuleState
+    Servo leftExtension, rightExtension;
+
+    public enum State implements BasicModuleState
     {
-        NEUTRAL(NEUTRAL_POSITION);
-        private final double position;
-        State(double position){this.position=position;}
+        RETRACTED(LZERO, RZERO), EXTENDED(LEXTENDED, REXTENDED);
+        private final double leftPosition;
+        private final double rightPosition;
+        State(double leftPosition, double rightPosition)
+        {
+            this.leftPosition=leftPosition;
+            this.rightPosition=rightPosition;
+        }
 
         @Override
-        public Double getValue() {
-            return position;
+        public Double[] getValue() {
+            return new Double[]{leftPosition, rightPosition};
         }
+
     }
 
     public Extension(HardwareMap hardwareMap)
     {
         super();
-        servo=hardwareMap.get(Servo.class, "extension");
-        setState(State.NEUTRAL);
+        leftExtension=hardwareMap.get(Servo.class, "lExt");
+        rightExtension=hardwareMap.get(Servo.class, "rExt");
+        rightExtension.setDirection(Servo.Direction.REVERSE);
+        setState(State.RETRACTED);
     }
 
     @Override
     public void update()
     {
-        servo.setPosition(state.getValue());
+        leftExtension.setPosition(state.getValue()[0]);
+        rightExtension.setPosition(state.getValue()[1]);
     }
 }

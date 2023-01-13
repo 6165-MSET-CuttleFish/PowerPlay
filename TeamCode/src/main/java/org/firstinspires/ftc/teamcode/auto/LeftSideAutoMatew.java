@@ -34,7 +34,7 @@ public class LeftSideAutoMatew extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         t=new ElapsedTime();
-        robot = new Robot(this, false);
+        robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
         fourbar = robot.fourbar;

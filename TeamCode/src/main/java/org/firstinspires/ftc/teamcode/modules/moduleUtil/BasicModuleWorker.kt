@@ -14,7 +14,7 @@ class BasicModuleWorker(val m: BasicModule)
         }
     }
 
-    fun startDelay(milis: Long, state: ModuleState)
+    fun startDelay(milis: Long, state: BasicModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
@@ -23,7 +23,7 @@ class BasicModuleWorker(val m: BasicModule)
         }
     }
 
-    fun startSync(startCondition: Callable<Boolean>, state: ModuleState)
+    fun startSync(startCondition: Callable<Boolean>, state: BasicModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
@@ -35,7 +35,7 @@ class BasicModuleWorker(val m: BasicModule)
         }
     }
 
-    fun startSync(startCondition: Callable<Boolean>, delay:Long, state:ModuleState)
+    fun startSync(startCondition: Callable<Boolean>, delay:Long, state: BasicModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {

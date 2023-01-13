@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.modules.Turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModule;
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleWorker;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
@@ -32,7 +32,7 @@ public class Slides extends AdvancedModule
     public static double INTAKE_AUTO =  125;
     public static double BOTTOM=0;
 
-    public enum State implements ModuleState {
+    public enum State implements AdvancedModuleState {
         HIGH(Slides.HIGH), HIGH_DROP(Slides.HIGH_DROP),
         MID(Slides.MID), MID_DROP(Slides.MID_DROP),
         LOW(Slides.LOW), LOW_DROP(Slides.LOW_DROP),

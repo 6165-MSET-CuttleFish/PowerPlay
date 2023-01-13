@@ -16,7 +16,7 @@ class AdvancedModuleWorker(val m: AdvancedModule)
         }
     }
 
-    fun setStateDelay(delay: Long, state: ModuleState)
+    fun setStateDelay(delay: Long, state: AdvancedModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
@@ -25,7 +25,7 @@ class AdvancedModuleWorker(val m: AdvancedModule)
         }
     }
 
-    fun setStateSync(startCondition: Callable<Boolean>, state: ModuleState)
+    fun setStateSync(startCondition: Callable<Boolean>, state: AdvancedModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
@@ -37,7 +37,7 @@ class AdvancedModuleWorker(val m: AdvancedModule)
         }
     }
 
-    fun setStateSync(startCondition: Callable<Boolean>, delay:Long, state:ModuleState)
+    fun setStateSync(startCondition: Callable<Boolean>, delay:Long, state: AdvancedModuleState)
     {
         GlobalScope.launch(Dispatchers.Main)
         {

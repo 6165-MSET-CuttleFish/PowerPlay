@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.moduleUtil;
 
-public interface ModuleState
+public interface AdvancedModuleState
 {
     public Double getValue();
 }

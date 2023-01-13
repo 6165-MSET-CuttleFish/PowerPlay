@@ -3,14 +3,15 @@ package org.firstinspires.ftc.teamcode.modules.ground;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModule;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModuleState;
 
 public class GroundIntake extends BasicModule
 {
     //temporary values
     DcMotor intakeRunning;
-    public enum State implements ModuleState
+    public enum State implements BasicModuleState
     {
         INTAKING(0.7), EXTAKING(-0.7), OFF(0);
         private final double power;
@@ -20,8 +21,8 @@ public class GroundIntake extends BasicModule
         }
 
         @Override
-        public Double getValue() {
-            return power;
+        public Double[] getValue() {
+            return new Double[]{power};
         }
     }
 
@@ -35,6 +36,6 @@ public class GroundIntake extends BasicModule
 
     public void update()
     {
-        intakeRunning.setPower(state.getValue());
+        intakeRunning.setPower(state.getValue()[0]);
     }
 }

@@ -315,12 +315,12 @@ public class ASafeDriverControl extends LinearOpMode {
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
-                slides.setPowerManual(gamepad2.left_stick_y);
+                slides.setManualPower(gamepad2.left_stick_y);
                 //slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setPowerManual(gamepad2.left_stick_y);
+                slides.setManualPower(gamepad2.left_stick_y);
                 slidesZero = false;
             }
 

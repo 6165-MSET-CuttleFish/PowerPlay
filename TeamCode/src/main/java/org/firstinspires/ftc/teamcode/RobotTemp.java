@@ -114,7 +114,7 @@ public class RobotTemp extends MecanumDrive {
         slides = new Slides(hardwareMap);
         fourbar = new vfourb(hardwareMap);
         intake = new Intake(hardwareMap);
-        turret = new Turret(hardwareMap, false);
+        turret = new Turret(hardwareMap);
 
         //thread=new HardwareThread(turret, slides, l);
         //thread.start();

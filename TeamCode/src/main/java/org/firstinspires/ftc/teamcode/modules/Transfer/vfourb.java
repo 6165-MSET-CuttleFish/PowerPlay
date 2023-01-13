@@ -4,8 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.modules.moduleUtil.ModuleState;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.AdvancedModuleState;
 import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModule;
+import org.firstinspires.ftc.teamcode.modules.moduleUtil.BasicModuleState;
 
 @Config
 public class vfourb extends BasicModule
@@ -24,7 +25,7 @@ public class vfourb extends BasicModule
     Servo Running;
     Servo Supporting;
 
-    public enum State implements ModuleState {
+    public enum State implements BasicModuleState {
         INTAKE_POSITION(vfourb.INTAKE_POSITION),DEPOSIT_POSITION(vfourb.DEPOSIT_POSITION),
         PRIMED(PRIMED_POS), ALIGN_POSITION(vfourb.ALIGN_POSITION),
         STACK_PRIMED(vfourb.STACK_PRIMED), VERTICAL(vfourb.VERTICAL), STACK_LOW(vfourb.STACK_LOW),
@@ -35,8 +36,8 @@ public class vfourb extends BasicModule
             this.position=position;
         }
         @Override
-        public Double getValue() {
-            return position;
+        public Double[] getValue() {
+            return new Double[]{position};
         }
     }
 
@@ -50,7 +51,7 @@ public class vfourb extends BasicModule
 
     public void update()
     {
-        Running.setPosition(state.getValue());
-        Supporting.setPosition(1-state.getValue());
+        Running.setPosition(state.getValue()[0]);
+        Supporting.setPosition(1-state.getValue()[0]);
     }
 }

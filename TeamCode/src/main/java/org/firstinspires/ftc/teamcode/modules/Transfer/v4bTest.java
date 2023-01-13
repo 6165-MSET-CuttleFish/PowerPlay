@@ -10,7 +10,7 @@ public class v4bTest extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot r=new Robot(this, false);
+        Robot r=new Robot(this);
         vfourb v4b=r.fourbar;
 
         waitForStart();
