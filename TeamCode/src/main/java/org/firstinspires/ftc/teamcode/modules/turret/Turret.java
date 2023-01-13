@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -28,14 +27,13 @@ public class Turret
     PIDCoeff coeff;
 
     static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200;
-    public static double closePower = 0.17;
-    public static double farPower = 0.65;
+    public static double closePower = 0.3;
+    public static double farPower = 0.8;
     double targetPos=0;
-    public double posAtZero=0;
-    public double prevHall=0.0;
+    double posAtZero=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
-    public AnalogInput hallEffect;
+    public TouchSensor limit;
     public Turret.State state;
 
     public double motorOil=0;
@@ -54,8 +52,7 @@ public class Turret
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
 
-        hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
-
+//        limit = hardwareMap.get(TouchSensor.class, "limit");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,7 +86,7 @@ public class Turret
             {
                 motorOil=sign*farPower;
             }
-            turretMotor.setPower(motorOil*IntertialCompensation.PIDMultiplier(Deposit.rightPos));
+            turretMotor.setPower(motorOil);
         }
     }
 
@@ -114,10 +111,6 @@ public class Turret
 //            posAtZero=/*some value based on where limit switch clicks*/0;
 //        }
         //if hall effect then reset pos at zero
-        if(hallEffect.getVoltage()<prevHall){
-            posAtZero = encoder.getCurrentPosition();
-        }
-        prevHall=hallEffect.getVoltage();
 
         switch(state)
         {
@@ -128,19 +121,19 @@ public class Turret
                 targetPos = encoder.getCurrentPosition();
                 break;
             case RIGHT:
-                targetPos=RIGHT_POS/*+posAtZero*/;
+                targetPos=RIGHT_POS+posAtZero;
                 break;
             case LEFT:
-                targetPos=LEFT_POS/*+posAtZero*/;
+                targetPos=LEFT_POS+posAtZero;
                 break;
             case BACK:
-                targetPos=BACK/*+posAtZero*/;
+                targetPos=BACK+posAtZero;
                 break;
             case ZERO:
-                targetPos=ZERO_POS/*+posAtZero*/;
+                targetPos=ZERO_POS+posAtZero;
                 break;
             case INIT:
-                targetPos=INIT/*+posAtZero*/;
+                targetPos=INIT+posAtZero;
                 break;
             case AUTOALIGN:
                 break;

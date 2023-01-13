@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.modules.slides;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -10,13 +12,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
-
 @TeleOp
+@Config
 public class SlidesPIDTest extends LinearOpMode {
     Slides slides;
      public ButtonReader bottom, middle, high;
-    public static double p,i,d;
-    private PIDController pidController = new PIDController(p,i,d);
+    public static double p = 0.02, i = 0, d = 0.0002;
+    public static double kV = 0, kA = 0, kStatic = 0;
+    private BPIDFController pidController = new BPIDFController(new PIDCoefficients(p,i,d), kV, kA, kStatic);
 
     public void runOpMode() throws InterruptedException {
         slides = new Slides(hardwareMap);
@@ -27,29 +30,26 @@ public class SlidesPIDTest extends LinearOpMode {
 
         waitForStart();
         while(opModeIsActive()){
-          //  slides.update();
-            if(bottom.wasJustPressed()){
-                slides.slidesLeft.setTargetPosition(0);
-                slides.slidesRight.setTargetPosition(0);
+//            slides.update();
+            if(gamepad1.a){
+                pidController.setTargetPosition(100);
             }
-            else if(middle.wasJustPressed()){
-                slides.slidesLeft.setTargetPosition(1180);
-                slides.slidesRight.setTargetPosition(1180);
+            else if(gamepad1.b){
+                pidController.setTargetPosition(1180);
             }
-            else if(high.wasJustPressed()){
-                slides.slidesLeft.setTargetPosition(2050);
-                slides.slidesRight.setTargetPosition(2050);
+            else if(gamepad1.y){
+                pidController.setTargetPosition(2300);
             }
-            double output = pidController.calculate(slides.slidesRight.getCurrentPosition());
-            slides.setPowerManual(output);
+            double output = pidController.update(slides.slidesRight.getCurrentPosition());
+            slides.slidesRight.setPower(output);
+            slides.slidesLeft.setPower(output);
 
-            telemetry.addData("targetPos: ", slides.getState());
+            telemetry.addData("targetPos: ", pidController.getTargetPosition());
+            telemetry.addData("output power: ", output);
             telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
             telemetry.addData("currentPower: ", slides.slidesLeft.getPower());
-            telemetry.addData("PID: ", slides.slidesLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
             telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getState());
-
 
             telemetry.update();
         }

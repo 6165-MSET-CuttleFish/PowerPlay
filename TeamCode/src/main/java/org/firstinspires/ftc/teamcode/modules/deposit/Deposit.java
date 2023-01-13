@@ -56,7 +56,6 @@ public class Deposit {
             case RETRACT:
                 leftExtension.setPosition(LZERO);
                 rightExtension.setPosition(RZERO);
-                slides.setState(Slides.State.BOTTOM_RETRACTED);
                 break;
         }
         switch (angState){

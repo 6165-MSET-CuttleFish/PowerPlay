@@ -66,7 +66,7 @@ public class RobotTemp extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double odomServoPos = 0.32;
+    public static double odomServoPos = 0.32, sideOdomServoPos = 0.32;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
@@ -84,7 +84,7 @@ public class RobotTemp extends MecanumDrive {
     //public final Servo v4bSup, v4bRun;
     //public final CRServo intakeSup, intakeRun;
     //public final CRServo  groundLeft, groundRight;
-    public Servo odoRaise;
+    public Servo midOdo, sideOdo;
     public List<DcMotorEx> motors;
     public DigitalChannel slidesLimitSwitch;
     private BNO055IMU imu;
@@ -163,8 +163,10 @@ public class RobotTemp extends MecanumDrive {
 */
 
 
-        odoRaise = hardwareMap.get(Servo.class, "midOdom");
-        odoRaise.setPosition(odomServoPos);
+        midOdo = hardwareMap.get(Servo.class, "midOdom");
+        sideOdo = hardwareMap.get(Servo.class, "sideOdom");
+        sideOdo.setPosition(sideOdomServoPos);
+        midOdo.setPosition(odomServoPos);
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
