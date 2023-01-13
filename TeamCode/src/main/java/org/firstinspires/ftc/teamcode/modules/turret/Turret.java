@@ -27,8 +27,8 @@ public class Turret
     PIDCoeff coeff;
 
     static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200;
-    public static double closePower = 0.17;
-    public static double farPower = 0.65;
+    public static double closePower = 0.3;
+    public static double farPower = 0.8;
     double targetPos=0;
     double posAtZero=0;
     public DcMotorEx turretMotor;
@@ -86,7 +86,7 @@ public class Turret
             {
                 motorOil=sign*farPower;
             }
-            turretMotor.setPower(motorOil*IntertialCompensation.PIDMultiplier(Deposit.rightPos));
+            turretMotor.setPower(motorOil);
         }
     }
 

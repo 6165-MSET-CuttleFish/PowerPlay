@@ -39,6 +39,7 @@ public class ASafeDriverControl extends LinearOpMode {
     Turret turret;
     GamepadEx primary, secondary;
     boolean transfer = false;
+    boolean resetCheck = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
@@ -54,8 +55,10 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean autoActuate = false;
     public static double slidesDelay = 0.3;
     public static double turretDelay = 0.3;
-    public  boolean turretCheck, slidesCheck = false;
+    public boolean turretCheck, slidesCheck = false;
     ElapsedTime transferTimer = new ElapsedTime();
+    ElapsedTime resetTimer = new ElapsedTime();
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -71,7 +74,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        keyReaders = new KeyReader[] {
+        keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
@@ -83,9 +86,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 fourBarPrimed = new ButtonReader(secondary, GamepadKeys.Button.B),
                 fourBarDeposit = new ButtonReader(secondary, GamepadKeys.Button.Y),
                 stackPickup = new ButtonReader(secondary, GamepadKeys.Button.X),
-                fourBarIntake= new ButtonReader(secondary, GamepadKeys.Button.A),
+                fourBarIntake = new ButtonReader(secondary, GamepadKeys.Button.A),
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
-                actuateLeft = new ButtonReader(secondary,GamepadKeys.Button.DPAD_LEFT),
+                actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
                 actuateUp = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
                 reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
@@ -151,14 +154,13 @@ public class ASafeDriverControl extends LinearOpMode {
                                 -gamepad1.right_stick_x * 0.5
                         )
                 );
-            }
-            else robot.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y,
-                                -gamepad1.left_stick_x,
-                                -gamepad1.right_stick_x
-                        )
-                );
+            } else robot.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
 
             //CYCLING:
             //0: ground/terminal, 1: low, 2: mid, 3: high
@@ -173,9 +175,9 @@ public class ASafeDriverControl extends LinearOpMode {
             if (cycleValue > 3)
                 cycleValue = 0;
 
-            if((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && autoActuate){
+            if ((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && autoActuate) {
                 gamepad2.stopRumble();
-                if(!gamepad2.isRumbling()) {
+                if (!gamepad2.isRumbling()) {
                     switch (cycleValue) {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
@@ -194,9 +196,9 @@ public class ASafeDriverControl extends LinearOpMode {
                             break;
                     }
                 }
-            } else if ((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && !autoActuate){
+            } else if ((cycleDown.wasJustPressed() || cycleUp.wasJustPressed()) && !autoActuate) {
                 gamepad2.stopRumble();
-                if(!gamepad2.isRumbling()) {
+                if (!gamepad2.isRumbling()) {
                     switch (cycleValue) {
                         case 0:
                             break;
@@ -217,17 +219,14 @@ public class ASafeDriverControl extends LinearOpMode {
             //reset
             if (reset.wasJustPressed()) {
                 autoActuate = false;
-                turret.setState(Turret.State.ZERO);
-                deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                deposit.setAngle(Deposit.AngleState.INTAKE);
-                claw.setState(Claw.State.OPEN);
-                slides.setState(Slides.State.BOTTOM);
-
+                resetCheck = true;
+                resetTimer.reset();
             }
             //turret mid
             if (actuateUp.wasJustPressed()) {
                 autoActuate = true;
-transfer = true;
+                transfer = true;
+                transferTimer.reset();
             }
 
             if (turretZero.wasJustPressed()) {
@@ -266,10 +265,9 @@ transfer = true;
             //GROUND INTAKE
             if (intakeGround.wasJustPressed()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
-            }
-            else if (extakeGround.wasJustPressed()){
+            } else if (extakeGround.wasJustPressed()) {
                 groundIntake.setState(GroundIntake.State.DEPOSITING);
-            } else if(gamepad1.dpad_left){
+            } else if (gamepad1.dpad_left) {
                 groundIntake.setState(GroundIntake.State.OFF);
             }
 
@@ -284,14 +282,15 @@ transfer = true;
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
             if (fourBarDeposit.wasJustPressed()) {
-               deposit.setAngle(Deposit.AngleState.INTAKE);
+                deposit.setAngle(Deposit.AngleState.INTAKE);
             }
             if (fourBarPrimed.wasJustPressed()) {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             }
 
             transferUpdate(cycleValue);
-
+            resetUpdate();
+            turret.update();
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
@@ -299,31 +298,47 @@ transfer = true;
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
             telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
-            telemetry.addData("Extension State: ",deposit.getExtState());
+            telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
+            telemetry.addData("bla bla ", turret.turretMotor.getTargetPosition());
+
             telemetry.update();
             turret.update();
         }
     }
-    public void transferUpdate(int cycle){
-        if(transfer){
-            if(transferTimer.seconds()<3){
-                deposit.setAngle(Deposit.AngleState.VECTORING);
-                if(cycle == 1) {
-                    slides.setState(Slides.State.LOW);
-                }
-                slides.setState(Slides.State.MID);
-            }
-            if(transferTimer.seconds()<5){
-                turret.setState(Turret.State.BACK);
-            }
-            if(transferTimer.seconds()<7){
-                if(cycle == 3){
+
+    public void transferUpdate(int cycle) {
+        if (transfer) {
+            if (transferTimer.seconds() > 1) {
+                if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 }
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 transfer = false;
+            } else if (transferTimer.milliseconds() > 500) {
+                turret.setState(Turret.State.BACK);
+            } else if (transferTimer.seconds() > 0) {
+                deposit.setAngle(Deposit.AngleState.VECTORING);
+                if (cycle == 1) {
+                    slides.setState(Slides.State.LOW);
+                } else {
+                    slides.setState(Slides.State.MID);
+                }
+            }
+        }
+    }
+
+    public void resetUpdate() {
+        if (resetCheck) {
+            if (resetTimer.seconds() > 1) {
+                slides.setState(Slides.State.BOTTOM);
+                resetCheck = false;
+            } else if (resetTimer.seconds() > 0) {
+                turret.setState(Turret.State.ZERO);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                deposit.setAngle(Deposit.AngleState.INTAKE);
+                claw.setState(Claw.State.OPEN);
             }
         }
     }
