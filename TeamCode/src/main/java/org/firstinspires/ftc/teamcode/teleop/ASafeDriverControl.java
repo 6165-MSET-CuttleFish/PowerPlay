@@ -289,6 +289,7 @@ public class ASafeDriverControl extends LinearOpMode {
             transferUpdate(cycleValue);
             resetUpdate();
             turret.update();
+            //slides.update();
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
@@ -308,12 +309,12 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer) {
-            if (transferTimer.milliseconds() > 800) {
+            if (transferTimer.milliseconds() > 3000) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300) {
+            } else if (transferTimer.milliseconds() > 2000) {
                 turret.setState(Turret.State.BACK);
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             } else if (transferTimer.seconds() > 0) {

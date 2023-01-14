@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
+import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
@@ -16,9 +18,10 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
-    public static double kp=0.0502;
-    public static double ki=0.183;
-    public static double kd=3.74;
+    public static double p = 0.004, i = 0.002, d = 0.00028727;
+    public static double kV = 0, kA = 0, kStatic = 0;
+    public BPIDFController pidController;
+
     public static double iSumMax=43.2;
     public static double stabThresh=40;
     public static ElapsedTime time = new ElapsedTime();
@@ -26,7 +29,7 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200;
+    static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100;
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
@@ -45,8 +48,7 @@ public class Turret
 
     public Turret(HardwareMap hardwareMap, boolean teleop)
     {
-        coeff=new PIDCoeff(kp ,ki, kd, iSumMax, stabThresh);
-        controller=new PIDControl(coeff);
+        pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
 
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
@@ -56,37 +58,17 @@ public class Turret
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        if(teleop)
-        {
-            setState(State.ZERO);
-        }
-        else
-        {
-            setState(State.INIT);
-        }
     }
 
     public void update(/*double time*/)
     {
         updateTarget();
-        double sign=Math.signum(targetPos-encoder.getCurrentPosition());
-        double errorAbs=Math.abs(targetPos-encoder.getCurrentPosition());
+
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
         if(state!=State.MANUAL)
         {
-            if(errorAbs<15)
-            {
-                motorOil=0;
-            }
-            else if(errorAbs<200)
-            {
-                motorOil=sign*closePower;
-            }
-            else if(errorAbs>200)
-            {
-                motorOil=sign*farPower;
-            }
-            turretMotor.setPower(motorOil);
+            pidController.setTargetPosition(targetPos);
+            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
         }
     }
 

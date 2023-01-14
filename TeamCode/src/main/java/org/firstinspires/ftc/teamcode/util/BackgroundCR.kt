@@ -15,7 +15,7 @@ class BackgroundCR(val r: Robot, val l: LinearOpMode)
             while(!l.isStopRequested)
             {
                 r.turret.update();
-                r.slides.checkLimit();
+                r.slides.update();
             }
         }
     }
