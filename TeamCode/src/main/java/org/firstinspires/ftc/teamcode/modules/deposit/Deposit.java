@@ -14,9 +14,9 @@ public class Deposit {
     public static double LZERO = 0.3;
     public static double RZERO = 0.01;
     public static double LVECTORING = 0.25;
-    public static double RVECTORING = 0.26;
+    public static double RVECTORING = 0.22;
     public static double LINTAKE = 0.34;
-    public static double RINTAKE = 0.33;
+    public static double RINTAKE = 0.31;
     public static double rightPos = 0;
 
     Servo leftExtension;
