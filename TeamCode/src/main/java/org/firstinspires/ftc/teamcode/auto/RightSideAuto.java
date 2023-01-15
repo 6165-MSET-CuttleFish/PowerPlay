@@ -65,7 +65,6 @@ public class RightSideAuto extends LinearOpMode {
         robot = new Robot(this);
         intake = robot.intake;
         slides = robot.slides;
-        fourbar = robot.fourbar;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
         fourbar.setState(vfourb.State.STACK_PRIMED);
@@ -73,7 +72,7 @@ public class RightSideAuto extends LinearOpMode {
         while(System.currentTimeMillis()-200 < timer){}
         turret.setState(Turret.State.INIT);
 
-        robot.alignUp();
+//        robot.alignUp();
         //turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //fourbar.setState(vfourb.State.INTAKE_POSITION);
@@ -141,7 +140,7 @@ public class RightSideAuto extends LinearOpMode {
                      groundIntake.setState(GroundIntake.State.DEPOSITING);
                  })*/
                 .addTemporalMarker(0.01, ()->{
-                    robot.alignDown();
+//                    robot.alignDown();
                 })
                 .lineToLinearHeading(new Pose2d(-40.25, intakeY, Math.toRadians(180)))
                 .build();
@@ -348,7 +347,7 @@ public class RightSideAuto extends LinearOpMode {
         robot.followTrajectory(preload1);
         robot.followTrajectory(preload2);
         robot.followTrajectory(preload3);
-        robot.alignDown();
+//        robot.alignDown();
         //robot.turn(Math.toRadians(90));
         robot.followTrajectory(preload4);
         groundIntake.setState(GroundIntake.State.OFF);
@@ -381,20 +380,20 @@ public class RightSideAuto extends LinearOpMode {
         //park
         if(x == 1){
             robot.followTrajectory(endLeft);
-            robot.alignUp();
+//            robot.alignUp();
             timer = System.currentTimeMillis();
             while(System.currentTimeMillis()-150 < timer){}
             //cycleIntake();
         }
         else if( x==2){
             robot.followTrajectory(endMiddle);
-            robot.alignUp();
+//            robot.alignUp();
             timer = System.currentTimeMillis();
             while(System.currentTimeMillis()-150 < timer){}
         }
         else if (x==3){
             robot.followTrajectory(cycleIntakePrep);
-            robot.alignUp();
+//            robot.alignUp();
             robot.followTrajectory(cycleIntakeLow);
 
         }

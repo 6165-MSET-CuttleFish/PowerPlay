@@ -42,6 +42,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
+import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
@@ -104,7 +106,8 @@ public class Robot extends MecanumDrive {
     public Slides slides;
     public vfourb fourbar;
     public Turret turret;
-
+    public Deposit deposit;
+    public Claw claw;
     public HardwareThread thread;
     public BackgroundCR hardware;
 
@@ -127,11 +130,11 @@ public class Robot extends MecanumDrive {
 
 
         slides = new Slides(hardwareMap);
-        fourbar = new vfourb(hardwareMap);
-        intake = new Intake(hardwareMap);
-        turret = new Turret(hardwareMap, !teleop);
-        groundIntake = new GroundIntake(hardwareMap);
+        deposit = new Deposit(hardwareMap);
+        claw = new Claw(hardwareMap);
+        turret = new Turret(hardwareMap, false);
         hardware=new BackgroundCR(this, l);
+        groundIntake = new GroundIntake(hardwareMap);
         //thread=new HardwareThread(turret, slides, l);
 
         hardware.startHW();
@@ -160,7 +163,7 @@ public class Robot extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
         //alignerL = hardwareMap.get(Servo.class, "alignerL");
-        alignerR=hardwareMap.get(Servo.class, "alignerR");
+//        alignerR=hardwareMap.get(Servo.class, "alignerR");
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
@@ -175,8 +178,8 @@ public class Robot extends MecanumDrive {
 
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
         odoRaise.setPosition(odomServoPos);
-        groundLeft = hardwareMap.get(CRServo.class, "gl");
-        groundRight = hardwareMap.get(CRServo.class, "gr");
+//        groundLeft = hardwareMap.get(CRServo.class, "gl");
+//        groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -464,7 +467,7 @@ public class Robot extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getAngularVelocity().xRotationRate;
+        return (double) imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

@@ -28,7 +28,7 @@ public class Slides {
     public static int LOW = 650; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
-    public static double p = 0.018, i = 2, d = 0.0002;
+    public static double p = 0.01, i = 2, d = 0.0002;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController = new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
     public static final double TICKS_PER_INCH = 43.3935;
