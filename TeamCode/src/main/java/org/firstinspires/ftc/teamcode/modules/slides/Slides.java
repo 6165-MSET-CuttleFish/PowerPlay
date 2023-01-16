@@ -21,6 +21,7 @@ public class Slides {
     boolean switchPressed=false;
     public static boolean slidesCheck = false;
     double output=0;
+    double posAtZero=0;
 
     public static int HIGH = 2370; //old = 1850
     public static int HIGH_DROP = 2080; //old = 1650
@@ -58,34 +59,28 @@ public class Slides {
 //        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
         switch(state) {
             case HIGH:
-                pidController.setTargetPosition(HIGH);
+                pidController.setTargetPosition(HIGH+posAtZero);
                 break;
             case HIGH_DROP:
-                pidController.setTargetPosition(HIGH_DROP);
+                pidController.setTargetPosition(HIGH_DROP+posAtZero);
                 break;
             case MID:
-                pidController.setTargetPosition(MID);
+                pidController.setTargetPosition(MID+posAtZero);
                 break;
             case MID_DROP:
-                pidController.setTargetPosition(MID_DROP);
+                pidController.setTargetPosition(MID_DROP+posAtZero);
                 break;
             case LOW:
-                pidController.setTargetPosition(LOW);
+                pidController.setTargetPosition(LOW+posAtZero);
                 break;
             case LOW_DROP:
-                pidController.setTargetPosition(LOW_DROP);
+                pidController.setTargetPosition(LOW_DROP+posAtZero);
                 break;
             case INTAKE_AUTO:
-                pidController.setTargetPosition(INTAKE_AUTO);
+                pidController.setTargetPosition(INTAKE_AUTO+posAtZero);
                 break;
             case BOTTOM:
-                pidController.setTargetPosition(0);
-                break;
-            case ZERO:
-                slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                slidesLeft.setPower(0);
-                slidesRight.setPower(0);
+                pidController.setTargetPosition(0+posAtZero);
                 break;
             case MANUAL:
 //                slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -116,21 +111,9 @@ public class Slides {
 public void checkLimit()
 {
     switchPressed=slidesLimitSwitch.getState();
-    if(!switchPressed)
+    if(switchPressed)
     {
-        switchModified=true;
-    }
-
-
-    if(switchPressed&&state==State.BOTTOM)
-    {
-        setState(State.ZERO);
-    }
-    else if(switchPressed&&state==State.MANUAL&&switchModified)
-    {
-        switchModified=false;
-        slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slidesRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        posAtZero=slidesRight.getCurrentPosition();
     }
 }
 public void setPowerManual(double power)
