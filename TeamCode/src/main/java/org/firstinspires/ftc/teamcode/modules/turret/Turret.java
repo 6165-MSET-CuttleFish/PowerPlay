@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
-    public static double p = 0.004, i = 0.002, d = 0.00028727;
+    public static double p = 0.0046, i = 0.0042, d = 0.00028727;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
@@ -30,7 +30,7 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-    public static double offset=20.0;
+public static double offset=20.0;
 
     static final int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100;
     public static double closePower = 0.3;
@@ -110,25 +110,29 @@ public class Turret
                 targetPos = encoder.getCurrentPosition();
                 break;
             case RIGHT:
-                targetPos=RIGHT_POS-posAtZero;
+                targetPos=RIGHT_POS/*-posAtZero*/;
                 break;
             case LEFT:
-                targetPos=LEFT_POS-posAtZero;
+                targetPos=LEFT_POS/*-posAtZero*/;
                 break;
             case BACK:
-                targetPos=BACK-posAtZero;
+                targetPos=BACK/*-posAtZero*/;
                 break;
             case ZERO:
-                targetPos=ZERO_POS-posAtZero;
+                targetPos=ZERO_POS/*-posAtZero*/;
                 break;
             case INIT:
-                targetPos=INIT-posAtZero;
+                targetPos=INIT/*-posAtZero*/;
                 break;
             case AUTOALIGN:
                 break;
         }
     }
 
+    public double getTargetPos()
+    {
+        return targetPos;
+    }
     public boolean isBusy()
     {
         if(state==State.IDLE)

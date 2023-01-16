@@ -300,7 +300,9 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
-            telemetry.addData("bla bla ", turret.turretMotor.getTargetPosition());
+            telemetry.addData("bla bla ", turret.getTargetPos());
+            telemetry.addData("HE: ", turret.posAtZero);
+            telemetry.addData("Motor Speeds: ", slides.getOuput());
 
             telemetry.update();
             turret.update();
@@ -309,12 +311,12 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer) {
-            if (transferTimer.milliseconds() > 3000) {
+            if (transferTimer.milliseconds() > 500) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 2000) {
+            } else if (transferTimer.milliseconds() > 200) {
                 turret.setState(Turret.State.BACK);
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             } else if (transferTimer.seconds() > 0) {

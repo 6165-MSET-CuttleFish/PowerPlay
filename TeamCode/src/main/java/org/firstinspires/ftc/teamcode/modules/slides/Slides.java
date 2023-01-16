@@ -20,10 +20,11 @@ public class Slides {
     boolean switchModified=false;
     boolean switchPressed=false;
     public static boolean slidesCheck = false;
+    double output=0;
 
-    public static int HIGH = 2300; //old = 1850
+    public static int HIGH = 2370; //old = 1850
     public static int HIGH_DROP = 2080; //old = 1650
-    public static int MID = 1400; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int MID = 1550; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
     public static int LOW = 650; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
@@ -78,7 +79,7 @@ public class Slides {
                 pidController.setTargetPosition(INTAKE_AUTO);
                 break;
             case BOTTOM:
-                pidController.setTargetPosition(20);
+                pidController.setTargetPosition(0);
                 break;
             case ZERO:
                 slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -91,7 +92,7 @@ public class Slides {
 //                slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
         }
-        double output = pidController.update(slidesRight.getCurrentPosition());
+        output = pidController.update(slidesRight.getCurrentPosition());
 
         slidesRight.setPower(output);
         slidesLeft.setPower(output);
@@ -99,6 +100,11 @@ public class Slides {
 //            slidesLeft.setPower(0);
 //            slidesRight.setPower(0);
 //        }
+    }
+
+    public double getOuput()
+    {
+        return output;
     }
 
     public double secondsSpentInState() {
