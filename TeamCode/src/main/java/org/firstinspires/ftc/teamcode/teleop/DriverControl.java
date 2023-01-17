@@ -302,13 +302,18 @@ public class DriverControl extends LinearOpMode {
             }
             if(autoAlignCheck){
                 if (detector1.getLocation()== Detector.Location.LEFT) {
-                    turret.turretMotor.setPower(-0.2);
+                    turret.turretMotor.setPower(-0.22);
+                    turret.setState(Turret.State.AUTOALIGN);
                 } else if (detector1.getLocation()== Detector.Location.RIGHT) {
-                    turret.turretMotor.setPower(0.2);
+                    turret.turretMotor.setPower(0.22);
+                    turret.setState(Turret.State.AUTOALIGN);
                 }else{
                     turret.turretMotor.setPower(0);
                     turret.setState(Turret.State.IDLE);
                 }
+            }
+            else if(!actuateLeft.wasJustPressed()&&!actuateRight.wasJustPressed()&&!actuateUp.wasJustPressed()&&!reset.wasJustPressed()&&!autoAlignCheck){
+                turret.setState(Turret.State.IDLE);
             }
 
             //manual turret control:
@@ -380,15 +385,17 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("AutoAlign", autoAlignCheck);
+            telemetry.addData("Detector", detector1.getLocation());
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
             telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
-//            telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
+//              telemetry.addData("Ground Intake Sensor", groundIntake.sensorVal());
             telemetry.addData("V4B State: ",fourbar.getState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Slide power", gamepad2.left_stick_y);
             telemetry.addData("Slide power 2", slides.slidesLeft.getPower());
+            //telemetry.addData("Slide LS", slides.slidesLimitSwitch.getState());
             telemetry.update();
 
         }

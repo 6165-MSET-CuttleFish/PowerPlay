@@ -98,7 +98,7 @@ public static double offset=20.0;
 //        }
         //if hall effect then reset pos at zero
         if(hallEffect.getVoltage()-prevHall<-1.0){
-            posAtZero= encoder.getCurrentPosition()+offset;
+            posAtZero= encoder.getCurrentPosition();
         }
         prevHall=hallEffect.getVoltage();
         switch(state)
@@ -110,19 +110,19 @@ public static double offset=20.0;
                 targetPos = encoder.getCurrentPosition();
                 break;
             case RIGHT:
-                targetPos=RIGHT_POS/*-posAtZero*/;
+                targetPos=RIGHT_POS-posAtZero;
                 break;
             case LEFT:
-                targetPos=LEFT_POS/*-posAtZero*/;
+                targetPos=LEFT_POS-posAtZero;
                 break;
             case BACK:
-                targetPos=BACK/*-posAtZero*/;
+                targetPos=BACK-posAtZero;
                 break;
             case ZERO:
-                targetPos=ZERO_POS/*-posAtZero*/;
+                targetPos=ZERO_POS-posAtZero;
                 break;
             case INIT:
-                targetPos=INIT/*-posAtZero*/;
+                targetPos=INIT-posAtZero;
                 break;
             case AUTOALIGN:
                 break;
