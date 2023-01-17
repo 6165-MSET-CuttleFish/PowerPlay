@@ -28,7 +28,7 @@ public class Deposit {
     Slides slides;
     public enum ExtensionState
     {
-        EXTEND, RETRACT
+        EXTEND, RETRACT, SLIGHT
     }
     public enum AngleState
     {
