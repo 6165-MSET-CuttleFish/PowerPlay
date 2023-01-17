@@ -311,14 +311,19 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer) {
-            if (transferTimer.milliseconds() > 500) {
+            if (transferTimer.milliseconds() > 600) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
+
                 }
+                if(cycle==1){
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                }else
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 200) {
+            } else if (transferTimer.milliseconds() > 300) {
                 turret.setState(Turret.State.BACK);
-                deposit.setExtension(Deposit.ExtensionState.EXTEND);
+
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle == 1) {
@@ -329,6 +334,7 @@ public class ASafeDriverControl extends LinearOpMode {
             }
         }
     }
+
 
     public void resetUpdate() {
         if (resetCheck) {
