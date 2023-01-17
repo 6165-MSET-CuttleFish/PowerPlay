@@ -72,7 +72,7 @@ public static double offset=20.0;
         if(state!=State.MANUAL)
         {
             pidController.setTargetPosition(targetPos);
-            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()) * IntertialCompensation.PIDMultiplier(Deposit.rightPos));
         }
     }
 
