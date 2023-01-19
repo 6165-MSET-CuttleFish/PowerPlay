@@ -10,7 +10,7 @@ public class Claw
 {
     //temporary values
     public static double OPEN=0.07;
-    public static double CLOSE=0.7;
+    public static double CLOSE=0.35;
     public static double PARTIAL=0;
 
     Servo claw;
