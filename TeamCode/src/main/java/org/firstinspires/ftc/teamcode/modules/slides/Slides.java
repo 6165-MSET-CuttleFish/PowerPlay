@@ -23,11 +23,11 @@ public class Slides {
     double output=0;
     double posAtZero=0;
 
-    public static int HIGH = 2370; //old = 1850
+    public static int HIGH = 2475; //old = 1850
     public static int HIGH_DROP = 2080; //old = 1650
-    public static int MID = 1550; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int MID = 1600; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
-    public static int LOW = 825; //in inches, low junction is 13.5 inches
+    public static int LOW = 950; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
     public static double p = 0.01, i = 2, d = 0.0002;

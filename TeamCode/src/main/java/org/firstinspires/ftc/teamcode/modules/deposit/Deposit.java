@@ -14,7 +14,7 @@ public class Deposit {
     public static double LZERO = 0.3;
     public static double RZERO = 0.01;
     public static double LVECTORING = 0.21;
-    public static double RVECTORING = 0.18;
+    public static double RVECTORING = 0.2;
     public static double LINTAKE = 0.33;
     public static double RINTAKE = 0.30;
     public static double rightPos = 0;
