@@ -38,7 +38,7 @@ public class RebuildRightSide extends LinearOpMode {
     Turret turret;
     Detector detector1;
     OpenCvWebcam webcam;
-    Pose2d startPose = new Pose2d(-38, 61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     OpenCvCamera camera;

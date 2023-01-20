@@ -234,8 +234,9 @@ public class Robot extends MecanumDrive {
 
 
         slides = new Slides(hardwareMap);
-        fourbar = new vfourb(hardwareMap);
-        intake = new Intake(hardwareMap);
+       // fourbar = new vfourb(hardwareMap);
+        deposit = new Deposit(hardwareMap);
+        claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, teleop);
         groundIntake = new GroundIntake(hardwareMap);
         thread=new HardwareThread(turret, slides, l);
