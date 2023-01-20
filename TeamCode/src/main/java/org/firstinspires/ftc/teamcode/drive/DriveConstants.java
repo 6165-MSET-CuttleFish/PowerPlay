@@ -57,7 +57,7 @@ public class DriveConstants {
      */
 
     public static double kV = 0.0169;
-    public static double kA = 0.0033;
+    public static double kA = 0.0031;
     public static double kStatic = 0.01;
 
 
