@@ -45,8 +45,6 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
-import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
@@ -102,9 +100,7 @@ public class Robot extends MecanumDrive {
         NINJA,
         STRAIGHT
     }
-    public Intake intake;
     public Slides slides;
-    public vfourb fourbar;
     public Turret turret;
     public Deposit deposit;
     public Claw claw;
@@ -234,7 +230,6 @@ public class Robot extends MecanumDrive {
 
 
         slides = new Slides(hardwareMap);
-       // fourbar = new vfourb(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, teleop);
