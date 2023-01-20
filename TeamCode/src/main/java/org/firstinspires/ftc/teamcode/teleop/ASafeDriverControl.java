@@ -140,8 +140,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                -gamepad1.left_stick_x * 0.85,
-                                -gamepad1.right_stick_x * 0.5
+                                -gamepad1.left_stick_x * 0.925,
+                                -gamepad1.right_stick_x * 0.7
                         )
                 );
             } else if (straightMode.getState()) {
@@ -179,17 +179,21 @@ public class ASafeDriverControl extends LinearOpMode {
                     switch (cycleValue) {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
+                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
+                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
+                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
                             slides.setState(Slides.State.HIGH);
                             break;
                     }
@@ -340,11 +344,12 @@ public class ASafeDriverControl extends LinearOpMode {
         if (resetCheck) {
             if (resetTimer.milliseconds() > 500) {
                 slides.setState(Slides.State.BOTTOM);
+                deposit.setAngle(Deposit.AngleState.INTAKE);
                 resetCheck = false;
             } else if (resetTimer.seconds() > 0) {
                 turret.setState(Turret.State.ZERO);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                deposit.setAngle(Deposit.AngleState.INTAKE);
+
                 claw.setState(Claw.State.OPEN);
             }
         }
