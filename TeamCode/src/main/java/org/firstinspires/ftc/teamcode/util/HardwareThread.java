@@ -24,7 +24,7 @@ public class HardwareThread extends Thread
         while(!l.isStopRequested())
         {
             turret.update();
-            //slides.checkLimit();
+            slides.update();
         }
     }
 }
