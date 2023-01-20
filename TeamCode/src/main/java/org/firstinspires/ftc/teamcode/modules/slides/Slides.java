@@ -30,13 +30,19 @@ public class Slides {
     public static int LOW = 950; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
+    public static int CYCLE0 = 800;
+    public static int CYCLE1 = 600;
+    public static int CYCLE2 = 400;
+    public static int CYCLE3 = 200;
+    public static int CYCLE4 = 0;
+
     public static double p = 0.01, i = 2, d = 0.0002;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController = new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4
     }
     public Slides(HardwareMap hardwareMap)
     {
@@ -81,6 +87,21 @@ public class Slides {
                 break;
             case BOTTOM:
                 pidController.setTargetPosition(0+posAtZero);
+                break;
+            case CYCLE0:
+                pidController.setTargetPosition(CYCLE0+posAtZero);
+                break;
+            case CYCLE1:
+                pidController.setTargetPosition(CYCLE1+posAtZero);
+                break;
+            case CYCLE2:
+                pidController.setTargetPosition(CYCLE2+posAtZero);
+                break;
+            case CYCLE3:
+                pidController.setTargetPosition(CYCLE3+posAtZero);
+                break;
+            case CYCLE4:
+                pidController.setTargetPosition(CYCLE4+posAtZero);
                 break;
             case MANUAL:
 //                slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
