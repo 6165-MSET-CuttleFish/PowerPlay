@@ -5,8 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.firstinspires.ftc.teamcode.Robot
+import org.firstinspires.ftc.teamcode.RobotTemp
 
-class BackgroundCR(val r: Robot, val l: LinearOpMode)
+class BackgroundCR(val r: RobotTemp, val l: LinearOpMode)
 {
     fun startHW()
     {

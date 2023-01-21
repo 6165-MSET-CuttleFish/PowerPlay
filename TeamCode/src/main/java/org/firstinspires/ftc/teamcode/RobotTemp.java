@@ -53,6 +53,7 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 import org.firstinspires.ftc.teamcode.util.HardwareThread;
 import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 
@@ -62,8 +63,8 @@ import java.util.List;
 @Config
 public class RobotTemp extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
     public static double LATERAL_MULTIPLIER = .99;
 
 
@@ -101,6 +102,7 @@ public class RobotTemp extends MecanumDrive {
     public Deposit deposit;
     public Claw claw;
     public HardwareThread thread;
+    public BackgroundCR hardware;
     public GroundIntake groundIntake;
     public Camera camera;
     public boolean isOdoRaised = false;
@@ -121,10 +123,10 @@ public class RobotTemp extends MecanumDrive {
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
-
-        thread=new HardwareThread(turret, slides, l);
-        thread.start();
-
+        hardware=new BackgroundCR(this, l);
+//        thread=new HardwareThread(turret, slides, l);
+//        thread.start();
+        hardware.startHW();
 
         groundIntake = new GroundIntake(hardwareMap);
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 @Autonomous
 public class RebuildRightSide extends LinearOpMode {
     ElapsedTime t;
-    Robot robot;
+    RobotTemp robot;
     Slides slides;
     Claw claw;
     Deposit deposit;
@@ -38,7 +39,7 @@ public class RebuildRightSide extends LinearOpMode {
     Turret turret;
     Detector detector1;
     OpenCvWebcam webcam;
-    Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
     double timer = 0;
     int cycle = 0;
     OpenCvCamera camera;
@@ -60,12 +61,11 @@ public class RebuildRightSide extends LinearOpMode {
     double tagsize = 0.166;
 
     AprilTagDetection tagOfInterest = null;
-
     @Override
 
     public void runOpMode() throws InterruptedException {
         t = new ElapsedTime();
-        robot = new Robot(this);
+        robot = new RobotTemp(this);
         deposit = robot.deposit;
         claw = robot.claw;
         slides = robot.slides;
@@ -77,8 +77,7 @@ public class RebuildRightSide extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 200 < timer) {
-        }
+
 
         //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
@@ -174,92 +173,40 @@ public class RebuildRightSide extends LinearOpMode {
                 })
 
                 .lineToConstantHeading(new Vector2d(-60, 11.98)).build();
-        /*Trajectory cycleIntake = robot.trajectoryBuilder(preload3.end())
-                        .lineToConstantHeading(new Vector2d(-48,10))
-                                .build();*/
-        //robot.thread.run();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-        //FtcDashboard dashboard = FtcDashboard.getInstance();
-        camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
-        //dashboard.startCameraStream(webcam, 30);
-        telemetry.setMsTransmissionInterval(50);
-
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
-        TelemetryPacket packet = new TelemetryPacket();
-        while (!isStarted() && !isStopRequested()) {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-            telemetry.addLine(String.format("detections", currentDetections.size()));
-            if (currentDetections.size() > 0) {
-                tagToTelemetry(currentDetections.get(0));
-                tagOfInterest = currentDetections.get(0);
-            }
-            //dashboard.sendTelemetryPacket(packet);
-            telemetry.update();
-            sleep(20);
-        }
-
-        if (tagOfInterest != null) {
-
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        } else {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-
-        /* Actually do something useful */
-        if (tagOfInterest == null) {
-            /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
-             */
-        } else {
-
-            if (tagOfInterest.id == 4) {
-                x = 1;
-            } else if (tagOfInterest.id == 7) {
-                x = 2;
-            } else if (tagOfInterest.id == 8) {
+      waitForStart();
                 x = 3;
-            }
-        }
         if (isStopRequested()) return;
         timer = System.currentTimeMillis();
         //preload
         robot.setPoseEstimate(startPose);
         claw.setState(Claw.State.CLOSE);
-        wait(500);
+        t.reset();
+        while(t.milliseconds()<500){
+
+        }
 
         robot.followTrajectory(preload1);
         robot.followTrajectory(preload2);
         claw.setState(Claw.State.OPEN);
-        wait(500);
+        t.reset();
+        while(t.milliseconds()<500){
+
+        }
 
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        wait(500);
+        t.reset();
+        while(t.milliseconds()<500){
+
+        }
 
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        wait(500);
+        t.reset();
+        while(t.milliseconds()<500){
+
+        }
 
         //park
 
