@@ -91,7 +91,7 @@ public class RebuildRightSide extends LinearOpMode {
                 })
                 .addTemporalMarker(0.6, () -> {
                    // deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                    slides.setState(Slides.State.HIGH);
+                //    slides.setState(Slides.State.HIGH);
                 })
                 .build();
 

@@ -126,7 +126,7 @@ public class RobotTemp extends MecanumDrive {
         hardware=new BackgroundCR(this, l);
 //        thread=new HardwareThread(turret, slides, l);
 //        thread.start();
-        hardware.startHW();
+
 
         groundIntake = new GroundIntake(hardwareMap);
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
@@ -201,7 +201,7 @@ public class RobotTemp extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
+        hardware.startHW();
 
     }
 
@@ -265,15 +265,21 @@ public class RobotTemp extends MecanumDrive {
     }
 
     public void update() {
+
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
+
     }
 
     public void waitForIdle() {
-        while (!Thread.currentThread().isInterrupted() && isBusy())
+        while (!Thread.currentThread().isInterrupted() && isBusy()) {
+            turret.update();
+            slides.update();
             update();
+        }
     }
+
 
     public boolean isBusy() {
         return trajectorySequenceRunner.isBusy();
