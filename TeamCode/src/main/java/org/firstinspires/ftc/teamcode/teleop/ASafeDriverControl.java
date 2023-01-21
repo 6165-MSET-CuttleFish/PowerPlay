@@ -140,8 +140,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 robot.setWeightedDrivePower(
                         new Pose2d(
                                 -gamepad1.left_stick_y * 0.5,
-                                -gamepad1.left_stick_x * 0.925,
-                                -gamepad1.right_stick_x * 0.7
+                                -gamepad1.left_stick_x * 0.875,
+                                -gamepad1.right_stick_x * 0.6
                         )
                 );
             } else if (straightMode.getState()) {
@@ -307,6 +307,8 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("bla bla ", turret.getTargetPos());
             telemetry.addData("HE: ", turret.posAtZero);
             telemetry.addData("Motor Speeds: ", slides.getOuput());
+//            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
+
 
             telemetry.update();
             turret.update();
@@ -315,17 +317,16 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer) {
-            if (transferTimer.milliseconds() > 600) {
+            if (transferTimer.milliseconds() > 400) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
-
                 }
                 if(cycle==1){
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 }else
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300) {
+            } else if (transferTimer.milliseconds() > 200) {
                 turret.setState(Turret.State.BACK);
 
             } else if (transferTimer.seconds() > 0) {
@@ -344,12 +345,11 @@ public class ASafeDriverControl extends LinearOpMode {
         if (resetCheck) {
             if (resetTimer.milliseconds() > 500) {
                 slides.setState(Slides.State.BOTTOM);
-                deposit.setAngle(Deposit.AngleState.INTAKE);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 resetCheck = false;
             } else if (resetTimer.seconds() > 0) {
                 turret.setState(Turret.State.ZERO);
-                deposit.setExtension(Deposit.ExtensionState.RETRACT);
-
+                deposit.setAngle(Deposit.AngleState.INTAKE);
                 claw.setState(Claw.State.OPEN);
             }
         }

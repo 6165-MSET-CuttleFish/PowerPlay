@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class GroundIntake
 {
     //temporary values
-    static final double INTAKING = 1;
-    static final double REVERSE = -1;
+    static final double INTAKING = .7;
+    static final double REVERSE = -.7;
     static final double OFF = 0;
     boolean runningTrigger = false;
     boolean temp2 = false;

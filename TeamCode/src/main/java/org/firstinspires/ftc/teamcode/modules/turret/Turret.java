@@ -97,10 +97,10 @@ public static double offset=20.0;
 //            posAtZero=/*some value based on where limit switch clicks*/0;
 //        }
         //if hall effect then reset pos at zero
-        if(hallEffect.getVoltage()-prevHall<-1.0){
-            posAtZero= encoder.getCurrentPosition();
-        }
-        prevHall=hallEffect.getVoltage();
+//        if(hallEffect.getVoltage()-prevHall<-1.0){
+//            posAtZero= encoder.getCurrentPosition();
+//        }
+//        prevHall=hallEffect.getVoltage();
         switch(state)
         {
             case MANUAL:

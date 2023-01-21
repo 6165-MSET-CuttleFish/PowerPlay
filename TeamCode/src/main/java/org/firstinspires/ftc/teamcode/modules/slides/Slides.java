@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules.slides;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.teamcode.util.BPIDFController;
 @Config
 public class Slides {
     public DcMotorEx slidesLeft, slidesRight;
-    DigitalChannel slidesLimitSwitch;
+    public AnalogInput slidesLimitSwitch;
     public static ElapsedTime time = new ElapsedTime();
     //slides is 17.5 inches tall
     boolean switchModified=false;
-    boolean switchPressed=false;
+    double switchPressed;
     public static boolean slidesCheck = false;
     double output=0;
     double posAtZero=0;
@@ -48,7 +49,7 @@ public class Slides {
     {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
+        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
         slidesRight.setDirection(DcMotorEx.Direction.REVERSE);
         slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -122,23 +123,20 @@ public class Slides {
     {
         return output;
     }
-
+//4088189800
     public double secondsSpentInState() {
         return time.seconds();
 }
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-public void checkLimit()
-{
-    switchPressed=slidesLimitSwitch.getState();
-    if(switchPressed)
-    {
-        posAtZero=slidesRight.getCurrentPosition();
+    public void checkLimit() {
+        switchPressed = slidesLimitSwitch.getVoltage();
+        if(switchPressed > 0) {
+            posAtZero=slidesRight.getCurrentPosition();
+        }
     }
-}
-public void setPowerManual(double power)
-{
+public void setPowerManual(double power) {
     /*if(switchPressed&&power<0)
     {
         power = 0;

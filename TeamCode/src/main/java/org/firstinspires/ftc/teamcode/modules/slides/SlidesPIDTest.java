@@ -49,7 +49,7 @@ public class SlidesPIDTest extends LinearOpMode {
             telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
             telemetry.addData("currentPower: ", slides.slidesLeft.getPower());
-            telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getState());
+            telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getVoltage());
 
             telemetry.update();
         }

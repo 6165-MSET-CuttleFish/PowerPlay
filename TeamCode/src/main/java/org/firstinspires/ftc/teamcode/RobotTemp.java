@@ -32,6 +32,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -88,7 +89,7 @@ public class RobotTemp extends MecanumDrive {
     //public final CRServo  groundLeft, groundRight;
     public Servo midOdo, sideOdo;
     public List<DcMotorEx> motors;
-    public DigitalChannel slidesLimitSwitch;
+    public AnalogInput slidesLimitSwitch;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
@@ -129,7 +130,7 @@ public class RobotTemp extends MecanumDrive {
 
 
         groundIntake = new GroundIntake(hardwareMap);
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "slidesLimitSwitch");
+        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
