@@ -25,7 +25,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 
-@Autonomous
+//@Autonomous
 public class RightSideAuto extends LinearOpMode {
     ElapsedTime t;
     Robot robot;
