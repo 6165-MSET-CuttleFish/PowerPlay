@@ -30,13 +30,13 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-public static double offset=20.0;
+public static double offset=-0.0;
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3152;
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200, RIGHT_SIDE_HIGH = -3152;
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
-    public static double posAtZero=0;
+    public static double posAtZero=5;
     double prevHall=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
@@ -92,15 +92,11 @@ public static double offset=20.0;
     private void updateTarget()
     {
 
-//        if(limit.isPressed())
-//        {
-//            posAtZero=/*some value based on where limit switch clicks*/0;
-//        }
         //if hall effect then reset pos at zero
-//        if(hallEffect.getVoltage()-prevHall<-1.0){
-//            posAtZero= encoder.getCurrentPosition();
-//        }
-//        prevHall=hallEffect.getVoltage();
+        if(hallEffect.getVoltage()-prevHall<-1.0){
+            posAtZero= encoder.getCurrentPosition()+offset;
+        }
+        prevHall=hallEffect.getVoltage();
         switch(state)
         {
             case MANUAL:
