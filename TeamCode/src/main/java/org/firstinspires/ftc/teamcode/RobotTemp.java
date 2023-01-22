@@ -69,7 +69,7 @@ public class RobotTemp extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double odomServoPos = 0.3, sideOdomServoPos = 0;
+    public static double odomServoPos = 0, sideOdomServoPos = 0.6;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;

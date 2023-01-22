@@ -126,7 +126,8 @@ public class ASafeDriverControl extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
-        robot.midOdo.setPosition(0);
+//        robot.midOdo.setPosition(0.3);
+//        robot.sideOdo.setPosition(0);
         turret.setState(Turret.State.ZERO);
         while (opModeIsActive()) {
             slides.update();
