@@ -283,7 +283,7 @@ public class Robot extends MecanumDrive {
 
 
         odoRaise = hardwareMap.get(Servo.class, "midOdom");
-        odoRaise.setPosition(odomServoPos);
+//        odoRaise.setPosition(odomServoPos);
         groundLeft = hardwareMap.get(CRServo.class, "gl");
         groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;

@@ -64,12 +64,12 @@ import java.util.List;
 @Config
 public class RobotTemp extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 1);
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double odomServoPos = 0.32, sideOdomServoPos = 0.32;
+    public static double odomServoPos = 0.3, sideOdomServoPos = 0;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
@@ -127,6 +127,7 @@ public class RobotTemp extends MecanumDrive {
         hardware=new BackgroundCR(this, l);
 //        thread=new HardwareThread(turret, slides, l);
 //        thread.start();
+        hardware.startHW();
 
 
         groundIntake = new GroundIntake(hardwareMap);
@@ -202,7 +203,6 @@ public class RobotTemp extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-        hardware.startHW();
 
     }
     public RobotTemp(LinearOpMode l, boolean coroutine) {
@@ -354,11 +354,9 @@ public class RobotTemp extends MecanumDrive {
     }
 
     public void update() {
-
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
-
     }
 
     public void waitForIdle() {

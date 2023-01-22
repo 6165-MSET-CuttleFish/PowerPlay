@@ -5,23 +5,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.RobotTemp;
 
 @TeleOp
 public class Turret2Test extends LinearOpMode
 {
     Turret turret;
-    Robot robot;
-    vfourb fourbar;
+    RobotTemp robot;
     ElapsedTime timer;
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot=new Robot(this, false);
+        robot=new RobotTemp(this);
         turret=robot.turret;
-        fourbar = robot.fourbar;
         timer=new ElapsedTime();
-        fourbar.setState(vfourb.State.PRIMED);
 
         while(!isStarted())
         {

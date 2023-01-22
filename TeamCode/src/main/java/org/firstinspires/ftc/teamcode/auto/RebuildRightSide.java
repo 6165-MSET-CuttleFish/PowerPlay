@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -80,24 +82,26 @@ public class RebuildRightSide extends LinearOpMode {
 
 
         //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION
-        Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-35,15))
+        TrajectorySequence preload1 = robot.trajectorySequenceBuilder(startPose)
+                .lineToConstantHeading(new Vector2d(-35,18))
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.VECTORING);
-                    slides.setState(Slides.State.MID);
+                    slides.setState(Slides.State.HIGH);
                 })
                 .addTemporalMarker(0.3, () -> {
                     turret.setState(Turret.State.BACK);
                 })
-                .addTemporalMarker(0.6, () -> {
-                   // deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                //    slides.setState(Slides.State.HIGH);
-                })
                 .build();
 
         //RESET EVERYTHING, MOVE TO STACK, READY FOR PICK UP
-        Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-31,7,Math.toRadians(135)))
+        TrajectorySequence preload2 = robot.trajectorySequenceBuilder(preload1.end())
+                .lineToLinearHeading(new Pose2d(-33,10, Math.toRadians(135)))
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(1.75, () -> {
+                    claw.setState(Claw.State.OPEN);
+                })
                 .build();
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory goToStack = robot.trajectoryBuilder(preload2.end())
@@ -185,28 +189,28 @@ public class RebuildRightSide extends LinearOpMode {
 
         }
 
-        robot.followTrajectory(preload1);
-        robot.followTrajectory(preload2);
-        claw.setState(Claw.State.OPEN);
-        t.reset();
-        while(t.milliseconds()<500){
-
-        }
-
-        robot.followTrajectory(goToStack);
-        cycle++;
-        claw.setState(Claw.State.CLOSE);
-        t.reset();
-        while(t.milliseconds()<500){
-
-        }
-
-        robot.followTrajectory(cycleDropOff);
-        claw.setState(Claw.State.OPEN);
-        t.reset();
-        while(t.milliseconds()<500){
-
-        }
+        robot.followTrajectorySequence(preload1);
+        robot.followTrajectorySequence(preload2);
+//        claw.setState(Claw.State.OPEN);
+//        t.reset();
+//        while(t.milliseconds()<500){
+//
+//        }
+//
+//        robot.followTrajectory(goToStack);
+//        cycle++;
+//        claw.setState(Claw.State.CLOSE);
+//        t.reset();
+//        while(t.milliseconds()<500){
+//
+//        }
+//
+//        robot.followTrajectory(cycleDropOff);
+//        claw.setState(Claw.State.OPEN);
+//        t.reset();
+//        while(t.milliseconds()<500){
+//
+//        }
 
         //park
 
