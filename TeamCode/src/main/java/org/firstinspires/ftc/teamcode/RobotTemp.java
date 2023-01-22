@@ -124,7 +124,7 @@ public class RobotTemp extends MecanumDrive {
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
-        hardware=new BackgroundCR(this, l);
+        hardware=new BackgroundCR(turret, slides);
 //        thread=new HardwareThread(turret, slides, l);
 //        thread.start();
         hardware.startHW();
