@@ -355,14 +355,14 @@ public class RobotTemp extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
+        turret.update();
+        slides.update();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
 
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
-            turret.update();
-            slides.update();
             update();
         }
     }

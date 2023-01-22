@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -29,7 +30,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
-
+@Config
 @Autonomous
 public class RebuildRightSide extends LinearOpMode {
     ElapsedTime t;
@@ -41,7 +42,14 @@ public class RebuildRightSide extends LinearOpMode {
     Turret turret;
     Detector detector1;
     OpenCvWebcam webcam;
-    Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
+    static public Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
+    public static Pose2d pre2 = new Pose2d(-33,10, Math.toRadians(135));
+    public static Vector2d pre1 = new Vector2d(-35,18);
+    public static Vector2d stackPos =new Vector2d(-60, 12);
+    public static double stackAngle = Math.toRadians(180);
+    public static Vector2d dropPos =new Vector2d(-31, 7);
+    public static double dropAngle = Math.toRadians(315);
+
     double timer = 0;
     int cycle = 0;
     OpenCvCamera camera;
@@ -50,7 +58,7 @@ public class RebuildRightSide extends LinearOpMode {
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
-    // UNITS ARE PIXELS
+     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
     int x = 1;
@@ -83,7 +91,7 @@ public class RebuildRightSide extends LinearOpMode {
 
         //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION
         TrajectorySequence preload1 = robot.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-35,18))
+                .lineToConstantHeading(pre1)
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                     slides.setState(Slides.State.HIGH);
@@ -95,17 +103,11 @@ public class RebuildRightSide extends LinearOpMode {
 
         //RESET EVERYTHING, MOVE TO STACK, READY FOR PICK UP
         TrajectorySequence preload2 = robot.trajectorySequenceBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-33,10, Math.toRadians(135)))
-                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(1.75, () -> {
-                    claw.setState(Claw.State.OPEN);
-                })
+                .lineToLinearHeading(pre2)
                 .build();
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory goToStack = robot.trajectoryBuilder(preload2.end())
-                .splineTo(new Vector2d(-60, 12),Math.toRadians(180))
+                .splineTo(stackPos,stackAngle)
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     turret.setState(Turret.State.ZERO);
@@ -130,7 +132,7 @@ public class RebuildRightSide extends LinearOpMode {
 
                 .build();
         Trajectory cycleDropOff = robot.trajectoryBuilder(goToStack.end(), true)
-                .splineTo(new Vector2d(-31, 7),Math.toRadians(315))
+                .splineTo(dropPos,dropAngle)
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                     slides.setState(Slides.State.MID);
@@ -153,8 +155,8 @@ public class RebuildRightSide extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
 
                 })
-
-                .lineToConstantHeading(new Vector2d(-13, 11.98)).build();
+                .lineToConstantHeading(new Vector2d(-13, 11.98))
+                .build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDropOff.end())
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -184,33 +186,19 @@ public class RebuildRightSide extends LinearOpMode {
         //preload
         robot.setPoseEstimate(startPose);
         claw.setState(Claw.State.CLOSE);
-        t.reset();
-        while(t.milliseconds()<500){
-
-        }
-
+        waitTime(500);
         robot.followTrajectorySequence(preload1);
         robot.followTrajectorySequence(preload2);
-//        claw.setState(Claw.State.OPEN);
-//        t.reset();
-//        while(t.milliseconds()<500){
-//
-//        }
-//
-//        robot.followTrajectory(goToStack);
-//        cycle++;
-//        claw.setState(Claw.State.CLOSE);
-//        t.reset();
-//        while(t.milliseconds()<500){
-//
-//        }
-//
-//        robot.followTrajectory(cycleDropOff);
-//        claw.setState(Claw.State.OPEN);
-//        t.reset();
-//        while(t.milliseconds()<500){
-//
-//        }
+        claw.setState(Claw.State.OPEN);
+        waitTime(500);
+        robot.followTrajectory(goToStack);
+        cycle++;
+        claw.setState(Claw.State.CLOSE);
+        waitTime(500);
+        robot.followTrajectory(cycleDropOff);
+        claw.setState(Claw.State.OPEN);
+        t.reset();
+        waitTime(500);
 
         //park
 
@@ -240,7 +228,12 @@ public class RebuildRightSide extends LinearOpMode {
         robot.followTrajectory(cycleIntakeLow);*/
     }
     //if(isStopRequested()) return;
-
+    public void waitTime(int ms){
+        t.reset();
+        while(t.milliseconds()<ms){
+            robot.update();
+        }
+    }
     void tagToTelemetry(AprilTagDetection detection)
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
