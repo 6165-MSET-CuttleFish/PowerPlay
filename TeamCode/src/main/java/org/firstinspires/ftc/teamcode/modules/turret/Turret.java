@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
-    public static double p = 0.0053, i = 0.0047, d = 0.00025727;
+    public static double p = 0.0043, i = 0.0041, d = 0.00025727;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
@@ -32,7 +32,7 @@ public class Turret
 
 public static double offset=20.0;
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = 3052;
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3152;
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
@@ -123,6 +123,7 @@ public static double offset=20.0;
                 break;
             case RIGHT_SIDE_HIGH:
                 targetPos=RIGHT_SIDE_HIGH;
+                break;
             case INIT:
                 targetPos=INIT-posAtZero;
                 break;
