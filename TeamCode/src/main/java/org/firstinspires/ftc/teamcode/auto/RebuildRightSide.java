@@ -43,11 +43,11 @@ public class RebuildRightSide extends LinearOpMode {
     Detector detector1;
     OpenCvWebcam webcam;
     static public Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
-    public static Pose2d pre2 = new Pose2d(-33,10, Math.toRadians(135));
+    public static Pose2d pre2 = new Pose2d(-28,5, Math.toRadians(135));
     public static Vector2d pre1 = new Vector2d(-35,18);
-    public static Vector2d stackPos =new Vector2d(-60, 12);
+    public static Vector2d stackPos =new Vector2d(-58, 10);
     public static double stackAngle = Math.toRadians(180);
-    public static Vector2d dropPos =new Vector2d(-31, 7);
+    public static Vector2d dropPos =new Vector2d(-28, 5);
     public static double dropAngle = Math.toRadians(315);
 
     double timer = 0;
@@ -93,8 +93,8 @@ public class RebuildRightSide extends LinearOpMode {
         TrajectorySequence preload1 = robot.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(pre1)
                 .addTemporalMarker(0, () -> {
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
-                    slides.setState(Slides.State.HIGH);
+                    deposit.setAngle(Deposit.AngleState.X);
+                    slides.setState(Slides.State.HIGH_DROP);
                 })
                 .addTemporalMarker(0.3, () -> {
                     turret.setState(Turret.State.BACK);
@@ -107,7 +107,7 @@ public class RebuildRightSide extends LinearOpMode {
                 .build();
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory goToStack = robot.trajectoryBuilder(preload2.end())
-                .splineTo(stackPos,stackAngle)
+                .splineTo(stackPos,stackAngle,robot.getVelocityConstraint(40,5.939,13.44),robot.getAccelerationConstraint(40))
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     turret.setState(Turret.State.ZERO);
@@ -142,7 +142,7 @@ public class RebuildRightSide extends LinearOpMode {
                 })
                 .addTemporalMarker(0.6, () -> {
                     // deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                    slides.setState(Slides.State.HIGH);
+                    slides.setState(Slides.State.HIGH_DROP);
                 })
                 .build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDropOff.end())
@@ -197,7 +197,34 @@ public class RebuildRightSide extends LinearOpMode {
         waitTime(500);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        t.reset();
+        waitTime(500);
+        robot.followTrajectory(goToStack);
+        cycle++;
+        claw.setState(Claw.State.CLOSE);
+        waitTime(500);
+        robot.followTrajectory(cycleDropOff);
+        claw.setState(Claw.State.OPEN);
+        waitTime(500);
+        robot.followTrajectory(goToStack);
+        cycle++;
+        claw.setState(Claw.State.CLOSE);
+        waitTime(500);
+        robot.followTrajectory(cycleDropOff);
+        claw.setState(Claw.State.OPEN);
+        waitTime(500);
+        robot.followTrajectory(goToStack);
+        cycle++;
+        claw.setState(Claw.State.CLOSE);
+        waitTime(500);
+        robot.followTrajectory(cycleDropOff);
+        claw.setState(Claw.State.OPEN);
+        waitTime(500);
+        robot.followTrajectory(goToStack);
+        cycle++;
+        claw.setState(Claw.State.CLOSE);
+        waitTime(500);
+        robot.followTrajectory(cycleDropOff);
+        claw.setState(Claw.State.OPEN);
         waitTime(500);
 
         //park
@@ -231,7 +258,8 @@ public class RebuildRightSide extends LinearOpMode {
     public void waitTime(int ms){
         t.reset();
         while(t.milliseconds()<ms){
-            robot.update();
+            turret.update();
+            slides.update();
         }
     }
     void tagToTelemetry(AprilTagDetection detection)

@@ -69,7 +69,7 @@ public class RobotTemp extends MecanumDrive {
     public static double LATERAL_MULTIPLIER = .99;
 
 
-    public static double odomServoPos = 0, sideOdomServoPos = 0.6;
+    public static double odomServoPos = 0.3, sideOdomServoPos = 0;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
@@ -124,10 +124,10 @@ public class RobotTemp extends MecanumDrive {
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
-        hardware=new BackgroundCR(this, l);
-//        thread=new HardwareThread(turret, slides, l);
-//        thread.start();
-        hardware.startHW();
+//        hardware=new BackgroundCR(this, l);
+////        thread=new HardwareThread(turret, slides, l);
+////        thread.start();
+//        hardware.startHW();
 
 
         groundIntake = new GroundIntake(hardwareMap);
@@ -355,8 +355,7 @@ public class RobotTemp extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
-        turret.update();
-        slides.update();
+
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
@@ -364,6 +363,8 @@ public class RobotTemp extends MecanumDrive {
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
             update();
+            turret.update();
+            slides.update();
         }
     }
 
