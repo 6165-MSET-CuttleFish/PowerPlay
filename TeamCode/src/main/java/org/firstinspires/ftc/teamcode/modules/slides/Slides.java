@@ -31,7 +31,7 @@ public class Slides {
     public static int LOW = 920; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
-    public static int CYCLE0 = 300;
+    public static int CYCLE0 = 450;
     public static int CYCLE1 = 600;
     public static int CYCLE2 = 400;
     public static int CYCLE3 = 200;
