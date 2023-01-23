@@ -15,6 +15,8 @@ public class Deposit {
     public static double RZERO = 0.01;
     public static double LVECTORING = 0.21;
     public static double RVECTORING = 0.2;
+    public static double LVECTORINGX = 0.22;
+    public static double RVECTORINGX = 0.21;
     public static double LINTAKE = 0.33;
     public static double RINTAKE = 0.30;
     public static double rightPos = 0;
@@ -32,7 +34,7 @@ public class Deposit {
     }
     public enum AngleState
     {
-        VECTORING, INTAKE
+        VECTORING, INTAKE,X
     }
 
     public Deposit(HardwareMap hardwareMap) {
@@ -66,6 +68,10 @@ public class Deposit {
             case INTAKE:
                 leftAngular.setPosition(LINTAKE);
                 rightAngular.setPosition(RINTAKE);
+                break;
+            case X:
+                leftAngular.setPosition(LVECTORINGX);
+                rightAngular.setPosition(RVECTORINGX);
                 break;
         }
         rightPos = rightExtension.getPosition();
