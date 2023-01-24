@@ -17,10 +17,10 @@ public class HSTest extends OpMode {
 
     @Override
     public void init() {
-        lA = hardwareMap.get(Servo.class, "lAngler");
-        rA = hardwareMap.get(Servo.class, "rAngler");
-        lE = hardwareMap.get(Servo.class, "lExtension");
-        rE = hardwareMap.get(Servo.class, "rExtension");
+        lA = hardwareMap.get(Servo.class, "lAng");
+        rA = hardwareMap.get(Servo.class, "rAng");
+        lE = hardwareMap.get(Servo.class, "lExt");
+        rE = hardwareMap.get(Servo.class, "rExt");
     }
 
     @Override
