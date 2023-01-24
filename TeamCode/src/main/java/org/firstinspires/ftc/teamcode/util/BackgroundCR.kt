@@ -12,35 +12,41 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret
 
 class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, val dashboard: FtcDashboard, val packet: TelemetryPacket)
 {
+    var counter: Int=0;
+    var counter2: Int=0;
+
     fun startHW()
     {
-        val job = GlobalScope.launch(Dispatchers.Main)
+        val job = GlobalScope.launch(Dispatchers.Default)
         {
-            while(isActive)
+            while(!l.isStopRequested)
             {
-                l.telemetry.addData("Slides: ", "Updating");
+                l.telemetry.addData("Slides: ", slides.slidesLeft.power);
                 l.telemetry.update();
 
-                packet.put("Slides", "Updating")
+                packet.put("Slides", slides.slidesLeft.power)
                 dashboard.sendTelemetryPacket(packet)
 
                 slides.update()
-                delay(100)
+                turret.update()
+
+                //counter++
+                delay(10)
             }
         }
 
-        val job2=GlobalScope.launch(Dispatchers.Main)
+        /*val job2=GlobalScope.launch(Dispatchers.Main)
         {
-            while(isActive)
+            while(true)
             {
-                l.telemetry.addData("Turret: ", "Updating");
+                l.telemetry.addData("Turret: ", counter2);
                 l.telemetry.update();
 
-                packet.put("Turret", "Updating")
+                packet.put("Turret", counter2)
                 dashboard.sendTelemetryPacket(packet)
 
-                turret.update()
-                delay(100)
+                counter++;
+                delay(50)
             }
         }
 
@@ -48,10 +54,10 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
         {
             while(!l.isStopRequested)
             {
-                delay(100)
+                delay(50)
             }
             //job.cancel()
             //job2.cancel()
-        }
+        }*/
     }
 }

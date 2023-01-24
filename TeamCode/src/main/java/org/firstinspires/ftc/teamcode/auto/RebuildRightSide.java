@@ -47,11 +47,11 @@ public class RebuildRightSide extends LinearOpMode {
     Detector detector1;
     OpenCvWebcam webcam;
     static public Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
-    public static Pose2d pre2 = new Pose2d(-28,5, Math.toRadians(135));
+    public static Pose2d pre2 = new Pose2d(-27.5,5, Math.toRadians(135));
     public static Vector2d pre1 = new Vector2d(-35,18);
-    public static Vector2d stackPos =new Vector2d(-58, 10);
+    public static Vector2d stackPos =new Vector2d(-59.25, 10);
     public static double stackAngle = Math.toRadians(180);
-    public static Vector2d dropPos =new Vector2d(-28, 5);
+    public static Vector2d dropPos =new Vector2d(-27.5, 5);
     public static double dropAngle = Math.toRadians(315);
 
     double timer = 0;
@@ -116,7 +116,7 @@ public class RebuildRightSide extends LinearOpMode {
                 .build();
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory goToStack = robot.trajectoryBuilder(preload2.end())
-                .splineTo(stackPos,stackAngle,robot.getVelocityConstraint(40,5.939,13.44),robot.getAccelerationConstraint(60))
+                .splineTo(stackPos,stackAngle,robot.getVelocityConstraint(40,5.939,13.44),robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     turret.setState(Turret.State.ZERO);
@@ -267,7 +267,8 @@ public class RebuildRightSide extends LinearOpMode {
     public void waitTime(int ms){
         t.reset();
         while(t.milliseconds()<ms){
-
+            slides.update();
+            turret.update();
         }
     }
     void tagToTelemetry(AprilTagDetection detection)
