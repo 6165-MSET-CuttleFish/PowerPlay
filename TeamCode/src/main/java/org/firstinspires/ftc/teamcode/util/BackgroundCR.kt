@@ -25,7 +25,7 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
                 dashboard.sendTelemetryPacket(packet)
 
                 slides.update()
-                delay(30)
+                delay(100)
             }
         }
 
@@ -40,7 +40,7 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
                 dashboard.sendTelemetryPacket(packet)
 
                 turret.update()
-                delay(30)
+                delay(100)
             }
         }
 
@@ -48,10 +48,10 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
         {
             while(!l.isStopRequested)
             {
-                delay(5)
+                delay(100)
             }
-            job.cancel()
-            job2.cancel()
+            //job.cancel()
+            //job2.cancel()
         }
     }
 }

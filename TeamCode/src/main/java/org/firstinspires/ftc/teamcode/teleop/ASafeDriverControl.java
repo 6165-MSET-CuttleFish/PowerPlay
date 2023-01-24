@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
 @TeleOp
 @Config
@@ -35,6 +36,7 @@ public class ASafeDriverControl extends LinearOpMode {
     GroundIntake groundIntake;
     Claw claw;
     Turret turret;
+    BackgroundCR hardware;
     GamepadEx primary, secondary;
     boolean transfer = false;
     boolean resetCheck = false;
@@ -71,6 +73,8 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),

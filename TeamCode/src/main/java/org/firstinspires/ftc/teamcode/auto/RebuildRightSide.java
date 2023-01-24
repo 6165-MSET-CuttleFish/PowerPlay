@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -40,6 +42,8 @@ public class RebuildRightSide extends LinearOpMode {
     Deposit deposit;
     GroundIntake groundIntake;
     Turret turret;
+    BackgroundCR hardware;
+    TelemetryPacket packet;
     Detector detector1;
     OpenCvWebcam webcam;
     static public Pose2d startPose = new Pose2d(-35, 61, Math.toRadians(-90));
@@ -87,6 +91,11 @@ public class RebuildRightSide extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+
+        packet=new TelemetryPacket();
+        hardware=new BackgroundCR(turret, slides, this, FtcDashboard.getInstance(), packet);
+        hardware.startHW();
+
 
 
         //MOVE TO MID JUNCTION, ACTUATE AND DEPOSIT ON MID JUNCTION

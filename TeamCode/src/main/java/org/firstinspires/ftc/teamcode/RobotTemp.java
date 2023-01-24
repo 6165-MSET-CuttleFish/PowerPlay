@@ -134,11 +134,11 @@ public class RobotTemp extends MecanumDrive {
 ////        thread=new HardwareThread(turret, slides, l);
 ////        thread.start();
 //        hardware.startHW();
-        packet=new TelemetryPacket();
-        hardware=new BackgroundCR(turret, slides, l, FtcDashboard.getInstance(), packet);
+        //packet=new TelemetryPacket();
+        //hardware=new BackgroundCR(turret, slides, l, FtcDashboard.getInstance(), packet);
 //        thread=new HardwareThread(turret, slides, l);
 //        thread.start();
-        hardware.startHW();
+        //hardware.startHW();
 
 
         groundIntake = new GroundIntake(hardwareMap);
