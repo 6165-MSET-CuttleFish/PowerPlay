@@ -130,18 +130,15 @@ public class RobotTemp extends MecanumDrive {
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
-<<<<<<< Updated upstream
 //        hardware=new BackgroundCR(this, l);
 ////        thread=new HardwareThread(turret, slides, l);
 ////        thread.start();
 //        hardware.startHW();
-=======
         packet=new TelemetryPacket();
         hardware=new BackgroundCR(turret, slides, l, FtcDashboard.getInstance(), packet);
 //        thread=new HardwareThread(turret, slides, l);
 //        thread.start();
         hardware.startHW();
->>>>>>> Stashed changes
 
 
         groundIntake = new GroundIntake(hardwareMap);
