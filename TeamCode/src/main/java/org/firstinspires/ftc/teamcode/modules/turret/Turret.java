@@ -32,7 +32,9 @@ public class Turret
 
 public static double offset=-0.0;
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4200, RIGHT_SIDE_HIGH = -3152;
+
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3152, RIGHT_SIDE_HIGH_PRELOAD = -1000;
+
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
@@ -47,7 +49,7 @@ public static double offset=-0.0;
 
     public enum State
     {
-        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK, RIGHT_SIDE_HIGH
+        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK, RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD
     }
 
     public Turret(HardwareMap hardwareMap, boolean teleop)
@@ -118,7 +120,10 @@ public static double offset=-0.0;
                 targetPos=ZERO_POS-posAtZero;
                 break;
             case RIGHT_SIDE_HIGH:
-                targetPos=RIGHT_SIDE_HIGH;
+                targetPos=RIGHT_SIDE_HIGH-posAtZero;
+                break;
+            case RIGHT_SIDE_HIGH_PRELOAD:
+                targetPos = RIGHT_SIDE_HIGH_PRELOAD-posAtZero;
                 break;
             case INIT:
                 targetPos=INIT-posAtZero;

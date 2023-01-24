@@ -36,7 +36,7 @@ public class RightSideMS extends LinearOpMode {
     int cycle = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new RobotTemp(this);
+        robot = new RobotTemp(this, false);
         intake = robot.intake;
         slides = robot.slides;
         groundIntake = robot.groundIntake;
@@ -50,46 +50,39 @@ public class RightSideMS extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
 
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-38, 10))
+                .lineToConstantHeading(new Vector2d(-36.5, 9))
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);})
                 .addTemporalMarker(0.4,()->{
-                    turret.setState(Turret.State.RIGHT_SIDE_HIGH);
+                    turret.setState(Turret.State.RIGHT_SIDE_HIGH_PRELOAD);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
                 })
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                        .lineToLinearHeading(new Pose2d(-35.5,8.5, Math.toRadians(180)))
-                .addTemporalMarker(0,()->{
-
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                        .lineToLinearHeading(new Pose2d(-36.5,9.5, Math.toRadians(180)))
+                .addTemporalMarker(0.1,()->{
+                    turret.setState(Turret.State.ZERO);
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
-                .addTemporalMarker(0.5,()->{
-
+                .addTemporalMarker(0.4,()->{
+                    slides.setState(Slides.State.CYCLE0);
                 })
-
                                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(preload2.end())
                 .lineToConstantHeading(new Vector2d(-55.25, 10),robot.getVelocityConstraint(40, 5.939, 13.44),
                         robot.getAccelerationConstraint(40))
 
-                .addTemporalMarker(0,()->{
-
-                })
-                .addTemporalMarker(0.1,()->{
-                    turret.setState(Turret.State.ZERO);
-                    slides.setState(Slides.State.CYCLE0);
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
-
-                })
-
                         .build();
-        waitForStart();
+        while (!isStarted() && !isStopRequested())
+        {}
+        if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
-        robot.followTrajectory(preload2);
         dropOff();
+        robot.followTrajectory(preload2);
+
         robot.followTrajectory(cycleIntake);
         intake();
     }
