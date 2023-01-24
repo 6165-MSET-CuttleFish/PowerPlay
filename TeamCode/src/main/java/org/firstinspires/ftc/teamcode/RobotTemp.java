@@ -14,7 +14,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
@@ -110,6 +112,7 @@ public class RobotTemp extends MecanumDrive {
     public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
+    public TelemetryPacket packet;
 
     public void setState(driveState state){
         this.state = state;
@@ -119,6 +122,7 @@ public class RobotTemp extends MecanumDrive {
         return state;
     }
     public RobotTemp(LinearOpMode l) {
+
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
 
@@ -126,10 +130,18 @@ public class RobotTemp extends MecanumDrive {
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
+<<<<<<< Updated upstream
 //        hardware=new BackgroundCR(this, l);
 ////        thread=new HardwareThread(turret, slides, l);
 ////        thread.start();
 //        hardware.startHW();
+=======
+        packet=new TelemetryPacket();
+        hardware=new BackgroundCR(turret, slides, l, FtcDashboard.getInstance(), packet);
+//        thread=new HardwareThread(turret, slides, l);
+//        thread.start();
+        hardware.startHW();
+>>>>>>> Stashed changes
 
 
         groundIntake = new GroundIntake(hardwareMap);

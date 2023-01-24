@@ -13,8 +13,6 @@ public class TurretThread extends Thread
         this.l=l;
     }
 
-
-
     @Override
     public void run()
     {
