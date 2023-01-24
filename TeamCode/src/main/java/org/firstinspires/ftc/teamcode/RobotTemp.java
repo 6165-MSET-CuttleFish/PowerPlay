@@ -377,8 +377,7 @@ public class RobotTemp extends MecanumDrive {
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
             update();
-            turret.update();
-            slides.update();
+
         }
     }
 

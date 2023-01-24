@@ -267,8 +267,7 @@ public class RebuildRightSide extends LinearOpMode {
     public void waitTime(int ms){
         t.reset();
         while(t.milliseconds()<ms){
-            turret.update();
-            slides.update();
+
         }
     }
     void tagToTelemetry(AprilTagDetection detection)
