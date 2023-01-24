@@ -16,7 +16,7 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
     {
         val job = GlobalScope.launch(Dispatchers.Main)
         {
-            while(isActive)
+            while(true)
             {
                 l.telemetry.addData("Slides: ", "Updating");
                 l.telemetry.update();
@@ -31,7 +31,7 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
 
         val job2=GlobalScope.launch(Dispatchers.Main)
         {
-            while(isActive)
+            while(true)
             {
                 l.telemetry.addData("Turret: ", "Updating");
                 l.telemetry.update();
