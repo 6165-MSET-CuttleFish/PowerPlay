@@ -94,7 +94,7 @@ public static double offset=-0.0;
 
         //if hall effect then reset pos at zero
         if(hallEffect.getVoltage()-prevHall<-1.0){
-            posAtZero= encoder.getCurrentPosition()+offset;
+         //   posAtZero= encoder.getCurrentPosition()+offset;
         }
         prevHall=hallEffect.getVoltage();
         switch(state)

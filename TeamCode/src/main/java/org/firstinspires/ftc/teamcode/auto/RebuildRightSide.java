@@ -107,7 +107,7 @@ public class RebuildRightSide extends LinearOpMode {
                 .build();
         //MOVE TO MID JUNCTION, ACTUATE AND DROP OFF FIRST CONE
         Trajectory goToStack = robot.trajectoryBuilder(preload2.end())
-                .splineTo(stackPos,stackAngle,robot.getVelocityConstraint(40,5.939,13.44),robot.getAccelerationConstraint(40))
+                .splineTo(stackPos,stackAngle,robot.getVelocityConstraint(40,5.939,13.44),robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     turret.setState(Turret.State.ZERO);
@@ -169,6 +169,7 @@ public class RebuildRightSide extends LinearOpMode {
 
                 .lineToConstantHeading(new Vector2d(-40, 11.98)).build();
         Trajectory endRight = robot.trajectoryBuilder(cycleDropOff.end())
+                .splineTo(stackPos,stackAngle)
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     turret.setState(Turret.State.ZERO);
@@ -177,8 +178,7 @@ public class RebuildRightSide extends LinearOpMode {
 
                     slides.setState(Slides.State.BOTTOM);
                 })
-
-                .lineToConstantHeading(new Vector2d(-60, 11.98)).build();
+                        .build();
       waitForStart();
                 x = 3;
         if (isStopRequested()) return;
@@ -186,47 +186,47 @@ public class RebuildRightSide extends LinearOpMode {
         //preload
         robot.setPoseEstimate(startPose);
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectorySequence(preload1);
         robot.followTrajectorySequence(preload2);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(goToStack);
         cycle++;
         claw.setState(Claw.State.CLOSE);
-        waitTime(500);
+        waitTime(200);
         robot.followTrajectory(cycleDropOff);
         claw.setState(Claw.State.OPEN);
-        waitTime(500);
-
+        waitTime(200);
+        robot.followTrajectory(endRight);
         //park
 
 /*        if (x == 1) {
