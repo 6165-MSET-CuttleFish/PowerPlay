@@ -31,7 +31,7 @@ public class Slides {
     public static int LOW = 920; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
-
+    public static int SLIGHT = 600;
     public static int CYCLE0 = 439+50;
     public static int CYCLE1 = 317+50;
     public static int CYCLE2 = 215+50;
@@ -45,7 +45,7 @@ public class Slides {
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
     public enum State{
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
     public Slides(HardwareMap hardwareMap)
     {
@@ -109,6 +109,9 @@ public class Slides {
             case MANUAL:
 //                slidesRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //                slidesLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                break;
+            case SLIGHT:
+                pidController.setTargetPosition(SLIGHT+posAtZero);
                 break;
         }
         output = pidController.update(slidesRight.getCurrentPosition());

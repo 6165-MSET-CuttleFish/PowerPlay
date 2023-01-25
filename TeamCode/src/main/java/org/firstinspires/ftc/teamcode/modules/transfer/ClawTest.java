@@ -17,33 +17,12 @@ public class ClawTest extends LinearOpMode
 
         time=new ElapsedTime();
         claw=new Claw(hardwareMap);
-
+        claw.setState(Claw.State.OPEN);
         waitForStart();
-
-        claw.update();
-
-        time.reset();
-        while(time.seconds()<3)
-        {
-
-        }
-
-        claw.setState(Claw.State.PARTIAL);
-        claw.update();
-
-        time.reset();
-        while(time.seconds()<3)
-        {
-
-        }
-
-        claw.setState(Claw.State.CLOSE);
-        claw.update();
-
-        time.reset();
-        while(time.seconds()<3)
-        {
-
+        while(opModeIsActive()){
+            claw.update();
+            if(gamepad1.a) claw.setState(Claw.State.OPEN);
+            else if (gamepad1.b) claw.setState(Claw.State.CLOSE);
         }
     }
 }
