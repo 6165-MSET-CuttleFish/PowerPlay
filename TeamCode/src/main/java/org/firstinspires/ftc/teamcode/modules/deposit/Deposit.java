@@ -11,6 +11,8 @@ public class Deposit {
     //temporary values
     public static double LEXTENDED = 0.5;
     public static double REXTENDED = 0.22;
+    public static double LHALF = 0.38;
+    public static double RHALF = 0.2;
     public static double LZERO = 0.3;
     public static double RZERO = 0.01;
     public static double LVECTORING = 0.21;
@@ -30,7 +32,7 @@ public class Deposit {
     Slides slides;
     public enum ExtensionState
     {
-        EXTEND, RETRACT, SLIGHT
+        EXTEND, RETRACT, SLIGHT, HALF
     }
     public enum AngleState
     {
@@ -58,6 +60,10 @@ public class Deposit {
             case RETRACT:
                 leftExtension.setPosition(LZERO);
                 rightExtension.setPosition(RZERO);
+                break;
+            case HALF:
+                leftExtension.setPosition(LHALF);
+                rightExtension.setPosition(RHALF);
                 break;
         }
         switch (angState){

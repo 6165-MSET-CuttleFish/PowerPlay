@@ -43,7 +43,7 @@ public class ASafeDriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
-    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, fourBarPrimed, fourBarDeposit, fourBarIntake, turretZero, stackPickup;
+    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, stackPickup;
     ToggleButtonReader ninjaMode, straightMode;
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
@@ -61,7 +61,6 @@ public class ASafeDriverControl extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         robot = new RobotTemp(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
@@ -74,8 +73,6 @@ public class ASafeDriverControl extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
-
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
@@ -85,10 +82,10 @@ public class ASafeDriverControl extends LinearOpMode {
 
                 intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
-                fourBarPrimed = new ButtonReader(secondary, GamepadKeys.Button.B),
-                fourBarDeposit = new ButtonReader(secondary, GamepadKeys.Button.Y),
+                half = new ButtonReader(secondary, GamepadKeys.Button.B),
+                angle = new ButtonReader(secondary, GamepadKeys.Button.Y),
                 stackPickup = new ButtonReader(secondary, GamepadKeys.Button.X),
-                fourBarIntake = new ButtonReader(secondary, GamepadKeys.Button.A),
+                extension = new ButtonReader(secondary, GamepadKeys.Button.A),
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
                 actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
                 actuateUp = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
@@ -284,15 +281,25 @@ public class ASafeDriverControl extends LinearOpMode {
                 claw.setState(Claw.State.CLOSE);
             }
 
-            //V4B:
-            if (fourBarIntake.wasJustPressed()) {
+            //horizontal slides:
+            //extension
+            if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
-            }
-            if (fourBarDeposit.wasJustPressed()) {
-                deposit.setAngle(Deposit.AngleState.INTAKE);
-            }
-            if (fourBarPrimed.wasJustPressed()) {
+            } else if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.RETRACT) {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
+            }
+            //angle
+            if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.VECTORING) {
+                deposit.setAngle(Deposit.AngleState.INTAKE);
+            } else if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.INTAKE) {
+                deposit.setAngle(Deposit.AngleState.VECTORING);
+            }
+            //half extension
+            if (half.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.EXTEND
+                    || deposit.getExtState() == Deposit.ExtensionState.RETRACT)) {
+                deposit.setExtension(Deposit.ExtensionState.HALF);
+            } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
 
             transferUpdate(cycleValue);
