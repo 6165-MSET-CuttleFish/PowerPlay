@@ -30,7 +30,7 @@ public class Turret
     PIDControl controller;
     PIDCoeff coeff;
 
-public static double offset=-0.0;
+public static double offset=8.5;
 
 
     public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3150, RIGHT_SIDE_HIGH_PRELOAD = -1000;
@@ -96,7 +96,11 @@ public static double offset=-0.0;
 
         //if hall effect then reset pos at zero
         if(hallEffect.getVoltage()-prevHall<-1.0){
-         //   posAtZero= encoder.getCurrentPosition()+offset;
+            if(turretMotor.getPower()<0) {
+                posAtZero = encoder.getCurrentPosition() - offset;
+            }else{
+                posAtZero = encoder.getCurrentPosition() + offset;
+            }
         }
         prevHall=hallEffect.getVoltage();
         switch(state)
