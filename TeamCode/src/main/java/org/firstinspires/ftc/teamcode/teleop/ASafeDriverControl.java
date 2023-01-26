@@ -40,11 +40,13 @@ public class ASafeDriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     boolean transfer = false;
     boolean resetCheck = false;
+    boolean diagonal = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
     ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, stackPickup;
     ToggleButtonReader ninjaMode, straightMode;
+
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect2;    // Use to build a custom rumble sequence.
@@ -91,7 +93,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 actuateUp = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
                 reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
-                cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER)
+                cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
+
         };
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 1.0, 200)
@@ -257,12 +260,14 @@ public class ASafeDriverControl extends LinearOpMode {
             }
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
-                slides.setPowerManual(gamepad2.left_stick_y);
+                slides.setState(Slides.State.MANUAL);
+                slides.setPowerManual(-gamepad2.left_stick_y);
                 //slides.setPowerManual(gamepad2.left_stick_y);
                 slidesZero = true;
             }
             if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setPowerManual(gamepad2.left_stick_y);
+                slides.setState(Slides.State.MANUAL);
+                slides.setPowerManual(-gamepad2.left_stick_y);
                 slidesZero = false;
             }
 
@@ -301,8 +306,12 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
-
-            transferUpdate(cycleValue);
+            if (gamepad2.touchpad && !diagonal) {
+                diagonal = true;
+            } else if (gamepad2.touchpad && diagonal) {
+                diagonal = false;
+            }
+            transferUpdate(cycleValue, diagonal);
             resetUpdate();
             turret.update();
             //slides.update();
@@ -319,7 +328,9 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("bla bla ", turret.getTargetPos());
             telemetry.addData("HE: ", turret.posAtZero);
             telemetry.addData("Motor Speeds: ", slides.getOuput());
-//            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
+            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
+            telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
+
 
 
             telemetry.update();
@@ -327,8 +338,8 @@ public class ASafeDriverControl extends LinearOpMode {
         }
     }
 
-    public void transferUpdate(int cycle) {
-        if (transfer) {
+    public void transferUpdate(int cycle, boolean diagonal) {
+        if (transfer && !diagonal) {
             if (transferTimer.milliseconds() > 400) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
@@ -340,6 +351,27 @@ public class ASafeDriverControl extends LinearOpMode {
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
                 turret.setState(Turret.State.BACK);
+
+            } else if (transferTimer.seconds() > 0) {
+                deposit.setAngle(Deposit.AngleState.VECTORING);
+                if (cycle == 1) {
+                    slides.setState(Slides.State.LOW);
+                } else {
+                    slides.setState(Slides.State.MID);
+                }
+            }
+        } else if (transfer && diagonal) {
+            if (transferTimer.milliseconds() > 400) {
+                if (cycle == 3) {
+                    slides.setState(Slides.State.HIGH);
+                }
+                if(cycle==1){
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                }else
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                transfer = false;
+            } else if (transferTimer.milliseconds() > 200) {
+                turret.setState(Turret.State.RIGHT_SIDE_HIGH);
 
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);

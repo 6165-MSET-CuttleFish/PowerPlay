@@ -22,7 +22,7 @@ public class Slides {
     double switchPressed;
     public static boolean slidesCheck = false;
     double output=0;
-    double posAtZero=0;
+    public double posAtZero=0;
 
     public static int HIGH = 2450; //old = 1850
     public static int HIGH_DROP = 2750; //old = 1650
@@ -61,7 +61,7 @@ public class Slides {
     }
 
     public void update(){
-        //checkLimit();
+        checkLimit();
 //        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
@@ -199,7 +199,7 @@ public class Slides {
     }
     public void checkLimit() {
         switchPressed = slidesLimitSwitch.getVoltage();
-        if(switchPressed > 0) {
+        if(switchPressed > 1) {
             posAtZero=slidesRight.getCurrentPosition();
         }
     }
