@@ -20,7 +20,7 @@ import java.util.List;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCrop=new Rect(80, 140, 50, 50);
+    Rect rectCrop=new Rect(280, 70, 35, 35);
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
 
@@ -31,6 +31,7 @@ public class colorDetection extends OpenCvPipeline
     Mat blurred=new Mat();
     Mat filtered=new Mat();
     Mat HSV=new Mat();
+    Mat preProcessed=new Mat();
 
     Mat H=new Mat();
 
@@ -53,6 +54,7 @@ public class colorDetection extends OpenCvPipeline
         blurred.release();
         filtered.release();
         HSV.release();
+        preProcessed.release();
     }
 
     public Mat preProcessing(Mat input)
@@ -109,7 +111,10 @@ public class colorDetection extends OpenCvPipeline
     public Mat processFrame(Mat input)
     {
         release();
-        getZone(preProcessing(input));
+
+        preProcessed=preProcessing(input);
+
+        getZone(preProcessed);
         tel.addData("State", state);
         tel.update();
 
