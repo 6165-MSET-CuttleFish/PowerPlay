@@ -288,6 +288,7 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (intakeTransfer.isDown()) {
                 claw.setState(Claw.State.CLOSE);
             }
+            telemetry.addData("Deposit", depositTransfer.isDown());
 
             //horizontal slides:
             //extension
@@ -328,6 +329,7 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
+            telemetry.addData("Claw: ", claw.getState());
             telemetry.addData("Kai did dumb dumb(turret ideal) ", turret.getTargetPos());
             telemetry.addData("HE: ", turret.posAtZero);
             telemetry.addData("Motor Speeds: ", slides.getOuput());
