@@ -58,6 +58,7 @@ public class Slides {
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        state=State.BOTTOM;
     }
 
     public void update(){

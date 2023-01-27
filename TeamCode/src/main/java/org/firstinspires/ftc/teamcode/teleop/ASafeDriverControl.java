@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -37,6 +38,7 @@ public class ASafeDriverControl extends LinearOpMode {
     Claw claw;
     Turret turret;
     BackgroundCR hardware;
+    TelemetryPacket packet;
     GamepadEx primary, secondary;
     boolean transfer = false;
     boolean resetCheck = false;
@@ -74,6 +76,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
@@ -134,7 +137,7 @@ public class ASafeDriverControl extends LinearOpMode {
         robot.sideOdo.setPosition(0.65);
         turret.setState(Turret.State.ZERO);
         while (opModeIsActive()) {
-            slides.update();
+            //slides.update();
             robot.update();
             for (KeyReader reader : keyReaders) {
                 reader.readValue();
@@ -313,7 +316,7 @@ public class ASafeDriverControl extends LinearOpMode {
             }
             transferUpdate(cycleValue, diagonal);
             resetUpdate();
-            turret.update();
+            //turret.update();
             //slides.update();
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
@@ -325,7 +328,7 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
-            telemetry.addData("bla bla ", turret.getTargetPos());
+            telemetry.addData("Kai did dumb dumb(turret ideal) ", turret.getTargetPos());
             telemetry.addData("HE: ", turret.posAtZero);
             telemetry.addData("Motor Speeds: ", slides.getOuput());
             telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
@@ -334,7 +337,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
 
             telemetry.update();
-            turret.update();
+            //turret.update();
         }
     }
 

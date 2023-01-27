@@ -10,28 +10,36 @@ import org.firstinspires.ftc.teamcode.RobotTemp
 import org.firstinspires.ftc.teamcode.modules.slides.Slides
 import org.firstinspires.ftc.teamcode.modules.turret.Turret
 
-class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, val dashboard: FtcDashboard, val packet: TelemetryPacket)
+class BackgroundCR(val robot: RobotTemp)
 {
     var counter: Int=0;
     var counter2: Int=0;
+    var packet: TelemetryPacket= TelemetryPacket()
+    val dashboard: FtcDashboard= FtcDashboard.getInstance()
 
     fun startHW()
     {
-        val job = GlobalScope.launch(Dispatchers.Default)
+        val job = GlobalScope.launch(Dispatchers.Main)
         {
-            while(!l.isStopRequested)
+            while(!robot.l.isStopRequested)
             {
-                l.telemetry.addData("Slides: ", slides.slidesLeft.power);
-                l.telemetry.update();
+                //l.telemetry.addData("Slides: ", slides.slidesLeft.power);
+                //l.telemetry.update();
 
-                packet.put("Slides", slides.slidesLeft.power)
-                dashboard.sendTelemetryPacket(packet)
+                try
+                {
+                    packet.put("Slides", robot.slides.slidesLeft.power)
+                    dashboard.sendTelemetryPacket(packet)
 
-                slides.update()
-                turret.update()
-
+                    robot.slides.update()
+                    robot.turret.update()
+                }
+                catch(e: Exception)
+                {
+                    robot.l.telemetry.addData("Error: ", e);
+                    robot.l.telemetry.update()
+                }
                 //counter++
-                delay(20)
             }
         }
 

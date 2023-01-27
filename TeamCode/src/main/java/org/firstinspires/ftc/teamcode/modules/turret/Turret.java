@@ -19,18 +19,16 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
-    public static double p = 0.0043, i = 0.0041, d = 0.00025727;
+    public static double p = 0.0054, i = 0.0036, d = 0.00025727;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
-    public static double iSumMax=43.2;
-    public static double stabThresh=40;
     public static ElapsedTime time = new ElapsedTime();
 
     PIDControl controller;
     PIDCoeff coeff;
 
-public static double offset=8.5;
+    public static double offset=8;
 
 
     public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3150, RIGHT_SIDE_HIGH_PRELOAD = -1000;
@@ -64,6 +62,7 @@ public static double offset=8.5;
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        state=State.ZERO;
     }
 
     public void update(/*double time*/)
@@ -91,49 +90,47 @@ public static double offset=8.5;
         time.reset();
     }
 
-    private void updateTarget()
-    {
+    private void updateTarget() {
 
         //if hall effect then reset pos at zero
-        if(hallEffect.getVoltage()-prevHall<-1.0){
-            if(turretMotor.getPower()<0) {
+        if (hallEffect.getVoltage() - prevHall < -1.0) {
+            if (turretMotor.getPower() < 0) {
                 posAtZero = encoder.getCurrentPosition() - offset;
-            }else{
+            } else {
                 posAtZero = encoder.getCurrentPosition() + offset;
             }
-        }
-        prevHall=hallEffect.getVoltage();
-        switch(state)
-        {
-            case MANUAL:
-                targetPos = encoder.getCurrentPosition();
-                break;
-            case IDLE:
-                targetPos = encoder.getCurrentPosition();
-                break;
-            case RIGHT:
-                targetPos=RIGHT_POS-posAtZero;
-                break;
-            case LEFT:
-                targetPos=LEFT_POS-posAtZero;
-                break;
-            case BACK:
-                targetPos=BACK-posAtZero;
-                break;
-            case ZERO:
-                targetPos=ZERO_POS-posAtZero;
-                break;
-            case RIGHT_SIDE_HIGH:
-                targetPos=RIGHT_SIDE_HIGH-posAtZero;
-                break;
-            case RIGHT_SIDE_HIGH_PRELOAD:
-                targetPos = RIGHT_SIDE_HIGH_PRELOAD-posAtZero;
-                break;
-            case INIT:
-                targetPos=INIT-posAtZero;
-                break;
-            case AUTOALIGN:
-                break;
+            prevHall = hallEffect.getVoltage();
+            switch (state) {
+                case MANUAL:
+                    targetPos = encoder.getCurrentPosition();
+                    break;
+                case IDLE:
+                    targetPos = encoder.getCurrentPosition();
+                    break;
+                case RIGHT:
+                    targetPos = RIGHT_POS - posAtZero;
+                    break;
+                case LEFT:
+                    targetPos = LEFT_POS - posAtZero;
+                    break;
+                case BACK:
+                    targetPos = BACK - posAtZero;
+                    break;
+                case ZERO:
+                    targetPos = ZERO_POS - posAtZero;
+                    break;
+                case RIGHT_SIDE_HIGH:
+                    targetPos = RIGHT_SIDE_HIGH - posAtZero;
+                    break;
+                case RIGHT_SIDE_HIGH_PRELOAD:
+                    targetPos = RIGHT_SIDE_HIGH_PRELOAD - posAtZero;
+                    break;
+                case INIT:
+                    targetPos = INIT - posAtZero;
+                    break;
+                case AUTOALIGN:
+                    break;
+            }
         }
     }
 

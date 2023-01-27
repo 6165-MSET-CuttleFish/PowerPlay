@@ -20,7 +20,7 @@ import java.util.List;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCrop=new Rect(80, 140, 100, 100);
+    Rect rectCrop=new Rect(80, 140, 50, 50);
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
 

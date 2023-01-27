@@ -36,7 +36,6 @@ public class RightSideMS extends LinearOpMode {
     GroundIntake groundIntake;
     Turret turret;
     TelemetryPacket packet;
-    BackgroundCR hardware;
     Detector detector1;
     OpenCvWebcam webcam;
     Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));
@@ -57,9 +56,6 @@ public class RightSideMS extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
 
-        packet=new TelemetryPacket();
-        hardware=new BackgroundCR(turret, slides, this, FtcDashboard.getInstance(), packet);
-        hardware.startHW();
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)

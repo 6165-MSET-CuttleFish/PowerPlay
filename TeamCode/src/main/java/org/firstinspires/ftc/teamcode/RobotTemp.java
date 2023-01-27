@@ -113,6 +113,7 @@ public class RobotTemp extends MecanumDrive {
     public boolean isOdoRaised = false;
     public driveState state;
     public TelemetryPacket packet;
+    public LinearOpMode l;
 
     public void setState(driveState state){
         this.state = state;
@@ -125,20 +126,16 @@ public class RobotTemp extends MecanumDrive {
 
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
+        this.l=l;
 
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, false);
-//        hardware=new BackgroundCR(this, l);
-////        thread=new HardwareThread(turret, slides, l);
-////        thread.start();
-//        hardware.startHW();
-        //packet=new TelemetryPacket();
-        //hardware=new BackgroundCR(turret, slides, l, FtcDashboard.getInstance(), packet);
-//        thread=new HardwareThread(turret, slides, l);
-//        thread.start();
-        //hardware.startHW();
+
+        packet=new TelemetryPacket();
+        hardware=new BackgroundCR(this);
+        hardware.startHW();
 
 
         groundIntake = new GroundIntake(hardwareMap);
