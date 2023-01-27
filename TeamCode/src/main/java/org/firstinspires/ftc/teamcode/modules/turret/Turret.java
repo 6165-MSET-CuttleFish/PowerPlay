@@ -100,6 +100,7 @@ public class Turret
                 posAtZero = encoder.getCurrentPosition() + offset;
             }
             prevHall = hallEffect.getVoltage();
+        }
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
@@ -130,7 +131,6 @@ public class Turret
                     break;
                 case AUTOALIGN:
                     break;
-            }
         }
     }
 
