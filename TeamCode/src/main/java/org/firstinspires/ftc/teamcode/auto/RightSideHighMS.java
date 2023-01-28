@@ -116,8 +116,8 @@ public class RightSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-57, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
-                        robot.getAccelerationConstraint(50))
+                .lineToConstantHeading(new Vector2d(-57.5, 10.75),robot.getVelocityConstraint(57.5, 5.939, 13.44),
+                        robot.getAccelerationConstraint(57.5))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -125,7 +125,7 @@ public class RightSideHighMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-36.5, 10))
+                .lineToConstantHeading(new Vector2d(-36.5, 10.75))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.HIGH);
                 })
@@ -134,7 +134,7 @@ public class RightSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-57, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-57.5, 10.75),robot.getVelocityConstraint(50, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -202,7 +202,7 @@ public class RightSideHighMS extends LinearOpMode {
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-150< timer){
+        while(System.currentTimeMillis()-125< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);

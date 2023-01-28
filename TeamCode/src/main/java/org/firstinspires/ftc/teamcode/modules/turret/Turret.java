@@ -31,7 +31,7 @@ public class Turret
     public static double offset=8;
 
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3175, RIGHT_SIDE_HIGH_PRELOAD = -1000, RIGHT_SIDE_MID = 3000;
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3000, RIGHT_SIDE_HIGH_PRELOAD = -875, RIGHT_SIDE_MID = 3000;
 
     public static double closePower = 0.3;
     public static double farPower = 0.8;
