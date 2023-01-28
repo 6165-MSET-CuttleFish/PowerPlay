@@ -32,7 +32,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class RightSideMS extends LinearOpMode {
+public class RightSideHighMS extends LinearOpMode {
     ElapsedTime t;
     RobotTemp robot;
     Intake intake;
@@ -96,7 +96,7 @@ public class RightSideMS extends LinearOpMode {
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);
-                    groundIntake.setState(GroundIntake.State.INTAKING);
+                    groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addTemporalMarker(0.4,()->{
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH_PRELOAD);
@@ -105,17 +105,18 @@ public class RightSideMS extends LinearOpMode {
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                        .lineToLinearHeading(new Pose2d(-36,11, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-35.25,11, Math.toRadians(180)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
+                    groundIntake.setState(GroundIntake.State.INTAKING);
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .addTemporalMarker(0.4,()->{
                     slides.setState(Slides.State.CYCLE0);
                 })
-                                .build();
+                .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-57.5, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-57, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -124,7 +125,7 @@ public class RightSideMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-37.5, 10))
+                .lineToConstantHeading(new Vector2d(-36.5, 10))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.HIGH);
                 })
@@ -133,7 +134,7 @@ public class RightSideMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-57.5, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-57, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -200,7 +201,7 @@ public class RightSideMS extends LinearOpMode {
             robot.update();
         }
         claw.setState(Claw.State.OPEN);
-         timer = System.currentTimeMillis();
+        timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-150< timer){
             robot.update();
         }
@@ -222,8 +223,9 @@ public class RightSideMS extends LinearOpMode {
         while(System.currentTimeMillis()-250< timer){
             robot.update();
         }
-deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
 
     }
 }
+

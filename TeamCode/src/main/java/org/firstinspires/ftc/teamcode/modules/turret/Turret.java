@@ -35,6 +35,7 @@ public class Turret
             BACK = 4100, RIGHT_SIDE_HIGH = -2975, RIGHT_SIDE_HIGH_PRELOAD = -825,
             RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975;
 
+
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
@@ -128,6 +129,10 @@ public class Turret
                 case RIGHT_SIDE_HIGH_PRELOAD:
                     targetPos = RIGHT_SIDE_HIGH_PRELOAD - posAtZero;
                     break;
+                case RIGHT_SIDE_MID:
+                    targetPos = RIGHT_SIDE_MID - posAtZero;
+                    break;
+
                 case INIT:
                     targetPos = INIT - posAtZero;
                     break;
