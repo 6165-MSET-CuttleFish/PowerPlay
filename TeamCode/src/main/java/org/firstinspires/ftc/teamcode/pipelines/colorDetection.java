@@ -125,14 +125,6 @@ public class colorDetection extends OpenCvPipeline
 
     public int getOutput()
     {
-        if(state>0)
-        {
-            return state;
-        }
-        else
-        {
-            //play gacha lottery
-            return (int) (Math.random()*3)+1;
-        }
+        return state;
     }
 }

@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 import org.openftc.easyopencv.OpenCvWebcam;
 
@@ -38,9 +39,11 @@ public class RightSideMS extends LinearOpMode {
     TelemetryPacket packet;
     Detector detector1;
     OpenCvWebcam webcam;
+    Camera camera;
     Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
+    double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new RobotTemp(this);
@@ -55,6 +58,8 @@ public class RightSideMS extends LinearOpMode {
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+
+        camera=new Camera(hardwareMap, telemetry);
 
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
@@ -116,7 +121,19 @@ public class RightSideMS extends LinearOpMode {
         Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
 
                 .lineToConstantHeading(new Vector2d(-60,11)).build();
+
+        while(!isStarted()&&!isStopRequested())
+        {
+            double tempState=camera.getState();
+            if(tempState>0)
+            {
+                state=tempState;
+            }
+        }
+
         waitForStart();
+
+
         if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
