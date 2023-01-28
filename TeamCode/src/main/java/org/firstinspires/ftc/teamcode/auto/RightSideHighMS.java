@@ -155,7 +155,8 @@ public class RightSideHighMS extends LinearOpMode {
         {
             double tempState=pipeline.getOutput();
             telemetry.addData("State: ", tempState);
-            telemetry.addData("H Value", pipeline.getHAvg());
+            //telemetry.addData("H Value", pipeline.getHAvg());
+            telemetry.addData("Max value: ", pipeline.getMax());
             telemetry.update();
             if(tempState>0)
             {
