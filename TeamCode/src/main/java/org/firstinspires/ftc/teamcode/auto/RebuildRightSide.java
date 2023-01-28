@@ -42,7 +42,6 @@ public class RebuildRightSide extends LinearOpMode {
     Deposit deposit;
     GroundIntake groundIntake;
     Turret turret;
-    BackgroundCR hardware;
     TelemetryPacket packet;
     Detector detector1;
     OpenCvWebcam webcam;
@@ -92,9 +91,6 @@ public class RebuildRightSide extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
 
-        packet=new TelemetryPacket();
-        hardware=new BackgroundCR(turret, slides, this, FtcDashboard.getInstance(), packet);
-        hardware.startHW();
 
 
 
