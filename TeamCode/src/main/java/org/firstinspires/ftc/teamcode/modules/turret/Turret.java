@@ -32,8 +32,8 @@ public class Turret
 
 
     public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4100, RIGHT_SIDE_HIGH = -2975, RIGHT_SIDE_HIGH_PRELOAD = -825,
-            RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975;
+            BACK = 4100, RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975,  RIGHT_SIDE_HIGH = -3175,
+            RIGHT_SIDE_HIGH_PRELOAD = -1000, RIGHT_SIDE_MID = 3000;
 
 
     public static double closePower = 0.3;
@@ -52,7 +52,7 @@ public class Turret
     {
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
-        LEFT_DIAGONAL
+        LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD
     }
 
     public Turret(HardwareMap hardwareMap, boolean teleop)
