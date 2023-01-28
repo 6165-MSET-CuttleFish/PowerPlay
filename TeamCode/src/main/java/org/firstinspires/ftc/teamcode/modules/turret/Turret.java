@@ -31,7 +31,9 @@ public class Turret
     public static double offset=8;
 
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -2975, RIGHT_SIDE_HIGH_PRELOAD = -825;
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020,
+            BACK = 4100, RIGHT_SIDE_HIGH = -2975, RIGHT_SIDE_HIGH_PRELOAD = -825,
+            RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975;
 
     public static double closePower = 0.3;
     public static double farPower = 0.8;
@@ -47,7 +49,9 @@ public class Turret
 
     public enum State
     {
-        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK, RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD
+        IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
+        RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
+        LEFT_DIAGONAL
     }
 
     public Turret(HardwareMap hardwareMap, boolean teleop)
@@ -65,8 +69,7 @@ public class Turret
         state=State.ZERO;
     }
 
-    public void update(/*double time*/)
-    {
+    public void update() {
         updateTarget();
 
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
@@ -91,9 +94,7 @@ public class Turret
     }
 
     private void updateTarget() {
-
         //if hall effect then reset pos at zero
-        /*
         if (hallEffect.getVoltage() - prevHall < -1.0) {
             if (turretMotor.getPower() < 0) {
                 posAtZero = encoder.getCurrentPosition() - offset;
@@ -101,7 +102,7 @@ public class Turret
                 posAtZero = encoder.getCurrentPosition() + offset;
             }
             prevHall = hallEffect.getVoltage();
-        }*/
+        }
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
@@ -129,6 +130,12 @@ public class Turret
                     break;
                 case INIT:
                     targetPos = INIT - posAtZero;
+                    break;
+                case RIGHT_DIAGONAL:
+                    targetPos = RIGHT_DIAGONAL - posAtZero;
+                    break;
+                case LEFT_DIAGONAL:
+                    targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
                 case AUTOALIGN:
                     break;

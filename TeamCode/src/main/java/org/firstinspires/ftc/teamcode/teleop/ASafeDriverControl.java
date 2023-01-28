@@ -43,6 +43,8 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean transfer = false;
     boolean resetCheck = false;
     boolean diagonal = false;
+    boolean left = true;
+    boolean right = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
@@ -313,7 +315,15 @@ public class ASafeDriverControl extends LinearOpMode {
             if (gamepad2.touchpad) {
                 diagonal = !diagonal;
             }
-            transferUpdate(cycleValue, diagonal);
+            if (diagonal) {
+                if (actuateLeft.wasJustPressed()) {
+                    left = true;
+                }
+                if (actuateRight.wasJustPressed()) {
+                    left = false;
+                }
+            }
+            transferUpdate(cycleValue, diagonal, left);
             resetUpdate();
             //turret.update();
             //slides.update();
@@ -341,7 +351,7 @@ public class ASafeDriverControl extends LinearOpMode {
         }
     }
 
-    public void transferUpdate(int cycle, boolean diagonal) {
+    public void transferUpdate(int cycle, boolean diagonal, boolean left) {
         if (transfer && !diagonal) {
             if (transferTimer.milliseconds() > 400) {
                 if (cycle == 3) {
@@ -374,7 +384,10 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
-                turret.setState(Turret.State.RIGHT_SIDE_HIGH);
+                if (left)
+                    turret.setState(Turret.State.LEFT_DIAGONAL);
+                if (!left)
+                    turret.setState(Turret.State.RIGHT_DIAGONAL);
 
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
