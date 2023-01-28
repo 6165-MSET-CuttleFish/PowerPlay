@@ -106,10 +106,10 @@ public class RobotTemp extends MecanumDrive {
     public Turret turret;
     public Deposit deposit;
     public Claw claw;
-    public HardwareThread thread;
+    //public HardwareThread thread;
     public BackgroundCR hardware;
     public GroundIntake groundIntake;
-    public Camera camera;
+    //public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
     public TelemetryPacket packet;
@@ -222,8 +222,8 @@ public class RobotTemp extends MecanumDrive {
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap, true);
         //hardware=new BackgroundCR(this, l);
-        thread=new HardwareThread(turret, slides, l);
-        thread.start();
+        //thread=new HardwareThread(turret, slides, l);
+        //thread.start();
 
 
         groundIntake = new GroundIntake(hardwareMap);

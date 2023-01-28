@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.pipelines.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -38,6 +39,7 @@ public class AprilTagDetectionTest extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
+    colorDetection pipeline;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -61,10 +63,11 @@ public class AprilTagDetectionTest extends LinearOpMode
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        pipeline=new colorDetection(telemetry);
 
-        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.setPipeline(pipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -86,7 +89,7 @@ public class AprilTagDetectionTest extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
+        /*while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 telemetry.addLine(String.format("detections", currentDetections.size()));
@@ -103,7 +106,7 @@ if(currentDetections.size()>0) {
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
+        /*if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
@@ -116,13 +119,13 @@ if(currentDetections.size()>0) {
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null)
+        /*if(tagOfInterest == null)
         {
             /*
              * Insert your autonomous code here, presumably running some default configuration
              * since the tag was never sighted during INIT
              */
-        }
+        /*}
         else
         {
             /*
@@ -130,7 +133,7 @@ if(currentDetections.size()>0) {
              */
 
             // e.g.
-            if(tagOfInterest.pose.x <= 20)
+            /*if(tagOfInterest.pose.x <= 20)
             {
                 // do something
             }
@@ -142,6 +145,12 @@ if(currentDetections.size()>0) {
             {
                 // do something else
             }
+        }*/
+
+        while(!isStarted()&&!isStopRequested())
+        {
+            telemetry.addData("State", pipeline.getOutput());
+            telemetry.update();
         }
 
 

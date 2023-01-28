@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
@@ -23,7 +24,11 @@ import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.vision.Camera;
+import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
@@ -38,15 +43,38 @@ public class RightSideMS extends LinearOpMode {
     Turret turret;
     TelemetryPacket packet;
     Detector detector1;
-    OpenCvWebcam webcam;
-    Camera camera;
+    OpenCvWebcam camera;
+    colorDetection pipeline;
     Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        pipeline=new colorDetection(telemetry);
+
+        camera.setPipeline(pipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
         robot = new RobotTemp(this);
+
+
         deposit = robot.deposit;
         claw = robot.claw;
         slides = robot.slides;
@@ -59,8 +87,8 @@ public class RightSideMS extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
 
-        camera=new Camera(hardwareMap, telemetry);
 
+        //telemetry.setMsTransmissionInterval(50);
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
@@ -124,7 +152,10 @@ public class RightSideMS extends LinearOpMode {
 
         while(!isStarted()&&!isStopRequested())
         {
-            double tempState=camera.getState();
+            double tempState=pipeline.getOutput();
+            telemetry.addData("State: ", tempState);
+            telemetry.addData("H Value", pipeline.getHAvg());
+            telemetry.update();
             if(tempState>0)
             {
                 state=tempState;

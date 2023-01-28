@@ -23,6 +23,8 @@ public class colorDetection extends OpenCvPipeline
     Rect rectCrop=new Rect(280, 70, 35, 35);
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
+    double hAvg;
+
 
     Mat cropped=new Mat();
     Mat LAB=new Mat();
@@ -83,7 +85,7 @@ public class colorDetection extends OpenCvPipeline
 
         Scalar h=Core.mean(H);
 
-        double hAvg=h.val[0];
+        hAvg=h.val[0];
 
 
         tel.addData("H", hAvg);
@@ -99,7 +101,7 @@ public class colorDetection extends OpenCvPipeline
             state=2;
         }
         //nijika-chwan(ty mr flamer) 👀
-        else if(hAvg>16&&hAvg<35)
+        else if(hAvg>35&&hAvg<65)
         {
             state=3;
         }
@@ -126,5 +128,9 @@ public class colorDetection extends OpenCvPipeline
     public int getOutput()
     {
         return state;
+    }
+    public double getHAvg()
+    {
+        return hAvg;
     }
 }
