@@ -31,7 +31,7 @@ public class Turret
     public static double offset=8;
 
 
-    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -3150, RIGHT_SIDE_HIGH_PRELOAD = -1000;
+    public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020, BACK = 4100, RIGHT_SIDE_HIGH = -2975, RIGHT_SIDE_HIGH_PRELOAD = -825;
 
     public static double closePower = 0.3;
     public static double farPower = 0.8;
@@ -93,6 +93,7 @@ public class Turret
     private void updateTarget() {
 
         //if hall effect then reset pos at zero
+        /*
         if (hallEffect.getVoltage() - prevHall < -1.0) {
             if (turretMotor.getPower() < 0) {
                 posAtZero = encoder.getCurrentPosition() - offset;
@@ -100,7 +101,7 @@ public class Turret
                 posAtZero = encoder.getCurrentPosition() + offset;
             }
             prevHall = hallEffect.getVoltage();
-        }
+        }*/
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
