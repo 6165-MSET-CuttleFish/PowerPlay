@@ -31,7 +31,7 @@ class BackgroundCR(val turret: Turret, val slides: Slides, val l: LinearOpMode, 
                 turret.update()
 
                 //counter++
-                delay(20)
+                delay(10)
             }
         }
 

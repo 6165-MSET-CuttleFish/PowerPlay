@@ -86,7 +86,7 @@ public class RightSideMS extends LinearOpMode {
                 })
                                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-58, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-56.5, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -95,14 +95,16 @@ public class RightSideMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-36.5, 11.5))
+                .lineToConstantHeading(new Vector2d(-36.5, 12))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.HIGH);
+                })
+                .addTemporalMarker(0.2, ()->{
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-58, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-56.5, 11),robot.getVelocityConstraint(50, 5.939, 13.44),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -117,7 +119,7 @@ public class RightSideMS extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-40,13)).build();
         Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
 
-                .lineToConstantHeading(new Vector2d(-55,13)).build();
+                .lineToConstantHeading(new Vector2d(-60,11)).build();
         waitForStart();
         if (isStopRequested()) return;
         robot.setPoseEstimate(startPose);
@@ -150,27 +152,33 @@ public class RightSideMS extends LinearOpMode {
 
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-750 < timer){}
+        while(System.currentTimeMillis()-650 < timer){
+            robot.update();
+        }
         claw.setState(Claw.State.OPEN);
          timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){}
+        while(System.currentTimeMillis()-150< timer){
+            robot.update();
+        }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
         turret.setState(Turret.State.ZERO);
 
     }
     public void intake(){
-
-
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){}
+        while(System.currentTimeMillis()-250< timer){
+            robot.update();
+        }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.VECTORING);
-        slides.setState(Slides.State.SLIGHT);
+        slides.setState(Slides.State.HIGH);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){}
-
+        while(System.currentTimeMillis()-250< timer){
+            robot.update();
+        }
+deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
 
     }

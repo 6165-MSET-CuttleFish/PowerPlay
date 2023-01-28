@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret
 {
-    public static double p = 0.0043, i = 0.0041, d = 0.00025727;
+    public static double p = 0.005, i = 0.0041, d = 0.00025727;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 

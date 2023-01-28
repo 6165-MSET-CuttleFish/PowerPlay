@@ -32,10 +32,10 @@ public class Slides {
     public static int LOW_DROP = 250;
     public static int INTAKE_AUTO =  125;
     public static int SLIGHT = 600;
-    public static int CYCLE0 = 439+50;
-    public static int CYCLE1 = 317+50;
-    public static int CYCLE2 = 215+50;
-    public static int CYCLE3 = 110+50;
+    public static int CYCLE0 = 439;
+    public static int CYCLE1 = 317;
+    public static int CYCLE2 = 215;
+    public static int CYCLE3 = 110;
 
     public static int CYCLE4 = 0;
 
