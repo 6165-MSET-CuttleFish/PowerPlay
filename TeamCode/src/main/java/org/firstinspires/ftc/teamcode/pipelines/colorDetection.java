@@ -20,10 +20,20 @@ import java.util.List;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCrop=new Rect(280, 70, 35, 35);
+    Rect rectCrop=new Rect(260, 70, 50, 50);
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
     double hAvg;
+
+    Scalar yellowLower=new Scalar(20, 60, 20);
+    Scalar yellowMax=new Scalar(40, 255, 255);
+
+    Scalar blueLower=new Scalar(95, 60, 20);
+    Scalar blueHigher=new Scalar(125, 255, 255);
+
+    Scalar pinkLower=new Scalar(120, 0, 0);
+    Scalar pinkHigher=new Scalar(170, 255, 255);
+
 
 
     Mat cropped=new Mat();
@@ -34,6 +44,18 @@ public class colorDetection extends OpenCvPipeline
     Mat filtered=new Mat();
     Mat HSV=new Mat();
     Mat preProcessed=new Mat();
+    Mat test=new Mat();
+
+    int pinkCount;
+    int yellowCount;
+    int blueCount;
+
+    int max1;
+    int max2;
+
+    double HVal;
+    double SVal;
+    double VVal;
 
     Mat H=new Mat();
 
@@ -57,6 +79,7 @@ public class colorDetection extends OpenCvPipeline
         filtered.release();
         HSV.release();
         preProcessed.release();
+        test.release();
     }
 
     public Mat preProcessing(Mat input)
@@ -107,6 +130,45 @@ public class colorDetection extends OpenCvPipeline
         }
     }
 
+    public void getZone2(Mat input)
+    {
+        pinkCount=0;
+        blueCount=0;
+        yellowCount=0;
+
+        for(int r=0; r<input.width(); r++)
+        {
+            for(int c=0; c<input.height(); c++)
+            {
+                HVal=input.get(r, c)[0];
+                SVal=input.get(r, c)[1];
+                VVal=input.get(r, c)[2];
+                if(HVal>120&&HVal<170)
+                {
+                    pinkCount++;
+                }
+                else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
+                {
+                    yellowCount++;
+                }
+                else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
+                {
+                    blueCount++;
+                }
+            }
+        }
+
+        max1=Math.max(pinkCount, yellowCount);
+        max2=Math.max(max1, blueCount);
+
+        if(max2==pinkCount)
+            state=1;
+        else if(max2==blueCount)
+            state=2;
+        else if(max2==yellowCount)
+            state=3;
+    }
+
     //120
 
     @Override
@@ -116,12 +178,15 @@ public class colorDetection extends OpenCvPipeline
 
         preProcessed=preProcessing(input);
 
-        getZone(preProcessed);
+        getZone2(preProcessed);
         tel.addData("State", state);
         tel.update();
 
         Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
+
+        //Core.inRange(HSV, blueLower, blueHigher, test);
+
         return preview;
     }
 
@@ -133,4 +198,10 @@ public class colorDetection extends OpenCvPipeline
     {
         return hAvg;
     }
+
+    public int getMax()
+    {
+        return max2;
+    }
+
 }
