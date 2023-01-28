@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw
 {
     //temporary values
-    public static double OPEN=0.32;
-    public static double CLOSE=0.6;
+    public static double OPEN = 0.35;
+    public static double CLOSE = 0.575;
     public static double PARTIAL=0;
 
     Servo claw;

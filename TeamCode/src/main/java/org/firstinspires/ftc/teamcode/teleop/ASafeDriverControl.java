@@ -310,10 +310,8 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
-            if (gamepad2.touchpad && !diagonal) {
-                diagonal = true;
-            } else if (gamepad2.touchpad && diagonal) {
-                diagonal = false;
+            if (gamepad2.touchpad) {
+                diagonal = !diagonal;
             }
             transferUpdate(cycleValue, diagonal);
             resetUpdate();
