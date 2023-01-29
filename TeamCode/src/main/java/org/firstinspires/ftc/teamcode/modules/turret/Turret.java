@@ -57,14 +57,14 @@ public class Turret
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD
     }
 
-    public Turret(HardwareMap hardwareMap, boolean teleop)
+    public Turret(HardwareMap hardwareMap, boolean isAuto)
     {
         pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
 
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-        if(teleop) isAuto = true;
+        this.isAuto=isAuto;
         hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

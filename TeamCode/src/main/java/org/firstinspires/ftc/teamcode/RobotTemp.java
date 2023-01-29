@@ -213,17 +213,19 @@ public class RobotTemp extends MecanumDrive {
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
     }
-    public RobotTemp(LinearOpMode l, boolean coroutine) {
+    public RobotTemp(LinearOpMode l, boolean isAuto) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
+        this.l=l;
 
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, true);
-        //hardware=new BackgroundCR(this, l);
-        //thread=new HardwareThread(turret, slides, l);
-        //thread.start();
+        turret = new Turret(hardwareMap, isAuto);
+
+        packet=new TelemetryPacket();
+        hardware=new BackgroundCR(this);
+        hardware.startHW();
 
 
         groundIntake = new GroundIntake(hardwareMap);
@@ -299,7 +301,6 @@ public class RobotTemp extends MecanumDrive {
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-        //hardware.startHW();
 
     }
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
