@@ -20,7 +20,7 @@ import java.util.List;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCrop=new Rect(260, 70, 50, 50);
+    Rect rectCrop=new Rect(257, 40, 45, 15);
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
     double hAvg;
@@ -166,41 +166,56 @@ public class colorDetection extends OpenCvPipeline
         blueCount=0;
         yellowCount=0;
 
-        for(int r=0; r<input.width(); r++)
+        if(input!=null)
         {
-            for(int c=0; c<input.height(); c++)
+            for(int r=0; r<input.width(); r++)
             {
-                HVal=input.get(r, c)[0];
-                SVal=input.get(r, c)[1];
-                VVal=input.get(r, c)[2];
-                if(HVal>120&&HVal<170)
+                for(int c=0; c<input.height(); c++)
                 {
-                    pinkCount++;
-                }
-                else if(HVal<9&&SVal<80&&VVal>140&&VVal<180)
-                {
-                    pinkCount++;
-                }
-                else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
-                {
-                    yellowCount++;
-                }
-                else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
-                {
-                    blueCount++;
+                        try
+                        {
+                            HVal=input.get(r, c)[0];
+                            SVal=input.get(r, c)[1];
+                            VVal=input.get(r, c)[2];
+
+                            if(HVal>120&&HVal<170)
+                            {
+                                pinkCount++;
+                            }
+                            else if(HVal<10&&SVal<80&&VVal>140&&VVal<180)
+                            {
+                                pinkCount++;
+                            }
+                            else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
+                            {
+                                yellowCount++;
+                            }
+                            else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
+                            {
+                                blueCount++;
+                            }
+                        }
+                        catch(NullPointerException e)
+                        {
+                            //cancer
+                        }
                 }
             }
+
+            max1=Math.max(pinkCount, yellowCount);
+            max2=Math.max(max1, blueCount);
+
+            if(max2==0)
+                state=-1;
+            else if(max2==pinkCount)
+                state=1;
+            else if(max2==blueCount)
+                state=2;
+            else if(max2==yellowCount)
+                state=3;
         }
 
-        max1=Math.max(pinkCount, yellowCount);
-        max2=Math.max(max1, blueCount);
 
-        if(max2==pinkCount)
-            state=1;
-        else if(max2==blueCount)
-            state=2;
-        else if(max2==yellowCount)
-            state=3;
     }
 
     //120
@@ -219,9 +234,9 @@ public class colorDetection extends OpenCvPipeline
         Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
-        Core.inRange(HSV, pinkLower, pinkHigher, test);
+        //Core.inRange(HSV, pinkLower, pinkHigher, test);
 
-        return test;
+        return preview;
     }
 
     public int getOutput()
