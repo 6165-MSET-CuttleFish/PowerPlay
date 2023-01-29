@@ -31,8 +31,8 @@ public class colorDetection extends OpenCvPipeline
     Scalar blueLower=new Scalar(95, 60, 20);
     Scalar blueHigher=new Scalar(125, 255, 255);
 
-    Scalar pinkLower=new Scalar(120, 0, 0);
-    Scalar pinkHigher=new Scalar(170, 255, 255);
+    Scalar pinkLower=new Scalar(0, 0, 140);
+    Scalar pinkHigher=new Scalar(10, 80, 180);
 
 
 
@@ -177,6 +177,10 @@ public class colorDetection extends OpenCvPipeline
                 {
                     pinkCount++;
                 }
+                else if(HVal<9&&SVal<80&&VVal>140&&VVal<180)
+                {
+                    pinkCount++;
+                }
                 else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
                 {
                     yellowCount++;
@@ -215,9 +219,9 @@ public class colorDetection extends OpenCvPipeline
         Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
-        //Core.inRange(HSV, blueLower, blueHigher, test);
+        Core.inRange(HSV, pinkLower, pinkHigher, test);
 
-        return preview;
+        return test;
     }
 
     public int getOutput()
