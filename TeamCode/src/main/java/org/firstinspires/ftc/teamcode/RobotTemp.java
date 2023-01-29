@@ -214,6 +214,7 @@ public class RobotTemp extends MecanumDrive {
 
     }
     public RobotTemp(LinearOpMode l, boolean isAuto) {
+
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         HardwareMap hardwareMap=l.hardwareMap;
         this.l=l;
