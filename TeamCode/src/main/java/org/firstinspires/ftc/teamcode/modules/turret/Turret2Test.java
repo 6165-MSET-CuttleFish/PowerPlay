@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 
 @TeleOp
 public class Turret2Test extends LinearOpMode
@@ -35,13 +36,14 @@ public class Turret2Test extends LinearOpMode
         //turret.setState(Turret2.State.LEFT);
         while(opModeIsActive())
         {
+            robot.slides.setState(Slides.State.MID);
             if(gamepad1.a)
             {
-                turret.setState(Turret.State.RIGHT);
+                turret.setState(Turret.State.BACK);
             }
             else if(gamepad1.b)
             {
-                turret.setState(Turret.State.LEFT);
+                turret.setState(Turret.State.RIGHT_SIDE_HIGH);
             }
             else if(gamepad1.y)
             {
