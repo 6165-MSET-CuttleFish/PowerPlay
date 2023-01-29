@@ -31,9 +31,11 @@ public class Turret
     public static double offset=8;
 
 
+
     public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4100, RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975,  RIGHT_SIDE_HIGH = -3175,
-            RIGHT_SIDE_HIGH_PRELOAD = -1000, RIGHT_SIDE_MID = 3000;
+            BACK = 4100, RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975,  RIGHT_SIDE_HIGH = -3000,
+            RIGHT_SIDE_HIGH_PRELOAD = -875, RIGHT_SIDE_MID = 3000;
+
 
 
     public static double closePower = 0.3;
@@ -45,7 +47,7 @@ public class Turret
     public Encoder encoder;
     public AnalogInput hallEffect;
     public Turret.State state;
-
+    private boolean isAuto = false;
     public double motorOil=0;
 
     public enum State
@@ -62,7 +64,7 @@ public class Turret
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-
+        if(teleop) isAuto = true;
         hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -96,14 +98,17 @@ public class Turret
 
     private void updateTarget() {
         //if hall effect then reset pos at zero
-        if (hallEffect.getVoltage() - prevHall < -1.0) {
-            if (turretMotor.getPower() < 0) {
-                posAtZero = encoder.getCurrentPosition() - offset;
-            } else {
-                posAtZero = encoder.getCurrentPosition() + offset;
+        if(!isAuto){
+            if (hallEffect.getVoltage() - prevHall < -1.0) {
+                if (turretMotor.getPower() < 0) {
+                    posAtZero = encoder.getCurrentPosition() - offset;
+                } else {
+                    posAtZero = encoder.getCurrentPosition() + offset;
+                }
+                prevHall = hallEffect.getVoltage();
             }
-            prevHall = hallEffect.getVoltage();
         }
+
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
