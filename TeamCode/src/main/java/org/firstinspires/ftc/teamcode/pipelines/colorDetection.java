@@ -123,6 +123,36 @@ public class colorDetection extends OpenCvPipeline
         {
             state=2;
         }
+        /*Since Nijika is the paragon of human virtue without equal past or present, she is
+        most resplendent in love, tributes and accolades. Waking or sleeping, I must not
+        forget Nijika’s great boon and in order to return her favor by day and by night,
+        I should only think of fulfilling my loyalty. Who is Nijika? For the blind, she
+        is their vision. For the deaf, she is their music. For the mute, she is their voice.
+        For the anosmic, she is their aroma. For the numb, she is their feeling. For the atrophied,
+         she is their muscle. For the starved, she is their sustenance. For the thirsty, she
+         is their water. For the exhausted, she is their energy. For the depressed, she is their
+          happiness. For the disillusioned, she is their hope. For the pessimistic, she is their
+           optimism. For the disadvantaged, she is their champion. For the marginalized, she is
+            their justice. For the oppressed, she is their salvation. For the righteous, she is
+             their symbol. For the enlightened, she is their muse. For the erudite, she is their
+              education. If Nijika speaks, I listen. If Nijika questions, I answer. If Nijika
+               orders, I obey. If Nijika opines, I agree. If Nijika fears, I assure. If Nijika
+                hopes, I dream. If Nijika is happy, I am jubilant. If Nijika is angry, I am
+                apoplectic. If Nijika is sad, I am disconsolate. Nijika is my ideal, Nijika is
+                 my romance, Nijika is my passion. Nijika is my strength, Nijika is my compass,
+                  Nijika is my destination. Nijika is my language, Nijika is my culture, Nijika
+                   is my religion. Nijika is my ocean, Nijika is my mountain, Nijika is my sky,
+                    Nijika is my air, Nijika is my sun, Nijika is my moon, Nijika is my world.
+                     Nijika is history, Nijika is present, Nijika is future. If Nijika has a
+                      million fans, I am one of them. If Nijika has a thousand fans, I am one
+                       of them. If Nijika has a hundred fans, I am one of them. If Nijika has ten
+                        fans, I am one of them. If Nijika has only one fan, that is me. If Nijika
+                         has no fans, I no longer exist. If the whole universe is for Nijika, then
+                          I am for the whole universe. If the whole universe is against Nijika,
+                           then I am against the whole universe. I will love, cherish, and protect
+                            Nijika until my very last breath; my successors will love, cherish
+                             and protect Nijika until their very last breath.*/
+
         //nijika-chwan(ty mr flamer) 👀
         else if(hAvg>35&&hAvg<65)
         {
