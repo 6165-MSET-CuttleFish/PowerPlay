@@ -200,7 +200,7 @@ public class Slides {
     public void checkLimit() {
         switchPressed = slidesLimitSwitch.getVoltage();
         if(switchPressed > 1) {
-            posAtZero=slidesRight.getCurrentPosition();
+            //posAtZero=slidesRight.getCurrentPosition();
         }
     }
     public void setPowerManual(double power) {

@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -241,8 +242,11 @@ public class ASafeDriverControl extends LinearOpMode {
                 transferTimer.reset();
             }
 
+            if (stackPickup.wasJustPressed()) {
+                slides.slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            }
             if (turretZero.wasJustPressed()) {
-                turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                turret.posAtZero = -turret.encoder.getCurrentPosition();
             }
             //incremental turret control:
             if (gamepad2.right_stick_x > 0)
@@ -255,7 +259,7 @@ public class ASafeDriverControl extends LinearOpMode {
             //manual turret control:
             if (Math.abs(gamepad2.right_stick_y) > 0) {
                 turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.right_stick_y);
+                turret.turretMotor.setPower(gamepad2.right_stick_y * 0.5);
                 turretStop = true;
             }
             if (turretStop && gamepad2.right_stick_y == 0) {
@@ -332,14 +336,14 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
             telemetry.addData("Turret", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
-            telemetry.addData("Slides 1: ", slides.slidesLeft.getPower());
-            telemetry.addData("Slides 2: ", slides.slidesRight.getPower());
+            telemetry.addData("Slides 1: ", slides.slidesLeft.getCurrentPosition());
+            telemetry.addData("Slides 2: ", slides.slidesRight.getCurrentPosition());
             telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.addData("Claw: ", claw.getState());
             telemetry.addData("Kai did dumb dumb(turret ideal) ", turret.getTargetPos());
-            telemetry.addData("HE: ", turret.posAtZero);
+            telemetry.addData("turret pos at zero: ", turret.posAtZero);
             telemetry.addData("Motor Speeds: ", slides.getOuput());
             telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);

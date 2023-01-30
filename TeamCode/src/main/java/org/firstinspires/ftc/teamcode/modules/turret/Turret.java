@@ -41,7 +41,7 @@ public class Turret
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
-    public static double posAtZero=5;
+    public double posAtZero=5;
     double prevHall=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
@@ -98,8 +98,7 @@ public class Turret
 
     private void updateTarget() {
         //if hall effect then reset pos at zero
-        /*
-        if(!isAuto){
+        if(false) {
             if (hallEffect.getVoltage() - prevHall < -1.0) {
                 if (turretMotor.getPower() < 0) {
                     posAtZero = encoder.getCurrentPosition() - offset;
@@ -108,7 +107,7 @@ public class Turret
                 }
                 prevHall = hallEffect.getVoltage();
             }
-        }*/
+        }
 
             switch (state) {
                 case MANUAL:
@@ -153,6 +152,9 @@ public class Turret
         }
     }
 
+    public void resetPos() {
+        posAtZero = encoder.getCurrentPosition();
+    }
     public double getTargetPos()
     {
         return targetPos;

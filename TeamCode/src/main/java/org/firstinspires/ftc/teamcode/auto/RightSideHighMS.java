@@ -45,7 +45,7 @@ public class RightSideHighMS extends LinearOpMode {
     Detector detector1;
     OpenCvWebcam camera;
     colorDetection pipeline;
-    Pose2d startPose = new Pose2d(-38,61,Math.toRadians(270));
+    Pose2d startPose = new Pose2d(-38,61, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
@@ -203,7 +203,7 @@ public class RightSideHighMS extends LinearOpMode {
         robot.followTrajectory(preload2);
 
         for(int i = 0; i < 5; i++){
-
+            if(state==3 && i==4) break;
             if(i==0)slides.setState(Slides.State.CYCLE0);
             else if (i==1)slides.setState(Slides.State.CYCLE1);
             else if (i==2)slides.setState(Slides.State.CYCLE2);
