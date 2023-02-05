@@ -35,8 +35,7 @@ public class DepositTest extends LinearOpMode {
             telemetry.addData("clawState: ",claw.getState());
             telemetry.addData("leftEXT: ", deposit.leftExtension.getPosition());
             telemetry.addData("rightEXT: ", deposit.rightExtension.getPosition());
-            telemetry.addData("leftANG: ", deposit.leftAngular.getPosition());
-            telemetry.addData("rightANG: ", deposit.rightAngular.getPosition());
+            telemetry.addData("wrist: ", deposit.wrist.getPosition());
             telemetry.update();
 
         }

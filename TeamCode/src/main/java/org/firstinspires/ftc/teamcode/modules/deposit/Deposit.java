@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
-
+//SLIDES, TURRET, HORIZONTAL EXT (probably tmr), COMBINED
 @Config
 public class Deposit {
     //temporary values
@@ -15,19 +15,16 @@ public class Deposit {
     public static double RHALF = 0.2;
     public static double LZERO = 0.3;
     public static double RZERO = 0.01;
-    public static double LVECTORING = 0.21;
-    public static double RVECTORING = 0.2;
-    public static double LVECTORINGX = 0.22;
-    public static double RVECTORINGX = 0.21;
-    public static double LINTAKE = 0.33;
-    public static double RINTAKE = 0.30;
     public static double rightPos = 0;
 
+    public static double VECTORING = 0.46;
+    public static double INTAKE = 0.65;
+    public static double PICKUP = 1;
+
     Servo leftExtension;
-    Servo leftAngular;
     Servo rightExtension;
-    Servo rightAngular;
-    public ExtensionState extState=ExtensionState.RETRACT;
+    Servo wrist;
+    public ExtensionState extState = ExtensionState.RETRACT;
     public AngleState angState=AngleState.INTAKE;
     Slides slides;
     public enum ExtensionState
@@ -36,51 +33,46 @@ public class Deposit {
     }
     public enum AngleState
     {
-        VECTORING, INTAKE,X
+        VECTORING, INTAKE, CONE_PICKUP, X
     }
 
     public Deposit(HardwareMap hardwareMap) {
-        leftExtension =hardwareMap.get(Servo.class, "lExt");
-        leftAngular = hardwareMap.get(Servo.class, "lAng");
-        rightExtension =hardwareMap.get(Servo.class, "rExt");
-        rightAngular= hardwareMap.get(Servo.class, "rAng");
-        rightAngular.setDirection(Servo.Direction.REVERSE);
-        rightExtension.setDirection(Servo.Direction.REVERSE);
-        setExtension(ExtensionState.RETRACT);
+//        leftExtension =hardwareMap.get(Servo.class, "lExt");
+//        rightExtension =hardwareMap.get(Servo.class, "rExt");
+        wrist = hardwareMap.get(Servo.class, "wrist");
+//        rightExtension.setDirection(Servo.Direction.REVERSE);
+//        setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);
-
     }
 
     public void update() {
         switch(extState) {
             case EXTEND:
-                leftExtension.setPosition(LEXTENDED);
-                rightExtension.setPosition(REXTENDED);
+//                leftExtension.setPosition(LEXTENDED);
+//                rightExtension.setPosition(REXTENDED);
                 break;
             case RETRACT:
-                leftExtension.setPosition(LZERO);
-                rightExtension.setPosition(RZERO);
+//                leftExtension.setPosition(LZERO);
+//                rightExtension.setPosition(RZERO);
                 break;
             case HALF:
-                leftExtension.setPosition(LHALF);
-                rightExtension.setPosition(RHALF);
+//                leftExtension.setPosition(LHALF);
+//                rightExtension.setPosition(RHALF);
                 break;
         }
         switch (angState){
             case VECTORING:
-                leftAngular.setPosition(LVECTORING);
-                rightAngular.setPosition(RVECTORING);
+                wrist.setPosition(VECTORING);
                 break;
             case INTAKE:
-                leftAngular.setPosition(LINTAKE);
-                rightAngular.setPosition(RINTAKE);
+                wrist.setPosition(INTAKE);
                 break;
+            case CONE_PICKUP:
+                wrist.setPosition(PICKUP);
             case X:
-                leftAngular.setPosition(LVECTORINGX);
-                rightAngular.setPosition(RVECTORINGX);
                 break;
         }
-        rightPos = rightExtension.getPosition();
+//        rightPos = rightExtension.getPosition();
     }
 
     public ExtensionState getExtState() {

@@ -170,56 +170,35 @@ public class colorDetection extends OpenCvPipeline
         {
             for(int r=0; r<input.width(); r++)
             {
-<<<<<<< Updated upstream
                 for(int c=0; c<input.height(); c++)
                 {
-                        try
-                        {
-                            HVal=input.get(r, c)[0];
-                            SVal=input.get(r, c)[1];
-                            VVal=input.get(r, c)[2];
+                    try
+                    {
+                        HVal=input.get(r, c)[0];
+                        SVal=input.get(r, c)[1];
+                        VVal=input.get(r, c)[2];
 
-                            if(HVal>55&&HVal<80)
-                            {
-                                pinkCount++;
-                            }
+                        if(HVal>55&&HVal<80)
+                        {
+                            pinkCount++;
+                        }
                             /*else if(HVal<10&&SVal<80&&VVal>140&&VVal<180)
                             {
                                 pinkCount++;
                             }*/
-                            else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
-                            {
-                                yellowCount++;
-                            }
-                            else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
-                            {
-                                blueCount++;
-                            }
-                        }
-                        catch(NullPointerException e)
+                        else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
                         {
-                            //cancer
+                            yellowCount++;
                         }
-=======
-                HVal=input.get(r, c)[0];
-                SVal=input.get(r, c)[1];
-                VVal=input.get(r, c)[2];
-                if(HVal>55&&HVal<80&&SVal>60&&VVal>20)
-                {
-                    pinkCount++;
-                }
-                /*else if(HVal<9&&SVal<80&&VVal>140&&VVal<180)
-                {
-                    pinkCount++;
-                }*/
-                else if(HVal>20&&HVal<40&&SVal>60&&VVal>20)
-                {
-                    yellowCount++;
-                }
-                else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
-                {
-                    blueCount++;
->>>>>>> Stashed changes
+                        else if(HVal>95&&HVal<125&&SVal>60&&VVal>20)
+                        {
+                            blueCount++;
+                        }
+                    }
+                    catch(NullPointerException e)
+                    {
+                        //cancer
+                    }
                 }
             }
 
@@ -257,7 +236,7 @@ public class colorDetection extends OpenCvPipeline
 
         Core.inRange(HSV, pinkLower, pinkHigher, test);
 
-        return preview;
+        return test;
     }
 
     public int getOutput()
