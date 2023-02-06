@@ -12,9 +12,11 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
+import org.firstinspires.ftc.teamcode.util.Module;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
 
 @Config
-public class Slides {
+public class Slides implements Module {
     public DcMotorEx slidesLeft, slidesRight;
     public AnalogInput slidesLimitSwitch;
     public static ElapsedTime time = new ElapsedTime();
@@ -45,7 +47,18 @@ public class Slides {
     public BPIDFController pidController = new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
     public static final double TICKS_PER_INCH = 43.3935;
     public Slides.State state;
-    public enum State{
+
+    @Override
+    public void setState(ModuleState s) {
+        if(s.getClass()==Slides.State.class)
+        {
+            state=(State) s;
+        }
+        time.reset();
+        update();
+    }
+
+    public enum State implements ModuleState {
         HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
     public Slides(HardwareMap hardwareMap)
@@ -214,11 +227,6 @@ public class Slides {
 
     public Slides.State getState() {
         return state;
-    }
-    public void setState(Slides.State state){
-        this.state = state;
-        time.reset();
-        update();
     }
     public void up(){
         slidesLeft.setTargetPosition((int) HIGH);

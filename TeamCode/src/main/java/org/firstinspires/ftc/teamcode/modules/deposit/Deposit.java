@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 //SLIDES, TURRET, HORIZONTAL EXT (probably tmr), COMBINED
+import org.firstinspires.ftc.teamcode.util.Module;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
+
 @Config
-public class Deposit {
+public class Deposit implements Module {
     //temporary values
     public static double LEXTENDED = 0.5;
     public static double REXTENDED = 0.22;
@@ -26,14 +29,37 @@ public class Deposit {
     Servo wrist;
     public ExtensionState extState = ExtensionState.RETRACT;
     public AngleState angState=AngleState.INTAKE;
+    public WristState wristState=WristState.TEMP1;
     Slides slides;
-    public enum ExtensionState
+
+    @Override
+    public void setState(ModuleState s) {
+        if(s.getClass()==ExtensionState.class)
+        {
+            extState=(ExtensionState) s;
+        }
+        else if(s.getClass()==AngleState.class)
+        {
+            angState=(AngleState) s;
+        }
+        else if(s.getClass()==WristState.class)
+        {
+            wristState=(WristState) s;
+        }
+        update();
+    }
+
+    public enum ExtensionState implements ModuleState
     {
         EXTEND, RETRACT, SLIGHT, HALF
     }
-    public enum AngleState
+    public enum AngleState implements ModuleState
     {
         VECTORING, INTAKE, CONE_PICKUP, X
+    }
+    public enum WristState implements ModuleState
+    {
+        TEMP1, TEMP2
     }
 
     public Deposit(HardwareMap hardwareMap) {
@@ -90,5 +116,4 @@ public class Deposit {
         this.angState = state;
         update();
     }
-
 }

@@ -5,8 +5,11 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.Module;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
+
 @Config
-public class Claw
+public class Claw implements Module
 {
     //temporary values
     public static double OPEN = 0.4;
@@ -15,7 +18,18 @@ public class Claw
 
     Servo claw;
     public Claw.State state;
-    public enum State
+
+    @Override
+    public void setState(ModuleState s)
+    {
+        if(s.getClass()==Claw.State.class)
+        {
+            state=(State)s;
+        }
+        update();
+    }
+
+    public enum State implements ModuleState
     {
         OPEN, CLOSE, PARTIAL
     }
@@ -44,12 +58,6 @@ public class Claw
 
     public Claw.State getState() {
         return state;
-    }
-
-    public void setState(Claw.State state)
-    {
-        this.state = state;
-        update();
     }
 
 }

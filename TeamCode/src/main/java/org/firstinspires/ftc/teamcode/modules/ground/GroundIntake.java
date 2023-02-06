@@ -5,7 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class GroundIntake
+import org.firstinspires.ftc.teamcode.util.Module;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
+
+public class GroundIntake implements Module
 {
     //temporary values
     static final double INTAKING = .62;
@@ -16,7 +19,18 @@ public class GroundIntake
     DcMotor groundIntake;
     DistanceSensor distSens;
     public State state;
-    public enum State
+
+    @Override
+    public void setState(ModuleState s)
+    {
+        if(s.getClass()==GroundIntake.State.class)
+        {
+            state=(State)s;
+        }
+        update();
+    }
+
+    public enum State implements ModuleState
     {
         INTAKING, DEPOSITING, OFF
     }
@@ -72,10 +86,4 @@ public class GroundIntake
     public boolean runningTriggere(){
         return runningTrigger;
     }
-    public void setState(State state)
-    {
-        this.state = state;
-        update();
-    }
-
 }

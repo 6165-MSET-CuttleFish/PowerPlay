@@ -13,11 +13,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.Module;
+import org.firstinspires.ftc.teamcode.util.ModuleState;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
 import org.firstinspires.ftc.teamcode.*;
 @Config
-public class Turret
+public class Turret implements Module
 {
     public static double p = 0.0018, i = 0.0033, d = 0.000023;
     public static double kV = 0, kA = 0, kStatic = 0;
@@ -50,7 +52,19 @@ public class Turret
     private boolean isAuto = false;
     public double motorOil=0;
 
-    public enum State
+    @Override
+    public void setState(ModuleState s)
+    {
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(s.getClass()==Turret.State.class)
+        {
+            state=(State)s;
+        }
+        updateTarget();
+        time.reset();
+    }
+
+    public enum State implements ModuleState
     {
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
@@ -88,12 +102,6 @@ public class Turret
     }
     public double millisecondsSpentInState() {
         return time.milliseconds();
-    }
-    public void setState(Turret.State state) {
-        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.state = state;
-        updateTarget();
-        time.reset();
     }
 
     private void updateTarget() {
