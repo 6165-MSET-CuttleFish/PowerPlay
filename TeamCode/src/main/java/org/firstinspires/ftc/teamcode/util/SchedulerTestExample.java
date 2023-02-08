@@ -2,14 +2,17 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 
 @TeleOp
 public class SchedulerTestExample extends LinearOpMode
 {
     RobotTemp r;
+    Turret turret;
     Slides slides;
     TaskScheduler scheduler;
 
@@ -20,6 +23,7 @@ public class SchedulerTestExample extends LinearOpMode
     {
         r=new RobotTemp(this);
         slides=r.slides;
+        turret=r.turret;
         scheduler=new TaskScheduler(this);
 
         waitForStart();
@@ -34,12 +38,16 @@ public class SchedulerTestExample extends LinearOpMode
             else if(gamepad1.y)
             {
                 //run slides after dpad down has been pressed(you can swap this with an action like turret position completed)
-                scheduler.scheduleTask(slides, Slides.State.BOTTOM, ()->gamepad1.dpad_down==true);
+                scheduler.scheduleTask(turret, Turret.State.BACK);
             }
             else if(gamepad1.x)
             {
                 //run slides 2 seconds after x pressed
-                scheduler.scheduleTask(slides, Slides.State.MID, 2000);
+                scheduler.scheduleTask(turret, Turret.State.LEFT);
+            }
+            else if(gamepad1.b)
+            {
+                scheduler.scheduleTask(turret, Turret.State.RIGHT);
             }
             telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
@@ -49,6 +57,7 @@ public class SchedulerTestExample extends LinearOpMode
             telemetry.addData("currentPower: ", slides.slidesRight.getPower());
             telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getVoltage());
             telemetry.addData("State: ", slides.getState());
+            telemetry.update();
         }
     }
 }

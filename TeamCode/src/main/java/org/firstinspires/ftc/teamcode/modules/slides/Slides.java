@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.util.ModuleState;
 @Config
 public class Slides implements Module {
     public DcMotorEx slidesLeft, slidesRight;
+    //public AnalogInput slidesLimitSwitch;
     public AnalogInput slidesLimitSwitch;
     public static ElapsedTime time = new ElapsedTime();
     //slides is 17.5 inches tall
@@ -65,7 +66,7 @@ public class Slides implements Module {
     {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
+        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "sLimit");
         slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -210,10 +211,11 @@ public class Slides implements Module {
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-    public void checkLimit() {
-        switchPressed = slidesLimitSwitch.getVoltage();
-        if(switchPressed > 1) {
-            //posAtZero=slidesRight.getCurrentPosition();
+    public void checkLimit()
+    {
+        if(limitState())
+        {
+            posAtZero=slidesRight.getCurrentPosition();
         }
     }
     public void setPowerManual(double power) {
@@ -223,6 +225,15 @@ public class Slides implements Module {
         }*/
         slidesLeft.setPower(power);
         slidesRight.setPower(power);
+    }
+
+    public boolean limitState()
+    {
+        if(slidesLimitSwitch.getVoltage()<0.9)
+        {
+            return true;
+        }
+        return false;
     }
 
     public Slides.State getState() {
@@ -260,8 +271,6 @@ public class Slides implements Module {
         slidesLeft.setPower(1);
         slidesRight.setPower(1);
     }
-
-
 
     public static double inchesToTicks(double inches) {
         return (inches * TICKS_PER_INCH);

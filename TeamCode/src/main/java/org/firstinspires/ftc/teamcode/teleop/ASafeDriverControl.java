@@ -344,8 +344,9 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Claw: ", claw.getState());
             telemetry.addData("Kai did dumb dumb(turret ideal) ", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
+            telemetry.addData("turret pos at he: ", turret.hallEffect.getVoltage());
             telemetry.addData("Motor Speeds: ", slides.getOuput());
-            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.slidesLimitSwitch.getVoltage());
+            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.limitState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
 
 
