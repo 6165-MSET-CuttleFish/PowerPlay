@@ -63,27 +63,27 @@ public class Deposit implements Module {
     }
 
     public Deposit(HardwareMap hardwareMap) {
-//        leftExtension =hardwareMap.get(Servo.class, "lExt");
-//        rightExtension =hardwareMap.get(Servo.class, "rExt");
+        leftExtension =hardwareMap.get(Servo.class, "lExt");
+        rightExtension =hardwareMap.get(Servo.class, "rExt");
         wrist = hardwareMap.get(Servo.class, "wrist");
-//        rightExtension.setDirection(Servo.Direction.REVERSE);
-//        setExtension(ExtensionState.RETRACT);
+        rightExtension.setDirection(Servo.Direction.REVERSE);
+        setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);
     }
 
     public void update() {
         switch(extState) {
             case EXTEND:
-//                leftExtension.setPosition(LEXTENDED);
-//                rightExtension.setPosition(REXTENDED);
+                leftExtension.setPosition(LEXTENDED);
+                rightExtension.setPosition(REXTENDED);
                 break;
             case RETRACT:
-//                leftExtension.setPosition(LZERO);
-//                rightExtension.setPosition(RZERO);
+                leftExtension.setPosition(LZERO);
+                rightExtension.setPosition(RZERO);
                 break;
             case HALF:
-//                leftExtension.setPosition(LHALF);
-//                rightExtension.setPosition(RHALF);
+                leftExtension.setPosition(LHALF);
+                rightExtension.setPosition(RHALF);
                 break;
         }
         switch (angState){
