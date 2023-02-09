@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -327,6 +328,11 @@ public class ASafeDriverControl extends LinearOpMode {
                     left = false;
                 }
             }
+            //auto close claw
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100) {
+                claw.setState(Claw.State.CLOSE);
+            }
+
             transferUpdate(cycleValue, diagonal, left);
             resetUpdate();
             //turret.update();
@@ -342,15 +348,13 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.addData("Claw: ", claw.getState());
-            telemetry.addData("Kai did dumb dumb(turret ideal) ", turret.getTargetPos());
+            telemetry.addData("Turret Target Position", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
             telemetry.addData("turret pos at he: ", turret.hallEffect.getVoltage());
             telemetry.addData("Motor Speeds: ", slides.getOuput());
             telemetry.addData("SLIDES LIMIT SWITCH: ", slides.limitState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
-
-
-
+            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
             //turret.update();
         }
@@ -383,17 +387,16 @@ public class ASafeDriverControl extends LinearOpMode {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 }
-                if(cycle==1){
+                if(cycle == 1){
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                }else
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                } else
+                    deposit.setExtension(Deposit.ExtensionState.HALF);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
                 if (left)
                     turret.setState(Turret.State.LEFT_DIAGONAL);
                 if (!left)
                     turret.setState(Turret.State.RIGHT_DIAGONAL);
-
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle == 1) {

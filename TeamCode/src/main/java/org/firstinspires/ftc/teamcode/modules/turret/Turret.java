@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.*;
 @Config
 public class Turret implements Module
 {
-    public static double p = 0.0018, i = 0.0033, d = 0.000023;
+    public static double p = 0.00067, i = 0.0030, d = 0.00004;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
@@ -35,7 +35,7 @@ public class Turret implements Module
 
 
     public static int LEFT_POS = -2100, RIGHT_POS = 2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4220, RIGHT_DIAGONAL = -2975, LEFT_DIAGONAL = -2975,  RIGHT_SIDE_HIGH = -3100,
+            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
             RIGHT_SIDE_HIGH_PRELOAD = -880, RIGHT_SIDE_MID = 3000;
 
 
@@ -43,7 +43,7 @@ public class Turret implements Module
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
-    public double posAtZero=5;
+    public double posAtZero=0;
     double prevHall=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
@@ -107,14 +107,14 @@ public class Turret implements Module
     private void updateTarget() {
         //if hall effect then reset pos at zero
         //if(true) {
-            if (hallEffect.getVoltage() - prevHall > 1.0) {
-                if (turretMotor.getPower() < 0) {
-                    posAtZero = encoder.getCurrentPosition() - offset*turretMotor.getPower()/60;
-                } else {
-                    posAtZero = encoder.getCurrentPosition() + offset*turretMotor.getPower()/60;
-                }
-                prevHall = hallEffect.getVoltage();
-            }
+//            if (hallEffect.getVoltage() - prevHall > 1.0) {
+//                if (turretMotor.getPower() < 0) {
+//                    posAtZero = encoder.getCurrentPosition() - offset*turretMotor.getPower()/60;
+//                } else {
+//                    posAtZero = encoder.getCurrentPosition() + offset*turretMotor.getPower()/60;
+//                }
+//                prevHall = hallEffect.getVoltage();
+//            }
         //}
 
             switch (state) {
