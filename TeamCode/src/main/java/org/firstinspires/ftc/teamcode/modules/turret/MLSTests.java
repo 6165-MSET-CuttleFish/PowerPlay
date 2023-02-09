@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 @Config
 public class MLSTests extends OpMode {
     private AnalogInput hallEffect;
-    public double tolerance=0.5;
+    public double tolerance=1;
     public double prev=5.0;
     double targetPos, prevReset=0;
     public Encoder encoder;
@@ -31,9 +31,10 @@ public class MLSTests extends OpMode {
         if(hallEffect.getVoltage()<prev){
             telemetry.addData("Fall"," Detected");
         }
+        telemetry.addData("Hall Effect voltage: ", (hallEffect.getVoltage()));
         telemetry.addData("Hall Effect Activated: ", (hallEffect.getVoltage()<tolerance));
         telemetry.update();
-        prev=hallEffect.getVoltage();
+        prev=hallEffect.getVoltage()-0.1;
 
     }
 }

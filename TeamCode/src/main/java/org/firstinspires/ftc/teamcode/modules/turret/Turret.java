@@ -30,7 +30,7 @@ public class Turret implements Module
     PIDControl controller;
     PIDCoeff coeff;
 
-    public static double offset=-480;
+    public static double offset=8;
 
 
 
@@ -43,8 +43,8 @@ public class Turret implements Module
     public static double closePower = 0.3;
     public static double farPower = 0.8;
     double targetPos=0;
-    public double posAtZero=5;
-    double prevHall=0;
+    public double posAtZero=0;
+    public double prevHall=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
     public AnalogInput hallEffect;
@@ -107,13 +107,13 @@ public class Turret implements Module
     private void updateTarget() {
         //if hall effect then reset pos at zero
         //if(true) {
-            if (hallEffect.getVoltage() - prevHall > 1.0) {
+            prevHall = hallEffect.getVoltage();
+            if (hallEffect.getVoltage() - prevHall < -1.0) {
                 if (turretMotor.getPower() < 0) {
-                    posAtZero = encoder.getCurrentPosition() - offset*turretMotor.getPower()/60;
+                    posAtZero = -encoder.getCurrentPosition();
                 } else {
-                    posAtZero = encoder.getCurrentPosition() + offset*turretMotor.getPower()/60;
+                    posAtZero = -encoder.getCurrentPosition();
                 }
-                prevHall = hallEffect.getVoltage();
             }
         //}
 
