@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -94,6 +95,7 @@ public class RobotTemp extends MecanumDrive {
     public Servo midOdo, sideOdo;
     public List<DcMotorEx> motors;
     public AnalogInput slidesLimitSwitch;
+    public DistanceSensor distanceSensor;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
@@ -181,6 +183,7 @@ public class RobotTemp extends MecanumDrive {
         midOdo.setPosition(odomServoPos);
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -230,7 +233,7 @@ public class RobotTemp extends MecanumDrive {
 
 
         groundIntake = new GroundIntake(hardwareMap);
-        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
+       // slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);

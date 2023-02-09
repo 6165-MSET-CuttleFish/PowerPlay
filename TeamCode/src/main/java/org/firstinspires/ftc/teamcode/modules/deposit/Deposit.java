@@ -12,16 +12,16 @@ import org.firstinspires.ftc.teamcode.util.ModuleState;
 @Config
 public class Deposit implements Module {
     //temporary values
-    public static double LEXTENDED = 0.5;
+    public static double LEXTENDED = 0.48;
     public static double REXTENDED = 0.22;
-    public static double LHALF = 0.38;
-    public static double RHALF = 0.2;
-    public static double LZERO = 0.3;
-    public static double RZERO = 0.01;
+    public static double LHALF = 0.42;
+    public static double RHALF = 0.16;
+    public static double LZERO = 0.31;
+    public static double RZERO = 0.03;
     public static double rightPos = 0;
 
-    public static double VECTORING = 0.46;
-    public static double INTAKE = 0.65;
+    public static double VECTORING = 0.42;
+    public static double INTAKE = 0.57;
     public static double PICKUP = 1;
 
     Servo leftExtension;
@@ -63,27 +63,27 @@ public class Deposit implements Module {
     }
 
     public Deposit(HardwareMap hardwareMap) {
-//        leftExtension =hardwareMap.get(Servo.class, "lExt");
-//        rightExtension =hardwareMap.get(Servo.class, "rExt");
+        leftExtension =hardwareMap.get(Servo.class, "lExt");
+        rightExtension =hardwareMap.get(Servo.class, "rExt");
         wrist = hardwareMap.get(Servo.class, "wrist");
-//        rightExtension.setDirection(Servo.Direction.REVERSE);
-//        setExtension(ExtensionState.RETRACT);
+        rightExtension.setDirection(Servo.Direction.REVERSE);
+        setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);
     }
 
     public void update() {
         switch(extState) {
             case EXTEND:
-//                leftExtension.setPosition(LEXTENDED);
-//                rightExtension.setPosition(REXTENDED);
+                leftExtension.setPosition(LEXTENDED);
+                rightExtension.setPosition(REXTENDED);
                 break;
             case RETRACT:
-//                leftExtension.setPosition(LZERO);
-//                rightExtension.setPosition(RZERO);
+                leftExtension.setPosition(LZERO);
+                rightExtension.setPosition(RZERO);
                 break;
             case HALF:
-//                leftExtension.setPosition(LHALF);
-//                rightExtension.setPosition(RHALF);
+                leftExtension.setPosition(LHALF);
+                rightExtension.setPosition(RHALF);
                 break;
         }
         switch (angState){

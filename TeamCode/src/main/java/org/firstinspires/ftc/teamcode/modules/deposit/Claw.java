@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.util.ModuleState;
 public class Claw implements Module
 {
     //temporary values
-    public static double OPEN = 0.4;
-    public static double CLOSE = 0.575;
+    public static double OPEN = 0.87;
+    public static double CLOSE = 1;
     public static double PARTIAL=0;
 
     Servo claw;
