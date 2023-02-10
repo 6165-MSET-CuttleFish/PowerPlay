@@ -411,14 +411,17 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (resetTimer.milliseconds() > 500) {
-                slides.setState(Slides.State.BOTTOM);
+            if (resetTimer.milliseconds() > 650) {
+                claw.setState(Claw.State.OPEN);
                 resetCheck = false;
+            }
+            else if (resetTimer.milliseconds() > 500) {
+                slides.setState(Slides.State.BOTTOM);
             } else if (resetTimer.seconds() > 0) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 turret.setState(Turret.State.ZERO);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
-                claw.setState(Claw.State.OPEN);
+                claw.setState(Claw.State.CLOSE);
             }
         }
     }
