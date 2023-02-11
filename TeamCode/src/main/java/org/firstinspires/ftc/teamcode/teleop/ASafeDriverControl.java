@@ -271,16 +271,8 @@ public class ASafeDriverControl extends LinearOpMode {
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
-                slides.setPowerManual(-gamepad2.left_stick_y);
-                //slides.setPowerManual(gamepad2.left_stick_y);
-                slidesZero = true;
+                slides.setPowerManual(gamepad2.left_stick_y);
             }
-            if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.setPowerManual(-gamepad2.left_stick_y);
-                slidesZero = false;
-            }
-
             //GROUND INTAKE
             if (intakeGround.wasJustPressed()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
@@ -368,8 +360,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 }
                 if(cycle==1){
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                }else
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                } else
+                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
                 turret.setState(Turret.State.BACK);
