@@ -16,6 +16,8 @@ public class Deposit implements Module {
     public static double REXTENDED = 0.22;
     public static double LHALF = 0.42;
     public static double RHALF = 0.16;
+    public static double LFOURTH = 0.39;
+    public static double RFOURTH = 0.13;
     public static double LZERO = 0.31;
     public static double RZERO = 0.03;
     public static double rightPos = 0;
@@ -51,7 +53,7 @@ public class Deposit implements Module {
 
     public enum ExtensionState implements ModuleState
     {
-        EXTEND, RETRACT, SLIGHT, HALF
+        EXTEND, RETRACT, SLIGHT, HALF, FOURTH
     }
     public enum AngleState implements ModuleState
     {
@@ -84,6 +86,10 @@ public class Deposit implements Module {
             case HALF:
                 leftExtension.setPosition(LHALF);
                 rightExtension.setPosition(RHALF);
+                break;
+            case FOURTH:
+                leftExtension.setPosition(LFOURTH);
+                rightExtension.setPosition(RFOURTH);
                 break;
         }
         switch (angState){

@@ -50,7 +50,7 @@ public class ASafeDriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer;
-    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, stackPickup;
+    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, conePickup;
     ToggleButtonReader ninjaMode, straightMode;
 
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
@@ -93,7 +93,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 half = new ButtonReader(secondary, GamepadKeys.Button.B),
                 angle = new ButtonReader(secondary, GamepadKeys.Button.Y),
-                stackPickup = new ButtonReader(secondary, GamepadKeys.Button.X),
+                conePickup = new ButtonReader(secondary, GamepadKeys.Button.X),
                 extension = new ButtonReader(secondary, GamepadKeys.Button.A),
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
                 actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
@@ -131,8 +131,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
-
         waitForStart();
+        primary.gamepad.setLedColor(9,79,183, 120000); //blue
+        secondary.gamepad.setLedColor(203, 195, 227, 120000); //light purple
         slides.setState(Slides.State.BOTTOM);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -166,8 +167,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
+                            Math.abs(gamepad1.left_stick_y) <= 0.2 ? 0 : -gamepad1.left_stick_y,
+                            Math.abs(gamepad1.left_stick_x) <= 0.2 ? 0: -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
             );
@@ -201,11 +202,11 @@ public class ASafeDriverControl extends LinearOpMode {
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
-                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
-                            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             slides.setState(Slides.State.HIGH);
                             break;
                     }
@@ -243,9 +244,13 @@ public class ASafeDriverControl extends LinearOpMode {
                 transferTimer.reset();
             }
 
-            if (stackPickup.wasJustPressed()) {
-                slides.slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            if (conePickup.wasJustPressed()) {
+                slides.setState(Slides.State.PICKUP);
+                deposit.setAngle(Deposit.AngleState.CONE_PICKUP);
+                deposit.setExtension(Deposit.ExtensionState.HALF);
+                turret.setState(Turret.State.ZERO);
             }
+
             if (turretZero.wasJustPressed()) {
                 turret.posAtZero = -turret.encoder.getCurrentPosition();
             }
@@ -271,14 +276,7 @@ public class ASafeDriverControl extends LinearOpMode {
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
-                slides.setPowerManual(-gamepad2.left_stick_y);
-                //slides.setPowerManual(gamepad2.left_stick_y);
-                slidesZero = true;
-            }
-            if (slidesZero && gamepad2.left_stick_y == 0) {
-                slides.setState(Slides.State.MANUAL);
-                slides.setPowerManual(-gamepad2.left_stick_y);
-                slidesZero = false;
+slides.setPowerManual(gamepad2.left_stick_y);
             }
 
             //GROUND INTAKE
@@ -317,8 +315,17 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
+            
             if (gamepad2.touchpad) {
-                diagonal = !diagonal;
+                if (diagonal) {
+                    diagonal = false;
+                    gamepad2.runRumbleEffect(customRumbleEffect0);
+                    gamepad2.setLedColor(159, 43, 104, 20000); //yellow?
+                } else if (!diagonal) {
+                    diagonal = true;
+                    gamepad2.runRumbleEffect(customRumbleEffect1);
+                    gamepad2.setLedColor(203, 195, 227, 20000); //light purple
+                }
             }
             if (diagonal) {
                 if (actuateLeft.wasJustPressed()) {
@@ -328,6 +335,7 @@ public class ASafeDriverControl extends LinearOpMode {
                     left = false;
                 }
             }
+
             //auto close claw
             if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100) {
                 claw.setState(Claw.State.CLOSE);
@@ -367,13 +375,12 @@ public class ASafeDriverControl extends LinearOpMode {
                     slides.setState(Slides.State.HIGH);
                 }
                 if(cycle==1){
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                }else
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                } else
+                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
                 turret.setState(Turret.State.BACK);
-
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle == 1) {
@@ -390,7 +397,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 if(cycle == 1){
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 } else
-                    deposit.setExtension(Deposit.ExtensionState.HALF);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
                 if (left)

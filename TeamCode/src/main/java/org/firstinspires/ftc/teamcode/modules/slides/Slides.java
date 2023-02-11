@@ -27,6 +27,7 @@ public class Slides implements Module {
     public static boolean slidesCheck = false;
     double output=0;
     public double posAtZero=0;
+    public double manual = 0;
 
     public static int HIGH = 2325; //old = 1850
     public static int HIGH_DROP = 2750; //old = 1650
@@ -34,6 +35,7 @@ public class Slides implements Module {
     public static int MID_DROP = 1180;
     public static int LOW = 820; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
+    public static int PICKUP = 10;
     public static int INTAKE_AUTO =  125;
     public static int SLIGHT = 600;
     public static int CYCLE0 = 449;
@@ -60,7 +62,9 @@ public class Slides implements Module {
     }
 
     public enum State implements ModuleState {
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP, BOTTOM, MANUAL, INTAKE_AUTO, ZERO, CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
+        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP,
+        BOTTOM, MANUAL, INTAKE_AUTO, ZERO, PICKUP,
+        CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
     public Slides(HardwareMap hardwareMap)
     {
@@ -75,17 +79,17 @@ public class Slides implements Module {
         state=State.BOTTOM;
     }
 
-    public void update(){
+    public void update() {
         checkLimit();
 //        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
 //        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-        switch(state) {
+        switch (state) {
             case HIGH:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(HIGH+posAtZero);
+                pidController.setTargetPosition(HIGH + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -93,7 +97,7 @@ public class Slides implements Module {
             case HIGH_DROP:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(HIGH_DROP+posAtZero);
+                pidController.setTargetPosition(HIGH_DROP + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -101,13 +105,13 @@ public class Slides implements Module {
             case MID:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(MID+posAtZero);
+                pidController.setTargetPosition(MID + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
                 break;
             case MID_DROP:
-                pidController.setTargetPosition(MID_DROP+posAtZero);
+                pidController.setTargetPosition(MID_DROP + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -115,7 +119,7 @@ public class Slides implements Module {
             case LOW:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(LOW+posAtZero);
+                pidController.setTargetPosition(LOW + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -123,7 +127,7 @@ public class Slides implements Module {
             case LOW_DROP:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(LOW_DROP+posAtZero);
+                pidController.setTargetPosition(LOW_DROP + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -131,7 +135,7 @@ public class Slides implements Module {
             case INTAKE_AUTO:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(INTAKE_AUTO+posAtZero);
+                pidController.setTargetPosition(INTAKE_AUTO + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -139,7 +143,15 @@ public class Slides implements Module {
             case BOTTOM:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(0+posAtZero);
+                pidController.setTargetPosition(0 + posAtZero);
+                output = pidController.update(slidesRight.getCurrentPosition());
+                slidesRight.setPower(output);
+                slidesLeft.setPower(output);
+                break;
+            case PICKUP:
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                pidController.setTargetPosition(PICKUP + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -147,7 +159,7 @@ public class Slides implements Module {
             case CYCLE0:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE0+posAtZero);
+                pidController.setTargetPosition(CYCLE0 + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -155,7 +167,7 @@ public class Slides implements Module {
             case CYCLE1:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE1+posAtZero);
+                pidController.setTargetPosition(CYCLE1 + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -163,7 +175,7 @@ public class Slides implements Module {
             case CYCLE2:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE2+posAtZero);
+                pidController.setTargetPosition(CYCLE2 + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -171,7 +183,7 @@ public class Slides implements Module {
             case CYCLE3:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE3+posAtZero);
+                pidController.setTargetPosition(CYCLE3 + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -179,13 +191,24 @@ public class Slides implements Module {
             case CYCLE4:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE4+posAtZero);
+                pidController.setTargetPosition(posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
                 break;
             case MANUAL:
-                pidController.setTargetPosition(slidesRight.getCurrentPosition()+50);
+                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+                pidController.setTargetPosition(slidesRight.getCurrentPosition());
+                output = pidController.update(slidesRight.getCurrentPosition());
+                if (Math.abs(manual) < 0.1) {
+                    slidesRight.setPower(manual);
+                    slidesLeft.setPower(manual);
+                }
+        else{
+        slidesRight.setPower(output);
+        slidesLeft.setPower(output);
+    }
                 break;
             case SLIGHT:
                 pidController.setTargetPosition(SLIGHT+posAtZero);
@@ -219,12 +242,7 @@ public class Slides implements Module {
         }
     }
     public void setPowerManual(double power) {
-        /*if(switchPressed&&power<0)
-        {
-            power = 0;
-        }*/
-        slidesLeft.setPower(power);
-        slidesRight.setPower(power);
+        manual = power;
     }
 
     public boolean limitState()
