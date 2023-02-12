@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.Module;
-import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
-public class GroundIntake implements Module
+public class GroundIntake extends HwModule
 {
     //temporary values
     static final double INTAKING = .62;
@@ -28,6 +28,11 @@ public class GroundIntake implements Module
             state=(State)s;
         }
         update();
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
     public enum State implements ModuleState

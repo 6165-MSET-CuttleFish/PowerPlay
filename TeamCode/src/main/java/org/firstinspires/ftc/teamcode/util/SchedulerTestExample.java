@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @TeleOp
 public class SchedulerTestExample extends LinearOpMode
@@ -33,21 +34,23 @@ public class SchedulerTestExample extends LinearOpMode
             if(gamepad1.a)
             {
                 //run slides 500 miliseconds after left bumper has been pressed
-                scheduler.scheduleTask(slides, Slides.State.HIGH, 500, ()->gamepad2.left_bumper==true);
+                scheduler.scheduleTask(
+                        slides.task(Slides.State.HIGH, 500,
+                                new RunCondition(()->gamepad2.left_bumper==true)));
             }
             else if(gamepad1.y)
             {
                 //run slides after dpad down has been pressed(you can swap this with an action like turret position completed)
-                scheduler.scheduleTask(turret, Turret.State.BACK);
+                scheduler.scheduleTask(turret.task(Turret.State.BACK));
             }
             else if(gamepad1.x)
             {
                 //run slides 2 seconds after x pressed
-                scheduler.scheduleTask(turret, Turret.State.LEFT);
+                scheduler.scheduleTask(turret.task(Turret.State.LEFT, 2000));
             }
             else if(gamepad1.b)
             {
-                scheduler.scheduleTask(turret, Turret.State.RIGHT);
+                scheduler.scheduleTask(turret.task(Turret.State.RIGHT));
             }
             telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());

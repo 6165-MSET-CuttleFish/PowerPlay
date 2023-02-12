@@ -5,18 +5,15 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
-import org.firstinspires.ftc.teamcode.util.Module;
-import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
 @Config
-public class Slides implements Module {
+public class Slides extends HwModule {
     public DcMotorEx slidesLeft, slidesRight;
     //public AnalogInput slidesLimitSwitch;
     public AnalogInput slidesLimitSwitch;
@@ -59,6 +56,11 @@ public class Slides implements Module {
         }
         time.reset();
         update();
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
     public enum State implements ModuleState {

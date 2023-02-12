@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 //SLIDES, TURRET, HORIZONTAL EXT (probably tmr), COMBINED
-import org.firstinspires.ftc.teamcode.util.Module;
-import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
 @Config
-public class Deposit implements Module {
+public class Deposit extends HwModule {
     //temporary values
     public static double LEXTENDED = 0.48;
     public static double REXTENDED = 0.22;
@@ -49,6 +49,11 @@ public class Deposit implements Module {
             wristState=(WristState) s;
         }
         update();
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
     public enum ExtensionState implements ModuleState

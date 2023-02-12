@@ -64,10 +64,10 @@ public class AprilTagDetectionTest extends LinearOpMode
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-        pipeline=new colorDetection(telemetry);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        //pipeline=new colorDetection(telemetry);
 
-        camera.setPipeline(pipeline);
+        camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -89,13 +89,14 @@ public class AprilTagDetectionTest extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        /*while (!isStarted() && !isStopRequested())
+        while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-telemetry.addLine(String.format("detections", currentDetections.size()));
-if(currentDetections.size()>0) {
-    tagToTelemetry(currentDetections.get(0));
-}
+            telemetry.addLine(String.format("detections", currentDetections.size()));
+            if(currentDetections.size()>0)
+            {
+                tagToTelemetry(currentDetections.get(0));
+            }
             telemetry.update();
             sleep(20);
         }
@@ -119,17 +120,17 @@ if(currentDetections.size()>0) {
         }
 
         /* Actually do something useful */
-        /*if(tagOfInterest == null)
+       /* if(tagOfInterest == null)
         {
             /*
              * Insert your autonomous code here, presumably running some default configuration
              * since the tag was never sighted during INIT
              */
-        /*}
+       /* }
         else
         {
-            /*
-             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
+
+             /* Insert your autonomous code here, probably using the tag pose to decide your configuration.
              */
 
             // e.g.
@@ -145,13 +146,13 @@ if(currentDetections.size()>0) {
             {
                 // do something else
             }
-        }*/
+        }
 
-        while(!isStarted()&&!isStopRequested())
+        /*while(!isStarted()&&!isStopRequested())
         {
             telemetry.addData("State", pipeline.getOutput());
             telemetry.update();
-        }
+        }*/
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */

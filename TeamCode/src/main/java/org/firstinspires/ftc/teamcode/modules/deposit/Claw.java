@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.modules.deposit;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.util.Module;
-import org.firstinspires.ftc.teamcode.util.ModuleState;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
 @Config
-public class Claw implements Module
+public class Claw extends HwModule
 {
     //temporary values
     public static double OPEN = 0.82;
@@ -27,6 +26,11 @@ public class Claw implements Module
             state=(State)s;
         }
         update();
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
     public enum State implements ModuleState
