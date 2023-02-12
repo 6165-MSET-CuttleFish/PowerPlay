@@ -203,14 +203,13 @@ public class Slides extends HwModule {
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 pidController.setTargetPosition(slidesRight.getCurrentPosition());
                 output = pidController.update(slidesRight.getCurrentPosition());
-                if (Math.abs(manual) < 0.1) {
+                if (Math.abs(manual) > 0.1) {
                     slidesRight.setPower(manual);
                     slidesLeft.setPower(manual);
+                } else {
+                    slidesRight.setPower(output);
+                    slidesLeft.setPower(output);
                 }
-        else{
-        slidesRight.setPower(output);
-        slidesLeft.setPower(output);
-    }
                 break;
             case SLIGHT:
                 pidController.setTargetPosition(SLIGHT+posAtZero);

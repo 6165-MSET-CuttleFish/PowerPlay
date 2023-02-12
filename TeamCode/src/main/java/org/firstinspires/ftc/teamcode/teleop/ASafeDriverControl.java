@@ -88,13 +88,13 @@ public class ASafeDriverControl extends LinearOpMode {
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
-                depositTransfer = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                intakeTransfer = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
 
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
                 actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
-                actuateUp = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                actuateUp = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
-                intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
                 half = new ButtonReader(secondary, GamepadKeys.Button.B),
                 angle = new ButtonReader(secondary, GamepadKeys.Button.Y),
                 conePickup = new ButtonReader(secondary, GamepadKeys.Button.X),
@@ -132,8 +132,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         waitForStart();
-        primary.gamepad.setLedColor(9,79,183, 120000); //blue
-        secondary.gamepad.setLedColor(203, 195, 227, 120000); //light purple
+        primary.gamepad.setLedColor(9, 79, 183, 120000); //blue
+        secondary.gamepad.setLedColor(147, 112, 219, 120000); //light purple
         slides.setState(Slides.State.BOTTOM);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -142,7 +142,6 @@ public class ASafeDriverControl extends LinearOpMode {
         robot.sideOdo.setPosition(0.65);
         turret.setState(Turret.State.ZERO);
         while (opModeIsActive()) {
-            //slides.update();
             robot.update();
             for (KeyReader reader : keyReaders) {
                 reader.readValue();
@@ -192,21 +191,21 @@ public class ASafeDriverControl extends LinearOpMode {
                     switch (cycleValue) {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
-                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
+//                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
-                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
+//                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
-                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+//                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
-                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+//                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             slides.setState(Slides.State.HIGH);
                             break;
                     }
@@ -332,7 +331,6 @@ public class ASafeDriverControl extends LinearOpMode {
                 turretPos = 2;
                 transferTimer.reset();
             }
-
             transferUpdate(cycleValue);
             resetUpdate();
 
@@ -362,30 +360,43 @@ public class ASafeDriverControl extends LinearOpMode {
     public void transferUpdate(int cycle) {
         if (transfer) {
             if (transferTimer.milliseconds() > 400) {
-                if (cycle == 3) {
-                    slides.setState(Slides.State.HIGH);
-                }
                 if(cycle==1)
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 else
-                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 200) {
+            } else if (transferTimer.milliseconds() > 300) {
                 switch(turretPos) {
                     case 0:
-                        turret.setState(Turret.State.LEFT_DIAGONAL);
+                        turret.setState(Turret.State.LEFT);
                         break;
                     case 1:
                         turret.setState(Turret.State.BACK);
                         break;
                     case 2:
-                        turret.setState(Turret.State.RIGHT_DIAGONAL);
+                        turret.setState(Turret.State.RIGHT);
                         break;
                 }
-            } else if (transferTimer.seconds() > 0) {
+            } else if (transferTimer.milliseconds() > 200) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
-                if (cycle == 1) {
+            } else if (transferTimer.seconds() > 0) {
+                if (slides.slidesLeft.getCurrentPosition() > 500) {
+                    switch(turretPos) {
+                        case 0:
+                            turret.setState(Turret.State.LEFT);
+                            break;
+                        case 1:
+                            turret.setState(Turret.State.BACK);
+                            break;
+                        case 2:
+                            turret.setState(Turret.State.RIGHT);
+                            break;
+                    }
+                }
+                if (cycle == 3) {
+                    slides.setState(Slides.State.HIGH);
+                } else if (cycle == 1) {
                     slides.setState(Slides.State.LOW);
                 } else {
                     slides.setState(Slides.State.MID);
