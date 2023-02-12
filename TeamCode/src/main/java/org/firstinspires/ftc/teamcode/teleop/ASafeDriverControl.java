@@ -45,12 +45,12 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean transfer = false;
     boolean resetCheck = false;
     boolean diagonal = false;
-    boolean left = true;
+    int turretPos = -1; //0 = left, 1 = back, 2 = right
     boolean right = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
-    TriggerReader intakeTransfer, depositTransfer;
-    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateUp, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, conePickup;
+    TriggerReader intakeTransfer, depositTransfer, actuateUp;
+    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, conePickup;
     ToggleButtonReader ninjaMode, straightMode;
 
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
@@ -88,17 +88,17 @@ public class ASafeDriverControl extends LinearOpMode {
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
+                depositTransfer = new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
 
+                actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
+                actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
+                actuateUp = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
+                reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 intakeTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.RIGHT_TRIGGER),
-                depositTransfer = new TriggerReader(secondary, GamepadKeys.Trigger.LEFT_TRIGGER),
                 half = new ButtonReader(secondary, GamepadKeys.Button.B),
                 angle = new ButtonReader(secondary, GamepadKeys.Button.Y),
                 conePickup = new ButtonReader(secondary, GamepadKeys.Button.X),
                 extension = new ButtonReader(secondary, GamepadKeys.Button.A),
-                actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
-                actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
-                actuateUp = new ButtonReader(secondary, GamepadKeys.Button.DPAD_UP),
-                reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
 
@@ -231,18 +231,7 @@ public class ASafeDriverControl extends LinearOpMode {
             }
             //setting states based off of cycleValue
 
-            //reset
-            if (reset.wasJustPressed()) {
-                autoActuate = false;
-                resetCheck = true;
-                resetTimer.reset();
-            }
-            //turret mid
-            if (actuateUp.wasJustPressed()) {
-                autoActuate = true;
-                transfer = true;
-                transferTimer.reset();
-            }
+
 
             if (conePickup.wasJustPressed()) {
                 slides.setState(Slides.State.PICKUP);
@@ -276,7 +265,7 @@ public class ASafeDriverControl extends LinearOpMode {
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
-slides.setPowerManual(gamepad2.left_stick_y);
+                slides.setPowerManual(gamepad2.left_stick_y);
             }
 
             //GROUND INTAKE
@@ -293,9 +282,7 @@ slides.setPowerManual(gamepad2.left_stick_y);
             } else if (intakeTransfer.isDown()) {
                 claw.setState(Claw.State.CLOSE);
             }
-            telemetry.addData("Deposit", depositTransfer.isDown());
 
-            //horizontal slides:
             //extension
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -315,36 +302,40 @@ slides.setPowerManual(gamepad2.left_stick_y);
             } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             }
-            
-            if (gamepad2.touchpad) {
-                if (diagonal) {
-                    diagonal = false;
-                    gamepad2.runRumbleEffect(customRumbleEffect0);
-                    gamepad2.setLedColor(159, 43, 104, 20000); //yellow?
-                } else if (!diagonal) {
-                    diagonal = true;
-                    gamepad2.runRumbleEffect(customRumbleEffect1);
-                    gamepad2.setLedColor(203, 195, 227, 20000); //light purple
-                }
-            }
-            if (diagonal) {
-                if (actuateLeft.wasJustPressed()) {
-                    left = true;
-                }
-                if (actuateRight.wasJustPressed()) {
-                    left = false;
-                }
-            }
 
             //auto close claw
             if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100) {
                 claw.setState(Claw.State.CLOSE);
             }
+            //reset
+            if (reset.wasJustPressed()) {
+                autoActuate = false;
+                resetCheck = true;
+                resetTimer.reset();
+            }
+            //turret mid
+            if (actuateUp.wasJustPressed()) {
+                autoActuate = true;
+                transfer = true;
+                turretPos = 1;
+                transferTimer.reset();
+            }
+            if (actuateLeft.wasJustPressed()) {
+                autoActuate = true;
+                transfer = true;
+                turretPos = 0;
+                transferTimer.reset();
+            }
+            if (actuateRight.wasJustPressed()) {
+                autoActuate = true;
+                transfer = true;
+                turretPos = 2;
+                transferTimer.reset();
+            }
 
-            transferUpdate(cycleValue, diagonal, left);
+            transferUpdate(cycleValue);
             resetUpdate();
-            //turret.update();
-            //slides.update();
+
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
@@ -368,42 +359,30 @@ slides.setPowerManual(gamepad2.left_stick_y);
         }
     }
 
-    public void transferUpdate(int cycle, boolean diagonal, boolean left) {
-        if (transfer && !diagonal) {
+    public void transferUpdate(int cycle) {
+        if (transfer) {
             if (transferTimer.milliseconds() > 400) {
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 }
-                if(cycle==1){
+                if(cycle==1)
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                else
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
-                } else
-                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+
                 transfer = false;
             } else if (transferTimer.milliseconds() > 200) {
-                turret.setState(Turret.State.BACK);
-            } else if (transferTimer.seconds() > 0) {
-                deposit.setAngle(Deposit.AngleState.VECTORING);
-                if (cycle == 1) {
-                    slides.setState(Slides.State.LOW);
-                } else {
-                    slides.setState(Slides.State.MID);
+                switch(turretPos) {
+                    case 0:
+                        turret.setState(Turret.State.LEFT_DIAGONAL);
+                        break;
+                    case 1:
+                        turret.setState(Turret.State.BACK);
+                        break;
+                    case 2:
+                        turret.setState(Turret.State.RIGHT_DIAGONAL);
+                        break;
                 }
-            }
-        } else if (transfer && diagonal) {
-            if (transferTimer.milliseconds() > 400) {
-                if (cycle == 3) {
-                    slides.setState(Slides.State.HIGH);
-                }
-                if(cycle == 1){
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                } else
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                transfer = false;
-            } else if (transferTimer.milliseconds() > 200) {
-                if (left)
-                    turret.setState(Turret.State.LEFT_DIAGONAL);
-                if (!left)
-                    turret.setState(Turret.State.RIGHT_DIAGONAL);
             } else if (transferTimer.seconds() > 0) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle == 1) {
@@ -414,7 +393,6 @@ slides.setPowerManual(gamepad2.left_stick_y);
             }
         }
     }
-
 
     public void resetUpdate() {
         if (resetCheck) {

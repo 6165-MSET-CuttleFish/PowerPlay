@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotTemp;
 
 import java.util.Objects;
 
@@ -32,7 +33,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot drive = new Robot(this, false);
+        RobotTemp drive = new RobotTemp(this, false);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
