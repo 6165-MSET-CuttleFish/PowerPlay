@@ -134,7 +134,6 @@ public class ASafeDriverControl extends LinearOpMode {
         waitForStart();
         primary.gamepad.setLedColor(9, 79, 183, 120000); //blue
         secondary.gamepad.setLedColor(147, 112, 219, 120000); //light purple
-        slides.setState(Slides.State.BOTTOM);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
@@ -166,8 +165,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) <= 0.2 ? 0 : -gamepad1.left_stick_y,
-                            Math.abs(gamepad1.left_stick_x) <= 0.2 ? 0: -gamepad1.left_stick_x,
+                            Math.abs(gamepad1.left_stick_y) <= 0.3 ? 0 : -gamepad1.left_stick_y,
+                            Math.abs(gamepad1.left_stick_x) <= 0.3 ? 0: -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
             );
