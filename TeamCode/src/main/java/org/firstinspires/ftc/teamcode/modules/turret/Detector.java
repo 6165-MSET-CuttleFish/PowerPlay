@@ -16,14 +16,20 @@ public class Detector extends OpenCvPipeline {
     public enum Location {
         LEFT,
         MIDDLE,
-        RIGHT,
+        RIGHT
     }
     private Location location = Location.MIDDLE;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(50, 50, 78, 50);
-    public static Rect POS_2_BLUE = new Rect(135, 50, 78, 50);
+    public static Rect POS_1_BLUE = new Rect(0, 50, 159, 50);
+    public static Rect POS_2_BLUE = new Rect(160, 50, 159, 50);
+    public static Rect POS_3_BLUE = new Rect(320, 50, 159, 50);
+    public static Rect POS_4_BLUE = new Rect(480, 50, 159, 50);
+    public static Rect POS_5_BLUE = new Rect(640, 50, 159, 50);
+    public static Rect POS_6_BLUE = new Rect(800, 50, 159, 50);
+    public static Rect POS_7_BLUE = new Rect(960, 50, 159, 50);
+    public static Rect POS_8_BLUE = new Rect(1120, 50, 159, 50);
 
     //Find numbers for actual place
 
@@ -37,6 +43,7 @@ public class Detector extends OpenCvPipeline {
 
     public static boolean returnBlack = true;
     private double boxsize =0;
+    private double[] loc=new double[8];
     @Override
     public Mat processFrame(Mat input) {
         Mat mat = new Mat();
@@ -50,19 +57,37 @@ public class Detector extends OpenCvPipeline {
 
         rectangle(mat, POS_1_BLUE, new Scalar(255, 255, 255));
         rectangle(mat, POS_2_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_3_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_4_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_5_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_6_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_7_BLUE, new Scalar(255, 255, 255));
+        rectangle(mat, POS_8_BLUE, new Scalar(255, 255, 255));
         rectangle(input,POS_1_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_3_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_4_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_5_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_6_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_7_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_8_BLUE, new Scalar(255, 255, 255));
         rectangle(input,POS_2_BLUE, new Scalar(255, 255, 255));
 
-        double leftValue = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
-        double rightValue = Core.sumElems(mat.submat(POS_2_BLUE)).val[0]/(POS_2_BLUE.height*POS_2_BLUE.width*255);
-        if(leftValue-rightValue>0.15){
-            location=Location.LEFT;
-        }else if(leftValue-rightValue<-0.15){
-            location=Location.RIGHT;
+        loc[0] = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
+        loc[1] = Core.sumElems(mat.submat(POS_2_BLUE)).val[0]/(POS_2_BLUE.height*POS_2_BLUE.width*255);
+        loc[2] = Core.sumElems(mat.submat(POS_3_BLUE)).val[0]/(POS_3_BLUE.height*POS_3_BLUE.width*255);
+        loc[3] = Core.sumElems(mat.submat(POS_4_BLUE)).val[0]/(POS_4_BLUE.height*POS_4_BLUE.width*255);
+        loc[4] = Core.sumElems(mat.submat(POS_5_BLUE)).val[0]/(POS_5_BLUE.height*POS_5_BLUE.width*255);
+        loc[5] = Core.sumElems(mat.submat(POS_6_BLUE)).val[0]/(POS_6_BLUE.height*POS_6_BLUE.width*255);
+        loc[6] = Core.sumElems(mat.submat(POS_7_BLUE)).val[0]/(POS_7_BLUE.height*POS_7_BLUE.width*255);
+        loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_8_BLUE.height*POS_8_BLUE.width*255);
+        boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[7]+loc[2])*50));
+        if(Math.abs(loc[3]-loc[4])>=0.15&&loc[3]>5) {
+            location= Location.MIDDLE;
+        }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[7]+loc[4])){
+            location= Location.RIGHT;
         }else{
-            location=Location.MIDDLE;
+            location= Location.LEFT;
         }
-        boxsize =Math.round(((leftValue+rightValue)*50));
         return returnBlack ? mat : input;
 
     }
@@ -79,5 +104,9 @@ public class Detector extends OpenCvPipeline {
         //Find equation for actual place
         double area=boxsize;
         return area;
+    }
+    public double getShift() {
+        //Find shift
+        return (loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3+loc[7]*-4);
     }
 }

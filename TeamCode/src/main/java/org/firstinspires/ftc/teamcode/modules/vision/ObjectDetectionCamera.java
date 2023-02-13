@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.vision;
+/*package org.firstinspires.ftc.teamcode.modules.vision;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-import org.pytorch.Module;
+//import org.pytorch.Module;
 
 public class ObjectDetectionCamera
 {
@@ -60,4 +60,4 @@ public class ObjectDetectionCamera
     {
         return pipeline.getTicks();
     }
-}
+}*/
