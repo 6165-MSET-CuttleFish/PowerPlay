@@ -49,7 +49,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
+@TeleOp(name = "AutoAlignPipeline", group = "Concept")
 public class ObjectDetection extends LinearOpMode {
 
     /*
@@ -59,13 +59,21 @@ public class ObjectDetection extends LinearOpMode {
      * has been downloaded to the Robot Controller's SD FLASH memory, it must to be loaded using loadModelFromFile()
      * Here we assume it's an Asset.    Also see method initTfod() below .
      */
-    private static final String TFOD_MODEL_ASSET = "model.tflite";
+    private static final String TFOD_MODEL_ASSET = "model_20230205_210038.tflite";
     //private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/model.tflite";
 
 
     private static final String[] LABELS = {
-            "1 Pole",
-            "2 Cone"
+            "Cone",
+            "High Pole",
+            "HighPole",
+            "L",
+            "LowPole",
+            "M",
+            "Mid",
+            "MidPole",
+            "MiddlePole"
+
     };
 
     /*
@@ -80,8 +88,7 @@ public class ObjectDetection extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY =
-            "Ab7vBKT/////AAABmcc0ENovtUcPpB04dXHBBbRu3wQ1kykv0uq8NRIs/AyokYhhxr0fAoYkzgpzRgtCxS9RN4ekQh/K6cxK2cHdSx+hS7CQs60X8bqj09uZnDIrUab94uTbOnD41lcp0VH0VFzSeJaTWC3Y5SsOVjjRCqEWCqvJumneRvk0EoPfrxIXhs7jSnltc7hC2pTVNTszQUm6BT4MTLyCIgfbt/LAabEthiNEJA88cnRw9TJFammizu1DKzhuW9Ml3ziVQp9cZ5+6Fc3qiClwcM1MTq5Pi9ViAzRYK1AF/qthUk2TY7OmpI2cVVx55o+Y3Xx61ct0a7b84iY0kpitUIozbCgrMO9pFODe6nyhn5C0c8QFV75J";
+    private static final String VUFORIA_KEY = "AeswAEj/////AAABmdKslmvY40pqlW3Bc+gr0m9nUfglmlP+Y8OKs7Nb+Mbz0XZK8JILxwbycY/hswy31SFffc+qpKXLPMHz0IH7I7scufB6fH2UydXm0VtqleBhmo/Ahj1vTgWsKj3LUSkdUE0X8c10uknV4frBV1XHU863SYu2OtqC9YsqSqYbQeMkSxGWBgPuQrVQQqpT+kfiRNiBrobYJc3PIX36bqkbgV7N1XXRTl4OdDMLT+nh64ykPSOktfIsnwLQJBLoCf6MD/WpoOADNt9JL4XljNyZwnHH1qjr3aUo3iZB/Pbj3ltZB7a+umXN3yxyr8Xx8QoQ37EMg/CdLtQyei8do8/3zXEIwdLzy1k/i/eRjYnUZwir";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -129,8 +136,13 @@ public class ObjectDetection extends LinearOpMode {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    double widthL=0.0;
+                    double colL=0.0;
+                    double rowL=0.0;
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Objects Detected", updatedRecognitions.size());
+
+                        telemetry.addData("Largest Cone (Width/X/Y)","%.0f / %.0f / %.0f", widthL, colL, rowL);
 
                         // step through the list of recognitions and display image position/size information for each one
                         // Note: "Image number" refers to the randomized image orientation/number
@@ -139,7 +151,11 @@ public class ObjectDetection extends LinearOpMode {
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
                             double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
                             double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
-
+                            if(widthL<width){
+                                colL=col;
+                                widthL=width;
+                                rowL=row;
+                            }
                             telemetry.addData(""," ");
                             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                             telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
@@ -162,7 +178,7 @@ public class ObjectDetection extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 2");
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
