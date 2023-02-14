@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
+//@Autonomous
 public class LeftSideAutoOLD extends LinearOpMode {
     Robot robot;
     Intake intake;

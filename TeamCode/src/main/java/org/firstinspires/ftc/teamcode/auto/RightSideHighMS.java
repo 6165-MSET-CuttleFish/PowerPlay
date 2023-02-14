@@ -116,7 +116,7 @@ public class RightSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,10.5, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(-57.15, 10.25))
+                .lineToConstantHeading(new Vector2d(-55.3, 10.25))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -134,8 +134,9 @@ public class RightSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-57.15, 10.25))
-                .addTemporalMarker(0.3, ()->{
+                .lineToConstantHeading(new Vector2d(-55.3, 10.25),robot.getVelocityConstraint(57.5, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
+                .addTemporalMarker(0.53, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
 
                 })
@@ -203,7 +204,7 @@ public class RightSideHighMS extends LinearOpMode {
         robot.followTrajectory(preload2);
 
         for(int i = 0; i < 5; i++){
-            if(state==3 && i==4) break;
+            //if(state==3 && i==4) break;
             if(i==0)slides.setState(Slides.State.CYCLE0);
             else if (i==1)slides.setState(Slides.State.CYCLE1);
             else if (i==2)slides.setState(Slides.State.CYCLE2);
@@ -216,11 +217,13 @@ public class RightSideHighMS extends LinearOpMode {
             dropOff();
         }
 
-        if(state==1) robot.followTrajectory(endLeft);
+
+        /*if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
-        else if(state==3) robot.followTrajectory(endRight);
+        else if(state==3)*/ robot.followTrajectory(endRight);
+
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-1000< timer){
+        while(System.currentTimeMillis()-2000< timer){
             robot.update();
         }
 
@@ -231,12 +234,12 @@ public class RightSideHighMS extends LinearOpMode {
 
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-600 < timer){
+        while(System.currentTimeMillis()-330 < timer){
             robot.update();
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-100< timer){
+        while(System.currentTimeMillis()-95< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -247,16 +250,18 @@ public class RightSideHighMS extends LinearOpMode {
     public void intake(){
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){
+        while(System.currentTimeMillis()-210< timer){
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
-        deposit.setAngle(Deposit.AngleState.VECTORING);
         slides.setState(Slides.State.HIGH);
+
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){
+        while(System.currentTimeMillis()-200< timer){
             robot.update();
         }
+        deposit.setAngle(Deposit.AngleState.VECTORING);
+
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
 
