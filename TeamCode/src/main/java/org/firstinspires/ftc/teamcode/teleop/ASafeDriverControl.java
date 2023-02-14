@@ -263,9 +263,8 @@ public class ASafeDriverControl extends LinearOpMode {
             //manual slides control:
             if (Math.abs(gamepad2.left_stick_y) > 0) {
                 slides.setState(Slides.State.MANUAL);
-                slides.setPowerManual(gamepad2.left_stick_y);
             }
-
+            slides.setPowerManual(gamepad2.left_stick_y);
             //GROUND INTAKE
             if (intakeGround.wasJustPressed()) {
                 groundIntake.setState(GroundIntake.State.INTAKING);
