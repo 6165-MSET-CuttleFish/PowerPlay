@@ -272,6 +272,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 groundIntake.setState(GroundIntake.State.DEPOSITING);
             } else if (gamepad1.dpad_left) {
                 groundIntake.setState(GroundIntake.State.OFF);
+            } else if (gamepad1.dpad_right) {
+                groundIntake.setState(GroundIntake.State.SLOW);
             }
 
             if (depositTransfer.isDown()) {
@@ -357,12 +359,8 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer) {
-            if (transferTimer.milliseconds() > 400) {
-                if(cycle==1)
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                else
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-
+            if (transferTimer.milliseconds() > 700) {
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 transfer = false;
             } else if (transferTimer.milliseconds() > 300) {
                 switch(turretPos) {
