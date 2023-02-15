@@ -19,30 +19,32 @@ public class Detector extends OpenCvPipeline {
         RIGHT
     }
     private Location location = Location.MIDDLE;
+    public static double factor=-25;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(0, 50, 159, 50);
-    public static Rect POS_2_BLUE = new Rect(160, 50, 159, 50);
-    public static Rect POS_3_BLUE = new Rect(320, 50, 159, 50);
-    public static Rect POS_4_BLUE = new Rect(480, 50, 159, 50);
-    public static Rect POS_5_BLUE = new Rect(640, 50, 159, 50);
-    public static Rect POS_6_BLUE = new Rect(800, 50, 159, 50);
-    public static Rect POS_7_BLUE = new Rect(960, 50, 159, 50);
-    public static Rect POS_8_BLUE = new Rect(1120, 50, 159, 50);
+    public static Rect POS_1_BLUE = new Rect(0, 200, 40, 40);
+    public static Rect POS_2_BLUE = new Rect(40, 200, 40, 40);
+    public static Rect POS_3_BLUE = new Rect(80, 200, 40, 40);
+    public static Rect POS_4_BLUE = new Rect(120, 200, 40, 40);
+    public static Rect POS_5_BLUE = new Rect(160, 200, 40, 40);
+    public static Rect POS_6_BLUE = new Rect(200, 200, 40, 40);
+    public static Rect POS_7_BLUE = new Rect(240, 200, 40, 40);
+    public static Rect POS_8_BLUE = new Rect(280, 200, 40, 40);
 
     //Find numbers for actual place
 
-    public static int blueHLow = 0;
-    public static int blueSLow = 120;
-    public static int blueVLow = 120 ;
+    public static int blueHLow = 25;
+    public static int blueSLow = 100;
+    public static int blueVLow = 0;
 
-    public static int blueHHigh = 70;
+    public static int blueHHigh = 255;
     public static int blueSHigh = 255;
     public static int blueVHigh = 255;
 
     public static boolean returnBlack = true;
     private double boxsize =0;
+    public double record;
     private double[] loc=new double[8];
     @Override
     public Mat processFrame(Mat input) {
@@ -69,8 +71,8 @@ public class Detector extends OpenCvPipeline {
         rectangle(input,POS_5_BLUE, new Scalar(255, 255, 255));
         rectangle(input,POS_6_BLUE, new Scalar(255, 255, 255));
         rectangle(input,POS_7_BLUE, new Scalar(255, 255, 255));
-        rectangle(input,POS_8_BLUE, new Scalar(255, 255, 255));
         rectangle(input,POS_2_BLUE, new Scalar(255, 255, 255));
+        rectangle(input,POS_8_BLUE, new Scalar(255, 255, 255));
 
         loc[0] = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
         loc[1] = Core.sumElems(mat.submat(POS_2_BLUE)).val[0]/(POS_2_BLUE.height*POS_2_BLUE.width*255);
@@ -79,11 +81,12 @@ public class Detector extends OpenCvPipeline {
         loc[4] = Core.sumElems(mat.submat(POS_5_BLUE)).val[0]/(POS_5_BLUE.height*POS_5_BLUE.width*255);
         loc[5] = Core.sumElems(mat.submat(POS_6_BLUE)).val[0]/(POS_6_BLUE.height*POS_6_BLUE.width*255);
         loc[6] = Core.sumElems(mat.submat(POS_7_BLUE)).val[0]/(POS_7_BLUE.height*POS_7_BLUE.width*255);
-        loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_8_BLUE.height*POS_8_BLUE.width*255);
-        boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[7]+loc[2])*50));
-        if(Math.abs(loc[3]-loc[4])>=0.15&&loc[3]>5) {
+        loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
+        boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
+        record=Math.abs(loc[3]-loc[4]);
+        if(Math.abs(loc[3]-loc[4])<0.001&&loc[3]>0.01) {
             location= Location.MIDDLE;
-        }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[7]+loc[4])){
+        }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]+loc[7])){
             location= Location.RIGHT;
         }else{
             location= Location.LEFT;
@@ -105,8 +108,8 @@ public class Detector extends OpenCvPipeline {
         double area=boxsize;
         return area;
     }
-    public double getShift() {
+    public int getShift() {
         //Find shift
-        return (loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3+loc[7]*-4);
+        return (int)(factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }
