@@ -43,7 +43,7 @@ public class RightSideHighMS extends LinearOpMode {
     Turret turret;
     TelemetryPacket packet;
     Detector detector1;
-    OpenCvWebcam camera;
+    OpenCvWebcam camera, camera2;
     colorDetection pipeline;
     Pose2d startPose = new Pose2d(-38,61, Math.toRadians(270));
     double timer = 0;
@@ -52,7 +52,14 @@ public class RightSideHighMS extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+       // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
+                .splitLayoutForMultipleViewports(
+                        cameraMonitorViewId,
+                        2,
+                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
+        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
         //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         pipeline=new colorDetection(telemetry);
 
@@ -63,6 +70,21 @@ public class RightSideHighMS extends LinearOpMode {
             public void onOpened()
             {
                 camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+        camera2.setPipeline(detector1=new Detector());
+        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -234,7 +256,9 @@ public class RightSideHighMS extends LinearOpMode {
 
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
+        turret.setState(Turret.State.AUTOALIGN);
         while(System.currentTimeMillis()-330 < timer){
+
             robot.update();
         }
         claw.setState(Claw.State.OPEN);

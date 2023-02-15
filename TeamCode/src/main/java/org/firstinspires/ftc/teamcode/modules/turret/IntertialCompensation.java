@@ -4,7 +4,7 @@ public class IntertialCompensation {
     public static double lengthMultiplier(double extensionPos){
         //uses rightservo position of the horizontal linkage
         double length = extensionPos / 0.22 *29.6371 + 7.6;
-        return length / 12;
+        return length / 15;
     }
     public static double PIDMultiplier(double extensionPos){
         //p = Iw
