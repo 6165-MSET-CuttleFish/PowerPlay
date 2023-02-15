@@ -4,6 +4,9 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -47,6 +50,7 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean diagonal = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
     boolean right = false;
+    double timer = 0;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
@@ -80,8 +84,34 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Trajectory cycleDropOff = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(8, 0), robot.getVelocityConstraint(10, 5.939, 14.48),
+                        robot.getAccelerationConstraint(45))
 
+                .addTemporalMarker(0,()->{
+                    slides.setState(Slides.State.HIGH);
 
+                })
+                .addTemporalMarker(0.22,()->{
+                    turret.setState(Turret.State.BACK);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                })
+
+                .build();
+        Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(8, 0), robot.getVelocityConstraint(10, 5.939, 14.48),
+                        robot.getAccelerationConstraint(45))
+
+                .addTemporalMarker(0,()->{
+                    slides.setState(Slides.State.HIGH);
+
+                })
+                .addTemporalMarker(0.22,()->{
+                    turret.setState(Turret.State.BACK);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                })
+
+                .build();
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
@@ -416,5 +446,22 @@ public class ASafeDriverControl extends LinearOpMode {
                 claw.setState(Claw.State.CLOSE);
             }
         }
+    }
+    public void dropOff(){
+
+        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-330 < timer){
+            robot.update();
+        }
+        claw.setState(Claw.State.OPEN);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-95< timer){
+            robot.update();
+        }
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+        turret.setState(Turret.State.ZERO);
+
     }
 }
