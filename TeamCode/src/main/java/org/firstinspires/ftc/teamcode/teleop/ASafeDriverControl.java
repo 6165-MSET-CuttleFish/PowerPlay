@@ -357,23 +357,19 @@ public class ASafeDriverControl extends LinearOpMode {
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
-            telemetry.addData("Turret", turret.getState());
+            telemetry.addData("Turret State", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("Slides 2: ", slides.slidesRight.getCurrentPosition());
             telemetry.addData("Extension State: ", deposit.getExtState());
             telemetry.addData("Slides State: ", slides.getState());
             telemetry.addData("Auto Actuate: ", autoActuate);
-            telemetry.addData("Claw: ", claw.getState());
             telemetry.addData("Turret Target Position", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
-            telemetry.addData("turret pos at he: ", turret.hallEffect.getVoltage());
-            telemetry.addData("Motor Speeds: ", slides.getOuput());
             telemetry.addData("SLIDES LIMIT SWITCH: ", slides.limitState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
-            //turret.update();
         }
     }
 
