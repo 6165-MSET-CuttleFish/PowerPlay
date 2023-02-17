@@ -95,9 +95,14 @@ public class Turret extends HwModule
                         "id",
                         hardwareMap.appContext.getPackageName()
                 );
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
+                .splitLayoutForMultipleViewports(
+                        cameraMonitorViewId,
+                        2,
+                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
         webcam = OpenCvCameraFactory
                 .getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
         webcam.setPipeline(detector = new Detector());
         webcam.setMillisecondsPermissionTimeout(2500);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {

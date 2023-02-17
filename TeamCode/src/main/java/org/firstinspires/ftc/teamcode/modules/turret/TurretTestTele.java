@@ -18,18 +18,12 @@ public class TurretTestTele extends LinearOpMode {
     final double QUICK_POWER=1.0;
     final double SLOW_POWER = 0.125;
     boolean toggleAutoAlign;
-    public OpenCvWebcam webcam;
-    private Detector detector;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void runOpMode() throws InterruptedException {
         turret=new Turret(hardwareMap,false);
-        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         toggleAutoAlign=false;
-        turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        camInit();
         waitForStart();
         while (opModeIsActive()){
             if(gamepad1.right_bumper){
@@ -37,58 +31,23 @@ public class TurretTestTele extends LinearOpMode {
             }else if(gamepad1.left_bumper){
                 toggleAutoAlign=true;
             }
-            if(toggleAutoAlign==false) {
-                turret.setState(Turret.State.MANUAL);
-                turret.turretMotor.setPower(gamepad2.right_stick_y * 0.5);
-            }else{
-                turret.turretMotor.setTargetPosition(turret.encoder.getCurrentPosition()+detector.getShift());
-                turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                toggleAutoAlign=false;
+            if(toggleAutoAlign&&turret.detector.getLocation()!= Detector.Location.MIDDLE) {
+                telemetry.addData("Turn Turret by ticks: ", turret.detector.getShift());
+                turret.setState(Turret.State.AUTOALIGN);
+            }else if(turret.detector.getLocation()!= Detector.Location.MIDDLE){
+                turret.setState(Turret.State.IDLE);
             }
-            telemetry.addData("Location", detector.getLocation());
+            if(turret.detector.getLocation()== Detector.Location.MIDDLE) {
+                toggleAutoAlign=false;
+                telemetry.addData("Distance", turret.detector.getDistance());
+                turret.setState(Turret.State.IDLE);
+            }
+            telemetry.addData("Location", turret.detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");
             telemetry.update();
+            turret.update();
 
         }
 
-    }
-    public void camInit() {
-        final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
-        final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
-        int cameraMonitorViewId = this
-                .hardwareMap
-                .appContext
-                .getResources().getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hardwareMap.appContext.getPackageName()
-                );
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId, //The container we're splitting
-                        2, //The number of sub-containers to create
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY); //Whether to split the container vertically or horizontally
-
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
-
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                webcam.setPipeline(detector=new Detector());
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-                /*
-                 * This will be called if the camera could not be opened
-                 */
-            }
-        });
-        telemetry.addLine("waiting for start");
-        telemetry.update();
     }
 }
