@@ -27,10 +27,12 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
 @TeleOp
@@ -47,14 +49,13 @@ public class ASafeDriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     boolean transfer = false;
     boolean resetCheck = false;
-    boolean diagonal = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
-    boolean right = false;
-    double timer = 0;
+    double ninjaMultiplier = 1;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
-    ButtonReader cycleDown, cycleUp, actuateLeft, intakeGround, extakeGround, actuateRight, turretRight, turretLeft, reset, raiseSlides, lowerSlides, half, angle, extension, turretZero, conePickup;
+    ButtonReader autoAlign, cancelMacro, cycleMacro, cycleDown, cycleUp, actuateLeft,
+            intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, conePickup;
     ToggleButtonReader ninjaMode, straightMode;
 
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
@@ -84,40 +85,16 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Trajectory cycleDropOff = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(8, 0), robot.getVelocityConstraint(10, 5.939, 14.48),
-                        robot.getAccelerationConstraint(45))
 
-                .addTemporalMarker(0,()->{
-                    slides.setState(Slides.State.HIGH);
-
-                })
-                .addTemporalMarker(0.22,()->{
-                    turret.setState(Turret.State.BACK);
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
-                })
-
-                .build();
-        Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(8, 0), robot.getVelocityConstraint(10, 5.939, 14.48),
-                        robot.getAccelerationConstraint(45))
-
-                .addTemporalMarker(0,()->{
-                    slides.setState(Slides.State.HIGH);
-
-                })
-                .addTemporalMarker(0.22,()->{
-                    turret.setState(Turret.State.BACK);
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
-                })
-
-                .build();
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
+                cycleMacro = new ButtonReader(primary, GamepadKeys.Button.B),
+                cancelMacro = new ButtonReader(primary, GamepadKeys.Button.A),
+                autoAlign = new ButtonReader(primary, GamepadKeys.Button.Y),
                 intakeTransfer = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
 
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
@@ -161,9 +138,11 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
+
+
         waitForStart();
-        primary.gamepad.setLedColor(9, 79, 183, 120000); //blue
-        secondary.gamepad.setLedColor(147, 112, 219, 120000); //light purple
+        gamepad1.setLedColor(9, 79, 183, 120000); //blue
+        gamepad2.setLedColor(147, 112, 219, 120000); //light purple
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
@@ -175,29 +154,26 @@ public class ASafeDriverControl extends LinearOpMode {
             for (KeyReader reader : keyReaders) {
                 reader.readValue();
             }
+            if (ninjaMode.wasJustPressed() && ninjaMultiplier == 1) {
+                ninjaMultiplier = 0.5;
+            } else if (ninjaMode.wasJustPressed() && ninjaMultiplier == 0.5) {
+                ninjaMultiplier = 1;
+            }
 
             //DRIVETRAIN
-            if (ninjaMode.getState()) {
+            if (straightMode.getState()) {
                 robot.setWeightedDrivePower(
                         new Pose2d(
-                                -gamepad1.left_stick_y * 0.5,
-                                -gamepad1.left_stick_x * 0.875,
-                                -gamepad1.right_stick_x * 0.6
-                        )
-                );
-            } else if (straightMode.getState()) {
-                robot.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y * 0.5,
+                                -gamepad1.left_stick_y * ninjaMultiplier,
                                 0,
-                                -gamepad1.right_stick_x * 0.5
+                                -gamepad1.right_stick_x * ninjaMultiplier
                         )
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) <= 0.3 ? 0 : -gamepad1.left_stick_y,
-                            Math.abs(gamepad1.left_stick_x) <= 0.3 ? 0: -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
+                            Math.abs(gamepad1.left_stick_y) <= 0.3 ? 0 : -gamepad1.left_stick_y * ninjaMultiplier,
+                            Math.abs(gamepad1.left_stick_x) <= 0.3 ? 0: -gamepad1.left_stick_x * ninjaMultiplier,
+                            -gamepad1.right_stick_x * ninjaMultiplier
                     )
             );
 
@@ -257,9 +233,6 @@ public class ASafeDriverControl extends LinearOpMode {
                     }
                 }
             }
-            //setting states based off of cycleValue
-
-
 
             if (conePickup.wasJustPressed()) {
                 slides.setState(Slides.State.PICKUP);
@@ -303,7 +276,7 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (gamepad1.dpad_left) {
                 groundIntake.setState(GroundIntake.State.OFF);
             } else if (gamepad1.dpad_right) {
-                groundIntake.setState(GroundIntake.State.SLOW);
+                groundIntake.setState(GroundIntake.State.FAST);
             }
 
             if (depositTransfer.isDown()) {
@@ -361,6 +334,23 @@ public class ASafeDriverControl extends LinearOpMode {
                 turretPos = 2;
                 transferTimer.reset();
             }
+
+            if (cycleMacro.wasJustPressed()) {
+                for (int i = 0; i < 5; i++) {
+                    cycleMacro();
+                    if (cancelMacro.wasJustPressed())
+                        break;
+                }
+            }
+
+            //AUTO ALIGN:
+            if (autoAlign.wasJustPressed() && turret.detector.getLocation() != Detector.Location.MIDDLE) {
+                turret.setState(Turret.State.AUTOALIGN);
+            }
+            if (turret.detector.getLocation() == Detector.Location.MIDDLE) {
+                turret.setState(Turret.State.IDLE);
+            }
+
             transferUpdate(cycleValue);
             resetUpdate();
 
@@ -448,20 +438,37 @@ public class ASafeDriverControl extends LinearOpMode {
         }
     }
     public void dropOff(){
-
-        deposit.setExtension(Deposit.ExtensionState.EXTEND);
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-330 < timer){
-            robot.update();
+        ElapsedTime timer = new ElapsedTime();
+        if (timer.milliseconds() > 200) {
+            claw.setState(Claw.State.OPEN);
         }
-        claw.setState(Claw.State.OPEN);
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-95< timer){
-            robot.update();
+        else if (timer.milliseconds() > 0) {
+            deposit.setExtension(Deposit.ExtensionState.EXTEND);
         }
-        deposit.setExtension(Deposit.ExtensionState.RETRACT);
-        deposit.setAngle(Deposit.AngleState.INTAKE);
-        turret.setState(Turret.State.ZERO);
+    }
 
+    public void cycleMacro() {
+        TrajectorySequence cycleIntake = robot.trajectorySequenceBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .forward(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
+                .addTemporalMarker(0, this::resetUpdate)
+                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
+                    groundIntake.setState(GroundIntake.State.INTAKING);
+                })
+                .build();
+
+        TrajectorySequence cycleDropOff = robot.trajectorySequenceBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .back(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
+                .addTemporalMarker(0,()-> {
+                    slides.setState(Slides.State.HIGH);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    turret.setState(Turret.State.BACK);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, this::dropOff)
+                .build();
+
+        robot.followTrajectorySequence(cycleIntake);
+        robot.followTrajectorySequence(cycleDropOff);
     }
 }
