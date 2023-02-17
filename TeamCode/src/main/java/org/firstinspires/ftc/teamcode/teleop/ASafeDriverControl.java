@@ -68,7 +68,7 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean autoActuate = false;
     public double resetTime = 1;
     public double transferTime = 1, transferTurretTime = 500;
-    public boolean turretCheck, slidesCheck = false;
+    public boolean distanceSensor = false;
     ElapsedTime transferTimer = new ElapsedTime();
     ElapsedTime resetTimer = new ElapsedTime();
 
@@ -138,7 +138,24 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
+        Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .forward(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
+                .addTemporalMarker(0, this::resetUpdate)
+                .addTemporalMarker(0, ()->{
+                    groundIntake.setState(GroundIntake.State.INTAKING);
+                })
+                .build();
 
+        Trajectory cycleDropOff = robot.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(0)))
+                .back(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
+                .addTemporalMarker(0,()-> {
+                    slides.setState(Slides.State.HIGH);
+                })
+                .addTemporalMarker(1, () -> {
+                    turret.setState(Turret.State.BACK);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                })
+                .build();
 
         waitForStart();
         gamepad1.setLedColor(9, 79, 183, 120000); //blue
@@ -155,8 +172,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 reader.readValue();
             }
             if (ninjaMode.wasJustPressed() && ninjaMultiplier == 1) {
-                ninjaMultiplier = 0.5;
-            } else if (ninjaMode.wasJustPressed() && ninjaMultiplier == 0.5) {
+                ninjaMultiplier = 0.6;
+            } else if (ninjaMode.wasJustPressed() && ninjaMultiplier == 0.6) {
                 ninjaMultiplier = 1;
             }
 
@@ -171,9 +188,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) <= 0.3 ? 0 : -gamepad1.left_stick_y * ninjaMultiplier,
-                            Math.abs(gamepad1.left_stick_x) <= 0.3 ? 0: -gamepad1.left_stick_x * ninjaMultiplier,
-                            -gamepad1.right_stick_x * ninjaMultiplier
+                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y>0?-0.3:0.3)) * ninjaMultiplier,
+                            Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.3:0.3)) * ninjaMultiplier,
+                            -gamepad1.right_stick_x * 0.85 * (ninjaMultiplier + 0.15)
                     )
             );
 
@@ -306,9 +323,14 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100) {
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
+                distanceSensor = false;
             }
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 7) {
+                distanceSensor = true;
+            }
+
             //reset
             if (reset.wasJustPressed()) {
                 autoActuate = false;
@@ -336,11 +358,14 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
-                for (int i = 0; i < 5; i++) {
-                    cycleMacro();
-                    if (cancelMacro.wasJustPressed())
-                        break;
-                }
+                robot.midOdo.setPosition(0.3);
+                robot.sideOdo.setPosition(0.3);
+//                for (int i = 0; i < 5; i++) {
+//                    robot.followTrajectorySequence(cycleIntake);
+//                    robot.followTrajectorySequence(cycleDropOff);
+//                    if (cancelMacro.wasJustPressed())
+//                        break;
+//                }
             }
 
             //AUTO ALIGN:
@@ -353,6 +378,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             transferUpdate(cycleValue);
             resetUpdate();
+
 
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
@@ -376,7 +402,12 @@ public class ASafeDriverControl extends LinearOpMode {
     public void transferUpdate(int cycle) {
         if (transfer) {
             if (transferTimer.milliseconds() > 700) {
-                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                if(cycle==1){
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                }
+                else{
+                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                }
                 transfer = false;
             } else if (transferTimer.milliseconds() > 300) {
                 switch(turretPos) {
@@ -441,30 +472,5 @@ public class ASafeDriverControl extends LinearOpMode {
         else if (timer.milliseconds() > 0) {
             deposit.setExtension(Deposit.ExtensionState.EXTEND);
         }
-    }
-
-    public void cycleMacro() {
-        TrajectorySequence cycleIntake = robot.trajectorySequenceBuilder(new Pose2d(0,0, Math.toRadians(0)))
-                .forward(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
-                .addTemporalMarker(0, this::resetUpdate)
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    groundIntake.setState(GroundIntake.State.INTAKING);
-                })
-                .build();
-
-        TrajectorySequence cycleDropOff = robot.trajectorySequenceBuilder(new Pose2d(0,0, Math.toRadians(0)))
-                .back(10, RobotTemp.getVelocityConstraint(10, 5.939, 14.48), RobotTemp.getAccelerationConstraint(45))
-                .addTemporalMarker(0,()-> {
-                    slides.setState(Slides.State.HIGH);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
-                    turret.setState(Turret.State.BACK);
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, this::dropOff)
-                .build();
-
-        robot.followTrajectorySequence(cycleIntake);
-        robot.followTrajectorySequence(cycleDropOff);
     }
 }

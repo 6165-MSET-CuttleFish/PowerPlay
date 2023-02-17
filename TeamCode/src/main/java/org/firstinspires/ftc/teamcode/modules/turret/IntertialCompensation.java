@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.modules.turret;
 public class IntertialCompensation {
     public static double lengthMultiplier(double extensionPos){
         //uses rightservo position of the horizontal linkage
-        double length = extensionPos / 0.22 *.296371 + .076;
-        return length / .26;
+        double length = extensionPos / 0.22 * 29.6371 + 7.6;
+        return length / 30.37;
     }
     public static double PIDMultiplier(double extensionPos){
         //p = Iw

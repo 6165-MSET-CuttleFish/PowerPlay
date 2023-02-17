@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -19,6 +20,7 @@ public class TurretTestTele extends LinearOpMode {
     final double SLOW_POWER = 0.125;
     boolean toggleAutoAlign;
     FtcDashboard dashboard = FtcDashboard.getInstance();
+    ElapsedTime autoAlignTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -32,6 +34,7 @@ public class TurretTestTele extends LinearOpMode {
                 toggleAutoAlign=true;
             }
             if(toggleAutoAlign&&turret.detector.getLocation()!= Detector.Location.MIDDLE) {
+                autoAlignTimer.reset();
                 telemetry.addData("Turn Turret by ticks: ", turret.detector.getShift());
                 turret.setState(Turret.State.AUTOALIGN);
             }else if(turret.detector.getLocation()!= Detector.Location.MIDDLE){
@@ -41,6 +44,7 @@ public class TurretTestTele extends LinearOpMode {
                 toggleAutoAlign=false;
                 telemetry.addData("Distance", turret.detector.getDistance());
                 turret.setState(Turret.State.IDLE);
+                telemetry.addData("time: ", autoAlignTimer.milliseconds());
             }
             telemetry.addData("Location", turret.detector.getLocation());
             telemetry.addData("AutoAlign: ", (toggleAutoAlign)?"Enabled":"Disabled");

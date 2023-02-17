@@ -201,11 +201,12 @@ public class Slides extends HwModule {
             case MANUAL:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(slidesRight.getCurrentPosition());
+
                 output = pidController.update(slidesRight.getCurrentPosition());
                 if (Math.abs(manual) > 0.1) {
                     slidesRight.setPower(manual);
                     slidesLeft.setPower(manual);
+                    pidController.setTargetPosition(slidesRight.getCurrentPosition());
                 } else {
                     slidesRight.setPower(output);
                     slidesLeft.setPower(output);
@@ -235,21 +236,17 @@ public class Slides extends HwModule {
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-    public void checkLimit()
-    {
-        if(limitState())
-        {
-            posAtZero=slidesRight.getCurrentPosition();
+    public void checkLimit() {
+        if(limitState()) {
+            posAtZero = slidesRight.getCurrentPosition();
         }
     }
     public void setPowerManual(double power) {
         manual = power;
     }
 
-    public boolean limitState()
-    {
-        if(slidesLimitSwitch.getVoltage()<0.9)
-        {
+    public boolean limitState() {
+        if(slidesLimitSwitch.getVoltage()>0.9) {
             return true;
         }
         return false;
