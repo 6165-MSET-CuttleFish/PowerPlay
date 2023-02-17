@@ -13,7 +13,7 @@ public class GroundIntake extends HwModule
     //temporary values
     static final double INTAKING = .62;
     static final double REVERSE = -.65;
-    static final double SLOW = -.3;
+    static final double FAST = -1;
     static final double OFF = 0;
     boolean runningTrigger = false;
     boolean temp2 = false;
@@ -38,7 +38,7 @@ public class GroundIntake extends HwModule
 
     public enum State implements ModuleState
     {
-        INTAKING, DEPOSITING, SLOW, OFF
+        INTAKING, DEPOSITING, FAST, OFF
     }
 
     public GroundIntake(HardwareMap hardwareMap)
@@ -60,8 +60,8 @@ public class GroundIntake extends HwModule
             case DEPOSITING:
                 groundIntake.setPower(REVERSE);
                 break;
-            case SLOW:
-                groundIntake.setPower(SLOW);
+            case FAST:
+                groundIntake.setPower(FAST);
                 break;
             case OFF:
                 groundIntake.setPower(OFF);

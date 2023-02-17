@@ -181,7 +181,6 @@ public class Turret extends HwModule
                 case RIGHT_SIDE_MID:
                     targetPos = RIGHT_SIDE_MID - posAtZero;
                     break;
-
                 case INIT:
                     targetPos = INIT - posAtZero;
                     break;
@@ -192,7 +191,7 @@ public class Turret extends HwModule
                     targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
                 case AUTOALIGN:
-                    targetPos = encoder.getCurrentPosition()+detector.getShift();
+                    targetPos = encoder.getCurrentPosition() + detector.getShift();
                     break;
         }
     }
