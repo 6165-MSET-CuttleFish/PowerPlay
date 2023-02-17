@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 
 @TeleOp
 public class Turret2Test extends LinearOpMode
 {
     Turret turret;
+    Deposit deposit;
     RobotTemp robot;
     ElapsedTime timer;
     @Override
@@ -19,6 +21,7 @@ public class Turret2Test extends LinearOpMode
     {
         robot=new RobotTemp(this);
         turret=robot.turret;
+        deposit = robot.deposit;
         timer=new ElapsedTime();
 
         while(!isStarted())
@@ -49,6 +52,10 @@ public class Turret2Test extends LinearOpMode
             {
                 turret.setState(Turret.State.ZERO);
             }
+            if(gamepad1.dpad_up){
+                deposit.setExtension(Deposit.ExtensionState.EXTEND);
+            }
+            else if(gamepad1.dpad_down) deposit.setExtension(Deposit.ExtensionState.RETRACT);
             //turret.update();
             telemetry.addData("State", turret.getState());
             telemetry.addData("power", turret.motorOil);

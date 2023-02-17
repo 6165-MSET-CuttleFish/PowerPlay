@@ -26,7 +26,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.001, i = 0.0030, d = 0.00006;
+    public static double p = 0.00075, i = 0.00063, d = 0.000035;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
@@ -128,6 +128,7 @@ public class Turret extends HwModule
         if(state!=State.MANUAL)
         {
             pidController.setTargetPosition(targetPos);
+
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()) * IntertialCompensation.PIDMultiplier(Deposit.rightPos));
         }
     }

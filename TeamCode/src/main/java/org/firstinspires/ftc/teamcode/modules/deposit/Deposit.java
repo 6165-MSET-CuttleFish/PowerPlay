@@ -109,7 +109,7 @@ public class Deposit extends HwModule {
             case X:
                 break;
         }
-//        rightPos = rightExtension.getPosition();
+        rightPos = rightExtension.getPosition();
     }
 
     public ExtensionState getExtState() {
