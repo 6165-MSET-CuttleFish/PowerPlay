@@ -19,24 +19,24 @@ public class Detector extends OpenCvPipeline {
         RIGHT
     }
     private Location location = Location.MIDDLE;
-    public static double factor=-75;
+    public static int factor=20;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(0, 200, 40, 40);
-    public static Rect POS_2_BLUE = new Rect(40, 200, 40, 40);
-    public static Rect POS_3_BLUE = new Rect(80, 200, 40, 40);
-    public static Rect POS_4_BLUE = new Rect(120, 200, 40, 40);
-    public static Rect POS_5_BLUE = new Rect(160, 200, 40, 40);
-    public static Rect POS_6_BLUE = new Rect(200, 200, 40, 40);
-    public static Rect POS_7_BLUE = new Rect(240, 200, 40, 40);
-    public static Rect POS_8_BLUE = new Rect(280, 200, 40, 40);
+    public static Rect POS_1_BLUE = new Rect(0, 180, 40, factor);
+    public static Rect POS_2_BLUE = new Rect(40, 180, 40, factor);
+    public static Rect POS_3_BLUE = new Rect(80, 180, 40, factor);
+    public static Rect POS_4_BLUE = new Rect(120, 180, 40, factor);
+    public static Rect POS_5_BLUE = new Rect(160, 180, 40, factor);
+    public static Rect POS_6_BLUE = new Rect(200, 180, 40, factor);
+    public static Rect POS_7_BLUE = new Rect(240, 180, 40, factor);
+    public static Rect POS_8_BLUE = new Rect(280, 180, 40, factor);
 
     //Find numbers for actual place
 
-    public static int blueHLow = 20;
+    public static int blueHLow = 0;
     public static int blueSLow = 100;
-    public static int blueVLow = 0;
+    public static int blueVLow = 100;
 
     public static int blueHHigh = 255;
     public static int blueSHigh = 255;
@@ -111,6 +111,6 @@ public class Detector extends OpenCvPipeline {
     }
     public int getShift() {
         //Find shift
-        return (int)(factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
+        return (int)(-1*factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }
