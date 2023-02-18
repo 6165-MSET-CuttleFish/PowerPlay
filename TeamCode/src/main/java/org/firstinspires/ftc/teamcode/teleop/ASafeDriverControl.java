@@ -369,10 +369,10 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //AUTO ALIGN:
-            if (autoAlign.wasJustPressed() && turret.detector.getLocation() != Detector.Location.MIDDLE) {
+           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != Detector.Location.MIDDLE) {
                 turret.setState(Turret.State.AUTOALIGN);
             }
-            if (turret.detector.getLocation() == Detector.Location.MIDDLE) {
+            if (turret.detector.getLocation() == Detector.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
 
