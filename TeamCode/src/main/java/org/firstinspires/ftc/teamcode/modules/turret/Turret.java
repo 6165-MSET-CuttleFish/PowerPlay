@@ -129,7 +129,7 @@ public class Turret extends HwModule
         {
             pidController.setTargetPosition(targetPos);
 
-            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()) * IntertialCompensation.PIDMultiplier(Deposit.rightPos));
+            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
         }
     }
 
