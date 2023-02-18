@@ -48,7 +48,7 @@ public class ASafeDriverControl extends LinearOpMode {
     TelemetryPacket packet;
     GamepadEx primary, secondary;
     boolean transfer = false;
-    boolean resetCheck = false;
+    boolean resetCheck, cycleCheck = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
     double ninjaMultiplier = 1;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -71,6 +71,7 @@ public class ASafeDriverControl extends LinearOpMode {
     public boolean distanceSensor = false;
     ElapsedTime transferTimer = new ElapsedTime();
     ElapsedTime resetTimer = new ElapsedTime();
+    ElapsedTime cycleTimer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -188,9 +189,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y>0?-0.3:0.3)) * ninjaMultiplier,
+                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y >0?-0.3:0.3)) * ninjaMultiplier,
                             Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.3:0.3)) * ninjaMultiplier,
-                            -gamepad1.right_stick_x * 0.85 * (ninjaMultiplier + 0.15)
+                            -gamepad1.right_stick_x * 0.7 * (ninjaMultiplier + 0.1)
                     )
             );
 
@@ -218,16 +219,16 @@ public class ASafeDriverControl extends LinearOpMode {
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
-//                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
-//                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
-//                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             slides.setState(Slides.State.HIGH);
                             break;
                     }
@@ -305,7 +306,9 @@ public class ASafeDriverControl extends LinearOpMode {
             //extension
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
-            } else if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.RETRACT) {
+            } else if (extension.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.RETRACT
+                    || deposit.getExtState() == Deposit.ExtensionState.FOURTH)
+                    || deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             }
             //angle
@@ -316,7 +319,8 @@ public class ASafeDriverControl extends LinearOpMode {
             }
             //half extension
             if (half.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.EXTEND
-                    || deposit.getExtState() == Deposit.ExtensionState.RETRACT)) {
+                    || deposit.getExtState() == Deposit.ExtensionState.RETRACT
+                    || deposit.getExtState() == Deposit.ExtensionState.FOURTH)) {
                 deposit.setExtension(Deposit.ExtensionState.HALF);
             } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -358,14 +362,7 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
-                robot.midOdo.setPosition(0.3);
-                robot.sideOdo.setPosition(0.3);
-//                for (int i = 0; i < 5; i++) {
-//                    robot.followTrajectorySequence(cycleIntake);
-//                    robot.followTrajectorySequence(cycleDropOff);
-//                    if (cancelMacro.wasJustPressed())
-//                        break;
-//                }
+                cycleCheck = true;
             }
 
             //AUTO ALIGN:
@@ -378,6 +375,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             transferUpdate(cycleValue);
             resetUpdate();
+            cycle();
 
 
             //TELEMETRY
@@ -402,14 +400,13 @@ public class ASafeDriverControl extends LinearOpMode {
     public void transferUpdate(int cycle) {
         if (transfer) {
             if (transferTimer.milliseconds() > 700) {
-                if(cycle==1){
+                if(cycle==1) {
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                }
-                else{
+                } else {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300) {
+            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > 500) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -424,19 +421,6 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (transferTimer.milliseconds() > 200) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
             } else if (transferTimer.seconds() > 0) {
-                if (slides.slidesLeft.getCurrentPosition() > 500) {
-                    switch(turretPos) {
-                        case 0:
-                            turret.setState(Turret.State.LEFT);
-                            break;
-                        case 1:
-                            turret.setState(Turret.State.BACK);
-                            break;
-                        case 2:
-                            turret.setState(Turret.State.RIGHT);
-                            break;
-                    }
-                }
                 if (cycle == 3) {
                     slides.setState(Slides.State.HIGH);
                 } else if (cycle == 1) {
@@ -450,27 +434,38 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (resetTimer.milliseconds() > 650) {
-                claw.setState(Claw.State.OPEN);
-                resetCheck = false;
-            }
-            else if (resetTimer.milliseconds() > 500) {
+            if (resetTimer.milliseconds() > 500) {
                 slides.setState(Slides.State.BOTTOM);
+                resetCheck = false;
             } else if (resetTimer.seconds() > 0) {
+                claw.setState(Claw.State.OPEN);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 turret.setState(Turret.State.ZERO);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
-                claw.setState(Claw.State.CLOSE);
             }
         }
     }
-    public void dropOff(){
-        ElapsedTime timer = new ElapsedTime();
-        if (timer.milliseconds() > 200) {
-            claw.setState(Claw.State.OPEN);
-        }
-        else if (timer.milliseconds() > 0) {
-            deposit.setExtension(Deposit.ExtensionState.EXTEND);
+    public void cycle() {
+        if (cycleCheck) {
+            for (int i = 0; i < 3; i++) {
+               if (cycleTimer.milliseconds() > 2000)  {
+                   cycleTimer.reset();
+               } else if (cycleTimer.milliseconds() > 1600) {
+                    resetCheck = true;
+                } else if (cycleTimer.milliseconds() > 1300) {
+                    claw.setState(Claw.State.OPEN);
+                } else if (cycleTimer.milliseconds() > 900) {
+                    turret.setState(Turret.State.BACK);
+                } else if (cycleTimer.milliseconds() > 600) {
+                    slides.setState(Slides.State.HIGH);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                } else if (cycleTimer.milliseconds() > 300) {
+                    claw.setState(Claw.State.CLOSE);
+                } else if (cycleTimer.milliseconds() > 0) {
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                }
+            }
+            cycleCheck = false;
         }
     }
 }

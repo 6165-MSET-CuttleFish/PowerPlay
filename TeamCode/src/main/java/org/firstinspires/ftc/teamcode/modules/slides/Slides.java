@@ -26,11 +26,11 @@ public class Slides extends HwModule {
     public double posAtZero=0;
     public double manual = 0;
 
-    public static int HIGH = 2325; //old = 1850
-    public static int HIGH_DROP = 2750; //old = 1650
-    public static int MID = 1580; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int HIGH = 2400; //old = 1850
+    public static int CYCLE_HIGH = 2400; //old = 1650
+    public static int MID = 1620; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
-    public static int LOW = 820; //in inches, low junction is 13.5 inches
+    public static int LOW = 880; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int PICKUP = 10;
     public static int INTAKE_AUTO =  125;
@@ -64,7 +64,7 @@ public class Slides extends HwModule {
     }
 
     public enum State implements ModuleState {
-        HIGH, HIGH_DROP, MID, MID_DROP, LOW, LOW_DROP,
+        HIGH, CYCLE_HIGH, MID, MID_DROP, LOW, LOW_DROP,
         BOTTOM, MANUAL, INTAKE_AUTO, ZERO, PICKUP,
         CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
@@ -96,10 +96,10 @@ public class Slides extends HwModule {
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
                 break;
-            case HIGH_DROP:
+            case CYCLE_HIGH:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(HIGH_DROP + posAtZero);
+                pidController.setTargetPosition(CYCLE_HIGH + posAtZero);
                 output = pidController.update(slidesRight.getCurrentPosition());
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
@@ -237,7 +237,7 @@ public class Slides extends HwModule {
         return time.milliseconds();
     }
     public void checkLimit() {
-        if(limitState()) {
+        if (limitState()) {
             posAtZero = slidesRight.getCurrentPosition();
         }
     }
@@ -246,7 +246,7 @@ public class Slides extends HwModule {
     }
 
     public boolean limitState() {
-        if(slidesLimitSwitch.getVoltage()>0.9) {
+        if(slidesLimitSwitch.getVoltage()>3) {
             return true;
         }
         return false;

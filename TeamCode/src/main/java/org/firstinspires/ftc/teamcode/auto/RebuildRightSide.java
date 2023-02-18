@@ -99,7 +99,7 @@ public class RebuildRightSide extends LinearOpMode {
                 .lineToConstantHeading(pre1)
                 .addTemporalMarker(0, () -> {
                     deposit.setAngle(Deposit.AngleState.X);
-                    slides.setState(Slides.State.HIGH_DROP);
+                    slides.setState(Slides.State.HIGH);
                 })
                 .addTemporalMarker(0.3, () -> {
                     turret.setState(Turret.State.BACK);
@@ -147,7 +147,7 @@ public class RebuildRightSide extends LinearOpMode {
                 })
                 .addTemporalMarker(0.6, () -> {
                     // deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                    slides.setState(Slides.State.HIGH_DROP);
+                    slides.setState(Slides.State.HIGH);
                 })
                 .build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDropOff.end())
