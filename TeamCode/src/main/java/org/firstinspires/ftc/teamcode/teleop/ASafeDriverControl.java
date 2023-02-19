@@ -262,13 +262,6 @@ public class ASafeDriverControl extends LinearOpMode {
             if (turretZero.wasJustPressed()) {
                 turret.posAtZero = -turret.encoder.getCurrentPosition();
             }
-            //incremental turret control:
-            if (gamepad2.right_stick_x > 0)
-                turret.setState(Turret.State.RIGHT);
-            if (gamepad2.right_stick_x < 0)
-                turret.setState(Turret.State.LEFT);
-            if (Math.abs(gamepad2.left_stick_x) > 0)
-                turret.setState(Turret.State.BACK);
 
             //manual turret control:
             if (Math.abs(gamepad2.right_stick_y) > 0) {

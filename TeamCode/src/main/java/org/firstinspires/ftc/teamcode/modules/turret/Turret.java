@@ -26,7 +26,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.00115, i = 0.0007, d = 0.0001;
+    public static double p = 0.001225, i = 0.00078, d = 0.0001;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
