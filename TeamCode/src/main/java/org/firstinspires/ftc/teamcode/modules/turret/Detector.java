@@ -19,18 +19,18 @@ public class Detector extends OpenCvPipeline {
         RIGHT
     }
     private Location location = Location.MIDDLE;
-    public static int factor=20;
+    public static int factor=75;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(0, 180, 40, factor);
-    public static Rect POS_2_BLUE = new Rect(40, 180, 40, factor);
-    public static Rect POS_3_BLUE = new Rect(80, 180, 40, factor);
-    public static Rect POS_4_BLUE = new Rect(120, 180, 40, factor);
-    public static Rect POS_5_BLUE = new Rect(160, 180, 40, factor);
-    public static Rect POS_6_BLUE = new Rect(200, 180, 40, factor);
-    public static Rect POS_7_BLUE = new Rect(240, 180, 40, factor);
-    public static Rect POS_8_BLUE = new Rect(280, 180, 40, factor);
+    public static Rect POS_1_BLUE = new Rect(0, 170, 40, 30);
+    public static Rect POS_2_BLUE = new Rect(40, 170, 40, 30);
+    public static Rect POS_3_BLUE = new Rect(80, 170, 40, 30);
+    public static Rect POS_4_BLUE = new Rect(120, 170, 40, 30);
+    public static Rect POS_5_BLUE = new Rect(160, 170, 40, 30);
+    public static Rect POS_6_BLUE = new Rect(200, 170, 40, 30);
+    public static Rect POS_7_BLUE = new Rect(240, 170, 40, 30);
+    public static Rect POS_8_BLUE = new Rect(280, 170, 40, 30);
 
     //Find numbers for actual place
 
@@ -85,7 +85,7 @@ public class Detector extends OpenCvPipeline {
         loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
         boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
         record=Math.abs(loc[3]-loc[4]);
-        if(Math.abs(loc[3]-loc[4])<restrict&&loc[3]>0.26&&loc[4]>0.26) {
+        if(getShift()<restrict) {
             location= Location.MIDDLE;
         }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]+loc[7])){
             location= Location.RIGHT;
@@ -111,6 +111,6 @@ public class Detector extends OpenCvPipeline {
     }
     public int getShift() {
         //Find shift
-        return (int)(-1*factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
+        return (int)(-1*factor*(loc[0]*3+loc[1]*2+loc[2]*1+loc[3]*0+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }
