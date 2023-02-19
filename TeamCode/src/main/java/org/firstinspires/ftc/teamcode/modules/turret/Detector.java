@@ -85,7 +85,7 @@ public class Detector extends OpenCvPipeline {
         loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
         boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
         record=Math.abs(loc[3]-loc[4]);
-        if(Math.abs(loc[3]-loc[4])<restrict&&loc[3]>0.26&&loc[4]>0.26) {
+        if(Math.abs(loc[3]-loc[4])<restrict&&loc[3]>0.13&&loc[4]>0.13) {
             location= Location.MIDDLE;
         }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]+loc[7])){
             location= Location.RIGHT;
