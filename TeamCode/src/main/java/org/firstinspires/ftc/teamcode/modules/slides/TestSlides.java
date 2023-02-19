@@ -43,7 +43,7 @@ public class TestSlides extends LinearOpMode {
             telemetry.addData("InchesR: ", slide.slidesRight.getCurrentPosition());
             telemetry.addData("currentR: ", slide.slidesRight.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("currentL: ", slide.slidesLeft.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("slides limit switch: ", slide.slidesLimitSwitch.getVoltage());
+            telemetry.addData("slides limit switch: ", slide.slidesLimitSwitch.getState());
             telemetry.update();
 
         }

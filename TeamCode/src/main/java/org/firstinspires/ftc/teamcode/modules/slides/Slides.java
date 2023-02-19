@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 public class Slides extends HwModule {
     public DcMotorEx slidesLeft, slidesRight;
     //public AnalogInput slidesLimitSwitch;
-    public AnalogInput slidesLimitSwitch;
+    public DigitalChannel slidesLimitSwitch;
     public static ElapsedTime time = new ElapsedTime();
     //slides is 17.5 inches tall
     boolean switchModified=false;
@@ -72,7 +73,7 @@ public class Slides extends HwModule {
     {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "sLimit");
+        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
         slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -246,7 +247,7 @@ public class Slides extends HwModule {
     }
 
     public boolean limitState() {
-        if(slidesLimitSwitch.getVoltage()>3) {
+        if(slidesLimitSwitch.getState()) {
             return true;
         }
         return false;

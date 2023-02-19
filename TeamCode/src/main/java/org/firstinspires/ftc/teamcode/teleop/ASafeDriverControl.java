@@ -363,6 +363,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             if (cycleMacro.wasJustPressed()) {
                 cycleCheck = true;
+                cycleTimer.reset();
             }
 
             //AUTO ALIGN:
@@ -391,6 +392,7 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Turret Target Position", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
             telemetry.addData("SLIDES LIMIT SWITCH: ", slides.limitState());
+            telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
@@ -406,7 +408,7 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > 500) {
+            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > 800) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -447,25 +449,25 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void cycle() {
         if (cycleCheck) {
-            for (int i = 0; i < 3; i++) {
-               if (cycleTimer.milliseconds() > 2000)  {
-                   cycleTimer.reset();
-               } else if (cycleTimer.milliseconds() > 1600) {
-                    resetCheck = true;
-                } else if (cycleTimer.milliseconds() > 1300) {
+               if (cycleTimer.milliseconds() > 3000) {
+                   resetCheck = true;
+                   resetTimer.reset();
+                   cycleCheck = false;
+                } else if (cycleTimer.milliseconds() > 2500) {
                     claw.setState(Claw.State.OPEN);
-                } else if (cycleTimer.milliseconds() > 900) {
+                } else if (cycleTimer.milliseconds() > 2000) {
+                   deposit.setExtension(Deposit.ExtensionState.EXTEND);
+               } else if (cycleTimer.milliseconds() > 1200) {
                     turret.setState(Turret.State.BACK);
-                } else if (cycleTimer.milliseconds() > 600) {
-                    slides.setState(Slides.State.HIGH);
+                } else if (cycleTimer.milliseconds() > 800) {
+                   deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                   slides.setState(Slides.State.HIGH);
                     deposit.setAngle(Deposit.AngleState.VECTORING);
-                } else if (cycleTimer.milliseconds() > 300) {
+                } else if (cycleTimer.milliseconds() > 350) {
                     claw.setState(Claw.State.CLOSE);
                 } else if (cycleTimer.milliseconds() > 0) {
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 }
-            }
-            cycleCheck = false;
         }
     }
 }
