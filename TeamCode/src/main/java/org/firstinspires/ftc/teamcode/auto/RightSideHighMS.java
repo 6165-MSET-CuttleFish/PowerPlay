@@ -51,6 +51,7 @@ public class RightSideHighMS extends LinearOpMode {
     double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
+        /*
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
        // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
@@ -92,7 +93,7 @@ public class RightSideHighMS extends LinearOpMode {
             {
 
             }
-        });
+        });*/
 
         robot = new RobotTemp(this, true);
 
@@ -127,7 +128,7 @@ public class RightSideHighMS extends LinearOpMode {
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-35.25,10.25, Math.toRadians(174)))
+                .lineToLinearHeading(new Pose2d(-35.25,10.25, Math.toRadians(175)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -156,7 +157,7 @@ public class RightSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-55.3, 10.25),robot.getVelocityConstraint(57.5, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-55.3, 10.25),robot.getVelocityConstraint(56, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.53, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -199,25 +200,26 @@ public class RightSideHighMS extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                 })
                 .lineToConstantHeading(new Vector2d(-61,11)).build();
-
+        /*
         while(!isStarted()&&!isStopRequested())
         {
             double tempState=pipeline.getOutput();
             telemetry.addData("State: ", tempState);
             //telemetry.addData("H Value", pipeline.getHAvg());
             telemetry.addData("Max value: ", pipeline.getMax());
-            telemetry.update();
+
             if(tempState>0)
             {
                 state=tempState;
             }
-        }
-
+        }*/
+        telemetry.addData("AUTO READY", 1);
+        telemetry.update();
         waitForStart();
 
 
         if (isStopRequested()) return;
-        camera.stopStreaming();
+        //camera.stopStreaming();
 
 
         robot.setPoseEstimate(startPose);
@@ -274,7 +276,7 @@ public class RightSideHighMS extends LinearOpMode {
     public void intake(){
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-210< timer){
+        while(System.currentTimeMillis()-300< timer){
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);

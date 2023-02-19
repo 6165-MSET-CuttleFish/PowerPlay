@@ -41,8 +41,8 @@ public class Turret extends HwModule
 
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-            RIGHT_SIDE_HIGH_PRELOAD = -860, RIGHT_SIDE_MID = 3000;
+            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3325,
+            RIGHT_SIDE_HIGH_PRELOAD = -950, RIGHT_SIDE_MID = 3000;
 
 
 
@@ -143,6 +143,7 @@ public class Turret extends HwModule
     private void updateTarget() {
         //if hall effect then reset pos at zero
         //if(true) {
+        if(!isAuto){
             prevHall = hallEffect.getVoltage();
             if (hallEffect.getVoltage() - prevHall < -1.0) {
                 if (turretMotor.getPower() < 0) {
@@ -151,6 +152,8 @@ public class Turret extends HwModule
                     posAtZero = -encoder.getCurrentPosition();
                 }
             }
+        }
+
         //}
 
             switch (state) {

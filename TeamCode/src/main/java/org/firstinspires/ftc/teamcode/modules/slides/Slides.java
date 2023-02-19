@@ -36,10 +36,10 @@ public class Slides extends HwModule {
     public static int PICKUP = 10;
     public static int INTAKE_AUTO =  125;
     public static int SLIGHT = 600;
-    public static int CYCLE0 = 420;
-    public static int CYCLE1 = 327;
-    public static int CYCLE2 = 225;
-    public static int CYCLE3 = 120;
+    public static int CYCLE0 = 400;
+    public static int CYCLE1 = 300;
+    public static int CYCLE2 = 200;
+    public static int CYCLE3 = 100;
 
     public static int CYCLE4 = 0;
 
