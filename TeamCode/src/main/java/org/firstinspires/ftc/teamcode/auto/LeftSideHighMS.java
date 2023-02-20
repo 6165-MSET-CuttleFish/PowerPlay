@@ -32,7 +32,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class RightSideHighMS extends LinearOpMode {
+public class LeftSideHighMS extends LinearOpMode {
     ElapsedTime t;
     RobotTemp robot;
     Intake intake;
@@ -45,7 +45,7 @@ public class RightSideHighMS extends LinearOpMode {
     Detector detector1;
     OpenCvWebcam camera, camera2;
     colorDetection pipeline;
-    Pose2d startPose = new Pose2d(-38,61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(38,61, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
@@ -115,20 +115,20 @@ public class RightSideHighMS extends LinearOpMode {
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-36.7, 12))
+                .lineToConstantHeading(new Vector2d(36.7, 12))
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addTemporalMarker(0.4,()->{
-                    turret.setState(Turret.State.RIGHT_SIDE_HIGH_PRELOAD);
+                    turret.setState(Turret.State.LEFT_SIDE_HIGH_PRELOAD);
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                 })
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-35.25,10.25, Math.toRadians(175)))
+                .lineToLinearHeading(new Pose2d(35.25,10.25, Math.toRadians(5)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -138,8 +138,8 @@ public class RightSideHighMS extends LinearOpMode {
                     slides.setState(Slides.State.CYCLE0);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,10.5, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(-56.3, 10.25))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(35.25,10.5, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(56.3, 10.25))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -148,47 +148,23 @@ public class RightSideHighMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-37.4, 12.75),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(37.4, 12.75),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
                 .addTemporalMarker(0.5, ()->{
-                    turret.setState(Turret.State.RIGHT_SIDE_HIGH);
+                    turret.setState(Turret.State.LEFT_SIDE_HIGH);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-56.3, 10.25),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(56.3, 10.25),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
-                .addTemporalMarker(0.53, ()->{
+                .addTemporalMarker(0.6, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
 
                 })
                 .build();
-        Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
-                .addTemporalMarker(0.0, ()->{
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
-
-                })
-                .addTemporalMarker(0.2, ()->{
-                    slides.setState(Slides.State.BOTTOM);
-                })
-                .lineToConstantHeading(new Vector2d(-13,11)).build();
-        Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
-                .addTemporalMarker(0.0, ()->{
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
-
-                })
-                .addTemporalMarker(0.2, ()->{
-                    slides.setState(Slides.State.BOTTOM);
-                })
-                .lineToConstantHeading(new Vector2d(-37,11)).build();
         Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -200,7 +176,31 @@ public class RightSideHighMS extends LinearOpMode {
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(-61,11)).build();
+                .lineToConstantHeading(new Vector2d(13,11)).build();
+        Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
+                .addTemporalMarker(0.0, ()->{
+                    turret.setState(Turret.State.ZERO);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                    deposit.setAngle(Deposit.AngleState.INTAKE);
+                    claw.setState(Claw.State.OPEN);
+
+                })
+                .addTemporalMarker(0.2, ()->{
+                    slides.setState(Slides.State.BOTTOM);
+                })
+                .lineToConstantHeading(new Vector2d(37,11)).build();
+        Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
+                .addTemporalMarker(0.0, ()->{
+                    turret.setState(Turret.State.ZERO);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                    deposit.setAngle(Deposit.AngleState.INTAKE);
+                    claw.setState(Claw.State.OPEN);
+
+                })
+                .addTemporalMarker(0.2, ()->{
+                    slides.setState(Slides.State.BOTTOM);
+                })
+                .lineToConstantHeading(new Vector2d(61,11)).build();
         /*
         while(!isStarted()&&!isStopRequested())
         {
@@ -245,7 +245,7 @@ public class RightSideHighMS extends LinearOpMode {
 
         /*if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
-        else if(state==3)*/ robot.followTrajectory(endRight);
+        else if(state==3)*/ robot.followTrajectory(endLeft);
 
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){
