@@ -95,7 +95,7 @@ public class LeftSideHighMS extends LinearOpMode {
             }
         });*/
 
-        robot = new RobotTemp(this, true);
+        robot = new RobotTemp(this);
 
 
         deposit = robot.deposit;

@@ -54,7 +54,6 @@ public class Turret extends HwModule
     public DcMotorEx turretMotor;
     public Encoder encoder;
     public AnalogInput hallEffect;
-    private OpenCvWebcam webcam;
     public Detector detector;
     public Turret.State state;
     private boolean isAuto = false;
@@ -95,9 +94,21 @@ public class Turret extends HwModule
         state=State.ZERO;
     }
 
-    public void setAutoalignParams(OpenCvWebcam webcam, Detector detector)
+    public Turret(HardwareMap hardwareMap, boolean isAuto, Detector detector)
     {
-        this.webcam=webcam;
+        pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
+
+        turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
+        this.isAuto=isAuto;
+        hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
+
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        state=State.ZERO;
+
         this.detector=detector;
     }
 

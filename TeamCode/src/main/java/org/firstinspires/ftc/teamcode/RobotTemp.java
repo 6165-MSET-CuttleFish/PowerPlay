@@ -47,20 +47,27 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 import org.firstinspires.ftc.teamcode.util.HardwareThread;
 import org.firstinspires.ftc.teamcode.modules.vision.Camera;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,6 +123,13 @@ public class RobotTemp extends MecanumDrive{
     public LinearOpMode l;
     boolean isAuto=false;
 
+    HardwareMap hardwareMap;
+
+    OpenCvWebcam camera;
+    OpenCvWebcam camera2;
+    public Detector detector1;
+    public colorDetection pipeline;
+
     public void setState(driveState state){
         this.state = state;
     }
@@ -132,13 +146,16 @@ public class RobotTemp extends MecanumDrive{
             isAuto=true;
         }
 
-        HardwareMap hardwareMap=l.hardwareMap;
+        hardwareMap=l.hardwareMap;
         this.l=l;
+
+        initCameras();
 
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, isAuto);
+        turret = new Turret(hardwareMap, isAuto, detector1);
+
 
         packet=new TelemetryPacket();
         hardware=new BackgroundCR(this);
@@ -221,6 +238,59 @@ public class RobotTemp extends MecanumDrive{
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
     }
+
+    public void initCameras()
+    {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
+                .splitLayoutForMultipleViewports(
+                        cameraMonitorViewId,
+                        2,
+                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+
+        if(isAuto)
+        {
+            camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
+            pipeline=new colorDetection(l.telemetry);
+            camera.setPipeline(pipeline);
+            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+            {
+                @Override
+                public void onOpened()
+                {
+                    //telemetry.addData("Camera 1: ", "started");
+                    //telemetry.update();
+                    camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                    //telemetry.addData("Camera 1: ", "streaming");
+                    //telemetry.update();
+                }
+
+                @Override
+                public void onError(int errorCode)
+                {
+                    //telemetry.addData("Webcam 1", "failed");
+                    //telemetry.update();
+                }
+            });
+        }
+        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
+        camera2.setPipeline(detector1=new Detector());
+        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+            }
+        });
+    }
+
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }

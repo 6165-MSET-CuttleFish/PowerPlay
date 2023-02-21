@@ -42,72 +42,12 @@ public class RightSideHighMS extends LinearOpMode{
     GroundIntake groundIntake;
     Turret turret;
     TelemetryPacket packet;
-    Detector detector1;
-    OpenCvWebcam camera, camera2;
-    colorDetection pipeline;
     Pose2d startPose = new Pose2d(-38,61, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
-
-        //telemetry.addData("Cope: ", "cope");
-        //telemetry.update();
-
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
-        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-        pipeline=new colorDetection(telemetry);
-
-        camera.setPipeline(pipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                //telemetry.addData("Camera 1: ", "started");
-                //telemetry.update();
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-                //telemetry.addData("Camera 1: ", "streaming");
-                //telemetry.update();
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-                //telemetry.addData("Webcam 1", "failed");
-                //telemetry.update();
-            }
-        });
-        camera2.setPipeline(detector1=new Detector());
-        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-                telemetry.addData("Webcam 2", "failed");
-                telemetry.update();
-            }
-        });
-
-        telemetry.addData("Checkpoint", "1");
-        telemetry.update();
-
         robot = new RobotTemp(this);
 
 
@@ -221,12 +161,10 @@ public class RightSideHighMS extends LinearOpMode{
         telemetry.addData("Checkpoint", "3");
         telemetry.update();
 
-        turret.setAutoalignParams(camera2, detector1);
-
         while(!isStarted()&&!isStopRequested())
         {
-            double tempState=pipeline.getOutput();
-            telemetry.addData("Camera 1: ", "strreaming");
+            double tempState=robot.pipeline.getOutput();
+            telemetry.addData("Camera 1: ", tempState);
             telemetry.update();
 
             if(tempState>0)
