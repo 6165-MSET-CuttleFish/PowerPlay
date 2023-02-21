@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 
 /*
@@ -17,7 +16,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotTemp drive = new RobotTemp(this);
+        RobotTemp drive = new RobotTemp(this, true);
 
         waitForStart();
 

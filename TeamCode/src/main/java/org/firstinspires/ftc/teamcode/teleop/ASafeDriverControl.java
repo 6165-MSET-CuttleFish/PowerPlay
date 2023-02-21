@@ -69,7 +69,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new RobotTemp(this);
+        robot = new RobotTemp(this, true);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
