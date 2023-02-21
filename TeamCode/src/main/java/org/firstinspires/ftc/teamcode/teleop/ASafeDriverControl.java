@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -28,8 +29,8 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
-@TeleOp
 @Config
+@TeleOp(name = "1. Driver Practice")
 public class ASafeDriverControl extends LinearOpMode {
     RobotTemp robot;
     Slides slides;
@@ -40,6 +41,7 @@ public class ASafeDriverControl extends LinearOpMode {
     BackgroundCR hardware;
     TelemetryPacket packet;
     GamepadEx primary, secondary;
+    double timer;
     boolean transfer = false;
     boolean resetCheck, cycleCheck = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
@@ -134,43 +136,30 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
 
-        cycleIntake = robot.trajectorySequenceBuilder(new Pose2d(0,0, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(0, 10))
-                .UNSTABLE_addTemporalMarkerOffset(5, () ->{
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        Trajectory cycleDrop = robot.trajectoryBuilder(new Pose2d(4.5,0,Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-2, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
+                .addTemporalMarker(0, ()->{
+                    slides.setState(Slides.State.CYCLE_HIGH);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
-                    claw.setState(Claw.State.CLOSE);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(2, () -> {
-                    robot.followTrajectorySequenceAsync(cycleDropOff);
-                })
-                .build();
-
-        cycleDropOff = robot.trajectorySequenceBuilder(cycleIntake.end())
-                .lineToConstantHeading(new Vector2d(0, 0))
-                .UNSTABLE_addTemporalMarkerOffset(5, ()-> {
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    slides.setState(Slides.State.HIGH);
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                .addTemporalMarker(0.6, ()->{
                     turret.setState(Turret.State.BACK);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(5, () -> {
-                    claw.setState(Claw.State.OPEN);
+                .build();
+        Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(8, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
+                .addTemporalMarker(0, ()->{
+                    slides.setState(Slides.State.BOTTOM);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(5, () -> {
-                    resetCheck = true;
-                    resetTimer.reset();
-//                    cycleCheck = false;
-                    robot.midOdo.setPosition(0);
-                    robot.sideOdo.setPosition(0.65);
+                .addTemporalMarker(0.2, ()->{
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+
                 })
                 .build();
 
         waitForStart();
-        gamepad1.setLedColor(9, 79, 183, 120000); //blue
+        gamepad1.setLedColor(100, 79, 183, 120000); //blue
         gamepad2.setLedColor(147, 112, 219, 120000); //light purple
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -367,11 +356,15 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
-//                robot.midOdo.setPosition(0.33);
-//                robot.sideOdo.setPosition(0.33);
-//                robot.followTrajectorySequenceAsync(cycleIntake);
-                cycleCheck = true;
-                cycleTimer.reset();
+                robot.midOdo.setPosition(0.33);
+                robot.sideOdo.setPosition(0.33);
+                robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
+                robot.followTrajectoryAsync(cycleIntake);
+                intake();
+                robot.followTrajectoryAsync(cycleDrop);
+                dropOff();
+                robot.midOdo.setPosition(0);
+                robot.sideOdo.setPosition(0.65);
             }
 
             //AUTO ALIGN:
@@ -505,5 +498,47 @@ public class ASafeDriverControl extends LinearOpMode {
 //            robot.midOdo.setPosition(0);
 //            robot.sideOdo.setPosition(0.65);
 //        }
+    }
+    public void dropOff(){
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-500 < timer){
+
+            robot.update();
+        }
+        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-350 < timer){
+
+            robot.update();
+        }
+        claw.setState(Claw.State.OPEN);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-95< timer){
+            robot.update();
+        }
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+        turret.setState(Turret.State.ZERO);
+        slides.setState(Slides.State.BOTTOM);
+
+    }
+    public void intake(){
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-75< timer){
+            robot.update();
+        }
+        claw.setState(Claw.State.CLOSE);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-230< timer){
+            robot.update();
+        }
+        slides.setState(Slides.State.HIGH);
+
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-200< timer){
+            robot.update();
+        }
+        deposit.setAngle(Deposit.AngleState.VECTORING);
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
     }
 }

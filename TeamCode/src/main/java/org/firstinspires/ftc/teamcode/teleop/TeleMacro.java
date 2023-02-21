@@ -87,7 +87,7 @@ public class TeleMacro extends LinearOpMode {
                 reader.readValue();
             }
             if(macroToggle.getState()){
-                robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
+                robot.setPoseEstimate(new Pose2d(0,0, Math.toRadians(0)));
                 if(cycle.wasJustPressed()){
                     robot.followTrajectory(cycleIntake);
                     intake();
@@ -182,7 +182,5 @@ public class TeleMacro extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.VECTORING);
 
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
-
-
     }
 }
