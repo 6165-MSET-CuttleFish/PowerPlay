@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.modules.slides;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -83,7 +82,7 @@ public class Slides extends HwModule {
     }
 
     public void update() {
-//        checkLimit();
+        checkLimit();
 //        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
@@ -237,8 +236,9 @@ public class Slides extends HwModule {
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-    public void checkLimit() {
-        if (limitState()) {
+    public void checkLimit() 
+    {
+        if (limitPressed()) {
             posAtZero = slidesRight.getCurrentPosition();
         }
     }
@@ -246,11 +246,8 @@ public class Slides extends HwModule {
         manual = power;
     }
 
-    public boolean limitState() {
-        if(slidesLimitSwitch.getState()) {
-            return true;
-        }
-        return false;
+    public boolean limitPressed() {
+        return !slidesLimitSwitch.getState();
     }
 
     public Slides.State getState() {
