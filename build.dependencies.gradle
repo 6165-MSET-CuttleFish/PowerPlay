@@ -25,8 +25,8 @@ dependencies {
 
     implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
 
-   // implementation 'org.pytorch:pytorch_android_lite:1.9.0'
-    //implementation 'org.pytorch:pytorch_android_torchvision:1.9.0'
+    implementation 'org.pytorch:pytorch_android_lite:1.9.0'
+    implementation 'org.pytorch:pytorch_android_torchvision:1.9.0'
 
     /*implementation platform("ai.djl:bom:0.20.0")
     implementation "ai.djl:api"

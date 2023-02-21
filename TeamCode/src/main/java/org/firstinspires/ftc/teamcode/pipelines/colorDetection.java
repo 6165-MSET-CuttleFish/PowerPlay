@@ -4,18 +4,13 @@ package org.firstinspires.ftc.teamcode.pipelines;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.Camera;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class colorDetection extends OpenCvPipeline
 {
@@ -31,8 +26,8 @@ public class colorDetection extends OpenCvPipeline
     Scalar blueLower=new Scalar(95, 60, 20);
     Scalar blueHigher=new Scalar(125, 255, 255);
 
-    Scalar pinkLower=new Scalar(55, 60, 20);
-    Scalar pinkHigher=new Scalar(80, 255, 255);
+    Scalar greenLower =new Scalar(55, 60, 20);
+    Scalar greenHigher =new Scalar(80, 255, 255);
 
 
 
@@ -46,7 +41,7 @@ public class colorDetection extends OpenCvPipeline
     Mat preProcessed=new Mat();
     Mat test=new Mat();
 
-    int pinkCount;
+    int greenCount;
     int yellowCount;
     int blueCount;
 
@@ -162,7 +157,7 @@ public class colorDetection extends OpenCvPipeline
 
     public void getZone2(Mat input)
     {
-        pinkCount=0;
+        greenCount =0;
         blueCount=0;
         yellowCount=0;
 
@@ -180,7 +175,7 @@ public class colorDetection extends OpenCvPipeline
 
                         if(HVal>55&&HVal<80)
                         {
-                            pinkCount++;
+                            greenCount++;
                         }
                             /*else if(HVal<10&&SVal<80&&VVal>140&&VVal<180)
                             {
@@ -202,12 +197,12 @@ public class colorDetection extends OpenCvPipeline
                 }
             }
 
-            max1=Math.max(pinkCount, yellowCount);
+            max1=Math.max(greenCount, yellowCount);
             max2=Math.max(max1, blueCount);
 
             if(max2==0)
                 state=-1;
-            else if(max2==pinkCount)
+            else if(max2== greenCount)
                 state=1;
             else if(max2==blueCount)
                 state=2;
@@ -234,7 +229,7 @@ public class colorDetection extends OpenCvPipeline
         Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
-        Core.inRange(HSV, pinkLower, pinkHigher, test);
+        Core.inRange(HSV, greenLower, greenHigher, test);
 
         return preview;
     }
