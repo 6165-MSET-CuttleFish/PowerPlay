@@ -32,7 +32,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class RightSideHighMS extends LinearOpMode {
+public class RightSideHighMS extends LinearOpMode{
     ElapsedTime t;
     RobotTemp robot;
     Intake intake;
@@ -51,9 +51,13 @@ public class RightSideHighMS extends LinearOpMode {
     double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
-        /*
+
+        //telemetry.addData("Cope: ", "cope");
+        //telemetry.update();
+
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-       // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
                 .splitLayoutForMultipleViewports(
                         cameraMonitorViewId,
@@ -70,13 +74,18 @@ public class RightSideHighMS extends LinearOpMode {
             @Override
             public void onOpened()
             {
+                //telemetry.addData("Camera 1: ", "started");
+                //telemetry.update();
                 camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                //telemetry.addData("Camera 1: ", "streaming");
+                //telemetry.update();
             }
 
             @Override
             public void onError(int errorCode)
             {
-
+                //telemetry.addData("Webcam 1", "failed");
+                //telemetry.update();
             }
         });
         camera2.setPipeline(detector1=new Detector());
@@ -91,11 +100,15 @@ public class RightSideHighMS extends LinearOpMode {
             @Override
             public void onError(int errorCode)
             {
-
+                telemetry.addData("Webcam 2", "failed");
+                telemetry.update();
             }
-        });*/
+        });
 
-        robot = new RobotTemp(this, true);
+        telemetry.addData("Checkpoint", "1");
+        telemetry.update();
+
+        robot = new RobotTemp(this);
 
 
         deposit = robot.deposit;
@@ -110,6 +123,9 @@ public class RightSideHighMS extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
 
+
+        telemetry.addData("Checkpoint", "2");
+        telemetry.update();
 
         //telemetry.setMsTransmissionInterval(50);
         robot.sideOdo.setPosition(sideOdomServoPos);
@@ -201,19 +217,23 @@ public class RightSideHighMS extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                 })
                 .lineToConstantHeading(new Vector2d(-61,11)).build();
-        /*
+
+        telemetry.addData("Checkpoint", "3");
+        telemetry.update();
+
+        turret.setAutoalignParams(camera2, detector1);
+
         while(!isStarted()&&!isStopRequested())
         {
             double tempState=pipeline.getOutput();
-            telemetry.addData("State: ", tempState);
-            //telemetry.addData("H Value", pipeline.getHAvg());
-            telemetry.addData("Max value: ", pipeline.getMax());
+            telemetry.addData("Camera 1: ", "strreaming");
+            telemetry.update();
 
             if(tempState>0)
             {
                 state=tempState;
             }
-        }*/
+        }
         telemetry.addData("AUTO READY", 1);
         telemetry.update();
         waitForStart();

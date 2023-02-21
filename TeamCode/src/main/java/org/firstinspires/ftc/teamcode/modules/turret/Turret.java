@@ -88,37 +88,17 @@ public class Turret extends HwModule
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         this.isAuto=isAuto;
         hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
-        int cameraMonitorViewId = hardwareMap
-                .appContext
-                .getResources().getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hardwareMap.appContext.getPackageName()
-                );
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-        webcam = OpenCvCameraFactory
-                .getInstance()
-                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
-        webcam.setPipeline(detector = new Detector());
-        webcam.setMillisecondsPermissionTimeout(2500);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                System.out.println("START");
-            }
-            public void onError(int errorCode) {
-            }
-        });
-        dashboard.startCameraStream(webcam, 30);
+
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
+    }
+
+    public void setAutoalignParams(OpenCvWebcam webcam, Detector detector)
+    {
+        this.webcam=webcam;
+        this.detector=detector;
     }
 
     public void update() {

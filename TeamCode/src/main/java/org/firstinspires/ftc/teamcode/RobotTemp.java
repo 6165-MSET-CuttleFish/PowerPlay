@@ -33,6 +33,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -65,7 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 @Config
-public class RobotTemp extends MecanumDrive {
+public class RobotTemp extends MecanumDrive{
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0.727);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
@@ -113,6 +114,7 @@ public class RobotTemp extends MecanumDrive {
     public driveState state;
     public TelemetryPacket packet;
     public LinearOpMode l;
+    boolean isAuto=false;
 
     public void setState(driveState state){
         this.state = state;
@@ -121,16 +123,22 @@ public class RobotTemp extends MecanumDrive {
     public driveState getState() {
         return state;
     }
-    public RobotTemp(LinearOpMode l) {
-
+    public RobotTemp(LinearOpMode l)
+    {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+
+        if(l.getClass().isAnnotationPresent(Autonomous.class))
+        {
+            isAuto=true;
+        }
+
         HardwareMap hardwareMap=l.hardwareMap;
         this.l=l;
 
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, false);
+        turret = new Turret(hardwareMap, isAuto);
 
         packet=new TelemetryPacket();
         hardware=new BackgroundCR(this);
@@ -181,97 +189,6 @@ public class RobotTemp extends MecanumDrive {
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
-
-        for (DcMotorEx motor : motors) {
-            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
-            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
-            motor.setMotorType(motorConfigurationType);
-        }
-
-        if (RUN_USING_ENCODER) {
-            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        }
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
-        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        // TODO: reverse any motors using DcMotor.setDirection()
-
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
-    }
-    public RobotTemp(LinearOpMode l, boolean isAuto) {
-
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-        HardwareMap hardwareMap=l.hardwareMap;
-        this.l=l;
-
-        slides = new Slides(hardwareMap);
-        deposit = new Deposit(hardwareMap);
-        claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, isAuto);
-
-        packet=new TelemetryPacket();
-        hardware=new BackgroundCR(this);
-        hardware.startHW();
-
-
-        groundIntake = new GroundIntake(hardwareMap);
-       // slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
-//        camera = new Camera(hardwareMap, telemetry);
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
-
-        //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
-
-        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
-
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
-
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
-        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
-        rightRear = hardwareMap.get(DcMotorEx.class, "fr");
-        rightFront = hardwareMap.get(DcMotorEx.class, "br");
-
-       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
-        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
-
-        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
-
-        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
-        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
-        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
-        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
-*/
-
-
-        midOdo = hardwareMap.get(Servo.class, "midOdom");
-        sideOdo = hardwareMap.get(Servo.class, "sideOdom");
-        sideOdo.setPosition(sideOdomServoPos);
-        midOdo.setPosition(odomServoPos);
-        isOdoRaised = false;
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();

@@ -228,15 +228,15 @@ public class colorDetection extends OpenCvPipeline
         preProcessed=preProcessing(input);
 
         getZone2(preProcessed);
-        tel.addData("State", state);
-        tel.update();
+        //tel.addData("State", state);
+        //tel.update();
 
         Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
         Core.inRange(HSV, pinkLower, pinkHigher, test);
 
-        return test;
+        return preview;
     }
 
     public int getOutput()
