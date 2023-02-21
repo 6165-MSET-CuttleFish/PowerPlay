@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.KeyReader;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotTemp;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
-
+@TeleOp
 public class TeleMacro extends LinearOpMode {
     RobotTemp robot;
     Slides slides;
@@ -53,7 +54,7 @@ public class TeleMacro extends LinearOpMode {
         //claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
 
-        Trajectory cycleDrop = robot.trajectoryBuilder(new Pose2d(-5,0,Math.toRadians(0)))
+        Trajectory cycleDrop = robot.trajectoryBuilder(new Pose2d(4.5,0,Math.toRadians(0)))
                 .lineToConstantHeading(new Vector2d(0, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
@@ -64,7 +65,7 @@ public class TeleMacro extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(-5, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(4.5, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.BOTTOM);
@@ -86,6 +87,7 @@ public class TeleMacro extends LinearOpMode {
                 reader.readValue();
             }
             if(macroToggle.getState()){
+                robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
                 if(cycle.wasJustPressed()){
                     robot.followTrajectory(cycleIntake);
                     intake();
@@ -96,16 +98,22 @@ public class TeleMacro extends LinearOpMode {
             else{
                 robot.setWeightedDrivePower(
                         new Pose2d(
-                                -gamepad1.left_stick_y * 0.25,
-                                gamepad1.left_stick_x * 0.25,
-                                -gamepad1.right_stick_x * 0.25
+                                -gamepad1.left_stick_y * 0.4,
+                                gamepad1.left_stick_x * 0.4,
+                                -gamepad1.right_stick_x * 0.4
                         )
                 );
                 if(angling.getState()){
                     slides.setState(Slides.State.HIGH);
                     timer = System.currentTimeMillis();
                     while(System.currentTimeMillis()-350 < timer){
-
+                        robot.setWeightedDrivePower(
+                                new Pose2d(
+                                        -gamepad1.left_stick_y * 0.4,
+                                        gamepad1.left_stick_x * 0.4,
+                                        -gamepad1.right_stick_x * 0.4
+                                )
+                        );
                         robot.update();
                     }
                     turret.setState(Turret.State.BACK);
@@ -119,7 +127,13 @@ public class TeleMacro extends LinearOpMode {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     timer = System.currentTimeMillis();
                     while(System.currentTimeMillis()-350 < timer){
-
+                        robot.setWeightedDrivePower(
+                                new Pose2d(
+                                        -gamepad1.left_stick_y * 0.4,
+                                        gamepad1.left_stick_x * 045,
+                                        -gamepad1.right_stick_x * 0.4
+                                )
+                        );
                         robot.update();
                     }
                 }
@@ -127,7 +141,11 @@ public class TeleMacro extends LinearOpMode {
         }
     }
     public void dropOff(){
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-500 < timer){
 
+            robot.update();
+        }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-350 < timer){
@@ -142,10 +160,14 @@ public class TeleMacro extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
         turret.setState(Turret.State.ZERO);
-
+        slides.setState(Slides.State.BOTTOM);
 
     }
     public void intake(){
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-75< timer){
+            robot.update();
+        }
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-230< timer){

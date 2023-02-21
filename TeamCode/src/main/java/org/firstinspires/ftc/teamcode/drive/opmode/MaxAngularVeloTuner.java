@@ -33,7 +33,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotTemp drive = new RobotTemp(this);
+        RobotTemp drive = new RobotTemp(this, true);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

@@ -22,7 +22,7 @@ public class SchedulerTestExample extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        r=new RobotTemp(this);
+        r=new RobotTemp(this, true);
         slides=r.slides;
         turret=r.turret;
         scheduler=new TaskScheduler(this);
