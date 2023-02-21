@@ -236,7 +236,7 @@ public class Slides extends HwModule {
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-    public void checkLimit() 
+    public void checkLimit()
     {
         if (limitPressed()) {
             posAtZero = slidesRight.getCurrentPosition();

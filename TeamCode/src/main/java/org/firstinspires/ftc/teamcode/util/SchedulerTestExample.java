@@ -58,7 +58,8 @@ public class SchedulerTestExample extends LinearOpMode
             telemetry.addData("currentPos: ", slides.slidesRight.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesRight.getVelocity());
             telemetry.addData("currentPower: ", slides.slidesRight.getPower());
-            telemetry.addData("Limit Switch: ", slides.slidesLimitSwitch.getState());
+            telemetry.addData("Limit Switch: ", slides.limitPressed());
+            telemetry.addData("Zero Pos", slides.posAtZero);
             telemetry.addData("State: ", slides.getState());
             telemetry.update();
         }
