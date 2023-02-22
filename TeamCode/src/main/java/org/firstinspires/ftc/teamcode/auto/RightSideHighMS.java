@@ -81,7 +81,7 @@ public class RightSideHighMS extends LinearOpMode{
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-35.25,10.25, Math.toRadians(175)))
+                .lineToLinearHeading(new Pose2d(-35.25,12, Math.toRadians(175)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -91,8 +91,8 @@ public class RightSideHighMS extends LinearOpMode{
                     slides.setState(Slides.State.CYCLE0);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,10.5, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(-56.3, 10.25))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,12, Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-55.5, 12))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -101,17 +101,17 @@ public class RightSideHighMS extends LinearOpMode{
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-37.4, 12.75),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-37.1, 12.95),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
-                .addTemporalMarker(0.5, ()->{
+                .addTemporalMarker(0.4, ()->{
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-56.3, 10.25),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-55.7, 12),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.53, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -157,10 +157,10 @@ public class RightSideHighMS extends LinearOpMode{
 
         telemetry.addData("Checkpoint", "3");
         telemetry.update();
-
+        double tempState;
         while(!isStarted()&&!isStopRequested())
         {
-            double tempState=robot.pipeline.getOutput();
+            tempState=robot.pipeline.getOutput();
             telemetry.addData("Camera 1: ", tempState);
             telemetry.update();
 
@@ -175,7 +175,7 @@ public class RightSideHighMS extends LinearOpMode{
 
 
         if (isStopRequested()) return;
-        //camera.stopStreaming();
+        robot.autoCamera.stopStreaming();
 
 
         robot.setPoseEstimate(startPose);
@@ -198,9 +198,9 @@ public class RightSideHighMS extends LinearOpMode{
         }
 
 
-        /*if(state==1) robot.followTrajectory(endLeft);
+        if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
-        else if(state==3)*/ robot.followTrajectory(endRight);
+        else if(state==3) robot.followTrajectory(endRight);
 
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){

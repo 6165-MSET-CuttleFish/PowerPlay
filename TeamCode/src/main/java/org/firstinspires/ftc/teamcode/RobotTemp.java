@@ -127,8 +127,8 @@ public class RobotTemp extends MecanumDrive{
 
     HardwareMap hardwareMap;
 
-    OpenCvWebcam camera;
-    OpenCvWebcam camera2;
+    public OpenCvWebcam autoCamera;
+    public OpenCvWebcam turretCamera;
     public Detector detector1;
     public colorDetection pipeline;
 
@@ -253,17 +253,17 @@ public class RobotTemp extends MecanumDrive{
 
         if(isAuto)
         {
-            camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
+            autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
             pipeline=new colorDetection(l.telemetry);
-            camera.setPipeline(pipeline);
-            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+            autoCamera.setPipeline(pipeline);
+            autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
             {
                 @Override
                 public void onOpened()
                 {
                     //telemetry.addData("Camera 1: ", "started");
                     //telemetry.update();
-                    camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                    autoCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
                     //telemetry.addData("Camera 1: ", "streaming");
                     //telemetry.update();
                 }
@@ -276,21 +276,22 @@ public class RobotTemp extends MecanumDrive{
                 }
             });
         }
-        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        camera2.setPipeline(detector1=new Detector());
-        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        /*
+        turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
+        turretCamera.setPipeline(detector1=new Detector());
+        turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
-                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                //turretCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
             public void onError(int errorCode)
             {
             }
-        });
+        });*/
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
