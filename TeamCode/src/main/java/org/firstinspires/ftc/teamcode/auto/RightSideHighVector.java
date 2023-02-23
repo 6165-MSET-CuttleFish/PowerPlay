@@ -27,7 +27,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class RightSideHighMS extends LinearOpMode{
+public class RightSideHighVector extends LinearOpMode{
     ElapsedTime t;
     RobotTemp robot;
     Intake intake;
@@ -92,7 +92,7 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,12, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(-56.5, 12))
+                .lineToConstantHeading(new Vector2d(-56.1, 12))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -101,18 +101,21 @@ public class RightSideHighMS extends LinearOpMode{
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-37.1, 12.95),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-38.6, 13.2),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
-                    slides.setState(Slides.State.CYCLE_HIGH);
+                    slides.setState(Slides.State.MID);
                 })
-                .addTemporalMarker(0.4, ()->{
+                .addTemporalMarker(0.1, ()->{
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH);
                 })
-
+                .addTemporalMarker(0.75, ()->{
+                    slides.setState(Slides.State.CYCLE_HIGH);
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-56.5, 12),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-56.3, 12),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.61, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -130,7 +133,7 @@ public class RightSideHighMS extends LinearOpMode{
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(-13,12)).build();
+                .lineToConstantHeading(new Vector2d(-13,11)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -142,7 +145,7 @@ public class RightSideHighMS extends LinearOpMode{
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(-37,12)).build();
+                .lineToConstantHeading(new Vector2d(-37,11)).build();
         Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -154,7 +157,7 @@ public class RightSideHighMS extends LinearOpMode{
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(-61,12)).build();
+                .lineToConstantHeading(new Vector2d(-61,11)).build();
 
         telemetry.addData("Checkpoint", "3");
         telemetry.update();
@@ -202,7 +205,7 @@ public class RightSideHighMS extends LinearOpMode{
         if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
         else if(state==3) robot.followTrajectory(endRight);
-        robot.turn(Math.toRadians(-100));
+
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){
             robot.update();

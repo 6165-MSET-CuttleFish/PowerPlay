@@ -70,7 +70,7 @@ public class DriveConstants {
 */
     public static double MAX_VEL = 65; //pretty sure 60 is max here
     public static double MAX_ACCEL = 70;
-    public static double MAX_ANG_VEL = 2.4;
+    public static double MAX_ANG_VEL = 2.2;
     public static double MAX_ANG_ACCEL = 5.47090098280321;
 
 

@@ -129,7 +129,7 @@ public class RobotTemp extends MecanumDrive{
 
     public OpenCvWebcam autoCamera;
     public OpenCvWebcam turretCamera;
-    public Detector detector1;
+    public Detector detector1 = new Detector();
     public colorDetection pipeline;
 
     public void setState(driveState state){
@@ -276,22 +276,22 @@ public class RobotTemp extends MecanumDrive{
                 }
             });
         }
-        /*
+
         turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        turretCamera.setPipeline(detector1=new Detector());
+        turretCamera.setPipeline(detector1);
         turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
-                //turretCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                turretCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
             public void onError(int errorCode)
             {
             }
-        });*/
+        });
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
