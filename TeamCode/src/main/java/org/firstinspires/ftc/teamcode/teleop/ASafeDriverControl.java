@@ -49,7 +49,7 @@ public class ASafeDriverControl extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
-    ButtonReader autoAlign, cancelMacro, cycleMacro, cycleDown, cycleUp, actuateLeft,
+    ButtonReader autoAlign, odomRaise, cycleMacro, cycleDown, cycleUp, actuateLeft,
             intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, conePickup;
     ToggleButtonReader ninjaMode, straightMode;
 
@@ -68,6 +68,7 @@ public class ASafeDriverControl extends LinearOpMode {
     ElapsedTime resetTimer = new ElapsedTime();
     ElapsedTime cycleTimer = new ElapsedTime();
     TrajectorySequence cycleIntake, cycleDropOff;
+    double sideOdomPos = 0.33;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -90,7 +91,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
                 cycleMacro = new ButtonReader(primary, GamepadKeys.Button.B),
-                cancelMacro = new ButtonReader(primary, GamepadKeys.Button.A),
+                odomRaise = new ButtonReader(primary, GamepadKeys.Button.A),
                 autoAlign = new ButtonReader(primary, GamepadKeys.Button.Y),
                 intakeTransfer = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
 
@@ -135,17 +136,6 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
-
-        Trajectory cycleDrop = robot.trajectoryBuilder(new Pose2d(4.5,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(-2, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
-                        robot.getAccelerationConstraint(60))
-                .addTemporalMarker(0, ()->{
-                    slides.setState(Slides.State.CYCLE_HIGH);
-                })
-                .addTemporalMarker(0.6, ()->{
-                    turret.setState(Turret.State.BACK);
-                })
-                .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
                 .lineToConstantHeading(new Vector2d(8, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
@@ -156,6 +146,21 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
                 })
+                .build();
+
+        Trajectory cycleDrop = robot.trajectoryBuilder(cycleIntake.end())
+                .lineToConstantHeading(new Vector2d(-2.75, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
+                .addTemporalMarker(0, ()->{
+                    slides.setState(Slides.State.CYCLE_HIGH);
+                })
+                .addTemporalMarker(0.6, ()->{
+                    turret.setState(Turret.State.BACK);
+                })
+                .build();
+        Trajectory align = robot.trajectoryBuilder(cycleDrop.end())
+                .lineToConstantHeading(new Vector2d(0, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
                 .build();
 
         waitForStart();
@@ -356,16 +361,24 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
-                robot.midOdo.setPosition(0.33);
-                robot.sideOdo.setPosition(0.33);
                 robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
-                robot.followTrajectoryAsync(cycleIntake);
+                robot.followTrajectory(cycleIntake);
                 intake();
-                robot.followTrajectoryAsync(cycleDrop);
+                robot.followTrajectory(cycleDrop);
                 dropOff();
-                robot.midOdo.setPosition(0);
-                robot.sideOdo.setPosition(0.65);
+                robot.followTrajectory(align);
             }
+
+            if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) {
+                sideOdomPos = 0.65;
+                robot.midOdo.setPosition(0);
+                robot.sideOdo.setPosition(sideOdomPos);
+            } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) {
+                sideOdomPos = 0.33;
+                robot.midOdo.setPosition(sideOdomPos);
+                robot.sideOdo.setPosition(sideOdomPos);
+            }
+            
 
             //AUTO ALIGN:
            if (autoAlign.wasJustPressed() && turret.detector.getLocation() != Detector.Location.MIDDLE) {

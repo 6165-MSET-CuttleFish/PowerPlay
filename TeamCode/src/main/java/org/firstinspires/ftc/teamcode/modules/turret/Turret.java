@@ -136,7 +136,7 @@ public class Turret extends HwModule
         //if(true) {
         if(!isAuto){
             prevHall = hallEffect.getVoltage();
-            if (hallEffect.getVoltage() - prevHall < -1.0) {
+            if (hallEffect.getVoltage() - prevHall < -1.1) {
                 if (turretMotor.getPower() < 0) {
                     posAtZero = -encoder.getCurrentPosition();
                 } else {
