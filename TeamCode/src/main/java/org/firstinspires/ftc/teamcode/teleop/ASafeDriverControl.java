@@ -137,7 +137,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(8, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(8, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.BOTTOM);
@@ -149,17 +149,17 @@ public class ASafeDriverControl extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(cycleIntake.end())
-                .lineToConstantHeading(new Vector2d(-2.75, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-2.75, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
-                .addTemporalMarker(0.6, ()->{
+                .addTemporalMarker(0.2, ()->{
                     turret.setState(Turret.State.BACK);
                 })
                 .build();
         Trajectory align = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(0, 0),robot.getVelocityConstraint(25, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .build();
 
@@ -406,7 +406,6 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.addData("Turret Target Position", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
-            telemetry.addData("SLIDES LIMIT SWITCH: ", slides.limitPressed());
             telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
@@ -459,7 +458,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (slides.getState() == Slides.State.LOW || slides.slidesLeft.getCurrentPosition() < 900) {
+            if (slides.slidesLeft.getCurrentPosition() < 1200) {
                 if (resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
@@ -514,19 +513,17 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void dropOff(){
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-500 < timer){
-
+        while(System.currentTimeMillis()-400 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-350 < timer){
-
             robot.update();
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-95< timer){
+        while(System.currentTimeMillis()-125< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -537,12 +534,12 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void intake(){
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-75< timer){
+        while(System.currentTimeMillis()-25< timer){
             robot.update();
         }
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-230< timer){
+        while(System.currentTimeMillis()-200< timer){
             robot.update();
         }
         slides.setState(Slides.State.HIGH);
