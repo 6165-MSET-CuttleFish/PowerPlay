@@ -23,20 +23,20 @@ public class Detector extends OpenCvPipeline {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
-    public static Rect POS_1_BLUE = new Rect(0, 5, 40, 30);
-    public static Rect POS_2_BLUE = new Rect(40, 5, 40, 30);
-    public static Rect POS_3_BLUE = new Rect(80, 5, 40, 30);
-    public static Rect POS_4_BLUE = new Rect(120, 5, 40, 30);
-    public static Rect POS_5_BLUE = new Rect(160, 5, 40, 30);
-    public static Rect POS_6_BLUE = new Rect(200, 5, 40, 30);
-    public static Rect POS_7_BLUE = new Rect(240, 5, 40, 30);
-    public static Rect POS_8_BLUE = new Rect(280, 5, 40, 30);
+    public static Rect POS_1_BLUE = new Rect(0, 150, 40, 30);
+    public static Rect POS_2_BLUE = new Rect(40, 150, 40, 30);
+    public static Rect POS_3_BLUE = new Rect(80, 150, 40, 30);
+    public static Rect POS_4_BLUE = new Rect(120, 150, 40, 30);
+    public static Rect POS_5_BLUE = new Rect(160, 150, 40, 30);
+    public static Rect POS_6_BLUE = new Rect(200, 150, 40, 30);
+    public static Rect POS_7_BLUE = new Rect(240, 150, 40, 30);
+    public static Rect POS_8_BLUE = new Rect(280, 150, 40, 30);
 
     //Find numbers for actual place
 
     public static int blueHLow = 0;
     public static int blueSLow = 100;
-    public static int blueVLow = 100;
+    public static int blueVLow = 120;
 
     public static int blueHHigh = 255;
     public static int blueSHigh = 255;
@@ -111,6 +111,6 @@ public class Detector extends OpenCvPipeline {
     }
     public int getShift() {
         //Find shift
-        return (int)(-1*factor*(loc[0]*3+loc[1]*2+loc[2]*1+loc[3]*0+loc[4]*-1+loc[5]*-2+loc[6]*-3));
+        return (int)(-1*factor*(loc[0]*2.5+loc[1]*1.5+loc[2]*0.5+loc[3]*-0.5+loc[4]*-1.5+loc[5]*-2.5+loc[6]*-3.5));
     }
 }
