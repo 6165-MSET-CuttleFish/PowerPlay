@@ -26,9 +26,9 @@ public class Slides extends HwModule {
     public double posAtZero=0;
     public double manual = 0;
 
-    public static int HIGH = 2400; //old = 1850
+    public static int HIGH = 2450; //old = 1850
     public static int CYCLE_HIGH = 2378; //old = 1650
-    public static int MID = 1620; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
     public static int LOW = 880; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
@@ -68,8 +68,7 @@ public class Slides extends HwModule {
         BOTTOM, MANUAL, INTAKE_AUTO, ZERO, PICKUP,
         CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
-    public Slides(HardwareMap hardwareMap)
-    {
+    public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
@@ -236,8 +235,7 @@ public class Slides extends HwModule {
     public double millisecondsSpentInState() {
         return time.milliseconds();
     }
-    public void checkLimit()
-    {
+    public void checkLimit() {
         if (limitPressed()) {
             posAtZero = slidesRight.getCurrentPosition();
         }
