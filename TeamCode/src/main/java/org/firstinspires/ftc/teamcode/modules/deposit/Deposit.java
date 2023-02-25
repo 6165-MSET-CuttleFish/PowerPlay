@@ -24,6 +24,7 @@ public class Deposit extends HwModule {
 
     public static double VECTORING = 0.54;
     public static double INTAKE = 0.69;
+    public static double AUTO_INTAKE = 0.74;
     //public static double PICKUP = 0.97;
 
     Servo leftExtension;
@@ -62,7 +63,7 @@ public class Deposit extends HwModule {
     }
     public enum AngleState implements ModuleState
     {
-        VECTORING, INTAKE, X, //CONE_PICKUP
+        VECTORING, INTAKE, X, AUTO_INTAKE
     }
     public enum WristState implements ModuleState
     {
@@ -103,6 +104,9 @@ public class Deposit extends HwModule {
                 break;
             case INTAKE:
                 wrist.setPosition(INTAKE);
+                break;
+            case AUTO_INTAKE:
+                wrist.setPosition(AUTO_INTAKE);
                 break;
             /*case CONE_PICKUP:
                 wrist.setPosition(PICKUP);*/
