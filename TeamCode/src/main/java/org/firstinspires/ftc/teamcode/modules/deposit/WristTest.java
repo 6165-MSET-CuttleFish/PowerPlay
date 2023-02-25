@@ -17,8 +17,6 @@ public class WristTest extends LinearOpMode {
                 deposit.setAngle(Deposit.AngleState.INTAKE);
             if (gamepad1.b)
                 deposit.setAngle(Deposit.AngleState.VECTORING);
-            if (gamepad1.x)
-                deposit.setAngle(Deposit.AngleState.CONE_PICKUP);
             telemetry.addData("state: ", deposit.getAngState());
         }
     }

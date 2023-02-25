@@ -258,13 +258,6 @@ public class ASafeDriverControl extends LinearOpMode {
                 }
             }
 
-            if (conePickup.wasJustPressed()) {
-                slides.setState(Slides.State.PICKUP);
-                deposit.setAngle(Deposit.AngleState.CONE_PICKUP);
-                deposit.setExtension(Deposit.ExtensionState.HALF);
-                turret.setState(Turret.State.ZERO);
-            }
-
             if (turretZero.wasJustPressed()) {
                 turret.posAtZero = -turret.encoder.getCurrentPosition();
             }

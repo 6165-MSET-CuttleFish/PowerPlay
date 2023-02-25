@@ -110,6 +110,6 @@ public static Rect POS_1_BLUE = new Rect(0, 10, 40, 30);
     }
     public int getShift() {
         //Find shift
-        return (int)(-1*factor*(/*loc[0]*2.5*/+loc[1]*2.5+loc[2]*1.5+loc[3]*0.5+loc[4]*-0.5+loc[5]*-1.5+loc[6]*-2.5));
+        return (int)(-1*factor*(loc[0]*3+loc[1]*2+loc[2]*1+loc[3]*0+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }
