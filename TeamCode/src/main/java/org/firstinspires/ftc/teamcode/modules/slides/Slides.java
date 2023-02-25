@@ -26,11 +26,11 @@ public class Slides extends HwModule {
     public double posAtZero=0;
     public double manual = 0;
 
-    public static int HIGH = 2450; //old = 1850
+    public static int HIGH = 2430; //old = 1850
     public static int CYCLE_HIGH = 2378; //old = 1650
-    public static int MID = 1680; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int MID = 1660; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
-    public static int LOW = 880; //in inches, low junction is 13.5 inches
+    public static int LOW = 860; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;
     public static int PICKUP = 10;
     public static int INTAKE_AUTO =  125;

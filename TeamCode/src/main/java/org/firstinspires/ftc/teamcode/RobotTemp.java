@@ -53,6 +53,7 @@ import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 
 import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
+import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
@@ -130,6 +131,7 @@ public class RobotTemp extends MecanumDrive{
     public OpenCvWebcam autoCamera;
     public OpenCvWebcam turretCamera;
     public Detector detector1 = new Detector();
+    public AlignerAuto detector2 = new AlignerAuto();
     public colorDetection pipeline;
 
     public void setState(driveState state){
@@ -278,7 +280,8 @@ public class RobotTemp extends MecanumDrive{
         }
 
         turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        turretCamera.setPipeline(detector1);
+        if(isAuto) turretCamera.setPipeline(detector2);
+        else turretCamera.setPipeline(detector1);
         turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
