@@ -164,6 +164,8 @@ public class colorDetection extends OpenCvPipeline
                     catch(NullPointerException e)
                     {
                         //cancer
+                        state--;
+                        throw e;
                     }
                 }
             }
