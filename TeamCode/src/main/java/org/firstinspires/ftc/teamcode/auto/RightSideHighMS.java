@@ -68,7 +68,7 @@ public class RightSideHighMS extends LinearOpMode{
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-36.7, 13.5))
+                .lineToConstantHeading(new Vector2d(-37, 12.5))
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);
@@ -81,7 +81,7 @@ public class RightSideHighMS extends LinearOpMode{
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-35.25,13.5, Math.toRadians(174.5)))
+                .lineToLinearHeading(new Pose2d(-35.25,13, Math.toRadians(174.5)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -91,7 +91,7 @@ public class RightSideHighMS extends LinearOpMode{
                     slides.setState(Slides.State.CYCLE0);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,13.5, Math.toRadians(180)))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,13, Math.toRadians(180)))
                 .lineToConstantHeading(new Vector2d(-56.5, 13))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -101,7 +101,7 @@ public class RightSideHighMS extends LinearOpMode{
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-37.2, 13.4),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-36.4, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
@@ -114,7 +114,7 @@ public class RightSideHighMS extends LinearOpMode{
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
                 .lineToConstantHeading(new Vector2d(-56.5, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
-                .addTemporalMarker(0.61, ()->{
+                .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
 
                 })
