@@ -42,7 +42,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 3000;
+            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 3000,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3100;
 
 
 
@@ -175,14 +175,14 @@ public class Turret extends HwModule
                 case LEFT_SIDE_HIGH_PRELOAD:
                     targetPos = LEFT_SIDE_HIGH_PRELOAD - posAtZero;
                     break;
-                case LEFT_SIDE_MID:
-                    targetPos = RIGHT_SIDE_HIGH - posAtZero;
-                    break;
                 case LEFT_SIDE_MID_PRELOAD:
-                    targetPos = RIGHT_SIDE_HIGH_PRELOAD - posAtZero;
+                    targetPos = LEFT_SIDE_MID_PRELOAD - posAtZero;
                     break;
                 case RIGHT_SIDE_MID:
                     targetPos = RIGHT_SIDE_MID - posAtZero;
+                    break;
+                case LEFT_SIDE_MID:
+                    targetPos = LEFT_SIDE_MID - posAtZero;
                     break;
                 case INIT:
                     targetPos = INIT - posAtZero;
