@@ -399,7 +399,7 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("Auto Actuate: ", autoActuate);
             telemetry.addData("Turret Target Position", turret.getTargetPos());
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
-            telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
+           // telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 public class Slides extends HwModule {
     public DcMotorEx slidesLeft, slidesRight;
     //public AnalogInput slidesLimitSwitch;
-    public DigitalChannel slidesLimitSwitch;
+    //public DigitalChannel slidesLimitSwitch;
     public static ElapsedTime time = new ElapsedTime();
     //slides is 17.5 inches tall
     boolean switchModified=false;
@@ -71,7 +71,7 @@ public class Slides extends HwModule {
     public Slides(HardwareMap hardwareMap) {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
-        slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
+        //slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
         slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -81,7 +81,7 @@ public class Slides extends HwModule {
     }
 
     public void update() {
-        checkLimit();
+        //checkLimit();
 //        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
 //        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
@@ -236,17 +236,17 @@ public class Slides extends HwModule {
         return time.milliseconds();
     }
     public void checkLimit() {
-        if (limitPressed()) {
+        /*if (limitPressed()) {
             posAtZero = slidesRight.getCurrentPosition();
-        }
+        }*/
     }
     public void setPowerManual(double power) {
         manual = power;
     }
 
-    public boolean limitPressed() {
+    /*public boolean limitPressed() {
         return !slidesLimitSwitch.getState();
-    }
+    }*/
 
     public Slides.State getState() {
         return state;
