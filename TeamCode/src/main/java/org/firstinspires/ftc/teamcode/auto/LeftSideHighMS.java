@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import static org.firstinspires.ftc.teamcode.RobotTemp.odomServoPos;
 import static org.firstinspires.ftc.teamcode.RobotTemp.sideOdomServoPos;
+import static org.firstinspires.ftc.teamcode.modules.ground.GroundIntake.State.DEPOSITING;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -115,11 +116,12 @@ public class LeftSideHighMS extends LinearOpMode {
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(38, 12.1))
+                .lineToConstantHeading(new Vector2d(37, 12.3),robot.getVelocityConstraint(60, 5.939, 13.44),
+                        robot.getAccelerationConstraint(70))
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);
-
+                    groundIntake.setState(GroundIntake.State.DEPOSITING);
                 })
                 .addTemporalMarker(0.15,()->{
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -129,7 +131,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(37.5,13, Math.toRadians(6.5)))
+                .lineToLinearHeading(new Pose2d(39.5,13.5, Math.toRadians(6.5)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -139,8 +141,9 @@ public class LeftSideHighMS extends LinearOpMode {
                     slides.setState(Slides.State.CYCLE0);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(37.5,13, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(56.5, 13))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(39.5,13.5, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(56.7, 13.5),robot.getVelocityConstraint(55, 5.939, 13.44),
+                        robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -149,17 +152,17 @@ public class LeftSideHighMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(37.1, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(36.9, 13.5),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
-                .addTemporalMarker(0.4, ()->{
+                .addTemporalMarker(0.375, ()->{
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(56.5, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(56.7, 13.5),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -272,7 +275,7 @@ public class LeftSideHighMS extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-95< timer){
+        while(System.currentTimeMillis()-105< timer){
             robot.update();
         }
 
