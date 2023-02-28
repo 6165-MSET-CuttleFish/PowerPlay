@@ -149,7 +149,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(37.6, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(38.0, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.MID);
@@ -159,7 +159,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(57.0, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d((slides.getState()== Slides.State.CYCLE0)? 70:59, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -177,7 +177,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(13,14)).build();
+                .lineToConstantHeading(new Vector2d(15,14)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -244,10 +244,18 @@ public class LeftSideMidSD extends LinearOpMode {
         }
 
 
-        if(state==1) robot.followTrajectory(endLeft);
-        else if(state==2) robot.followTrajectory(endMiddle);
-        else if(state==3) robot.followTrajectory(endRight);
-        robot.turn(Math.toRadians(100));
+        if(state==1){
+            robot.followTrajectory(endLeft);
+        }
+        else if(state==2) {
+            robot.followTrajectory(endMiddle);
+            robot.turn(Math.toRadians(100));
+        }
+        else if(state==3){
+            robot.followTrajectory(endRight);
+            robot.turn(Math.toRadians(100));
+        }
+
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){
             robot.update();
@@ -281,7 +289,7 @@ public class LeftSideMidSD extends LinearOpMode {
 
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-95< timer){
+        while(System.currentTimeMillis()-120< timer){
             robot.update();
         }
     }

@@ -19,7 +19,7 @@ public class Detector extends OpenCvPipeline {
         RIGHT
     }
     private Location location = Location.MIDDLE;
-    public static int factor=75;
+    public static int factor=40;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     // find and set the regions of interest
 
@@ -45,7 +45,7 @@ public class Detector extends OpenCvPipeline {
     public static boolean returnBlack = true;
     private double boxsize =0;
     public double record;
-    public static double restrict=0.6;
+    public static double restrict=0.06;
     private double[] loc=new double[8];
     @Override
     public Mat processFrame(Mat input) {
@@ -85,7 +85,7 @@ public class Detector extends OpenCvPipeline {
         loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
         boxsize =Math.round(((loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
         record=Math.abs(loc[3]-loc[4]);
-        if(getShift()<restrict) {
+        if(record<restrict) {
             location= Location.MIDDLE;
         }else if((loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]+loc[7])){
             location= Location.RIGHT;
@@ -111,6 +111,6 @@ public class Detector extends OpenCvPipeline {
     }
     public int getShift() {
         //Find shift
-        return (int)(-1*factor*(loc[0]*2.5+loc[1]*1.5+loc[2]*0.5+loc[3]*-0.5+loc[4]*-1.5+loc[5]*-2.5+loc[6]*-3.5));
+        return (int)(1*factor*(loc[0]*3+loc[1]*2+loc[2]*1+loc[3]*0+loc[4]*1+loc[5]*2+loc[6]*3));
     }
 }
