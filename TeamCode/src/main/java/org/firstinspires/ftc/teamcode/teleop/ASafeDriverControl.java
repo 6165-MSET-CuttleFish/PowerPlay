@@ -50,7 +50,7 @@ public class ASafeDriverControl extends LinearOpMode {
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
     ButtonReader autoAlign, odomRaise, cycleMacro, cycleDown, cycleUp, actuateLeft,
-            intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, conePickup;
+            intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, slidesReset;
     ToggleButtonReader ninjaMode, straightMode;
 
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
@@ -102,7 +102,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 reset = new ButtonReader(secondary, GamepadKeys.Button.DPAD_DOWN),
                 half = new ButtonReader(secondary, GamepadKeys.Button.B),
                 angle = new ButtonReader(secondary, GamepadKeys.Button.Y),
-                conePickup = new ButtonReader(secondary, GamepadKeys.Button.X),
+                slidesReset = new ButtonReader(secondary, GamepadKeys.Button.X),
                 extension = new ButtonReader(secondary, GamepadKeys.Button.A),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
@@ -159,7 +159,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 })
                 .build();
         Trajectory align = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(6, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .build();
 
@@ -195,9 +195,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 );
             } else robot.setWeightedDrivePower(
                     new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.3:0.3)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.3:0.3)) * (ninjaMultiplier - 0.3),
-                            -gamepad1.right_stick_x * 0.8 * (ninjaMultiplier)
+                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+                            Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: 0.7*((-gamepad1.right_stick_x + (Math.pow(gamepad1.right_stick_x, 3)>0?-0.1:0.1)) * (ninjaMultiplier))
                     )
             );
 
@@ -333,6 +333,10 @@ public class ASafeDriverControl extends LinearOpMode {
                 resetCheck = true;
                 resetTimer.reset();
             }
+
+            if (slidesReset.wasJustPressed()) {
+                slides.posAtZero = slides.slidesLeft.getCurrentPosition();
+            }
             //turret mid
             if (actuateUp.wasJustPressed()) {
                 autoActuate = true;
@@ -416,7 +420,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 }
                 transfer = false;
             } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > Slides.MID) &&
-                slides.getState() != Slides.State.BOTTOM) {
+                slides.slidesLeft.getCurrentPosition() > 500) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
