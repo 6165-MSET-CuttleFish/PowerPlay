@@ -137,20 +137,17 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(8, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
-                        robot.getAccelerationConstraint(60))
+                .lineToConstantHeading(new Vector2d(3, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                        robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
-                    slides.setState(Slides.State.BOTTOM);
+                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
-                .addTemporalMarker(0.2, ()->{
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
-                })
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(cycleIntake.end())
-                .lineToConstantHeading(new Vector2d(-2.75, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
-                        robot.getAccelerationConstraint(60))
+                .lineToConstantHeading(new Vector2d(-3, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                        robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
@@ -159,8 +156,14 @@ public class ASafeDriverControl extends LinearOpMode {
                 })
                 .build();
         Trajectory align = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(6, 0),robot.getVelocityConstraint(20, 5.939, 13.44),
-                        robot.getAccelerationConstraint(60))
+
+                .lineToConstantHeading(new Vector2d(0, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                        robot.getAccelerationConstraint(30))
+                .addTemporalMarker(0, ()->{
+                    slides.setState(Slides.State.BOTTOM);
+
+                })
+
                 .build();
 
         waitForStart();
@@ -514,13 +517,18 @@ public class ASafeDriverControl extends LinearOpMode {
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        turret.setState(Turret.State.AUTOALIGN);
         timer = System.currentTimeMillis();
+
         while(System.currentTimeMillis()-350 < timer){
+            if (turret.detector.getLocation() == Detector.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                turret.setState(Turret.State.IDLE);
+            }
             robot.update();
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-125< timer){
+        while(System.currentTimeMillis()-100< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
