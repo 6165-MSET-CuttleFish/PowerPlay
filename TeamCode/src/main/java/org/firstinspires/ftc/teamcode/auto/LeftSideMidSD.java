@@ -280,7 +280,10 @@ public class LeftSideMidSD extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.INTAKE);
 
         turret.setState(Turret.State.ZERO);
-
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-95< timer){
+            robot.update();
+        }
     }
     public void intake(){
         claw.setState(Claw.State.CLOSE);
