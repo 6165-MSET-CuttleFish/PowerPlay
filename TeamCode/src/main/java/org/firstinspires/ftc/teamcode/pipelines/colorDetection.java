@@ -21,8 +21,8 @@ public class colorDetection extends OpenCvPipeline
 
     Rect rectCropLeft=new Rect(146, 20, 60, 60);
     Rect rectCropRight=new Rect(146, 20, 60, 60);
-
     Rect rectCrop;
+
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
     double hAvg;
@@ -107,6 +107,7 @@ public class colorDetection extends OpenCvPipeline
         Imgproc.GaussianBlur(reconvertedRGB, blurred, new Size(3, 3), 0);
         Imgproc.bilateralFilter(blurred, filtered, 15, 75, 75);
         Imgproc.cvtColor(filtered, HSV, Imgproc.COLOR_RGB2HSV);
+
         cropped=HSV.submat(rectCrop);
 
         return cropped;

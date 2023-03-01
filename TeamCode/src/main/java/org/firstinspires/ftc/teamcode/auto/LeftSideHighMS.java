@@ -241,6 +241,7 @@ public class LeftSideHighMS extends LinearOpMode {
             else if (i==2)slides.setState(Slides.State.CYCLE2);
             else if (i==3)slides.setState(Slides.State.CYCLE3);
             else if (i==4)slides.setState(Slides.State.CYCLE4);
+            
             if(i!=0)robot.followTrajectory(cycleIntake);
             else if(i==0) robot.followTrajectory(initIntake);
             intake();
@@ -277,7 +278,7 @@ public class LeftSideHighMS extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-105< timer){
+        while(System.currentTimeMillis()-105<timer){
             robot.update();
         }
 
@@ -303,8 +304,6 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.VECTORING);
 
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
-
-
     }
 }
 
