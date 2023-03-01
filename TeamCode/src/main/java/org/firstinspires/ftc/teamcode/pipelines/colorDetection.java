@@ -217,7 +217,7 @@ public class colorDetection extends OpenCvPipeline
         //tel.update();
 
         Mat preview=input.clone();
-        Imgproc.rectangle(preview, rectCropLeft, new Scalar (0, 255, 0));
+        Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
         Core.inRange(HSV, greenLower, greenHigher, test);
 
