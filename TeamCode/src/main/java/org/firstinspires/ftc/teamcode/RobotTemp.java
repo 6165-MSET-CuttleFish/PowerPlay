@@ -129,6 +129,7 @@ public class RobotTemp extends MecanumDrive{
     public OpenCvWebcam turretCamera;
     public Detector detector1 = new Detector();
     public AlignerAuto detector2 = new AlignerAuto();
+    //detector2.setState
     public colorDetection pipeline;
 
     public void setState(driveState state){
@@ -278,7 +279,7 @@ public class RobotTemp extends MecanumDrive{
 
         turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
         if(isAuto) turretCamera.setPipeline(detector2);
-        else turretCamera.setPipeline(detector1);
+        else turretCamera.setPipeline(detector2);
         turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override

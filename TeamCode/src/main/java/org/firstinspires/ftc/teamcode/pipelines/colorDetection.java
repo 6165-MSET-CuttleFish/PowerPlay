@@ -19,7 +19,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCropLeft=new Rect(146, 20, 60, 60);
+    Rect rectCropLeft=new Rect(122, 20, 60, 60);
     Rect rectCropRight=new Rect(146, 20, 60, 60);
     Rect rectCrop;
 

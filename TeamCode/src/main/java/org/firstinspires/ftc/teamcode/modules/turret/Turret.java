@@ -42,7 +42,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2995,LEFT_SIDE_MID = -3000,LEFT_SIDE_MID_PRELOAD = 3200;
+            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2978,LEFT_SIDE_MID = -3000,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
 
@@ -56,6 +56,7 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public Detector detector;
     public Turret.State state;
+    public Hall hall;
     private boolean isAuto = false;
     public double motorOil=0;
 
@@ -67,10 +68,16 @@ public class Turret extends HwModule
         {
             state=(State)s;
         }
+        else if(s.getClass()==Hall.class){
+            hall = (Hall)s;
+        }
         updateTarget();
         time.reset();
     }
-
+    public void setHall(ModuleState s){
+        hall = (Hall)s;
+        updateTarget();
+    }
     public enum State implements ModuleState
     {
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
@@ -78,7 +85,10 @@ public class Turret extends HwModule
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
         LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD
     }
-
+    public enum Hall implements ModuleState
+    {
+        ON, OFF
+    }
     public Turret(HardwareMap hardwareMap, boolean isAuto)
     {
         pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
@@ -86,13 +96,14 @@ public class Turret extends HwModule
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-        this.isAuto=isAuto;
+        //this.isAuto=isAuto;
         hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
 
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
+        hall = Hall.ON;
     }
 
     public Turret(HardwareMap hardwareMap, boolean isAuto, Detector detector)
@@ -109,7 +120,8 @@ public class Turret extends HwModule
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
-
+        if(isAuto)hall = Hall.OFF;
+        else hall = Hall.ON;
         this.detector=detector;
     }
 
@@ -135,6 +147,14 @@ public class Turret extends HwModule
     private void updateTarget() {
         //if hall effect then reset pos at zero
         //if(true) {
+        switch(hall){
+            case ON:
+                isAuto = true;
+                break;
+            case OFF:
+                isAuto = false;
+                break;
+        }
         if(!isAuto){
             prevHall = hallEffect.getVoltage();
             if (hallEffect.getVoltage() - prevHall < -1.1) {

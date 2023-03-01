@@ -137,7 +137,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(3, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(6.7, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -146,26 +146,28 @@ public class ASafeDriverControl extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(cycleIntake.end())
-                .lineToConstantHeading(new Vector2d(-3, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-0.5, 0),robot.getVelocityConstraint(15, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
-                .addTemporalMarker(0.2, ()->{
+                .addTemporalMarker(0.1, ()->{
                     turret.setState(Turret.State.BACK);
                 })
                 .build();
+        /*
         Trajectory align = robot.trajectoryBuilder(cycleDrop.end())
 
                 .lineToConstantHeading(new Vector2d(0, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
+                    turret.setState(Turret.State.ZERO);
                     slides.setState(Slides.State.BOTTOM);
 
                 })
 
                 .build();
-
+*/
         waitForStart();
         gamepad1.setLedColor(100, 79, 183, 120000); //blue
         gamepad2.setLedColor(147, 112, 219, 120000); //light purple
@@ -200,7 +202,7 @@ public class ASafeDriverControl extends LinearOpMode {
                     new Pose2d(
                             Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
                             Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: 0.7*((-gamepad1.right_stick_x + (Math.pow(gamepad1.right_stick_x, 3)>0?-0.1:0.1)) * (ninjaMultiplier))
+                            Math.abs(gamepad1.right_stick_x) <= 0.35 ? -gamepad1.right_stick_x * 0.5: -gamepad1.right_stick_x * 0.8
                     )
             );
 
@@ -366,17 +368,19 @@ public class ASafeDriverControl extends LinearOpMode {
                 intake();
                 robot.followTrajectory(cycleDrop);
                 dropOff();
-                robot.followTrajectory(align);
+
             }
 
             if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) {
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
+                robot.turret.setHall(Turret.Hall.OFF);
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) {
                 sideOdomPos = 0.33;
                 robot.midOdo.setPosition(sideOdomPos);
                 robot.sideOdo.setPosition(sideOdomPos);
+                robot.turret.setHall(Turret.Hall.ON);
             }
             
 
@@ -513,7 +517,7 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void dropOff(){
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-400 < timer){
+        while(System.currentTimeMillis()-150 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -528,32 +532,39 @@ public class ASafeDriverControl extends LinearOpMode {
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-100< timer){
+        while(System.currentTimeMillis()-50< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-75< timer){
+            robot.update();
+        }
         turret.setState(Turret.State.ZERO);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-55< timer){
+            robot.update();
+        }
+        deposit.setExtension(Deposit.ExtensionState.SLIGHT);
         slides.setState(Slides.State.BOTTOM);
 
     }
     public void intake(){
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-25< timer){
-            robot.update();
-        }
+
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-200< timer){
             robot.update();
         }
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.HIGH);
 
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-200< timer){
+        while(System.currentTimeMillis()-50< timer){
             robot.update();
         }
         deposit.setAngle(Deposit.AngleState.VECTORING);
-        deposit.setExtension(Deposit.ExtensionState.RETRACT);
+
     }
 }
