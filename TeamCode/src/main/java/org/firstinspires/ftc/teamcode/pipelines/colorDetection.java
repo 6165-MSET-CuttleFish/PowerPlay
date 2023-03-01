@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.pipelines;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.Camera;
+import org.firstinspires.ftc.teamcode.util.Left;
+import org.firstinspires.ftc.teamcode.util.Right;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -15,7 +19,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCrop=new Rect(146, 20, 60, 60);
+    Rect rectCropLeft=new Rect(146, 20, 60, 60);
+    Rect rectCropRight=new Rect(146, 20, 60, 60);
+
+    Rect rectCrop;
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
     double hAvg;
@@ -57,9 +64,18 @@ public class colorDetection extends OpenCvPipeline
     int state=-1;
 
     Telemetry tel;
-    public colorDetection(Telemetry tel)
+    public colorDetection(LinearOpMode l)
     {
-        this.tel=tel;
+        if(l.getClass().isAnnotationPresent(Left.class))
+        {
+            rectCrop=rectCropLeft;
+        }
+        else if(l.getClass().isAnnotationPresent(Right.class))
+        {
+            rectCrop=rectCropRight;
+        }
+
+        this.tel=l.telemetry;
         state=-1;
     }
 
@@ -200,7 +216,7 @@ public class colorDetection extends OpenCvPipeline
         //tel.update();
 
         Mat preview=input.clone();
-        Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
+        Imgproc.rectangle(preview, rectCropLeft, new Scalar (0, 255, 0));
 
         Core.inRange(HSV, greenLower, greenHigher, test);
 

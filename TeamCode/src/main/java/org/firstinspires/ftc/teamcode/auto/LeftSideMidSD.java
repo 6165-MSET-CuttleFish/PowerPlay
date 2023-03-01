@@ -26,12 +26,14 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.Left;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
+@Left
 public class LeftSideMidSD extends LinearOpMode {
     ElapsedTime t;
     RobotTemp robot;

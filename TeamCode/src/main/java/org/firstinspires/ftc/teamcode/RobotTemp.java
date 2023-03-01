@@ -52,7 +52,6 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 
-import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 
@@ -64,8 +63,6 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
-import org.firstinspires.ftc.teamcode.util.HardwareThread;
-import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -256,7 +253,7 @@ public class RobotTemp extends MecanumDrive{
         if(isAuto)
         {
             autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
-            pipeline=new colorDetection(l.telemetry);
+            pipeline=new colorDetection(l);
             autoCamera.setPipeline(pipeline);
             autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
             {

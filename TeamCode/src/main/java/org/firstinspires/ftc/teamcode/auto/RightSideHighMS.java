@@ -21,12 +21,14 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
+import org.firstinspires.ftc.teamcode.util.Right;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
+@Right
 public class RightSideHighMS extends LinearOpMode{
     ElapsedTime t;
     RobotTemp robot;
