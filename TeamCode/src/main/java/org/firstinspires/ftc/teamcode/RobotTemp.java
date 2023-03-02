@@ -156,7 +156,7 @@ public class RobotTemp extends MecanumDrive{
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, isAuto, detector1);
+        turret = new Turret(hardwareMap, isAuto, detector2);
 
 
         packet=new TelemetryPacket();

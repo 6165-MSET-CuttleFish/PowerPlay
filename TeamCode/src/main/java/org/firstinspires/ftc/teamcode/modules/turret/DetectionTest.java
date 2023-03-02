@@ -27,7 +27,9 @@ public class DetectionTest extends OpMode {
     }
 
     @Override
+
     public void loop() {
+        /*
         telemetry.addData("Location", turret.detector.getLocation());
         telemetry.addData("Toggle", gamepad1.left_bumper);
         telemetry.addData("Turret: ", turret.detector.record);
@@ -43,5 +45,7 @@ public class DetectionTest extends OpMode {
         }
         turret.update();
         telemetry.update();
+
+         */
     }
 }

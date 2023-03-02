@@ -42,7 +42,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2978,LEFT_SIDE_MID = -3000,LEFT_SIDE_MID_PRELOAD = 3200;
+            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -3000,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
 
@@ -54,7 +54,7 @@ public class Turret extends HwModule
     public DcMotorEx turretMotor;
     public Encoder encoder;
     public AnalogInput hallEffect;
-    public Detector detector;
+    public AlignerAuto detector;
     public Turret.State state;
     public Hall hall;
     private boolean isAuto = false;
@@ -106,7 +106,7 @@ public class Turret extends HwModule
         hall = Hall.ON;
     }
 
-    public Turret(HardwareMap hardwareMap, boolean isAuto, Detector detector)
+    public Turret(HardwareMap hardwareMap, boolean isAuto, AlignerAuto detector)
     {
         pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.modules.turret.Turret.Hall.OFF;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -23,6 +25,7 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
@@ -83,7 +86,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        turret.setHall(OFF);
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
@@ -375,20 +378,20 @@ public class ASafeDriverControl extends LinearOpMode {
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
-                robot.turret.setHall(Turret.Hall.OFF);
+                robot.turret.setHall(OFF);
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) {
                 sideOdomPos = 0.33;
                 robot.midOdo.setPosition(sideOdomPos);
                 robot.sideOdo.setPosition(sideOdomPos);
-                robot.turret.setHall(Turret.Hall.ON);
+                //robot.turret.setHall(Turret.Hall.ON);
             }
             
 
             //AUTO ALIGN:
-           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != Detector.Location.MIDDLE) {
+           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != AlignerAuto.Location.MIDDLE) {
                 turret.setState(Turret.State.AUTOALIGN);
             }
-            if (turret.detector.getLocation() == Detector.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
 
@@ -525,7 +528,7 @@ public class ASafeDriverControl extends LinearOpMode {
         timer = System.currentTimeMillis();
 
         while(System.currentTimeMillis()-350 < timer){
-            if (turret.detector.getLocation() == Detector.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
             robot.update();

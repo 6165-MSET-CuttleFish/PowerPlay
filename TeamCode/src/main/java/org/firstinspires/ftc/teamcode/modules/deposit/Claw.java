@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 public class Claw extends HwModule
 {
     //temporary values
+    public static double OPEN_WIDE = 0.3;
     public static double OPEN = 0.4;
     public static double CLOSE = 0.62;
     public static double PARTIAL=0;
@@ -35,7 +36,7 @@ public class Claw extends HwModule
 
     public enum State implements ModuleState
     {
-        OPEN, CLOSE, PARTIAL
+        OPEN, CLOSE, PARTIAL, OPEN_WIDE
     }
 
     public Claw(HardwareMap hardwareMap)
@@ -56,6 +57,9 @@ public class Claw extends HwModule
                 break;
             case PARTIAL:
                 claw.setPosition(PARTIAL);
+                break;
+            case OPEN_WIDE:
+                claw.setPosition(OPEN_WIDE);
                 break;
         }
     }
