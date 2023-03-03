@@ -141,7 +141,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(15, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -432,8 +432,8 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > Slides.MID) &&
-                slides.slidesLeft.getCurrentPosition() > 500) {
+            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition()+slides.posAtZero > Slides.MID+slides.posAtZero) &&
+                slides.slidesLeft.getCurrentPosition() + slides.posAtZero > 500 + slides.posAtZero) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -468,7 +468,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (slides.slidesLeft.getCurrentPosition() < 1200) {
+            if (slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 1200 +slides.posAtZero) {
                 if (resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;

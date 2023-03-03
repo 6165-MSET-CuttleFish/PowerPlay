@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.checkerframework.common.subtyping.qual.Bottom;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
@@ -208,6 +209,7 @@ public class RightSideHighMS extends LinearOpMode{
         else if(state==2) robot.followTrajectory(endMiddle);
         else if(state==3) robot.followTrajectory(endRight);
         robot.turn(Math.toRadians(-100));
+        slides.setState(Slides.State.HIGH);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){
             robot.update();
