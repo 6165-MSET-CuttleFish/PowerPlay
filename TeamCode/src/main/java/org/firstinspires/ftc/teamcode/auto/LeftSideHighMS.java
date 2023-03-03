@@ -213,6 +213,7 @@ public class LeftSideHighMS extends LinearOpMode {
         {
             tempState=robot.pipeline.getOutput();
             telemetry.addData("Camera 1: ", tempState);
+            telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
             telemetry.update();
 
             if(tempState>0)

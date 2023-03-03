@@ -26,8 +26,10 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.001225, i = 0.00078, d = 0.0001;
-    public static double kV = 0, kA = 0, kStatic = 0;
+    public static double p = 0.003425, i = 0.0036, d = 0.00034;
+    PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
+    public static double p2=0.002125, i2=0.0025, d2=0.00024;
+    PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
     public BPIDFController pidController;
 
     public static ElapsedTime time = new ElapsedTime();
@@ -91,7 +93,7 @@ public class Turret extends HwModule
     }
     public Turret(HardwareMap hardwareMap, boolean isAuto)
     {
-        pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
+        pidController= new BPIDFController(coeff1);
 
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
@@ -104,11 +106,12 @@ public class Turret extends HwModule
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
         hall = Hall.ON;
+
     }
 
     public Turret(HardwareMap hardwareMap, boolean isAuto, AlignerAuto detector)
     {
-        pidController= new BPIDFController(new PIDCoefficients(p, i, d), kV, kA, kStatic);
+        pidController= new BPIDFController(coeff1);
 
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
 
@@ -129,6 +132,17 @@ public class Turret extends HwModule
         updateTarget();
 
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
+
+        if(Math.abs(encoder.getCurrentPosition())<600)
+        {
+            pidController.gainSchedule(coeff2);
+        }
+        else
+        {
+            pidController.gainSchedule(coeff1);
+        }
+
+
         if(state!=State.MANUAL)
         {
             pidController.setTargetPosition(targetPos);

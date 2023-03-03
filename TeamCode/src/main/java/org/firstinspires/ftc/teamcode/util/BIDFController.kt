@@ -43,6 +43,8 @@ class BPIDFController
     private var minOutput: Double = 0.0
     private var maxOutput: Double = 0.0
 
+    private var pidCoeff:PIDCoefficients=pid;
+
     /**
      * Target position (that is, the controller setpoint).
      */
@@ -77,6 +79,11 @@ class BPIDFController
             minInput = min
             maxInput = max
         }
+    }
+
+    fun gainSchedule(newPid: PIDCoefficients)
+    {
+        pidCoeff=newPid;
     }
 
     /**
@@ -124,7 +131,7 @@ class BPIDFController
         } else {
             val dt = currentTimestamp - lastUpdateTimestamp
             if (abs(error) <= integralBand) {
-                integral = max(minOutput / pid.kI, min(integral + (error + lastError) / 2 * dt, maxOutput / pid.kI))
+                integral = max(minOutput / pidCoeff.kI, min(integral + (error + lastError) / 2 * dt, maxOutput / pidCoeff.kI))
                 if (sign(integral) != sign(error) || abs(error) > integralBand) {
                     integral = 0.0
                 }            }
@@ -138,8 +145,8 @@ class BPIDFController
 
             // note: we'd like to refactor this with Kinematics.calculateMotorFeedforward() but kF complicates the
             // determination of the sign of kStatic
-            val baseOutput = pid.kP * error + pid.kI * integral +
-                    pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv) +
+            val baseOutput = pidCoeff.kP * error + pidCoeff.kI * integral +
+                    pidCoeff.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv) +
                     kV * targetVelocity + kA * targetAcceleration + kF(measuredPosition, measuredVelocity)
             val output = if (baseOutput epsilonEquals 0.0) 0.0 else baseOutput + sign(baseOutput) * kStatic
 

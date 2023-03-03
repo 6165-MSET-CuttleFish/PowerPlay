@@ -61,7 +61,15 @@ public class AlignerAuto extends OpenCvPipeline {
     private double boxsize =0;
     public double record;
     public static double restrict=0.6;
+    public String recording= "Not Recording";
     private double[] loc=new double[8];
+
+    @Override
+    public void init(Mat input)
+    {
+        recording="Recording";
+    }
+
     @Override
     public Mat processFrame(Mat input) {
         Mat mat = new Mat();
