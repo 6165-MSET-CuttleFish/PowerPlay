@@ -278,8 +278,8 @@ public class RobotTemp extends MecanumDrive{
         }
 
         turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        if(isAuto) turretCamera.setPipeline(detector2);
-        else turretCamera.setPipeline(detector2);
+        detector2 = new AlignerAuto();
+        turretCamera.setPipeline(detector2);
         turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override

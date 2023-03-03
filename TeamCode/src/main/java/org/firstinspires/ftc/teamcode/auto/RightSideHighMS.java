@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.checkerframework.common.subtyping.qual.Bottom;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
@@ -97,7 +98,7 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-39.5,13.5, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(-56.8, 13.5))
+                .lineToConstantHeading(new Vector2d(-57.2, 13.5))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -117,7 +118,7 @@ public class RightSideHighMS extends LinearOpMode{
 
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-56.8, 13.5),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(-57.2, 13.5),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -208,6 +209,7 @@ public class RightSideHighMS extends LinearOpMode{
         else if(state==2) robot.followTrajectory(endMiddle);
         else if(state==3) robot.followTrajectory(endRight);
         robot.turn(Math.toRadians(-100));
+        slides.setState(Slides.State.BOTTOM);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-2000< timer){
             robot.update();

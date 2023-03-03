@@ -18,8 +18,8 @@ public class Deposit extends HwModule {
     public static double RHALF = 0.16;
     public static double LFOURTH = 0.33;
     public static double RFOURTH = 0.13;
-    public static double LZERO = 0.27;
-    public static double RZERO = 0.01;
+    public static double LZERO = 0.20;
+    public static double RZERO = 0.155;
     public static double rightPos = 0;
 
     public static double VECTORING = 0.54;

@@ -48,6 +48,7 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean transfer = false;
     boolean resetCheck, cycleCheck = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
+    public static double powerOffsetTurning = 0.25;
     double ninjaMultiplier = 1;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
@@ -140,9 +141,10 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(6.7, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(15, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
+                    turret.setState(Turret.State.ZERO);
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
 
@@ -204,8 +206,8 @@ public class ASafeDriverControl extends LinearOpMode {
             } else robot.setWeightedDrivePower(
                     new Pose2d(
                             Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.right_stick_x) <= 0.35 ? -gamepad1.right_stick_x * 0.5: -gamepad1.right_stick_x * 0.8
+                            Math.abs(gamepad1.left_stick_x) <= 0.1 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning :powerOffsetTurning)) * (ninjaMultiplier))
                     )
             );
 
@@ -327,7 +329,8 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100 && distanceSensor) {
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 &&
+                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
                 distanceSensor = false;
             }
@@ -429,8 +432,8 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() > Slides.MID) &&
-                slides.slidesLeft.getCurrentPosition() > 500) {
+            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() + slides.posAtZero > Slides.MID + slides.posAtZero) &&
+                slides.slidesLeft.getCurrentPosition() + slides.posAtZero > 500 + slides.posAtZero) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -465,7 +468,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (slides.slidesLeft.getCurrentPosition() < 1200) {
+            if (slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 1200 +slides.posAtZero) {
                 if (resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
@@ -520,14 +523,16 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void dropOff(){
         timer = System.currentTimeMillis();
+        turret.setState(Turret.State.BACK);
         while(System.currentTimeMillis()-150 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
-        turret.setState(Turret.State.AUTOALIGN);
+        //turret.setState(Turret.State.AUTOALIGN);
         timer = System.currentTimeMillis();
 
         while(System.currentTimeMillis()-350 < timer){
+
             if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
@@ -546,7 +551,7 @@ public class ASafeDriverControl extends LinearOpMode {
         }
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-55< timer){
+        while(System.currentTimeMillis()-25< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.SLIGHT);
@@ -562,11 +567,6 @@ public class ASafeDriverControl extends LinearOpMode {
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.HIGH);
-
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-50< timer){
-            robot.update();
-        }
         deposit.setAngle(Deposit.AngleState.VECTORING);
 
     }

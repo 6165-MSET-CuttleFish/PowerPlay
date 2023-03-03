@@ -22,12 +22,14 @@ public class Slides extends HwModule {
     boolean switchModified=false;
     double switchPressed;
     public static boolean slidesCheck = false;
-    double output=0;
+    double routput=0;
+    double loutput=0;
+    double output =0;
     public double posAtZero=0;
     public double manual = 0;
 
     public static int HIGH = 2380; //old = 1850
-    public static int CYCLE_HIGH = 2342; //old = 1650
+    public static int CYCLE_HIGH = 2347; //old = 1650
     public static int MID = 1570; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
     public static int LOW = 860; //in inches, low junction is 13.5 inches
@@ -91,9 +93,10 @@ public class Slides extends HwModule {
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 pidController.setTargetPosition(HIGH + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
+                routput = pidController.update(slidesRight.getCurrentPosition());
+                loutput = pidController.update(slidesRight.getCurrentPosition());
+                slidesRight.setPower(routput);
+                slidesLeft.setPower(loutput);
                 break;
             case CYCLE_HIGH:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);

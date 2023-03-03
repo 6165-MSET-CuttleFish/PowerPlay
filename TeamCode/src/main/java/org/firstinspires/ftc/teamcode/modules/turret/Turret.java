@@ -26,10 +26,11 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.003425, i = 0.0036, d = 0.00034;
+    public static double p = 0.0019, i = 0.00090, d = 0.00024;
     PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
-    public static double p2=0.002125, i2=0.0025, d2=0.00024;
+    public static double p2=0.0017, i2=0.00088, d2=0.00021;
     PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
+
     public BPIDFController pidController;
 
     public static ElapsedTime time = new ElapsedTime();
@@ -44,7 +45,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -3000,LEFT_SIDE_MID_PRELOAD = 3200;
+            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3100, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
 
@@ -85,7 +86,7 @@ public class Turret extends HwModule
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
-        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD
+        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
     }
     public enum Hall implements ModuleState
     {
@@ -163,10 +164,10 @@ public class Turret extends HwModule
         //if(true) {
         switch(hall){
             case ON:
-                isAuto = true;
+                isAuto = false;
                 break;
             case OFF:
-                isAuto = false;
+                isAuto = true;
                 break;
         }
         if(!isAuto){
@@ -211,6 +212,9 @@ public class Turret extends HwModule
                     break;
                 case LEFT_SIDE_MID_PRELOAD:
                     targetPos = LEFT_SIDE_MID_PRELOAD - posAtZero;
+                    break;
+                case RIGHT_SIDE_MID_PRELOAD:
+                    targetPos = RIGHT_SIDE_MID_PRELOAD - posAtZero;
                     break;
                 case RIGHT_SIDE_MID:
                     targetPos = RIGHT_SIDE_MID - posAtZero;
