@@ -152,7 +152,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(38.0, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(37.0, 12.5),robot.getVelocityConstraint(58, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.MID);
@@ -162,7 +162,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d((slides.getState()== Slides.State.CYCLE0)? 70:59, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(59, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
