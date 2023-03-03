@@ -330,7 +330,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             //auto close claw
             if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 &&
-                    slides.slidesLeft.getCurrentPosition() < 80 && distanceSensor) {
+                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
                 distanceSensor = false;
             }
@@ -432,7 +432,7 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition()+slides.posAtZero > Slides.MID+slides.posAtZero) &&
+            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() + slides.posAtZero > Slides.MID + slides.posAtZero) &&
                 slides.slidesLeft.getCurrentPosition() + slides.posAtZero > 500 + slides.posAtZero) {
                 switch(turretPos) {
                     case 0:
