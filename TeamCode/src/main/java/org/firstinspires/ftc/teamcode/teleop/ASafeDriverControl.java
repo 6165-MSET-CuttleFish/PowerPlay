@@ -140,9 +140,10 @@ public class ASafeDriverControl extends LinearOpMode {
                 .addStep(0.0, 0.0, 1000) //  Rumble right motor 100% for 500 mSec
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(6.7, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(2, 0),robot.getVelocityConstraint(10, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
+                    turret.setState(Turret.State.ZERO);
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
 
@@ -520,14 +521,16 @@ public class ASafeDriverControl extends LinearOpMode {
     }
     public void dropOff(){
         timer = System.currentTimeMillis();
+        turret.setState(Turret.State.BACK);
         while(System.currentTimeMillis()-150 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
-        turret.setState(Turret.State.AUTOALIGN);
+        //turret.setState(Turret.State.AUTOALIGN);
         timer = System.currentTimeMillis();
 
         while(System.currentTimeMillis()-350 < timer){
+
             if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
@@ -546,7 +549,7 @@ public class ASafeDriverControl extends LinearOpMode {
         }
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-55< timer){
+        while(System.currentTimeMillis()-25< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.SLIGHT);
@@ -562,11 +565,6 @@ public class ASafeDriverControl extends LinearOpMode {
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.HIGH);
-
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-50< timer){
-            robot.update();
-        }
         deposit.setAngle(Deposit.AngleState.VECTORING);
 
     }

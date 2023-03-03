@@ -26,7 +26,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.001225, i = 0.00078, d = 0.0001;
+    public static double p = 0.0017, i = 0.00088, d = 0.0001;
     public static double kV = 0, kA = 0, kStatic = 0;
     public BPIDFController pidController;
 
@@ -149,10 +149,10 @@ public class Turret extends HwModule
         //if(true) {
         switch(hall){
             case ON:
-                isAuto = true;
+                isAuto = false;
                 break;
             case OFF:
-                isAuto = false;
+                isAuto = true;
                 break;
         }
         if(!isAuto){
