@@ -42,9 +42,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3100,
-
-            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID = 3000, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -2960,LEFT_SIDE_MID_PRELOAD = 3200;
-
+            RIGHT_SIDE_HIGH_PRELOAD = -940, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3100, LEFT_SIDE_HIGH_PRELOAD = 900, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
 
@@ -85,7 +83,7 @@ public class Turret extends HwModule
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
-        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD
+        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
     }
     public enum Hall implements ModuleState
     {
@@ -199,6 +197,9 @@ public class Turret extends HwModule
                     break;
                 case LEFT_SIDE_MID_PRELOAD:
                     targetPos = LEFT_SIDE_MID_PRELOAD - posAtZero;
+                    break;
+                case RIGHT_SIDE_MID_PRELOAD:
+                    targetPos = RIGHT_SIDE_MID_PRELOAD - posAtZero;
                     break;
                 case RIGHT_SIDE_MID:
                     targetPos = RIGHT_SIDE_MID - posAtZero;
