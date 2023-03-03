@@ -22,7 +22,9 @@ public class Slides extends HwModule {
     boolean switchModified=false;
     double switchPressed;
     public static boolean slidesCheck = false;
-    double output=0;
+    double routput=0;
+    double loutput=0;
+    double output =0;
     public double posAtZero=0;
     public double manual = 0;
 
@@ -91,9 +93,10 @@ public class Slides extends HwModule {
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
                 pidController.setTargetPosition(HIGH + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
+                routput = pidController.update(slidesRight.getCurrentPosition());
+                loutput = pidController.update(slidesRight.getCurrentPosition());
+                slidesRight.setPower(routput);
+                slidesLeft.setPower(loutput);
                 break;
             case CYCLE_HIGH:
                 slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);

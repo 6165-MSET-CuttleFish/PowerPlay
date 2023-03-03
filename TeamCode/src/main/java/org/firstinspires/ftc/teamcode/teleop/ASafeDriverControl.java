@@ -48,6 +48,7 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean transfer = false;
     boolean resetCheck, cycleCheck = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
+    public static double powerOffsetTurning = 0.25;
     double ninjaMultiplier = 1;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     KeyReader[] keyReaders;
@@ -205,8 +206,8 @@ public class ASafeDriverControl extends LinearOpMode {
             } else robot.setWeightedDrivePower(
                     new Pose2d(
                             Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.left_stick_x) == 0 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.right_stick_x) <= 0.35 ? -gamepad1.right_stick_x * 0.5: -gamepad1.right_stick_x * 0.8
+                            Math.abs(gamepad1.left_stick_x) <= 0.1 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning :powerOffsetTurning)) * (ninjaMultiplier))
                     )
             );
 
@@ -328,7 +329,8 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 && slides.slidesLeft.getCurrentPosition() < 100 && distanceSensor) {
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 &&
+                    slides.slidesLeft.getCurrentPosition() < 80 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
                 distanceSensor = false;
             }
