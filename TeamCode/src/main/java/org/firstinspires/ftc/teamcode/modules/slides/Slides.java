@@ -27,6 +27,7 @@ public class Slides extends HwModule {
     double output =0;
     public double posAtZero=0;
     public double manual = 0;
+    double targetPos;
 
     public static int HIGH = 2380; //old = 1850
     public static int CYCLE_HIGH = 2347; //old = 1650
@@ -61,8 +62,13 @@ public class Slides extends HwModule {
     }
 
     @Override
-    public boolean isBusy() {
-        return false;
+    public boolean isBusy()
+    {
+        if(Math.abs(Math.abs(slidesLeft.getCurrentPosition())-targetPos)<35)
+        {
+            return false;
+        }
+        return true;
     }
 
     public enum State implements ModuleState {
@@ -81,142 +87,90 @@ public class Slides extends HwModule {
         slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         state=State.BOTTOM;
     }
+    public void updateTarget()
+    {
+            switch (state) {
+                case HIGH:
+                    targetPos=HIGH+posAtZero;
+                    break;
+                case CYCLE_HIGH:
+                    targetPos=CYCLE_HIGH+posAtZero;
+                    break;
+                case MID:
+                    targetPos=MID+posAtZero;
+                    break;
+                case MID_DROP:
+                    targetPos=MID_DROP+posAtZero;
+                    break;
+                case LOW:
+                    targetPos=LOW+posAtZero;
+                    break;
+                case LOW_DROP:
+                    targetPos=LOW_DROP+posAtZero;
+                    break;
+                case INTAKE_AUTO:
+                    targetPos=INTAKE_AUTO+posAtZero;
+                    break;
+                case BOTTOM:
+                    targetPos=0+posAtZero;
+                    break;
+                case PICKUP:
+                    targetPos=PICKUP+posAtZero;
+                    break;
+                case CYCLE0:
+                    targetPos=CYCLE0+posAtZero;
+                    break;
+                case CYCLE1:
+                    targetPos=CYCLE1+posAtZero;
+                    break;
+                case CYCLE2:
+                    targetPos=CYCLE2+posAtZero;
+                    break;
+                case CYCLE3:
+                    targetPos=CYCLE3+posAtZero;
+                    break;
+                case CYCLE4:
+                    targetPos=CYCLE4+posAtZero;
+                    break;
+                case SLIGHT:
+                    targetPos=SLIGHT+posAtZero;
+                    break;
+            }
+    }
+
+    public double getTargetPos()
+    {
+        return targetPos;
+    }
 
     public void update() {
-        //checkLimit();
-//        slidesLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
-//        slidesRight.setPIDFCoefficients(DcMotorEx.RunMode.RUN_TO_POSITION, SLIDES_PIDF);
-//        slidesLeft.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-//        slidesRight.setVelocityPIDFCoefficients(VELOCITY_PIDF.p, VELOCITY_PIDF.i, VELOCITY_PIDF.d, VELOCITY_PIDF.f);
-        switch (state) {
-            case HIGH:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(HIGH + posAtZero);
-                routput = pidController.update(slidesRight.getCurrentPosition());
-                loutput = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(routput);
-                slidesLeft.setPower(loutput);
-                break;
-            case CYCLE_HIGH:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE_HIGH + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case MID:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(MID + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case MID_DROP:
-                pidController.setTargetPosition(MID_DROP + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case LOW:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(LOW + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case LOW_DROP:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(LOW_DROP + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case INTAKE_AUTO:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(INTAKE_AUTO + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case BOTTOM:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(0 + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case PICKUP:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(PICKUP + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case CYCLE0:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE0 + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case CYCLE1:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE1 + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case CYCLE2:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE2 + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case CYCLE3:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(CYCLE3 + posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case CYCLE4:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                pidController.setTargetPosition(posAtZero);
-                output = pidController.update(slidesRight.getCurrentPosition());
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
-                break;
-            case MANUAL:
-                slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-                slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-                output = pidController.update(slidesRight.getCurrentPosition());
-                if (Math.abs(manual) > 0.1) {
-                    slidesRight.setPower(manual);
-                    slidesLeft.setPower(manual);
-                    pidController.setTargetPosition(slidesRight.getCurrentPosition());
-                } else {
-                    slidesRight.setPower(output);
-                    slidesLeft.setPower(output);
-                }
-                break;
-            case SLIGHT:
-                pidController.setTargetPosition(SLIGHT+posAtZero);
-                break;
+        updateTarget();
+
+        if(state!=State.MANUAL)
+        {
+            slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+            slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+            pidController.setTargetPosition(targetPos);
+            routput = pidController.update(slidesRight.getCurrentPosition());
+            loutput = pidController.update(slidesRight.getCurrentPosition());
+            slidesRight.setPower(routput);
+            slidesLeft.setPower(loutput);
+        }
+        else
+        {
+            slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+            slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+            output = pidController.update(slidesRight.getCurrentPosition());
+            if (Math.abs(manual) > 0.1) {
+                slidesRight.setPower(manual);
+                slidesLeft.setPower(manual);
+                pidController.setTargetPosition(slidesRight.getCurrentPosition());
+            } else {
+                slidesRight.setPower(output);
+                slidesLeft.setPower(output);
+            }
         }
 //        output = pidController.update(slidesRight.getCurrentPosition());
 //
