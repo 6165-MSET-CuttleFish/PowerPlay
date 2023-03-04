@@ -26,9 +26,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.0019, i = 0.00090, d = 0.00024;
+    public static double p = 0.0027, i = 0.0012, d = 0.00024;
     PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
-    public static double p2=0.0017, i2=0.00088, d2=0.00021;
+    public static double p2=0.0023, i2=0.00094, d2=0.00021;
     PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
 
     public BPIDFController pidController;
@@ -171,8 +171,7 @@ public class Turret extends HwModule
                 break;
         }
         if(!isAuto){
-            prevHall = hallEffect.getVoltage();
-            if (hallEffect.getVoltage() - prevHall < -1.1) {
+            if (hallEffect.getVoltage()<1.0) {
                 posAtZero = -encoder.getCurrentPosition();
             }
         }

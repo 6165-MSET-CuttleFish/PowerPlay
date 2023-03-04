@@ -132,7 +132,7 @@ public class LeftSideMidSD extends LinearOpMode {
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(37.5,13, Math.toRadians(6.5)))
+                .lineToLinearHeading(new Pose2d(37.5,12.5, Math.toRadians(6.5)))
                 .addTemporalMarker(0.1,()->{
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -142,8 +142,8 @@ public class LeftSideMidSD extends LinearOpMode {
                     slides.setState(Slides.State.CYCLE0);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(37.5,13, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(56.5, 13))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(37.5,12.5, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(58.5, 13))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -162,7 +162,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(60, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(58.5, 12.5),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -249,6 +249,7 @@ public class LeftSideMidSD extends LinearOpMode {
 
         if(state==1){
             robot.followTrajectory(endLeft);
+            robot.turn(Math.toRadians(100));
         }
         else if(state==2) {
             robot.followTrajectory(endMiddle);
