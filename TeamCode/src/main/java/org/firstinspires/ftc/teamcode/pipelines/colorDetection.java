@@ -19,8 +19,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCropLeft=new Rect(122, 20, 60, 60);
-    Rect rectCropRight=new Rect(133, 20, 60, 60);
+    Rect rectCropLeft=new Rect(117, 20, 60, 60);
+    Rect rectCropRight=new Rect(112, 20, 60, 60);
     Rect rectCrop;
 
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
