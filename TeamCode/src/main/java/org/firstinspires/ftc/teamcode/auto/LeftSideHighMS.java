@@ -34,6 +34,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import java.nio.channels.Pipe;
+
 @Autonomous
 @Left
 public class LeftSideHighMS extends LinearOpMode {
@@ -228,12 +230,13 @@ public class LeftSideHighMS extends LinearOpMode {
 
 
         if (isStopRequested()) return;
+        robot.autoCamera.pauseViewport();
         //camera.stopStreaming();
 
 
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
-        dropOff();
+        dropOff(true);
         robot.followTrajectory(preload2);
 
         for(int i = 0; i < 5; i++){
@@ -246,9 +249,9 @@ public class LeftSideHighMS extends LinearOpMode {
             
             if(i!=0)robot.followTrajectory(cycleIntake);
             else if(i==0) robot.followTrajectory(initIntake);
-            intake();
+            intake(i);
             robot.followTrajectory(cycleDrop);
-            dropOff();
+            dropOff(false);
         }
 
 
@@ -265,10 +268,18 @@ public class LeftSideHighMS extends LinearOpMode {
 
 
     }
-   public void dropOff(){
+   public void dropOff(boolean preload){
+       deposit.setExtension(Deposit.ExtensionState.EXTEND);
+       timer = System.currentTimeMillis();
+       if(!preload)
+       {
+           robot.detector2.setState(AlignerAuto.State.POLE);
+           turret.setState(Turret.State.LEFT_SIDE_HIGH);
+           while(System.currentTimeMillis()-100<timer)
+           {
 
-        deposit.setExtension(Deposit.ExtensionState.EXTEND);
-        timer = System.currentTimeMillis();
+           }
+       }
         turret.setState(Turret.State.AUTOALIGN);
         while(System.currentTimeMillis()-350 < timer){
             if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
@@ -291,7 +302,19 @@ public class LeftSideHighMS extends LinearOpMode {
         turret.setState(Turret.State.ZERO);
 
     }
-    public void intake(){
+    public void intake(int cycleNum){
+        if(cycleNum<2)
+        {
+            robot.detector2.setState(AlignerAuto.State.CONESTACK);
+            timer = System.currentTimeMillis();
+            turret.setState(Turret.State.AUTOALIGN);
+            while(System.currentTimeMillis()-150<timer && robot.detector2.getLocation()!=AlignerAuto.Location.MIDDLE)
+            {
+
+            }
+            turret.setState(Turret.State.IDLE);
+        }
+
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-270< timer){

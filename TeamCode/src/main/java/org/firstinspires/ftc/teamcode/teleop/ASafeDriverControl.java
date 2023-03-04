@@ -329,12 +329,12 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) < 5.75 &&
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 6 &&
                     slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
                 distanceSensor = false;
             }
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 7) {
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 6) {
                 distanceSensor = true;
             }
 

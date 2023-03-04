@@ -134,18 +134,15 @@ public class Turret extends HwModule
 
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
 
-        if(Math.abs(encoder.getCurrentPosition())<600)
-        {
+        if(Math.abs(encoder.getCurrentPosition()) < 600) {
             pidController.gainSchedule(coeff2);
         }
-        else
-        {
+        else {
             pidController.gainSchedule(coeff1);
         }
 
 
-        if(state!=State.MANUAL)
-        {
+        if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
 
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
@@ -160,8 +157,6 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        //if hall effect then reset pos at zero
-        //if(true) {
         switch(hall){
             case ON:
                 isAuto = false;
@@ -175,9 +170,6 @@ public class Turret extends HwModule
                 posAtZero = -encoder.getCurrentPosition();
             }
         }
-
-        //}
-
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
