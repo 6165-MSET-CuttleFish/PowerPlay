@@ -82,10 +82,10 @@ public class AlignerAuto extends OpenCvPipeline {
         Core.inRange(mat, lowHSV, highHSV, mat);
 
         //rectangle(mat, POS_1_BLUE, new Scalar(255, 255, 255));
-        /*
+
         switch(state)
         {
-            case POLE:*/
+            case POLE:
                 rectangle(mat, POS_2_HIGH, new Scalar(255, 255, 255));
                 rectangle(mat, POS_3_HIGH, new Scalar(255, 255, 255));
                 rectangle(mat, POS_4_HIGH, new Scalar(255, 255, 255));
@@ -119,7 +119,7 @@ public class AlignerAuto extends OpenCvPipeline {
                 }else{
                     location= Location.LEFT;
                 }
-                /*
+
             case CONESTACK:
                 rectangle(mat, POS_2_LOW, new Scalar(255, 255, 255));
                 rectangle(mat, POS_3_LOW, new Scalar(255, 255, 255));
@@ -145,23 +145,23 @@ public class AlignerAuto extends OpenCvPipeline {
                 loc[5] = Core.sumElems(mat.submat(POS_6_LOW)).val[0]/(POS_6_LOW.height* POS_6_LOW.width*255);
                 loc[6] = Core.sumElems(mat.submat(POS_7_LOW)).val[0]/(POS_7_LOW.height* POS_7_LOW.width*255);
                 //loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
-                boxsize =Math.round(((/*loc[0]+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
+                boxsize =Math.round(((/*loc[0]+*/loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
                 record=Math.abs(loc[3]-loc[4]);
                 if(getShift()<restrict) {
                     location= Location.MIDDLE;
-                }else if((/*loc[0]+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]/*loc[7])){
+                }else if((/*loc[0]+*/loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]/*loc[7]*/)){
                     location= Location.RIGHT;
                 }else{
                     location= Location.LEFT;
-                }*/
-        //}
+                }
+        }
         return returnBlack ? mat : input;
     }
 
-    /*public void setState(State s)
+    public void setState(State s)
     {
         state=s;
-    }*/
+    }
 
     public Location getLocation() {
         return location;
