@@ -147,7 +147,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(39.5,13, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(57.2, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
+                .lineToConstantHeading(new Vector2d(57.7, 13),robot.getVelocityConstraint(55, 5.939, 13.44),
                         robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
@@ -275,7 +275,7 @@ public class LeftSideHighMS extends LinearOpMode {
        {
            robot.detector2.setState(AlignerAuto.State.POLE);
            turret.setState(Turret.State.LEFT_SIDE_HIGH);
-           while(System.currentTimeMillis()-100<timer)
+           while(System.currentTimeMillis()-300<timer)
            {
 
            }
