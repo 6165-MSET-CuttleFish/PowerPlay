@@ -51,11 +51,11 @@ public class AlignerAuto extends OpenCvPipeline {
 
     //Find numbers for actual place
 
-    public static int HLow = 0;
+    public static int HLow = 12;
     public static int SLow = 100;
     public static int VLow = 120;
 
-    public static int HHigh = 255;
+    public static int HHigh = 40;
     public static int SHigh = 255;
     public static int VHigh = 255;
 

@@ -64,7 +64,7 @@ public class Slides extends HwModule {
     @Override
     public boolean isBusy()
     {
-        if(Math.abs(Math.abs(slidesLeft.getCurrentPosition())-targetPos)<35)
+        if(Math.abs(Math.abs(slidesLeft.getCurrentPosition())-targetPos)<20)
         {
             return false;
         }

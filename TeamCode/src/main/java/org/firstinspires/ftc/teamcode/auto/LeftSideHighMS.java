@@ -271,7 +271,7 @@ public class LeftSideHighMS extends LinearOpMode {
     }
    public void dropOff(boolean preload){
        deposit.setExtension(Deposit.ExtensionState.EXTEND);
-       deposit.setAngle(Deposit.AngleState.VECTORING);
+       //deposit.setAngle(Deposit.AngleState.VECTORING);
        timer = System.currentTimeMillis();
        if(!preload)
        {
@@ -292,10 +292,10 @@ public class LeftSideHighMS extends LinearOpMode {
             robot.update();
         }
 
-        while(slides.isBusy())
+        /*while(slides.isBusy())
         {
 
-        }
+        }*/
 
         claw.setState(Claw.State.OPEN_WIDE);
         turret.setState(Turret.State.IDLE);
@@ -331,6 +331,10 @@ public class LeftSideHighMS extends LinearOpMode {
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.HIGH);
 
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-200< timer){
+            robot.update();
+        }
 
         deposit.setAngle(Deposit.AngleState.VECTORING);
 

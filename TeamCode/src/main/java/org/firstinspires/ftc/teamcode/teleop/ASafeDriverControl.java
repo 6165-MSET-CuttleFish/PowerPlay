@@ -173,7 +173,14 @@ public class ASafeDriverControl extends LinearOpMode {
 
                 .build();
 */
+        while(!isStarted()&&!isStopRequested())
+        {
+            telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
+            telemetry.update();
+        }
+
         waitForStart();
+        robot.turretCamera.pauseViewport();
         gamepad1.setLedColor(100, 79, 183, 120000); //blue
         gamepad2.setLedColor(147, 112, 219, 120000); //light purple
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -369,12 +376,13 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
+                robot.turretCamera.resumeViewport();
                 robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
                 robot.followTrajectory(cycleIntake);
                 intake();
                 robot.followTrajectory(cycleDrop);
                 dropOff();
-
+                robot.turretCamera.pauseViewport();
             }
 
             if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) {
