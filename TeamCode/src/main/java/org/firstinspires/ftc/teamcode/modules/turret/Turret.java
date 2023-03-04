@@ -26,9 +26,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 public class Turret extends HwModule
 {
-    public static double p = 0.0019, i = 0.00090, d = 0.00024;
+    public static double p = 0.0027, i = 0.0012, d = 0.00024;
     PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
-    public static double p2=0.0017, i2=0.00088, d2=0.00021;
+    public static double p2=0.0023, i2=0.00094, d2=0.00021;
     PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
 
     public BPIDFController pidController;
@@ -134,18 +134,15 @@ public class Turret extends HwModule
 
         //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
 
-        if(Math.abs(encoder.getCurrentPosition())<600)
-        {
+        if(Math.abs(encoder.getCurrentPosition()) < 600) {
             pidController.gainSchedule(coeff2);
         }
-        else
-        {
+        else {
             pidController.gainSchedule(coeff1);
         }
 
 
-        if(state!=State.MANUAL)
-        {
+        if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
 
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
@@ -160,8 +157,6 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        //if hall effect then reset pos at zero
-        //if(true) {
         switch(hall){
             case ON:
                 isAuto = false;
@@ -170,15 +165,12 @@ public class Turret extends HwModule
                 isAuto = true;
                 break;
         }
-        if(!isAuto){
-            prevHall = hallEffect.getVoltage();
-            if (hallEffect.getVoltage() - prevHall < -1.1) {
+
+        if(!isAuto) {
+            if (hallEffect.getVoltage() < 1) {
                 posAtZero = -encoder.getCurrentPosition();
             }
         }
-
-        //}
-
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
