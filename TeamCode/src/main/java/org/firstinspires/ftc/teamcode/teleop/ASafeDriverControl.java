@@ -154,7 +154,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-0.5, 0),robot.getVelocityConstraint(15, 5.939, 13.44),
                         robot.getAccelerationConstraint(30))
                 .addTemporalMarker(0, ()->{
-                    slides.setState(Slides.State.CYCLE_HIGH);
+                    slides.setState(Slides.State.HIGH);
                 })
                 .addTemporalMarker(0.1, ()->{
                     turret.setState(Turret.State.BACK);
@@ -376,24 +376,26 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (cycleMacro.wasJustPressed()) {
-                robot.turretCamera.resumeViewport();
+                //robot.turretCamera.resumeViewport();
                 robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
                 robot.followTrajectory(cycleIntake);
                 intake();
                 robot.followTrajectory(cycleDrop);
                 dropOff();
-                robot.turretCamera.pauseViewport();
+                //robot.turretCamera.pauseViewport();
             }
 
-            if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) {
+            if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) { //up
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
                 robot.turret.setHall(OFF);
-            } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) {
+                robot.turretCamera.pauseViewport();
+            } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
                 sideOdomPos = 0.33;
                 robot.midOdo.setPosition(sideOdomPos);
                 robot.sideOdo.setPosition(sideOdomPos);
+                robot.turretCamera.resumeViewport();
                 //robot.turret.setHall(Turret.Hall.ON);
             }
             
@@ -431,6 +433,8 @@ public class ASafeDriverControl extends LinearOpMode {
         }
     }
 
+
+
     public void transferUpdate(int cycle) {
         if (transfer) {
             if (transferTimer.milliseconds() > 700) {
@@ -440,8 +444,8 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() + slides.posAtZero > Slides.MID + slides.posAtZero) &&
-                slides.slidesLeft.getCurrentPosition() + slides.posAtZero > 500 + slides.posAtZero) {
+            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > Slides.MID) &&
+                slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -476,7 +480,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 1200 +slides.posAtZero) {
+            if (slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 1200 + slides.posAtZero) {
                 if (resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;

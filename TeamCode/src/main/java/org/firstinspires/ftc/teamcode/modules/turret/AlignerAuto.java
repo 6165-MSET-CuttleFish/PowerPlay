@@ -73,15 +73,18 @@ public class AlignerAuto extends OpenCvPipeline {
     Mat kernel2=new Mat();
     List<MatOfPoint> Contours=new ArrayList<MatOfPoint>();
     Mat hierarchy=new Mat();
-    Mat mask=new Mat();
+    //Mat mask=new Mat();
     Mat selectedBoxes=new Mat();
     Mat inRange=new Mat();
+    Mat maskTemplate=new Mat();
+    Mat mat=new Mat();
 
 
     @Override
     public void init(Mat input)
     {
         recording="Recording";
+        maskTemplate=new Mat(selectedBoxes.rows(), selectedBoxes.cols(), CvType.CV_8U, Scalar.all(0));
     }
 
     public void release()
@@ -92,9 +95,10 @@ public class AlignerAuto extends OpenCvPipeline {
         morphed2.release();
         kernel2.release();
         hierarchy.release();
-        mask.release();
+        //mask.release();
         selectedBoxes.release();
         inRange.release();
+        mat.release();
     }
 
     @Override
@@ -102,7 +106,6 @@ public class AlignerAuto extends OpenCvPipeline {
     {
         release();
 
-        Mat mat = new Mat();
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         Scalar lowHSV;
@@ -144,10 +147,9 @@ public class AlignerAuto extends OpenCvPipeline {
 
         if(Contours.size()>0)
         {
-            mask=new Mat(selectedBoxes.rows(), selectedBoxes.cols(), CvType.CV_8U, Scalar.all(0));
-            Imgproc.drawContours(mask, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+            mat=maskTemplate.clone();
+            Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
             //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
-            mat=mask.clone();
             //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
             //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
         }
