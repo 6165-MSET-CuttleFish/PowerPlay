@@ -121,8 +121,9 @@ public class AlignerAuto extends OpenCvPipeline {
         {
             selectedBoxes=mat.submat(LowerBoxes);
         }
+        mat=selectedBoxes.clone();
 
-        Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
+        /*Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
         Core.inRange(processed, lowHSV, highHSV, inRange);
 
         kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
@@ -135,7 +136,7 @@ public class AlignerAuto extends OpenCvPipeline {
 
         int contourIndex=0;
         double contourArea=0;
-
+        /*
         for(int i=0; i<Contours.size(); i++)
         {
             if(Imgproc.contourArea(Contours.get(i))>contourArea)

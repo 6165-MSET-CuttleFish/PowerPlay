@@ -536,7 +536,7 @@ public class ASafeDriverControl extends LinearOpMode {
     public void dropOff(){
         timer = System.currentTimeMillis();
         turret.setState(Turret.State.BACK);
-        while(System.currentTimeMillis()-150 < timer){
+        while(System.currentTimeMillis()-200 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
