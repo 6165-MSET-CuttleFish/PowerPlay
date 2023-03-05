@@ -222,15 +222,24 @@ public class RightSideHighMS extends LinearOpMode{
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         timer = System.currentTimeMillis();
 
-
-        turret.setState(Turret.State.AUTOALIGN);
-        while(System.currentTimeMillis()-300 < timer){
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
-                turret.setState(Turret.State.IDLE);
+        if(!preload)
+        {
+            turret.setState(Turret.State.AUTOALIGN);
+            while(System.currentTimeMillis()-300 < timer){
+                if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                    turret.setState(Turret.State.IDLE);
+                }
+                telemetry.addData("TURRET", turret.getState());
+                telemetry.update();
+                robot.update();
             }
-            telemetry.addData("TURRET", turret.getState());
-            telemetry.update();
-            robot.update();
+        }
+        else
+        {
+            while(System.currentTimeMillis()-200<timer)
+            {
+                //stall a little
+            }
         }
 
         /*while(slides.isBusy())

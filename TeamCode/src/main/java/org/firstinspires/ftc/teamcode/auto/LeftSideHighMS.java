@@ -273,24 +273,26 @@ public class LeftSideHighMS extends LinearOpMode {
        deposit.setExtension(Deposit.ExtensionState.EXTEND);
        //deposit.setAngle(Deposit.AngleState.VECTORING);
        timer = System.currentTimeMillis();
+
        if(!preload)
        {
-           robot.detector2.setState(AlignerAuto.State.POLE);
-           turret.setState(Turret.State.LEFT_SIDE_HIGH);
-           while(System.currentTimeMillis()-100<timer)
-           {
-
+           turret.setState(Turret.State.AUTOALIGN);
+           while(System.currentTimeMillis()-300 < timer){
+               if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                   turret.setState(Turret.State.IDLE);
+               }
+               telemetry.addData("TURRET", turret.getState());
+               telemetry.update();
+               robot.update();
            }
        }
-        turret.setState(Turret.State.AUTOALIGN);
-        while(System.currentTimeMillis()-300 < timer){
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
-                turret.setState(Turret.State.IDLE);
-            }
-            telemetry.addData("TURRET", turret.getState());
-            telemetry.update();
-            robot.update();
-        }
+       else
+       {
+           while(System.currentTimeMillis()-200<timer)
+           {
+               //stall a little
+           }
+       }
 
         /*while(slides.isBusy())
         {
