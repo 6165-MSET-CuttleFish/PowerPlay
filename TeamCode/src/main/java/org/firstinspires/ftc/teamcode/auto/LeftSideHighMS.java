@@ -217,6 +217,7 @@ public class LeftSideHighMS extends LinearOpMode {
             tempState=robot.pipeline.getOutput();
             telemetry.addData("Camera 1: ", tempState);
             telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
+            telemetry.addData("Autoalign Error: ", robot.detector2.error);
             telemetry.update();
 
             if(tempState>0)
@@ -254,7 +255,7 @@ public class LeftSideHighMS extends LinearOpMode {
             robot.followTrajectory(cycleDrop);
             dropOff(false);
         }
-
+        //robot.closeCameras();
 
         if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
@@ -262,7 +263,8 @@ public class LeftSideHighMS extends LinearOpMode {
         robot.turn(Math.toRadians(100));
         slides.setState(Slides.State.BOTTOM);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-2000< timer){
+        while(System.currentTimeMillis()-2000< timer)
+        {
             robot.update();
         }
 

@@ -44,7 +44,7 @@ public class AlignerAuto extends OpenCvPipeline {
     public static Rect POS_5_HIGH = new Rect(160, 0, 40, 30);
     public static Rect POS_6_HIGH = new Rect(200, 0, 40, 30);
     public static Rect POS_7_HIGH = new Rect(240, 0, 40, 30);
-    public static Rect POS_8_HIGH = new Rect(280, 0, 40, 30);
+    //public static Rect POS_8_HIGH = new Rect(280, 0, 40, 30);
 
     public static Rect HigherBoxes=new Rect(0, 10, 320, 30);
     public static Rect LowerBoxes=new Rect(0, 170, 320, 30);
@@ -64,6 +64,7 @@ public class AlignerAuto extends OpenCvPipeline {
     public double record;
     public static double restrict=0.6;
     public String recording= "Not Recording";
+    public String error="None";
     private double[] loc=new double[8];
 
     Mat processed=new Mat();
@@ -79,26 +80,57 @@ public class AlignerAuto extends OpenCvPipeline {
     Mat maskTemplate=new Mat();
     Mat mat=new Mat();
 
+    Mat submat_2=new Mat();
+    Mat submat_3=new Mat();
+    Mat submat_4=new Mat();
+    Mat submat_5=new Mat();
+    Mat submat_6=new Mat();
+    Mat submat_7=new Mat();
+
+    Scalar lowHSV;
+    Scalar highHSV;
+
+
 
     @Override
     public void init(Mat input)
     {
+        selectedBoxes=input.submat(HigherBoxes);
+
         recording="Recording";
         maskTemplate=new Mat(selectedBoxes.rows(), selectedBoxes.cols(), CvType.CV_8U, Scalar.all(0));
+
+        lowHSV = new Scalar(HLow, SLow, VLow);
+        highHSV = new Scalar(HHigh, SHigh, VHigh);
+
+        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9));
     }
 
     public void release()
     {
         processed.release();
         morphed.release();
-        kernel.release();
+        //kernel.release();
         morphed2.release();
-        kernel2.release();
+        //kernel2.release();
         hierarchy.release();
         //mask.release();
         selectedBoxes.release();
         inRange.release();
         mat.release();
+
+        submat_2.release();
+        submat_3.release();
+        submat_4.release();
+        submat_5.release();
+        submat_6.release();
+        submat_7.release();
+
+        if(Contours.size()>0)
+        {
+            Contours.clear();
+        }
     }
 
     @Override
@@ -108,11 +140,6 @@ public class AlignerAuto extends OpenCvPipeline {
 
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
-        Scalar lowHSV;
-        Scalar highHSV;
-        lowHSV = new Scalar(HLow, SLow, VLow);
-        highHSV = new Scalar(HHigh, SHigh, VHigh);
-
         if(state==State.POLE)
         {
             selectedBoxes=mat.submat(HigherBoxes);
@@ -121,39 +148,46 @@ public class AlignerAuto extends OpenCvPipeline {
         {
             selectedBoxes=mat.submat(LowerBoxes);
         }
-        mat=selectedBoxes.clone();
 
-        /*Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
-        Core.inRange(processed, lowHSV, highHSV, inRange);
-
-        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
-        Imgproc.morphologyEx(inRange, morphed, MORPH_OPEN, kernel);
-
-        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9));
-        Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
-
-        Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        int contourIndex=0;
-        double contourArea=0;
-        /*
-        for(int i=0; i<Contours.size(); i++)
+        try
         {
-            if(Imgproc.contourArea(Contours.get(i))>contourArea)
+            Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
+            Core.inRange(processed, lowHSV, highHSV, inRange);
+
+            Imgproc.morphologyEx(inRange, morphed, MORPH_OPEN, kernel);
+
+            Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
+
+            Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+            int contourIndex=0;
+            double contourArea=0;
+
+            for(int i=0; i<Contours.size(); i++)
             {
-                contourArea=Imgproc.contourArea(Contours.get(i));
-                contourIndex=i;
+                if(Imgproc.contourArea(Contours.get(i))>contourArea)
+                {
+                    contourArea=Imgproc.contourArea(Contours.get(i));
+                    contourIndex=i;
+                }
             }
+            if(Contours.size()>0)
+            {
+                mat=maskTemplate.clone();
+                Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+                //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
+                //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
+                //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+            }
+            error="None";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            mat=selectedBoxes.clone();
+            error=e.getMessage();
         }
 
-        if(Contours.size()>0)
-        {
-            mat=maskTemplate.clone();
-            Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
-            //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
-            //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
-            //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
-        }
+
 
         //rectangle(mat, POS_1_BLUE, new Scalar(255, 255, 255));
 
@@ -175,16 +209,23 @@ public class AlignerAuto extends OpenCvPipeline {
                 //rectangle(input,POS_8_BLUE, new Scalar(255, 255, 255));
 
                 //loc[0] = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
-        loc[1] = Core.sumElems(mat.submat(POS_2_HIGH)).val[0]/(POS_2_HIGH.height* POS_2_HIGH.width*255);
-        loc[2] = Core.sumElems(mat.submat(POS_3_HIGH)).val[0]/(POS_3_HIGH.height* POS_3_HIGH.width*255);
-        loc[3] = Core.sumElems(mat.submat(POS_4_HIGH)).val[0]/(POS_4_HIGH.height* POS_4_HIGH.width*255);
-        loc[4] = Core.sumElems(mat.submat(POS_5_HIGH)).val[0]/(POS_5_HIGH.height* POS_5_HIGH.width*255);
-        loc[5] = Core.sumElems(mat.submat(POS_6_HIGH)).val[0]/(POS_6_HIGH.height* POS_6_HIGH.width*255);
-        loc[6] = Core.sumElems(mat.submat(POS_7_HIGH)).val[0]/(POS_7_HIGH.height* POS_7_HIGH.width*255);
+        submat_2=mat.submat(POS_2_HIGH);
+        submat_3=mat.submat(POS_3_HIGH);
+        submat_4=mat.submat(POS_4_HIGH);
+        submat_5=mat.submat(POS_5_HIGH);
+        submat_6=mat.submat(POS_6_HIGH);
+        submat_7=mat.submat(POS_7_HIGH);
+        loc[1] = Core.sumElems(submat_2).val[0]/(POS_2_HIGH.height* POS_2_HIGH.width*255);
+        loc[2] = Core.sumElems(submat_3).val[0]/(POS_3_HIGH.height* POS_3_HIGH.width*255);
+        loc[3] = Core.sumElems(submat_4).val[0]/(POS_4_HIGH.height* POS_4_HIGH.width*255);
+        loc[4] = Core.sumElems(submat_5).val[0]/(POS_5_HIGH.height* POS_5_HIGH.width*255);
+        loc[5] = Core.sumElems(submat_6).val[0]/(POS_6_HIGH.height* POS_6_HIGH.width*255);
+        loc[6] = Core.sumElems(submat_7).val[0]/(POS_7_HIGH.height* POS_7_HIGH.width*255);
                 //loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
         boxsize =Math.round(((/*loc[0]*/+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
         record=Math.abs(loc[3]-loc[4]);
-        if(getShift()<restrict) {
+        if(getShift()<restrict)
+        {
             location= Location.MIDDLE;
         }else if((/*loc[0]*/+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]/*loc[7]*/)){
             location= Location.RIGHT;
@@ -213,7 +254,8 @@ public class AlignerAuto extends OpenCvPipeline {
         double area=boxsize;
         return area;
     }
-    public int getShift() {
+    public int getShift()
+    {
         //Find shift
         return (int)(-1*factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*0+loc[5]*-1+loc[6]*-2));
     }

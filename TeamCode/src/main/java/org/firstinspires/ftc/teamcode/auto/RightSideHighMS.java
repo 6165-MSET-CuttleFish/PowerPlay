@@ -205,6 +205,7 @@ public class RightSideHighMS extends LinearOpMode{
             robot.followTrajectory(cycleDrop);
             dropOff(false);
         }
+        //robot.closeCameras();
 
 
         if(state==1) robot.followTrajectory(endLeft);

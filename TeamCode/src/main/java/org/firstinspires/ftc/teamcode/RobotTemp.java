@@ -253,44 +253,54 @@ public class RobotTemp extends MecanumDrive{
 
         if(isAuto)
         {
-            autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
-            pipeline=new colorDetection(l);
+            autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
+            pipeline = new colorDetection(l);
             autoCamera.setPipeline(pipeline);
-            autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-            {
+            autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
-                public void onOpened()
-                {
+                public void onOpened() {
                     //telemetry.addData("Camera 1: ", "started");
                     //telemetry.update();
-                    autoCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                    autoCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
                     //telemetry.addData("Camera 1: ", "streaming");
                     //telemetry.update();
                 }
 
                 @Override
-                public void onError(int errorCode)
-                {
+                public void onError(int errorCode) {
                     //telemetry.addData("Webcam 1", "failed");
                     //telemetry.update();
                 }
             });
+
+
+            turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
+            detector2 = new AlignerAuto();
+            turretCamera.setPipeline(detector2);
+            turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                }
+            });
         }
+    }
 
-        turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        detector2 = new AlignerAuto();
-        turretCamera.setPipeline(detector2);
-        turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+    public void closeCameras()
+    {
+        autoCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
             @Override
-            public void onOpened()
-            {
-                turretCamera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            public void onClose() {
             }
-
+        });
+        turretCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
             @Override
-            public void onError(int errorCode)
-            {
+            public void onClose() {
+
             }
         });
     }
