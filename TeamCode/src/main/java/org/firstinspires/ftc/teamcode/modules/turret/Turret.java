@@ -50,7 +50,7 @@ public class Turret extends HwModule
 
 
     public static double closePower = 0.3;
-    public static double farPower = 0.8;
+    public static double farPower = 0.8; //:)
     double targetPos=0;
     public double posAtZero=0;
     public double prevHall=0;
