@@ -16,6 +16,17 @@ class BackgroundCR(val robot: RobotTemp)
     var counter2: Int=0;
     var packet: TelemetryPacket= TelemetryPacket()
     val dashboard: FtcDashboard= FtcDashboard.getInstance()
+    var rr: Boolean=false;
+
+    fun updateRoadrunner()
+    {
+        rr=true;
+    }
+
+    fun disableRoadrunnerUpdate()
+    {
+        rr=false;
+    }
 
     fun startHW()
     {
@@ -33,6 +44,10 @@ class BackgroundCR(val robot: RobotTemp)
 
                     robot.slides.update()
                     robot.turret.update()
+                    /*if(rr)
+                    {
+                        //robot.update()
+                    }*/
                 }
                 catch(e: Exception)
                 {

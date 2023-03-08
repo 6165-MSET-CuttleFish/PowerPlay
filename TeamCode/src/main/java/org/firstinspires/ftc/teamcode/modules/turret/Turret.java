@@ -44,13 +44,13 @@ public class Turret extends HwModule
 
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3030,
-            RIGHT_SIDE_HIGH_PRELOAD = -910, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3100, LEFT_SIDE_HIGH_PRELOAD = 945, LEFT_SIDE_HIGH = 3000,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
+            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -2985,
+            RIGHT_SIDE_HIGH_PRELOAD = -915, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3100, LEFT_SIDE_HIGH_PRELOAD = 960, LEFT_SIDE_HIGH = 3060,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
 
     public static double closePower = 0.3;
-    public static double farPower = 0.8;
+    public static double farPower = 0.8; //:)
     double targetPos=0;
     public double posAtZero=0;
     public double prevHall=0;

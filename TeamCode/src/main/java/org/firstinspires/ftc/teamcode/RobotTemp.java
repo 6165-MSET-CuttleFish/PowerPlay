@@ -82,11 +82,13 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class RobotTemp extends MecanumDrive{
+
     public IMU.Parameters myIMUparameters;
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0.727);
+
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
     public static double LATERAL_MULTIPLIER = 1;
-    public static double odomServoPos = 0.3, sideOdomServoPos = 0;
+    public static double odomServoPos = 0.4, sideOdomServoPos = 0;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -395,11 +397,14 @@ public class RobotTemp extends MecanumDrive{
         if (signal != null) setDriveSignal(signal);
     }
 
-    public void waitForIdle() {
-        while (!Thread.currentThread().isInterrupted() && isBusy()) {
+    public void waitForIdle()
+    {
+        hardware.updateRoadrunner();
+        while (!Thread.currentThread().isInterrupted() && isBusy())
+        {
             update();
-
         }
+        hardware.disableRoadrunnerUpdate();
     }
 
 
@@ -498,8 +503,11 @@ public class RobotTemp extends MecanumDrive{
         ));
     }
 
-    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
+    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel)
+    {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+
+
 }
 

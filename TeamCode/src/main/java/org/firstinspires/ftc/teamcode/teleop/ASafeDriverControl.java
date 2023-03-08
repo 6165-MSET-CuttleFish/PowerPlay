@@ -180,7 +180,7 @@ public class ASafeDriverControl extends LinearOpMode {
         }
 
         waitForStart();
-        robot.turretCamera.pauseViewport();
+        //robot.turretCamera.pauseViewport();
         gamepad1.setLedColor(100, 79, 183, 120000); //blue
         gamepad2.setLedColor(147, 112, 219, 120000); //light purple
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -390,12 +390,12 @@ public class ASafeDriverControl extends LinearOpMode {
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
                 robot.turret.setHall(OFF);
-                robot.turretCamera.pauseViewport();
+                //robot.turretCamera.pauseViewport();
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
                 sideOdomPos = 0.33;
                 robot.midOdo.setPosition(sideOdomPos);
                 robot.sideOdo.setPosition(sideOdomPos);
-                robot.turretCamera.resumeViewport();
+                //robot.turretCamera.resumeViewport();
                 //robot.turret.setHall(Turret.Hall.ON);
             }
             
