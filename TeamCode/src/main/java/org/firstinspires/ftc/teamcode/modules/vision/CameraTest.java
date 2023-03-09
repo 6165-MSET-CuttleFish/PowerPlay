@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.Left;
 
 @TeleOp
@@ -22,7 +23,7 @@ public class CameraTest extends LinearOpMode
         packet=new TelemetryPacket();
         dashboard=FtcDashboard.getInstance();
 
-        camera=new Camera(hardwareMap, telemetry);
+        camera=new Camera(hardwareMap, telemetry, new colorDetection(this));
         dashboard.startCameraStream(camera.streamSource(),30);
 
         waitForStart();

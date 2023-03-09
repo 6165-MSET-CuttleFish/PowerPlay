@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.vision;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,11 +16,11 @@ public class Camera
     OpenCvWebcam camera;
     colorDetection pipeline;
 
-    public Camera(HardwareMap hardwareMap, Telemetry telemetry)
+    public Camera(HardwareMap hardwareMap, Telemetry telemetry, colorDetection myPipeline)
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        //pipeline=new colorDetection();
+        pipeline=myPipeline;
         camera.setPipeline(pipeline);
         camera.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
