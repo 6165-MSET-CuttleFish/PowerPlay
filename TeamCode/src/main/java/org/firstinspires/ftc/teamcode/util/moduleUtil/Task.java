@@ -5,7 +5,9 @@ public class Task
     public HwModule referenceModule;
     public ModuleState referenceState;
     public long delayTime=0;
-    public RunCondition condition =new RunCondition(()->true);
+    public RunCondition condition=new RunCondition(()->true);
+
+    public boolean blocking=false;
 
 
     public Task(HwModule module, ModuleState state)

@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import static org.firstinspires.ftc.teamcode.RobotTemp.odomServoPos;
 import static org.firstinspires.ftc.teamcode.RobotTemp.sideOdomServoPos;
-import static org.firstinspires.ftc.teamcode.modules.ground.GroundIntake.State.DEPOSITING;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -13,32 +11,27 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.checkerframework.common.subtyping.qual.Bottom;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotTemp;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
-import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
-import org.firstinspires.ftc.teamcode.util.Left;
+import org.firstinspires.ftc.teamcode.util.Right;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-import java.nio.channels.Pipe;
-
-@Autonomous
-@Left
-public class LeftSideHighMS extends LinearOpMode {
+//@Autonomous
+@Right
+public class RightSideHighMidMH extends LinearOpMode{
     ElapsedTime t;
     RobotTemp robot;
     Intake intake;
@@ -48,60 +41,15 @@ public class LeftSideHighMS extends LinearOpMode {
     GroundIntake groundIntake;
     Turret turret;
     TelemetryPacket packet;
-    Detector detector1;
-    OpenCvWebcam camera, camera2;
-    colorDetection pipeline;
-    Pose2d startPose = new Pose2d(38,61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(-38,61, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
     @Override
     public void runOpMode() throws InterruptedException {
-        /*
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-       // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
-        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-        pipeline=new colorDetection(telemetry);
-
-        camera.setPipeline(pipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-        camera2.setPipeline(detector1=new Detector());
-        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });*/
 
         robot = new RobotTemp(this, true);
+
 
 
         deposit = robot.deposit;
@@ -114,91 +62,71 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
+        turret.setState(Turret.Hall.OFF);
         timer = System.currentTimeMillis();
 
+
+        telemetry.addData("Checkpoint", "2");
+        telemetry.update();
 
         //telemetry.setMsTransmissionInterval(50);
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(37, 12.2),robot.getVelocityConstraint(55, 5.939, 13.44),
-                        robot.getAccelerationConstraint(55))
+                .lineToConstantHeading(new Vector2d(-36.5, 13.5), robot.getVelocityConstraint(65, 5.939, 13.44),
+                        robot.getAccelerationConstraint(68))
 
                 .addTemporalMarker(0,()->{
                     slides.setState(Slides.State.HIGH);
-                    groundIntake.setState(GroundIntake.State.DEPOSITING);
+
                 })
                 .addTemporalMarker(0.15,()->{
                     //groundIntake.setState(GroundIntake.State.INTAKING);
-                    turret.setState(Turret.State.LEFT_SIDE_HIGH_PRELOAD);
+                    turret.setState(Turret.State.RIGHT_SIDE_HIGH_PRELOAD);
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                 })
 
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(35.5,13, Math.toRadians(5.5)))
+                .lineToLinearHeading(new Pose2d(-35.75,13.75, Math.toRadians(174.5)))
                 .addTemporalMarker(0.1,()->{
-                    turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .addTemporalMarker(0.4,()->{
                     slides.setState(Slides.State.CYCLE0);
+                    turret.setState(Turret.State.ZERO);
                 })
                 .build();
-        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(35.5,13, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(56.5, 12),robot.getVelocityConstraint(45, 5.939, 13.44),
-                        robot.getAccelerationConstraint(50))
+        Trajectory initIntake = robot.trajectoryBuilder(new Pose2d(-35.25,13.5, Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-56.8, 13.75),robot.getVelocityConstraint(57, 5.939, 13.44),
+                        robot.getAccelerationConstraint(59))
                 .addTemporalMarker(0.1, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     groundIntake.setState(GroundIntake.State.OFF);
-                    deposit.setAngle(Deposit.AngleState.AUTO_INTAKE);
+                    //deposit.setAngle(Deposit.AngleState.AUTO_INTAKE);
                 })
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(35.5, 12),robot.getVelocityConstraint(45, 5.939, 13.44),
-                        robot.getAccelerationConstraint(50))
+                .lineToConstantHeading(new Vector2d(-36.4, 13.75),robot.getVelocityConstraint(57, 5.939, 13.44),
+                        robot.getAccelerationConstraint(57))
                 .addTemporalMarker(0, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                 })
                 .addTemporalMarker(0.375, ()->{
-                    turret.setState(Turret.State.LEFT_SIDE_HIGH);
-
+                    turret.setState(Turret.State.RIGHT_SIDE_HIGH);
                 })
+
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(56.5, 12),robot.getVelocityConstraint(45, 5.939, 13.44),
-                        robot.getAccelerationConstraint(50))
+                .lineToConstantHeading(new Vector2d(-56.8, 13.75),robot.getVelocityConstraint(57, 5.939, 13.44),
+                        robot.getAccelerationConstraint(59))
                 .addTemporalMarker(0.7, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                     deposit.setAngle(Deposit.AngleState.AUTO_INTAKE);
                 })
                 .build();
-        Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
-                .addTemporalMarker(0.0, ()->{
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
-
-                })
-                .addTemporalMarker(0.2, ()->{
-                    slides.setState(Slides.State.BOTTOM);
-                })
-                .lineToConstantHeading(new Vector2d(13,14)).build();
-        Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
-                .addTemporalMarker(0.0, ()->{
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
-
-                })
-                .addTemporalMarker(0.07, ()->{
-                    slides.setState(Slides.State.BOTTOM);
-                })
-                .lineToConstantHeading(new Vector2d(37,14)).build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -210,14 +138,40 @@ public class LeftSideHighMS extends LinearOpMode {
                 .addTemporalMarker(0.2, ()->{
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(61,14)).build();
+                .lineToConstantHeading(new Vector2d(-13,14)).build();
+        Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
+                .addTemporalMarker(0.0, ()->{
+                    turret.setState(Turret.State.ZERO);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                    deposit.setAngle(Deposit.AngleState.INTAKE);
+                    claw.setState(Claw.State.OPEN);
+
+                })
+                .addTemporalMarker(0.07, ()->{
+                    slides.setState(Slides.State.BOTTOM);
+                })
+                .lineToConstantHeading(new Vector2d(-37,14)).build();
+        Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
+                .addTemporalMarker(0.0, ()->{
+                    turret.setState(Turret.State.ZERO);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                    deposit.setAngle(Deposit.AngleState.INTAKE);
+                    claw.setState(Claw.State.OPEN);
+
+                })
+                .addTemporalMarker(0.2, ()->{
+                    slides.setState(Slides.State.BOTTOM);
+                })
+                .lineToConstantHeading(new Vector2d(-61,14)).build();
+
+        telemetry.addData("Checkpoint", "3");
+        telemetry.update();
         double tempState;
         while(!isStarted()&&!isStopRequested())
         {
             tempState=robot.pipeline.getOutput();
             telemetry.addData("Camera 1: ", tempState);
             telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
-            telemetry.addData("Autoalign Error: ", robot.detector2.error);
             telemetry.update();
 
             if(tempState>0)
@@ -225,7 +179,6 @@ public class LeftSideHighMS extends LinearOpMode {
                 state=tempState;
             }
         }
-
         telemetry.addData("AUTO READY", 1);
         telemetry.update();
         waitForStart();
@@ -233,8 +186,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
         if (isStopRequested()) return;
         robot.autoCamera.pauseViewport();
-        robot.initAutoAlignCamera();
-        //camera.stopStreaming();
+        //robot.autoCamera.stopStreaming();
 
 
         robot.setPoseEstimate(startPose);
@@ -242,57 +194,60 @@ public class LeftSideHighMS extends LinearOpMode {
         dropOff(true);
         robot.followTrajectory(preload2);
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 5; i++){
             //if(state==3 && i==4) break;
             if(i==0)slides.setState(Slides.State.CYCLE0);
             else if (i==1)slides.setState(Slides.State.CYCLE1);
             else if (i==2)slides.setState(Slides.State.CYCLE2);
             else if (i==3)slides.setState(Slides.State.CYCLE3);
             else if (i==4)slides.setState(Slides.State.CYCLE4);
-            
             if(i!=0)robot.followTrajectory(cycleIntake);
             else if(i==0) robot.followTrajectory(initIntake);
             intake(i);
             robot.followTrajectory(cycleDrop);
-            dropOff(false);
+            if(i!=3)
+            {
+                dropOff(false);
+            }
+
         }
         //robot.closeCameras();
+
 
         if(state==1) robot.followTrajectory(endLeft);
         else if(state==2) robot.followTrajectory(endMiddle);
         else if(state==3) robot.followTrajectory(endRight);
-        //robot.turn(Math.toRadians(100));
+
         slides.setState(Slides.State.BOTTOM);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-2000< timer&&opModeIsActive())
-        {
+        while(System.currentTimeMillis()-2000< timer&&opModeIsActive()){
             robot.update();
         }
     }
-   public void dropOff(boolean preload){
-       deposit.setExtension(Deposit.ExtensionState.EXTEND);
-       //deposit.setAngle(Deposit.AngleState.VECTORING);
-       timer = System.currentTimeMillis();
+    public void dropOff(boolean preload){
+        //deposit.setAngle(Deposit.AngleState.VECTORING);
+        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        timer = System.currentTimeMillis();
 
-       if(!preload)
-       {
-           turret.setState(Turret.State.AUTOALIGN);
-           while(System.currentTimeMillis()-400 < timer){
-               if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
-                   turret.setState(Turret.State.IDLE);
-               }
-               telemetry.addData("TURRET", turret.getState());
-               telemetry.update();
-               robot.update();
-           }
-       }
-       else
-       {
-           while(System.currentTimeMillis()-200<timer)
-           {
-               //stall a little
-           }
-       }
+        if(!preload)
+        {
+            turret.setState(Turret.State.AUTOALIGN);
+            while(System.currentTimeMillis()-300 < timer){
+                if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                    turret.setState(Turret.State.IDLE);
+                }
+                telemetry.addData("TURRET", turret.getState());
+                telemetry.update();
+                robot.update();
+            }
+        }
+        else
+        {
+            while(System.currentTimeMillis()-200<timer)
+            {
+                //stall a little
+            }
+        }
 
         /*while(slides.isBusy())
         {
@@ -310,17 +265,43 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.INTAKE);
 
         turret.setState(Turret.State.ZERO);
-
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250< timer){
-           robot.update();
-        }
-    }
-    public void intake(int cycleNum){
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-100< timer){
+        while(System.currentTimeMillis()-120< timer){
             robot.update();
         }
+
+    }
+
+    public void dropOff2(){
+
+        deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        timer = System.currentTimeMillis();
+        turret.setState(Turret.State.AUTOALIGN);
+        while(System.currentTimeMillis()-300 < timer){
+            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                turret.setState(Turret.State.IDLE);
+            }
+            telemetry.addData("TURRET", turret.getState());
+            telemetry.update();
+            robot.update();
+        }
+        claw.setState(Claw.State.OPEN);
+        turret.setState(Turret.State.IDLE);
+        timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-225< timer){
+            robot.update();
+        }
+
+        deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+
+        turret.setState(Turret.State.ZERO);
+        /*timer = System.currentTimeMillis();
+        while(System.currentTimeMillis()-120< timer){
+            robot.update();
+        }*/
+    }
+    public void intake(int cycleNum){
         /*if(cycleNum<2)
         {
             robot.detector2.setState(AlignerAuto.State.CONESTACK);
@@ -335,7 +316,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-270< timer){
+        while(System.currentTimeMillis()-250< timer){
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -347,7 +328,6 @@ public class LeftSideHighMS extends LinearOpMode {
         }
 
         deposit.setAngle(Deposit.AngleState.VECTORING);
-
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
     }
 }
