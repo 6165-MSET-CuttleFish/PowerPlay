@@ -7,34 +7,18 @@ class TaskScheduler(val l: LinearOpMode)
 {
 
     //schedule a task to occur however many seconds after a certain condition is met
-    fun scheduleTask(t: ImprovedTask)
+    fun scheduleTask(t: Task)
     {
-        if(!t.blocking)
+        GlobalScope.launch (Dispatchers.Default)
         {
-            GlobalScope.launch (Dispatchers.Default)
+            while(!t.condition.runCondition.call()&&!l.isStopRequested)
             {
-                while(!t.condition.runCondition.call()&&!l.isStopRequested)
-                {
 
-                }
-                delay(t.delayTime)
-                t.action.invoke()
             }
-        }
-        else
-        {
-            runBlocking {
-                while(!t.condition.runCondition.call()&&!l.isStopRequested)
-                {
-
-                }
-                delay(t.delayTime)
-                t.action.invoke()
-            }
+            delay(t.delayTime)
+            t.referenceModule.setState(t.referenceState)
         }
     }
-
-
 
     fun scheduleTaskList(t: TaskList)
     {

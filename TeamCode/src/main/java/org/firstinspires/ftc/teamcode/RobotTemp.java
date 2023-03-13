@@ -161,7 +161,7 @@ public class RobotTemp extends MecanumDrive{
         hardwareMap=l.hardwareMap;
         this.l=l;
 
-        initSignalSleeveCamera();
+        initCameras();
 
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
@@ -264,7 +264,7 @@ public class RobotTemp extends MecanumDrive{
 
     }
 
-    public void initSignalSleeveCamera()
+    public void initCameras()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -295,32 +295,22 @@ public class RobotTemp extends MecanumDrive{
                     //telemetry.update();
                 }
             });
+
+
+            turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
+            detector2 = new AlignerAuto();
+            turretCamera.setPipeline(detector2);
+            turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                }
+            });
         }
-    }
-
-    public void initAutoAlignCamera()
-    {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-
-        turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
-        detector2 = new AlignerAuto();
-        turretCamera.setPipeline(detector2);
-        turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
     }
 
     public void closeCameras()

@@ -233,7 +233,6 @@ public class LeftSideHighMS extends LinearOpMode {
 
         if (isStopRequested()) return;
         robot.autoCamera.pauseViewport();
-        robot.initAutoAlignCamera();
         //camera.stopStreaming();
 
 
