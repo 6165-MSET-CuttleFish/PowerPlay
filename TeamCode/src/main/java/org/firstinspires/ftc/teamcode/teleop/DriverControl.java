@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotOld;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
@@ -28,7 +28,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
 public class DriverControl extends LinearOpMode {
-    Robot robot;
+    RobotOld robot;
     Intake intake;
     Slides slides;
     vfourb fourbar;
@@ -54,7 +54,7 @@ public class DriverControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         camInit();
 
-        robot = new Robot(this);
+        robot = new RobotOld(this);
         turret.setState(Turret.State.ZERO);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);

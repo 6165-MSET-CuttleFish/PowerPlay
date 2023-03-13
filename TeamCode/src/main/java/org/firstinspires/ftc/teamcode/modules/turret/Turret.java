@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
@@ -59,8 +60,6 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public AlignerAuto detector;
     public Turret.State state;
-    public Hall hall;
-    private boolean isAuto = false;
     public double motorOil=0;
 
     @Override
@@ -71,15 +70,8 @@ public class Turret extends HwModule
         {
             state=(State)s;
         }
-        else if(s.getClass()==Hall.class){
-            hall = (Hall)s;
-        }
         updateTarget();
         time.reset();
-    }
-    public void setHall(ModuleState s){
-        hall = (Hall)s;
-        updateTarget();
     }
     public enum State implements ModuleState
     {
@@ -87,10 +79,6 @@ public class Turret extends HwModule
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
         LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
-    }
-    public enum Hall implements ModuleState
-    {
-        ON, OFF
     }
     public Turret(HardwareMap hardwareMap, boolean isAuto)
     {
@@ -106,27 +94,22 @@ public class Turret extends HwModule
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
-        hall = Hall.ON;
-
     }
 
-    public Turret(HardwareMap hardwareMap, boolean isAuto, AlignerAuto detector)
+    public Turret()
     {
         pidController= new BPIDFController(coeff1);
 
-        turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
+        turretMotor = Context.hardwareMap.get(DcMotorEx.class, "hturret");
 
-        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-        this.isAuto=isAuto;
-        hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
+        encoder=new Encoder(Context.hardwareMap.get(DcMotorEx.class, "hturret"));
+        hallEffect = Context.hardwareMap.get(AnalogInput.class, "hallEffect");
 
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
-        if(isAuto)hall = Hall.OFF;
-        else hall = Hall.ON;
-        this.detector=detector;
+        this.detector=Context.robot.detector2;
     }
 
     public void update() {
@@ -157,15 +140,7 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        switch(hall){
-            case ON:
-                isAuto = false;
-                break;
-            case OFF:
-                isAuto = true;
-                break;
-        }
-        if(!isAuto){
+        if(Context.hallEffectEnabled){
             if (hallEffect.getVoltage()<1.0) {
                 posAtZero = -encoder.getCurrentPosition();
             }

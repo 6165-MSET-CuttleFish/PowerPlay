@@ -10,7 +10,7 @@ import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotOld;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 
 @TeleOp
 public class practiceDriverCode extends LinearOpMode {
-    Robot robot;
+    RobotOld robot;
     Intake intake;
     Slides slide;
     vfourb fourbar;
@@ -34,7 +34,7 @@ public class practiceDriverCode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this, true);
+        robot = new RobotOld(this, true);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
         slide = robot.slides;

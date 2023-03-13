@@ -11,12 +11,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.RobotOld;
 
 @TeleOp(group = "drive")
 public class DrivetrainTest extends LinearOpMode {
     //public HardwareMap hardwareMap;
-    public Robot robot;
+    public RobotOld robot;
     public GamepadEx gm1;
 
     public ButtonReader ninja, straight;
@@ -25,8 +25,8 @@ public class DrivetrainTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this, false);
-        robot.setState(Robot.driveState.NORMAL);
+        robot = new RobotOld(this, false);
+        robot.setState(RobotOld.driveState.NORMAL);
         gm1 = new GamepadEx(gamepad1);
 
         //ninja = new ButtonReader(gm1, GamepadKeys.Button.LEFT_BUMPER);

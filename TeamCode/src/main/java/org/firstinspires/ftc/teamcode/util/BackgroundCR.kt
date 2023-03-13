@@ -2,85 +2,60 @@ package org.firstinspires.ftc.teamcode.util
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import kotlinx.coroutines.*
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.Robot
-import org.firstinspires.ftc.teamcode.RobotTemp
-import org.firstinspires.ftc.teamcode.modules.slides.Slides
-import org.firstinspires.ftc.teamcode.modules.turret.Turret
 
-class BackgroundCR(val robot: RobotTemp)
+class BackgroundCR(val robot: Robot)
 {
-    var counter: Int=0;
-    var counter2: Int=0;
     var packet: TelemetryPacket= TelemetryPacket()
     val dashboard: FtcDashboard= FtcDashboard.getInstance()
-    var rr: Boolean=false;
 
-    fun updateRoadrunner()
-    {
-        rr=true;
-    }
-
-    fun disableRoadrunnerUpdate()
-    {
-        rr=false;
-    }
 
     fun startHW()
     {
-        val job = GlobalScope.launch(Dispatchers.Main)
+        GlobalScope.launch(Dispatchers.Main)
         {
+            while(!Context.contextPastInit&&!Context.opMode!!.isStopRequested)
+            {
+
+            }
+
+            //during init
+            while(!Context.opMode!!.isStarted&&!Context.opMode!!.isStopRequested)
+            {
+                if(Context.isAuto)
+                {
+                    var zone=Context.robot!!.pipeline.output
+                    if(zone>0)
+                    {
+                        Context.signalSleeveZone=zone
+                    }
+                    Context.tel!!.addData("Camera 1: ", Context.signalSleeveZone)
+                }
+                Context.tel!!.update()
+                robot.slides.update()
+                robot.turret.update()
+            }
+
+            //right at opmode start
+            if(Context.autoalignEnabled)
+            {
+                robot.initAutoAlignCamera()
+            }
+
+            //throughout the opmode
             while(!robot.l.isStopRequested)
             {
-                //l.telemetry.addData("Slides: ", slides.slidesLeft.power);
-                //l.telemetry.update();
+                robot.slides.update()
+                robot.turret.update()
+                Context.tel!!.update()
 
-                try
+                if(Context.autoalignCameraPastInit)
                 {
-                    packet.put("Slides", robot.slides.slidesLeft.power)
-                    dashboard.sendTelemetryPacket(packet)
-
-                    robot.slides.update()
-                    robot.turret.update()
-                    /*if(rr)
-                    {
-                        //robot.update()
-                    }*/
+                    dashboard.startCameraStream(robot.turretCamera, 10.0);
+                    Context.autoalignCameraPastInit=false;
                 }
-                catch(e: Exception)
-                {
-                    robot.l.telemetry.addData("Error: ", e);
-                    robot.l.telemetry.update()
-                }
-                //counter++
             }
         }
-
-        /*val job2=GlobalScope.launch(Dispatchers.Main)
-        {
-            while(true)
-            {
-                l.telemetry.addData("Turret: ", counter2);
-                l.telemetry.update();
-
-                packet.put("Turret", counter2)
-                dashboard.sendTelemetryPacket(packet)
-
-                counter++;
-                delay(50)
-            }
-        }
-
-        GlobalScope.launch(Dispatchers.Default)
-        {
-            while(!l.isStopRequested)
-            {
-                delay(50)
-            }
-            //job.cancel()
-            //job2.cancel()
-        }*/
     }
 }

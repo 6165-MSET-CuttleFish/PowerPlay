@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 
@@ -13,12 +13,12 @@ public class Turret2Test extends LinearOpMode
 {
     Turret turret;
     Deposit deposit;
-    RobotTemp robot;
+    Robot robot;
     ElapsedTime timer;
     @Override
     public void runOpMode() throws InterruptedException
     {
-        robot=new RobotTemp(this, true);
+        robot=new Robot(this);
         turret=robot.turret;
         deposit = robot.deposit;
         timer=new ElapsedTime();

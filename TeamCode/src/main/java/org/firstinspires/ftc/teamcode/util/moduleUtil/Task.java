@@ -6,6 +6,7 @@ public class Task
     public ModuleState referenceState;
     public long delayTime=0;
     public RunCondition condition =new RunCondition(()->true);
+    public boolean blocking=false;
 
 
     public Task(HwModule module, ModuleState state)
@@ -25,7 +26,7 @@ public class Task
     {
         referenceModule=module;
         referenceState=state;
-        condition =startCondition;
+        condition=startCondition;
     }
 
     public Task(HwModule module, ModuleState state, long delay, RunCondition startCondition)

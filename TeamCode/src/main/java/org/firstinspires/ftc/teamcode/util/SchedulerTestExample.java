@@ -3,16 +3,18 @@ package org.firstinspires.ftc.teamcode.util;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ImprovedTask;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @TeleOp
 public class SchedulerTestExample extends LinearOpMode
 {
-    RobotTemp r;
+    Robot r;
     Turret turret;
     Slides slides;
     TaskScheduler scheduler;
@@ -22,7 +24,7 @@ public class SchedulerTestExample extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        r=new RobotTemp(this, true);
+        r=new Robot(this);
         slides=r.slides;
         turret=r.turret;
         scheduler=new TaskScheduler(this);
@@ -34,9 +36,10 @@ public class SchedulerTestExample extends LinearOpMode
             if(gamepad1.a)
             {
                 //run slides 500 miliseconds after left bumper has been pressed
-                scheduler.scheduleTask(
+                ImprovedTask task=new ImprovedTask<ModuleState>(slides::setState, Slides.State.HIGH, 0, turret::isBusy);
+                /*scheduler.scheduleTask(
                         slides.task(Slides.State.HIGH, 500,
-                                new RunCondition(()->gamepad2.left_bumper==true)));
+                                new RunCondition(()->gamepad2.left_bumper==true)));*/
             }
             else if(gamepad1.y)
             {

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.modules.turret.Turret.Hall.OFF;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -23,19 +22,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
-import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 @Config
 @TeleOp(name = "1. Driver Practice")
 public class ASafeDriverControl extends LinearOpMode {
-    RobotTemp robot;
+    Robot robot;
     Slides slides;
     Deposit deposit;
     GroundIntake groundIntake;
@@ -76,7 +75,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new RobotTemp(this, true);
+        robot = new Robot(this);
         robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -87,7 +86,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turret.setHall(OFF);
+        Context.hallEffectEnabled=false;
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
@@ -173,11 +172,6 @@ public class ASafeDriverControl extends LinearOpMode {
 
                 .build();
 */
-        while(!isStarted()&&!isStopRequested())
-        {
-            telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
-            telemetry.update();
-        }
 
         waitForStart();
         //robot.turretCamera.pauseViewport();
@@ -389,7 +383,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
-                robot.turret.setHall(OFF);
+                Context.hallEffectEnabled=false;
                 //robot.turretCamera.pauseViewport();
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
                 sideOdomPos = 0.33;
@@ -429,7 +423,7 @@ public class ASafeDriverControl extends LinearOpMode {
            // telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
-            telemetry.update();
+            //telemetry.update();
         }
     }
 

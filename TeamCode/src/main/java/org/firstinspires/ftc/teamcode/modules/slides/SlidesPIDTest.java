@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
+import org.firstinspires.ftc.teamcode.util.Context;
+
 @TeleOp
 @Config
 public class SlidesPIDTest extends LinearOpMode {
@@ -22,7 +24,8 @@ public class SlidesPIDTest extends LinearOpMode {
     private BPIDFController pidController = new BPIDFController(new PIDCoefficients(p,i,d), kV, kA, kStatic);
 
     public void runOpMode() throws InterruptedException {
-        slides = new Slides(hardwareMap);
+        Context.hardwareMap=hardwareMap;
+        slides = new Slides();
         GamepadEx gm1 = new GamepadEx(gamepad1);
         bottom = new ButtonReader(gm1, GamepadKeys.Button.A);
         middle = new ButtonReader(gm1, GamepadKeys.Button.B);

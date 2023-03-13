@@ -15,7 +15,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
@@ -32,67 +31,51 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
-import org.firstinspires.ftc.teamcode.modules.turret.Detector;
-
+import org.firstinspires.ftc.teamcode.modules.transfer.vfourb;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
-
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
-
+import org.firstinspires.ftc.teamcode.util.HardwareThread;
+import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 @Config
-public class RobotTemp extends MecanumDrive{
+public class RobotOld extends MecanumDrive {
 
-    public IMU.Parameters myIMUparameters;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0.727);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
+    public static double LATERAL_MULTIPLIER = .99;
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
-    public static double LATERAL_MULTIPLIER = 1;
-    public static double odomServoPos = 0.4, sideOdomServoPos = 0;
 
+    //public static double align1Up=1;
+    //public static double align1Down=0;
+    public static double align2Up=0;
+    public static double align2Down=0.8;
+    public static double odomServoPos = 0.3;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+    boolean teleop=false;
 
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -104,43 +87,34 @@ public class RobotTemp extends MecanumDrive{
 
     public CRServo groundLeft, groundRight;
     public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
+
     //public final Servo v4bSup, v4bRun;
     //public final CRServo intakeSup, intakeRun;
     //public final CRServo  groundLeft, groundRight;
-    public Servo midOdo, sideOdo;
+    public Servo odoRaise, alignerL, alignerR;
     public List<DcMotorEx> motors;
-    public AnalogInput slidesLimitSwitch;
-    public DistanceSensor distanceSensor;
-    private IMU imu;
+    public DigitalChannel slidesLimitSwitch;
+    private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
         NORMAL,
         NINJA,
         STRAIGHT
     }
-    public Intake intake;
     public Slides slides;
     public Turret turret;
     public Deposit deposit;
+    public Intake intake;
+    public vfourb fourbar;
+
     public Claw claw;
-    //public HardwareThread thread;
+    public HardwareThread thread;
     public BackgroundCR hardware;
+
     public GroundIntake groundIntake;
-    //public Camera camera;
+    public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
-    public TelemetryPacket packet;
-    public LinearOpMode l;
-    boolean isAuto=false;
-
-    HardwareMap hardwareMap;
-
-    public OpenCvWebcam autoCamera;
-    public OpenCvWebcam turretCamera;
-    public Detector detector1 = new Detector();
-    public AlignerAuto detector2 = new AlignerAuto();
-    //detector2.setState
-    public colorDetection pipeline;
 
     public void setState(driveState state){
         this.state = state;
@@ -149,33 +123,23 @@ public class RobotTemp extends MecanumDrive{
     public driveState getState() {
         return state;
     }
-    public RobotTemp(LinearOpMode l, boolean b)
-    {
+    public RobotOld(LinearOpMode l, boolean teleop) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+        teleop=this.teleop;
 
-        if(l.getClass().isAnnotationPresent(Autonomous.class))
-        {
-            isAuto=true;
-        }
 
-        hardwareMap=l.hardwareMap;
-        this.l=l;
-
-        initCameras();
-
-        slides = new Slides(hardwareMap);
+        /*slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, isAuto, detector2);
+        turret = new Turret(hardwareMap, false);
+   //     hardware=new BackgroundCR(this, l);
+        groundIntake = new GroundIntake(hardwareMap);*/
+        //thread=new HardwareThread(turret, slides, l);
 
-
-        packet=new TelemetryPacket();
-        hardware=new BackgroundCR(this);
         hardware.startHW();
 
 
-        groundIntake = new GroundIntake(hardwareMap);
-        //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -184,34 +148,23 @@ public class RobotTemp extends MecanumDrive{
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
+        {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        //imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        myIMUparameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        new Orientation(
-                                AxesReference.INTRINSIC,
-                                AxesOrder.ZYX,
-                                AngleUnit.DEGREES,
-                                0,
-                                0,
-                                -15,
-                                0  // acquisitionTime, not used
-                        )
-                )
-        );
-        imu.initialize(myIMUparameters);
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "fl");
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "fr");
         rightFront = hardwareMap.get(DcMotorEx.class, "br");
-
+        //alignerL = hardwareMap.get(Servo.class, "alignerL");
+//        alignerR=hardwareMap.get(Servo.class, "alignerR");
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
 
@@ -224,13 +177,12 @@ public class RobotTemp extends MecanumDrive{
 */
 
 
-        midOdo = hardwareMap.get(Servo.class, "midOdom");
-        sideOdo = hardwareMap.get(Servo.class, "sideOdom");
-        sideOdo.setPosition(sideOdomServoPos);
-        midOdo.setPosition(odomServoPos);
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+        odoRaise.setPosition(odomServoPos);
+//        groundLeft = hardwareMap.get(CRServo.class, "gl");
+//        groundRight = hardwareMap.get(CRServo.class, "gr");
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -253,79 +205,116 @@ public class RobotTemp extends MecanumDrive{
         leftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+    //    setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
+
     }
 
-    public void initCameras()
+    public void alignUp()
     {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+        //alignerL.setPosition(align1Up);
+        alignerR.setPosition(align2Down);
+    }
 
-        if(isAuto)
+    public void alignDown()
+    {
+        //alignerL.setPosition(align1Down);
+        alignerR.setPosition(align2Up);
+    }
+
+    public RobotOld(LinearOpMode l) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        HardwareMap hardwareMap=l.hardwareMap;
+        //teleop=this.teleop;
+
+
+        /*slides = new Slides(hardwareMap);
+        deposit = new Deposit(hardwareMap);
+        claw = new Claw(hardwareMap);
+        turret = new Turret(hardwareMap, teleop);
+        groundIntake = new GroundIntake(hardwareMap);
+        thread=new HardwareThread(turret, slides, l);
+        thread.start();*/
+        //hardware=new BackgroundCR(this, l);
+        //hardware.startHW();
+
+//        camera = new Camera(hardwareMap, telemetry);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class))
         {
-            autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
-            pipeline = new colorDetection(l);
-            autoCamera.setPipeline(pipeline);
-            autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    //telemetry.addData("Camera 1: ", "started");
-                    //telemetry.update();
-                    autoCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                    //telemetry.addData("Camera 1: ", "streaming");
-                    //telemetry.update();
-                }
-
-                @Override
-                public void onError(int errorCode) {
-                    //telemetry.addData("Webcam 1", "failed");
-                    //telemetry.update();
-                }
-            });
-
-
-            turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
-            detector2 = new AlignerAuto();
-            turretCamera.setPipeline(detector2);
-            turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                }
-
-                @Override
-                public void onError(int errorCode) {
-                }
-            });
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
-    }
 
-    public void closeCameras()
-    {
-        autoCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClose() {
-            }
-        });
-        turretCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClose() {
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
 
-            }
-        });
+        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
+        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
+        rightRear = hardwareMap.get(DcMotorEx.class, "fr");
+        rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        alignerL = hardwareMap.get(Servo.class, "alignerL");
+        alignerR = hardwareMap.get(Servo.class, "alignerR");
+
+       /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
+        slides2 = hardwareMap.get(DcMotorEx.class, "s2");
+
+        hturret = hardwareMap.get(DcMotorEx.class, "hturret");
+
+        v4bSup = hardwareMap.get(Servo.class, "v4bSup");
+        v4bRun = hardwareMap.get(Servo.class, "v4bRun");
+        intakeSup = hardwareMap.get(CRServo.class, "intakeSup");
+        intakeRun = hardwareMap.get(CRServo.class, "intakeRun");
+*/
+
+
+        odoRaise = hardwareMap.get(Servo.class, "midOdom");
+//        odoRaise.setPosition(odomServoPos);
+        groundLeft = hardwareMap.get(CRServo.class, "gl");
+        groundRight = hardwareMap.get(CRServo.class, "gr");
+        isOdoRaised = false;
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+        // TODO: reverse any motors using DcMotor.setDirection()
+
+        // TODO: if desired, use setLocalizer() to change the localization method
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        // setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -389,24 +378,14 @@ public class RobotTemp extends MecanumDrive{
 
     public void update() {
         updatePoseEstimate();
-
-        /*turret.update();
-        slides.update();*/
-
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
 
-    public void waitForIdle()
-    {
-        hardware.updateRoadrunner();
+    public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy())
-        {
             update();
-        }
-        hardware.disableRoadrunnerUpdate();
     }
-
 
     public boolean isBusy() {
         return trajectorySequenceRunner.isBusy();
@@ -484,16 +463,12 @@ public class RobotTemp extends MecanumDrive{
 
     @Override
     public double getRawExternalHeading() {
-        YawPitchRollAngles robotOrientation;
-        robotOrientation = imu.getRobotYawPitchRollAngles();
-
-         return robotOrientation.getRoll(AngleUnit.RADIANS);
+        return imu.getAngularOrientation().firstAngle;
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
-        AngularVelocity velo = imu.getRobotAngularVelocity(AngleUnit.RADIANS);
-        return (double) velo.zRotationRate;
+        return (double) imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
@@ -503,11 +478,8 @@ public class RobotTemp extends MecanumDrive{
         ));
     }
 
-    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel)
-    {
+    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
-
-
-}
+    }
 

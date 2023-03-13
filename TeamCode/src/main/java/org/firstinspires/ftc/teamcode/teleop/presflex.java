@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.modules.turret.Turret.Hall.OFF;
-
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -10,17 +8,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
 public class presflex extends LinearOpMode {
-    RobotTemp robot;
+    Robot robot;
     Slides slides;
     Deposit deposit;
     GroundIntake groundIntake;
@@ -33,7 +32,7 @@ public class presflex extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
-        robot = new RobotTemp(this, true);
+        robot = new Robot(this);
         primary = new GamepadEx(gamepad1);
         slides = robot.slides;
         claw = robot.claw;
@@ -42,7 +41,7 @@ public class presflex extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turret.setHall(OFF);
+        Context.hallEffectEnabled=false;
         extend = new ToggleButtonReader(primary, GamepadKeys.Button.A);
         robot.turretCamera.stopStreaming();
 

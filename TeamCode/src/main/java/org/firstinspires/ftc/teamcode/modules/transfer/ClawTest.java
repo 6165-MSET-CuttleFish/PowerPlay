@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
 public class ClawTest extends LinearOpMode
@@ -14,9 +15,9 @@ public class ClawTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-
+        Context.hardwareMap=hardwareMap;
         time=new ElapsedTime();
-        claw=new Claw(hardwareMap);
+        claw=new Claw();
         claw.setState(Claw.State.OPEN);
         waitForStart();
         while(opModeIsActive()){

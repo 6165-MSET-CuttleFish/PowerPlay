@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.Context;
+
 @TeleOp
 public class DepositTest extends LinearOpMode {
     Servo leftExtension;
@@ -13,8 +15,9 @@ public class DepositTest extends LinearOpMode {
     
     @Override
     public void runOpMode() throws InterruptedException {
-        Deposit deposit = new Deposit(hardwareMap);
-        Claw claw = new Claw(hardwareMap);
+        Context.hardwareMap=hardwareMap;
+        Deposit deposit = new Deposit();
+        Claw claw = new Claw();
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)

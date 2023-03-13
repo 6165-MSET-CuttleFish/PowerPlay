@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
@@ -41,9 +42,9 @@ public class GroundIntake extends HwModule
         INTAKING, DEPOSITING, FAST, OFF
     }
 
-    public GroundIntake(HardwareMap hardwareMap)
+    public GroundIntake()
     {
-        groundIntake = hardwareMap.get(DcMotor.class, "gIntake");
+        groundIntake = Context.hardwareMap.get(DcMotor.class, "gIntake");
         groundIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         groundIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         groundIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

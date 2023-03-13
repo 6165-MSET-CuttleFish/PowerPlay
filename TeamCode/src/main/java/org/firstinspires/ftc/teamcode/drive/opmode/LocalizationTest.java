@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class LocalizationTest extends LinearOpMode {
         prevHeading=0;
 
         //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        RobotTemp drive = new RobotTemp(this, true);
+        Robot drive = new Robot(this);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();

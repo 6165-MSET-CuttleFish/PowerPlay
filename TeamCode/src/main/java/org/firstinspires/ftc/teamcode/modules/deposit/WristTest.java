@@ -5,12 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
 public class WristTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Deposit deposit = new Deposit(hardwareMap);
+        Context.hardwareMap=hardwareMap;
+        Deposit deposit = new Deposit();
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)

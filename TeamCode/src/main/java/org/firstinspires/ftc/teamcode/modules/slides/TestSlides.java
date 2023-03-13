@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp(group = "slides")
 public class TestSlides extends LinearOpMode {
@@ -14,8 +15,8 @@ public class TestSlides extends LinearOpMode {
     DcMotorEx slidesRight;
     @Override
     public void runOpMode() throws InterruptedException {
-
-        slide = new Slides(hardwareMap);
+        Context.hardwareMap=hardwareMap;
+        slide = new Slides();
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         slidesLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

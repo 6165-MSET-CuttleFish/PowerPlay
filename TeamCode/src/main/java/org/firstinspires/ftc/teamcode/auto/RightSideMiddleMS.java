@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import static org.firstinspires.ftc.teamcode.RobotTemp.odomServoPos;
-import static org.firstinspires.ftc.teamcode.RobotTemp.sideOdomServoPos;
+import static org.firstinspires.ftc.teamcode.Robot.odomServoPos;
+import static org.firstinspires.ftc.teamcode.Robot.sideOdomServoPos;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
@@ -29,7 +29,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous
 public class RightSideMiddleMS extends LinearOpMode {
     ElapsedTime t;
-    RobotTemp robot;
+    Robot robot;
     Intake intake;
     Slides slides;
     Claw claw;
@@ -67,7 +67,7 @@ public class RightSideMiddleMS extends LinearOpMode {
             }
         });
 
-        robot = new RobotTemp(this, true);
+        robot = new Robot(this);
 
 
         deposit = robot.deposit;
@@ -146,17 +146,6 @@ public class RightSideMiddleMS extends LinearOpMode {
 
                 .lineToConstantHeading(new Vector2d(-60,11)).build();
 
-        while(!isStarted()&&!isStopRequested())
-        {
-            double tempState=pipeline.getOutput();
-            telemetry.addData("State: ", tempState);
-            telemetry.addData("H Value", pipeline.getHAvg());
-            telemetry.update();
-            if(tempState>0)
-            {
-                state=tempState;
-            }
-        }
 
         waitForStart();
 

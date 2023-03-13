@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
@@ -39,9 +40,9 @@ public class Claw extends HwModule
         OPEN, CLOSE, PARTIAL, OPEN_WIDE
     }
 
-    public Claw(HardwareMap hardwareMap)
+    public Claw()
     {
-        claw = hardwareMap.get(Servo.class, "claw");
+        claw = Context.hardwareMap.get(Servo.class, "claw");
         setState(State.OPEN);
     }
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 //SLIDES, TURRET, HORIZONTAL EXT (probably tmr), COMBINED
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
@@ -70,10 +71,10 @@ public class Deposit extends HwModule {
         TEMP1, TEMP2
     }
 
-    public Deposit(HardwareMap hardwareMap) {
-        leftExtension =hardwareMap.get(Servo.class, "lExt");
-        rightExtension =hardwareMap.get(Servo.class, "rExt");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+    public Deposit() {
+        leftExtension= Context.hardwareMap.get(Servo.class, "lExt");
+        rightExtension=Context.hardwareMap.get(Servo.class, "rExt");
+        wrist = Context.hardwareMap.get(Servo.class, "wrist");
         rightExtension.setDirection(Servo.Direction.REVERSE);
         setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);

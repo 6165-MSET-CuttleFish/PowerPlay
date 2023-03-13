@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import static org.firstinspires.ftc.teamcode.RobotTemp.odomServoPos;
-import static org.firstinspires.ftc.teamcode.RobotTemp.sideOdomServoPos;
+import static org.firstinspires.ftc.teamcode.Robot.odomServoPos;
+import static org.firstinspires.ftc.teamcode.Robot.sideOdomServoPos;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -11,29 +11,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.checkerframework.common.subtyping.qual.Bottom;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.RobotTemp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
-import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
-import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
 @Right
 public class RightSideHighMS extends LinearOpMode{
     ElapsedTime t;
-    RobotTemp robot;
+    Robot robot;
     Intake intake;
     Slides slides;
     Claw claw;
@@ -48,7 +41,7 @@ public class RightSideHighMS extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot = new RobotTemp(this, true);
+        robot = new Robot(this);
 
 
 
@@ -62,7 +55,7 @@ public class RightSideHighMS extends LinearOpMode{
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
-        turret.setState(Turret.Hall.OFF);
+        Context.hallEffectEnabled=false;
         timer = System.currentTimeMillis();
 
 
@@ -166,19 +159,7 @@ public class RightSideHighMS extends LinearOpMode{
 
         telemetry.addData("Checkpoint", "3");
         telemetry.update();
-        double tempState;
-        while(!isStarted()&&!isStopRequested())
-        {
-            tempState=robot.pipeline.getOutput();
-            telemetry.addData("Camera 1: ", tempState);
-            telemetry.addData("Autoalign Camera: ", robot.detector2.recording);
-            telemetry.update();
 
-            if(tempState>0)
-            {
-                state=tempState;
-            }
-        }
         telemetry.addData("AUTO READY", 1);
         telemetry.update();
         waitForStart();
