@@ -247,7 +247,7 @@ public class Robot extends MecanumDrive{
         midOdo.setPosition(odomServoPos);
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
+
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.firstinspires.ftc.teamcode.util.Context;
 
@@ -25,7 +26,8 @@ public class SlidesPIDTest extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         Context.hardwareMap=hardwareMap;
-        slides = new Slides();
+        Robot robot = new Robot(this);
+        slides = robot.slides;
         GamepadEx gm1 = new GamepadEx(gamepad1);
         bottom = new ButtonReader(gm1, GamepadKeys.Button.A);
         middle = new ButtonReader(gm1, GamepadKeys.Button.B);
@@ -35,20 +37,17 @@ public class SlidesPIDTest extends LinearOpMode {
         while(opModeIsActive()){
 //            slides.update();
             if(gamepad1.a){
-                pidController.setTargetPosition(100);
+                slides.setState(Slides.State.BOTTOM);
             }
             else if(gamepad1.b){
-                pidController.setTargetPosition(1180);
+                slides.setState(Slides.State.MID);
             }
             else if(gamepad1.y){
-                pidController.setTargetPosition(2300);
+                slides.setState(Slides.State.HIGH);
             }
-            double output = pidController.update(slides.slidesRight.getCurrentPosition());
-            slides.slidesRight.setPower(output);
-            slides.slidesLeft.setPower(output);
 
-            telemetry.addData("targetPos: ", pidController.getTargetPosition());
-            telemetry.addData("output power: ", output);
+            telemetry.addData("targetPos: ", slides.pidController.getTargetPosition());
+            telemetry.addData("output power: ", slides.getOuput());
             telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
             telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
             telemetry.addData("currentPower: ", slides.slidesLeft.getPower());

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules.ground;
 
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
@@ -19,7 +21,7 @@ public class GroundIntake extends HwModule
     boolean runningTrigger = false;
     boolean temp2 = false;
     DcMotor groundIntake;
-    DistanceSensor distSens;
+    ColorRangeSensor distSens;
     public State state;
 
     @Override
@@ -45,12 +47,15 @@ public class GroundIntake extends HwModule
     public GroundIntake()
     {
         groundIntake = Context.hardwareMap.get(DcMotor.class, "gIntake");
+        distSens = Context.hardwareMap.get(ColorRangeSensor.class, "gDist");
         groundIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         groundIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         groundIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setState(State.OFF);
     }
-
+    public double getDistance(){
+        return distSens.getDistance(DistanceUnit.INCH);
+    }
     public void update()
     {
         switch(state)

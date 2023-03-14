@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.relocalizer
+package org.firstinspires.ftc.teamcode.modules.relocalizer
 
 class filter @JvmOverloads constructor (private val arraySize: Int = 5) {
     private val movingStats: ArrayList<Double> = ArrayList()
