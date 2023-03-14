@@ -146,6 +146,9 @@ public class Robot extends MecanumDrive{
     //detector2.setState
     public colorDetection pipeline;
 
+    int cameraMonitorViewId;
+    int[] viewportContainerIds;
+
     public void setState(driveState state){
         this.state = state;
     }
@@ -164,12 +167,22 @@ public class Robot extends MecanumDrive{
         hardwareMap=l.hardwareMap;
         this.l=l;
 
-        initSignalSleeveCamera();
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        viewportContainerIds = OpenCvCameraFactory.getInstance()
+                .splitLayoutForMultipleViewports(
+                        cameraMonitorViewId,
+                        2,
+                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+
         detector2 = new AlignerAuto();
+        initAutoAlignCamera();
+        initSignalSleeveCamera();
+
         distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
         left = new MB1643(hardwareMap, "left");
         right = new MB1643(hardwareMap, "right");
+
         slides = new Slides();
         deposit = new Deposit();
         claw = new Claw();
@@ -270,18 +283,10 @@ public class Robot extends MecanumDrive{
 
     public void initSignalSleeveCamera()
     {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-
         if(Context.isAuto)
         {
             autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
-            pipeline = new colorDetection(l);
+            pipeline = new colorDetection();
             autoCamera.setPipeline(pipeline);
             autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
@@ -304,14 +309,6 @@ public class Robot extends MecanumDrive{
 
     public void initAutoAlignCamera()
     {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-
         turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
         turretCamera.setPipeline(detector2);
         turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {

@@ -15,13 +15,13 @@ class BackgroundCR(val robot: Robot)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
-            while(!Context.contextPastInit&&!Context.opMode!!.isStopRequested)
+            while(!Context.contextPastInit&&!robot.l.isStopRequested)
             {
 
             }
 
             //during init
-            while(!Context.opMode!!.isStarted&&!Context.opMode!!.isStopRequested)
+            while(!Context.opMode!!.isStarted&&!robot.l.isStopRequested)
             {
                 if(Context.isAuto)
                 {
@@ -32,15 +32,18 @@ class BackgroundCR(val robot: Robot)
                     }
                     Context.tel!!.addData("Camera 1: ", Context.signalSleeveZone)
                 }
+                if(Context.autoalignEnabled)
+                {
+                    Context.tel!!.addData("Autoalign Camera: ", Context.autoalignCameraPastInit)
+                }
+                if(Context.autoalignCameraPastInit&&!Context.dashboardCameraStreaming)
+                {
+                    dashboard.startCameraStream(robot.turretCamera, 10.0);
+                    Context.dashboardCameraStreaming=true
+                }
                 Context.tel!!.update()
                 robot.slides.update()
                 robot.turret.update()
-            }
-
-            //right at opmode start
-            if(Context.autoalignEnabled)
-            {
-                robot.initAutoAlignCamera()
             }
 
             //throughout the opmode
@@ -49,13 +52,8 @@ class BackgroundCR(val robot: Robot)
                 robot.slides.update()
                 robot.turret.update()
                 Context.tel!!.update()
-
-                if(Context.autoalignCameraPastInit)
-                {
-                    dashboard.startCameraStream(robot.turretCamera, 10.0);
-                    Context.autoalignCameraPastInit=false;
-                }
             }
+            Context.resetValues()
         }
     }
 }

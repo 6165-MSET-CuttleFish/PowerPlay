@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
+import static org.opencv.imgproc.Imgproc.COLOR_HSV2RGB;
 import static org.opencv.imgproc.Imgproc.MORPH_CLOSE;
 import static org.opencv.imgproc.Imgproc.MORPH_OPEN;
 import static org.opencv.imgproc.Imgproc.rectangle;
+
+import android.os.Environment;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -13,6 +16,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -79,6 +83,7 @@ public class AlignerAuto extends OpenCvPipeline {
     Mat inRange=new Mat();
     Mat maskTemplate=new Mat();
     Mat mat=new Mat();
+    Mat returnMat=new Mat();
 
     Mat submat_2=new Mat();
     Mat submat_3=new Mat();
@@ -89,6 +94,8 @@ public class AlignerAuto extends OpenCvPipeline {
 
     Scalar lowHSV;
     Scalar highHSV;
+
+    double imgCount=0;
 
 
 
@@ -105,6 +112,8 @@ public class AlignerAuto extends OpenCvPipeline {
 
         kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9));
+
+        imgCount=0;
     }
 
     public void release()
@@ -119,6 +128,7 @@ public class AlignerAuto extends OpenCvPipeline {
         selectedBoxes.release();
         inRange.release();
         mat.release();
+        returnMat.release();
 
         submat_2.release();
         submat_3.release();
@@ -149,45 +159,41 @@ public class AlignerAuto extends OpenCvPipeline {
             selectedBoxes=mat.submat(LowerBoxes);
         }
 
-        try
+
+        Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
+        Core.inRange(processed, lowHSV, highHSV, inRange);
+
+        Imgproc.morphologyEx(inRange, morphed, MORPH_OPEN, kernel);
+
+        Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
+
+        Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        int contourIndex=0;
+        double contourArea=0;
+
+        for(int i=0; i<Contours.size(); i++)
         {
-            Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
-            Core.inRange(processed, lowHSV, highHSV, inRange);
-
-            Imgproc.morphologyEx(inRange, morphed, MORPH_OPEN, kernel);
-
-            Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
-
-            Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-            int contourIndex=0;
-            double contourArea=0;
-
-            for(int i=0; i<Contours.size(); i++)
+            if(Imgproc.contourArea(Contours.get(i))>contourArea)
             {
-                if(Imgproc.contourArea(Contours.get(i))>contourArea)
-                {
-                    contourArea=Imgproc.contourArea(Contours.get(i));
-                    contourIndex=i;
-                }
+                contourArea=Imgproc.contourArea(Contours.get(i));
+                contourIndex=i;
             }
-            if(Contours.size()>0)
-            {
-                mat=maskTemplate.clone();
-                Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
-                //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
-                //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
-                //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
-            }
-            error="None";
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            mat=selectedBoxes.clone();
-            error=e.getMessage();
         }
+        if(Contours.size()>0)
+        {
+            mat=maskTemplate.clone();
+            Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+            //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
+            //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
+            //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+        }
+        error="None";
 
 
+
+        //String logFilePath = String.format("%s/FIRST/data/img"+imgCount+".png", Environment.getExternalStorageDirectory().getAbsolutePath());
+        //Imgcodecs.imwrite(logFilePath, mat);
 
         //rectangle(mat, POS_1_BLUE, new Scalar(255, 255, 255));
 
@@ -233,7 +239,9 @@ public class AlignerAuto extends OpenCvPipeline {
             location= Location.LEFT;
         }
 
-        return returnBlack ? mat : input;
+
+        Imgproc.cvtColor(mat, returnMat, Imgproc.COLOR_HSV2RGB);
+        return mat;
     }
 
     public void setState(State s)

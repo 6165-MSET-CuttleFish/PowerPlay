@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.Camera;
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
 import org.firstinspires.ftc.teamcode.util.Right;
+import org.firstinspires.ftc.teamcode.util.Side;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -64,18 +66,18 @@ public class colorDetection extends OpenCvPipeline
     int state=-1;
 
     Telemetry tel;
-    public colorDetection(LinearOpMode l)
+    public colorDetection()
     {
-        if(l.getClass().isAnnotationPresent(Left.class))
+        if(Context.side==Side.LEFT)
         {
             rectCrop=rectCropLeft;
         }
-        else if(l.getClass().isAnnotationPresent(Right.class))
+        else if(Context.side==Side.RIGHT)
         {
             rectCrop=rectCropRight;
         }
 
-        this.tel=l.telemetry;
+        this.tel=Context.tel;
         state=-1;
     }
 

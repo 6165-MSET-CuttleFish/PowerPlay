@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.util
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -39,6 +38,12 @@ object Context
     @JvmField
     var autoalignCameraPastInit: Boolean = false
 
+    @JvmField
+    var side: Side=Side.UNASSIGNED
+
+    @JvmField
+    var dashboardCameraStreaming: Boolean=false
+
     @JvmStatic fun updateValues()
     {
         if (opMode!!.javaClass.isAnnotationPresent(Autonomous::class.java))
@@ -48,8 +53,26 @@ object Context
             autoalignEnabled=true
         }
 
+        if (opMode!!.javaClass.isAnnotationPresent(Left::class.java))
+        {
+            side=Side.LEFT
+        }
+        else if (opMode!!.javaClass.isAnnotationPresent(Right::class.java))
+        {
+            side=Side.RIGHT
+        }
+
         tel= opMode!!.telemetry
         hardwareMap= opMode!!.hardwareMap
         contextPastInit=true
+    }
+
+    @JvmStatic fun resetValues()
+    {
+        opMode=null
+        tel=null
+        robot=null
+        hardwareMap=null
+        contextPastInit=false
     }
 }
