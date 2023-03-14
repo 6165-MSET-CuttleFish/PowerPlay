@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensors;
+package org.firstinspires.ftc.teamcode.modules.relocalizer;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,32 +13,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @I2cDeviceType
 @DeviceProperties(
         name = "MB1242",
-        description = "ultrasonic distance sensor",
+        description = "Ultrasonic Distance Sensor",
         xmlTag = "MB1242"
 )
-public class MB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements DistanceSensor {
+public class MB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements DistanceSensor{
     private long lastRun = 0;
 
     private long runDelayMs = 100;
 
     private short lastReading = 0;
-
+/*
     public MB1242(HardwareMap hardwareMap, String name) {
-
-        //this(hardwareMap.get(i2cDeviceSynch.class, name));
-
         this(hardwareMap.i2cDeviceSynch.get(name));
-    }
+    }*/
 
     public MB1242(I2cDeviceSynch i2cDeviceSynch) {
         super(i2cDeviceSynch, true);
 
-        deviceClient.setI2cAddress(I2cAddr.create7bit(0x70));
-        registerArmingStateCallback(false);
-        deviceClient.engage();
+        this.deviceClient.setI2cAddress(I2cAddr.create7bit(0x70));
+        super.registerArmingStateCallback(false);
+        this.deviceClient.engage();
     }
 
-    @Override
     public double getDistance(DistanceUnit unit) {
         if(System.currentTimeMillis() > (lastRun + runDelayMs)){
             lastRun = System.currentTimeMillis();
@@ -66,7 +62,7 @@ public class MB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements Dist
 
     @Override
     public String getConnectionInfo() {
-        return "Connected lol";
+        return "Connected";
     }
 
     @Override
