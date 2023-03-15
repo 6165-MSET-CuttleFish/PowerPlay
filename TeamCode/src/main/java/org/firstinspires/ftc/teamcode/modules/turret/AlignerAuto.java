@@ -167,28 +167,42 @@ public class AlignerAuto extends OpenCvPipeline {
 
         Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
 
-        Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        int contourIndex=0;
-        double contourArea=0;
-
-        for(int i=0; i<Contours.size(); i++)
+        try
         {
-            if(Imgproc.contourArea(Contours.get(i))>contourArea)
+            Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+            int contourIndex=0;
+            double contourArea=0;
+
+            for(int i=0; i<Contours.size(); i++)
             {
-                contourArea=Imgproc.contourArea(Contours.get(i));
-                contourIndex=i;
+                if(Imgproc.contourArea(Contours.get(i))>contourArea)
+                {
+                    contourArea=Imgproc.contourArea(Contours.get(i));
+                    contourIndex=i;
+                }
             }
+            if(Contours.size()>0)
+            {
+                mat=maskTemplate.clone();
+                Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+                //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
+                //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
+                //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+            }
+            else
+            {
+                mat=morphed2;
+            }
+            error="None";
         }
-        if(Contours.size()>0)
+        catch(Exception e)
         {
-            mat=maskTemplate.clone();
-            Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
-            //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
-            //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
-            //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+            error=e.getMessage();
+            mat=morphed2;
         }
-        error="None";
+
+
 
 
 
@@ -241,7 +255,7 @@ public class AlignerAuto extends OpenCvPipeline {
 
 
         Imgproc.cvtColor(mat, returnMat, Imgproc.COLOR_HSV2RGB);
-        return mat;
+        return returnMat;
     }
 
     public void setState(State s)

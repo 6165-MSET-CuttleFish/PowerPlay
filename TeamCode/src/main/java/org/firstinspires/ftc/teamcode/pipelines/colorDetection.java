@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pipelines;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,6 +19,7 @@ import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+@Config
 public class colorDetection extends OpenCvPipeline
 {
 
@@ -37,7 +39,6 @@ public class colorDetection extends OpenCvPipeline
 
     Scalar greenLower =new Scalar(55, 60, 20);
     Scalar greenHigher =new Scalar(80, 255, 255);
-
 
 
     Mat cropped=new Mat();
@@ -64,6 +65,8 @@ public class colorDetection extends OpenCvPipeline
     Mat H=new Mat();
 
     int state=-1;
+
+    public static double THRESHOLD=0;
 
     Telemetry tel;
     public colorDetection()
@@ -192,7 +195,7 @@ public class colorDetection extends OpenCvPipeline
             max1=Math.max(greenCount, yellowCount);
             max2=Math.max(max1, blueCount);
 
-            if(max2==0)
+            if(max2<THRESHOLD)
                 state=-1;
             else if(max2== greenCount)
                 state=1;
