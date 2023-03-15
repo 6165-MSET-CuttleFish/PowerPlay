@@ -47,14 +47,10 @@ public class SlidesPIDTest extends LinearOpMode {
             }
 
             telemetry.addData("targetPos: ", slides.pidController.getTargetPosition());
-            telemetry.addData("output power: ", slides.getOuput());
-            telemetry.addData("currentPos: ", slides.slidesLeft.getCurrentPosition());
-            telemetry.addData("currentVelo: ", slides.slidesLeft.getVelocity());
-            telemetry.addData("currentPower: ", slides.slidesLeft.getPower());
-            telemetry.addData("currentPos: ", slides.slidesRight.getCurrentPosition());
-            telemetry.addData("currentVelo: ", slides.slidesRight.getVelocity());
-            telemetry.addData("currentPower: ", slides.slidesRight.getPower());
-
+            telemetry.addData("LEFT currentPos: ", slides.slidesLeft.getCurrentPosition());
+            telemetry.addData("LEFT currentPower: ", slides.slidesLeft.getPower());
+            telemetry.addData("RIGHT currentPos: ", slides.slidesRight.getCurrentPosition());
+            telemetry.addData("RIGHT currentPower: ", slides.slidesRight.getPower());
             telemetry.update();
         }
 

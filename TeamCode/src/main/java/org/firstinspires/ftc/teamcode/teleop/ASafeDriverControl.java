@@ -330,14 +330,14 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 6 &&
-                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
-                claw.setState(Claw.State.CLOSE);
-                distanceSensor = false;
-            }
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 6) {
-                distanceSensor = true;
-            }
+//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 6 &&
+//                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
+//                claw.setState(Claw.State.CLOSE);
+//                distanceSensor = false;
+//            }
+//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 6) {
+//                distanceSensor = true;
+//            }
 
             //reset
             if (reset.wasJustPressed()) {
@@ -422,8 +422,8 @@ public class ASafeDriverControl extends LinearOpMode {
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
            // telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
-            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
-            //telemetry.update();
+//            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.update();
         }
     }
 
@@ -438,8 +438,8 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if ((transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > Slides.MID) &&
-                slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
+            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000) {
+                deposit.setAngle(Deposit.AngleState.VECTORING);
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -451,8 +451,6 @@ public class ASafeDriverControl extends LinearOpMode {
                         turret.setState(Turret.State.RIGHT);
                         break;
                 }
-            } else if (transferTimer.milliseconds() > 200) {
-                deposit.setAngle(Deposit.AngleState.VECTORING);
             } else if (transferTimer.seconds() > 0) {
                 switch (cycleValue) {
                     case 0:

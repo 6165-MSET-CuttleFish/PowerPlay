@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -113,7 +114,7 @@ public class Robot extends MecanumDrive{
     public Servo midOdo, sideOdo;
     public List<DcMotorEx> motors;
     public AnalogInput slidesLimitSwitch;
-    public DistanceSensor distanceSensor;
+    public ColorRangeSensor distanceSensor;
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
     public enum driveState{
@@ -175,8 +176,8 @@ public class Robot extends MecanumDrive{
                         OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
 
         detector2 = new AlignerAuto();
-        initAutoAlignCamera();
-        initSignalSleeveCamera();
+//        initAutoAlignCamera();
+//        initSignalSleeveCamera();
 
         distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
