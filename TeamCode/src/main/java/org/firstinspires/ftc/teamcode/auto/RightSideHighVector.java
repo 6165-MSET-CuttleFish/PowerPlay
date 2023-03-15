@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 
-@Autonomous
+//@Autonomous
 public class RightSideHighVector extends LinearOpMode{
     ElapsedTime t;
     Robot robot;
