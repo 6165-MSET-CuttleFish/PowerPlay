@@ -369,6 +369,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 transferTimer.reset();
             }
 
+
             if (cycleMacro.wasJustPressed()) {
                 //robot.turretCamera.resumeViewport();
                 robot.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
@@ -430,7 +431,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
 
     public void transferUpdate(int cycle) {
-        if (transfer) {
+        if (transfer && cycle != 0) {
             if (transferTimer.milliseconds() > 700) {
                 if(cycle==1) {
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -438,7 +439,7 @@ public class ASafeDriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000) {
+            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 switch(turretPos) {
                     case 0:
@@ -472,25 +473,24 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void resetUpdate() {
         if (resetCheck) {
-            if (slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 1200 + slides.posAtZero) {
+            turret.setState(Turret.State.ZERO);
+            claw.setState(Claw.State.OPEN);
+            deposit.setExtension(Deposit.ExtensionState.RETRACT);
+            deposit.setAngle(Deposit.AngleState.INTAKE);
+            if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1200) {
+                turret.setState(Turret.State.ZERO);
                 if (resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
-                } else if (resetTimer.seconds() > 0) {
-                    claw.setState(Claw.State.OPEN);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
                 }
             } else {
+                turret.setState(Turret.State.ZERO);
+                claw.setState(Claw.State.OPEN);
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                deposit.setAngle(Deposit.AngleState.INTAKE);
                 if (resetTimer.milliseconds() > 200) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
-                } else if (resetTimer.seconds() > 0) {
-                    claw.setState(Claw.State.OPEN);
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                    turret.setState(Turret.State.ZERO);
-                    deposit.setAngle(Deposit.AngleState.INTAKE);
                 }
             }
         }
