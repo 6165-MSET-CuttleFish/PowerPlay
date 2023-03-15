@@ -88,9 +88,9 @@ import java.util.List;
 public class Robot extends MecanumDrive{
 
     public IMU.Parameters myIMUparameters;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0.727);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
     public static double LATERAL_MULTIPLIER = 1;
     public static double odomServoPos = 0.4, sideOdomServoPos = 0;
 
@@ -218,7 +218,7 @@ public class Robot extends MecanumDrive{
                                 AngleUnit.DEGREES,
                                 0,
                                 0,
-                                -15,
+                                10,
                                 0  // acquisitionTime, not used
                         )
                 )
@@ -497,7 +497,7 @@ public class Robot extends MecanumDrive{
         YawPitchRollAngles robotOrientation;
         robotOrientation = imu.getRobotYawPitchRollAngles();
 
-         return robotOrientation.getRoll(AngleUnit.RADIANS);
+         return robotOrientation.getYaw(AngleUnit.RADIANS);
     }
 
     @Override

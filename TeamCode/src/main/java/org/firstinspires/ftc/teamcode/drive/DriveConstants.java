@@ -56,9 +56,9 @@ public class DriveConstants {
      * empirically tuned.
      */
 
-    public static double kV = 0.0154;
-    public static double kA = 0.0048;
-    public static double kStatic = 0.014;
+    public static double kV = 0;
+    public static double kA = 0;
+    public static double kStatic = 0;
 
 
     /*
@@ -68,10 +68,10 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
 */
-    public static double MAX_VEL = 65; //pretty sure 60 is max here
-    public static double MAX_ACCEL = 70;
-    public static double MAX_ANG_VEL = 1.8;
-    public static double MAX_ANG_ACCEL = 3.31;
+    public static double MAX_VEL = 62.5; //pretty sure 60 is max here
+    public static double MAX_ACCEL = 62.5;
+    public static double MAX_ANG_VEL = 3.14;
+    public static double MAX_ANG_ACCEL = 3.14;
 
 
     public static double encoderTicksToInches(double ticks) {
