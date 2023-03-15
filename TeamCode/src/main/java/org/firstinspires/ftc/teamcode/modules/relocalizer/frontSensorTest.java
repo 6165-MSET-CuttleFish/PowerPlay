@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
-import org.firstinspires.ftc.teamcode.relocalizer.filter;
+import org.firstinspires.ftc.teamcode.modules.relocalizer.filter;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
@@ -25,13 +25,15 @@ public class frontSensorTest extends LinearOpMode {
         while(opModeIsActive()) {
             robot.deposit.setExtension(Deposit.ExtensionState.EXTEND);
             double rawFront = test.getDistance(DistanceUnit.INCH);
-
+            double rawSide = robot.right.getDistance(DistanceUnit.INCH);
             double filterFront = movingMedianFront.update(rawFront);
-
+            double filterSide = movingMedianFront.update(rawSide);
             telemetry.addData("RAW Front Distance", rawFront);
 
             telemetry.addData("FILTER Front Distance", filterFront);
+            telemetry.addData("RAW Side Distance", rawSide);
 
+            telemetry.addData("FILTER Side Distance", filterSide);
             telemetry.update();
         }
     }
