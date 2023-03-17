@@ -201,6 +201,8 @@ public class LeftSideHighMS extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(61,14)).build();
         double tempState;
 
+        telemetry.addData("Help", "help");
+        telemetry.update();
 
         waitForStart();
 

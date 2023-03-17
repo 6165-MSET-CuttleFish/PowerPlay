@@ -111,15 +111,22 @@ public class AutoalignProcessor
 
         //do some processing to determine which blob we care about
 
-        int index=-1;
+        int targetBlob=0;
+        float maxBlobArea=0;
         for(int i=0; i<blobsList.size(); i++)
         {
-            index=i;
+            float blobArea=blobsList.get(i).size;
+            if(blobArea>maxBlobArea)
+            {
+                maxBlobArea=blobArea;
+                targetBlob=i;
+            }
         }
+
 
         //use selected blob and find distance in order to figure out how much to turn
 
-        xDist=blobsList.get(index).pt.x;
+        xDist=blobsList.get(targetBlob).pt.x;
         ticksApproximation=xDist*aFactor;
 
         return ticksApproximation;
