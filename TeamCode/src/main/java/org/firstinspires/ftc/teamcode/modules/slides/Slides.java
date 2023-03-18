@@ -154,8 +154,8 @@ public class Slides extends HwModule {
             slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             pidController.setTargetPosition(targetPos);
-            routput = pidController.update(slidesRight.getCurrentPosition());
-            loutput = pidController.update(slidesRight.getCurrentPosition());
+            routput = pidController.update(slidesLeft.getCurrentPosition());
+            loutput = pidController.update(slidesLeft.getCurrentPosition());
             slidesRight.setPower(routput);
             slidesLeft.setPower(loutput);
         }
@@ -164,11 +164,11 @@ public class Slides extends HwModule {
             slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-            output = pidController.update(slidesRight.getCurrentPosition());
+            output = pidController.update(slidesLeft.getCurrentPosition());
             if (Math.abs(manual) > 0.1) {
                 slidesRight.setPower(manual);
                 slidesLeft.setPower(manual);
-                pidController.setTargetPosition(slidesRight.getCurrentPosition());
+                pidController.setTargetPosition(slidesLeft.getCurrentPosition());
             } else {
                 slidesRight.setPower(output);
                 slidesLeft.setPower(output);
