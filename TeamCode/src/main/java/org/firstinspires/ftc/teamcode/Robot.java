@@ -176,8 +176,8 @@ public class Robot extends MecanumDrive{
                         OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
 
         detector2 = new AlignerAuto();
-        initAutoAlignCamera();
-        initSignalSleeveCamera();
+//        initAutoAlignCamera();
+//        initSignalSleeveCamera();
 
         distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
@@ -295,7 +295,6 @@ public class Robot extends MecanumDrive{
                     //telemetry.addData("Camera 1: ", "started");
                     //telemetry.update();
                     autoCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                    Context.signalsleeveCameraPastInit=true;
                     //telemetry.addData("Camera 1: ", "streaming");
                     //telemetry.update();
                 }

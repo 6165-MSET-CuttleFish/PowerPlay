@@ -39,9 +39,6 @@ object Context
     var autoalignCameraPastInit: Boolean = false
 
     @JvmField
-    var signalsleeveCameraPastInit: Boolean = false
-
-    @JvmField
     var side: Side=Side.UNASSIGNED
 
     @JvmField
