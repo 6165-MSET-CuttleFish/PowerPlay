@@ -9,9 +9,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
 @Config
-public class Claw extends HwModule
-{
-    //temporary values
+public class Claw extends HwModule {
     public static double OPEN_WIDE = 0.3;
     public static double OPEN = 0.4;
     public static double CLOSE = 0.62;
@@ -21,18 +19,14 @@ public class Claw extends HwModule
     public State state = State.OPEN;
     public Pole poleState = Pole.UP;
     @Override
-    public void setState(ModuleState s)
-    {
-        if(s.getClass()==Claw.State.class)
-        {
+    public void setState(ModuleState s) {
+        if(s.getClass()==Claw.State.class) {
             state=(State)s;
         }
         update();
     }
-    public void setPoleState(ModuleState s)
-    {
-        if(s.getClass()==Claw.Pole.class)
-        {
+    public void setPoleState(ModuleState s) {
+        if(s.getClass()==Claw.Pole.class) {
             poleState=(Pole)s;
         }
         update();
@@ -41,28 +35,25 @@ public class Claw extends HwModule
     public boolean isBusy() {
         return false;
     }
+
+
     public static double UP = 0, DOWN = 1;
-    public enum Pole implements ModuleState
-    {
-        UP,DOWN
+    public enum Pole implements ModuleState {
+        UP, DOWN
     }
-    public enum State implements ModuleState
-    {
+    public enum State implements ModuleState {
         OPEN, CLOSE, PARTIAL, OPEN_WIDE
     }
 
-    public Claw()
-    {
+    public Claw() {
         claw = Context.hardwareMap.get(Servo.class, "claw");
         pole = Context.hardwareMap.get(Servo.class, "pole");
         setState(State.OPEN);
         setPoleState(Pole.UP);
     }
 
-    public void update()
-    {
-        switch(poleState)
-        {
+    public void update() {
+        switch(poleState) {
             case UP:
                 pole.setPosition(UP);
                 break;
@@ -70,8 +61,8 @@ public class Claw extends HwModule
                 pole.setPosition(DOWN);
                 break;
         }
-        switch(state)
-        {
+
+        switch(state) {
             case OPEN:
                 claw.setPosition(OPEN);
                 break;
@@ -91,4 +82,7 @@ public class Claw extends HwModule
         return state;
     }
 
+    public Claw.Pole getPoleState() {
+        return poleState;
+    }
 }

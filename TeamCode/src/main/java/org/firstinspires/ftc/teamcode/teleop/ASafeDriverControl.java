@@ -396,11 +396,18 @@ public class ASafeDriverControl extends LinearOpMode {
             
 
             //AUTO ALIGN:
-           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != AlignerAuto.Location.MIDDLE) {
-                turret.setState(Turret.State.AUTOALIGN);
+//           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != AlignerAuto.Location.MIDDLE) {
+//                turret.setState(Turret.State.AUTOALIGN);
+//            }
+//            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+//                turret.setState(Turret.State.IDLE);
+//            }
+
+            if (autoAlign.wasJustPressed() && claw.getPoleState() == Claw.Pole.UP) {
+                claw.setPoleState(Claw.Pole.DOWN);
             }
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
-                turret.setState(Turret.State.IDLE);
+            if (autoAlign.wasJustPressed() && claw.getPoleState() == Claw.Pole.DOWN) {
+                claw.setPoleState(Claw.Pole.UP);
             }
 
             transferUpdate(cycleValue);
