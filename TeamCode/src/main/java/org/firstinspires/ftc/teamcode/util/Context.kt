@@ -44,6 +44,9 @@ object Context
     @JvmField
     var dashboardCameraStreaming: Boolean=false
 
+    @JvmField
+    var signalsleeveCameraPastInit: Boolean = false
+
     @JvmStatic fun updateValues()
     {
         if (opMode!!.javaClass.isAnnotationPresent(Autonomous::class.java))

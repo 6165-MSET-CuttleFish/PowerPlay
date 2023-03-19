@@ -26,16 +26,22 @@ class BackgroundCR(val robot: Robot)
                 if(Context.isAuto)
                 {
                     var zone=Context.robot!!.pipeline.output
-                    if(zone>0)
-                    {
-                        Context.signalSleeveZone=zone
-                    }
+                    Context.signalSleeveZone=zone
                     Context.tel!!.addData("Camera 1: ", Context.signalSleeveZone)
                 }
                 if(Context.autoalignEnabled)
                 {
                     Context.tel!!.addData("Autoalign Camera: ", Context.autoalignCameraPastInit)
                 }
+                if(Context.isAuto)
+                {
+                    Context.tel!!.addData("Signal Sleeve Camera: ", Context.signalsleeveCameraPastInit);
+                }
+                if(Context.signalsleeveCameraPastInit)
+                {
+                    Context.tel!!.addData("Signal Sleeve Max Pixels Read: ", Context.robot!!.pipeline.max2);
+                }
+                if(Context.autoalignCameraPastInit/*&&!Context.dashboardCameraStreaming*/)
                 if(Context.autoalignCameraPastInit&&!Context.dashboardCameraStreaming)
                 {
                     dashboard.startCameraStream(robot.turretCamera, 10.0);
@@ -51,7 +57,7 @@ class BackgroundCR(val robot: Robot)
             {
                 robot.slides.update()
                 robot.turret.update()
-                Context.tel!!.update()
+                //Context.tel!!.update()
             }
             Context.resetValues()
         }

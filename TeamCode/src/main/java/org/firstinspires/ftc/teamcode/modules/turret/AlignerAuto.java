@@ -55,11 +55,11 @@ public class AlignerAuto extends OpenCvPipeline {
 
     //Find numbers for actual place
 
-    public static int HLow = 12;
-    public static int SLow = 100;
-    public static int VLow = 120;
+    public static int HLow = 14;
+    public static int SLow = 80;
+    public static int VLow = 50;
 
-    public static int HHigh = 40;
+    public static int HHigh = 43;
     public static int SHigh = 255;
     public static int VHigh = 255;
 
@@ -84,6 +84,7 @@ public class AlignerAuto extends OpenCvPipeline {
     Mat maskTemplate=new Mat();
     Mat mat=new Mat();
     Mat returnMat=new Mat();
+    Mat HSV=new Mat();
 
     Mat submat_2=new Mat();
     Mat submat_3=new Mat();
@@ -148,15 +149,15 @@ public class AlignerAuto extends OpenCvPipeline {
     {
         release();
 
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, HSV, Imgproc.COLOR_RGB2HSV);
 
         if(state==State.POLE)
         {
-            selectedBoxes=mat.submat(HigherBoxes);
+            selectedBoxes=HSV.submat(HigherBoxes);
         }
         else
         {
-            selectedBoxes=mat.submat(LowerBoxes);
+            selectedBoxes=HSV.submat(LowerBoxes);
         }
 
 
@@ -167,8 +168,7 @@ public class AlignerAuto extends OpenCvPipeline {
 
         Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
 
-        try
-        {
+
             Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
             int contourIndex=0;
@@ -176,9 +176,13 @@ public class AlignerAuto extends OpenCvPipeline {
 
             for(int i=0; i<Contours.size(); i++)
             {
-                if(Imgproc.contourArea(Contours.get(i))>contourArea)
+                int height=Imgproc.boundingRect(Contours.get(i)).height;
+                int width=Imgproc.boundingRect(Contours.get(i)).width;
+                double area=Imgproc.contourArea(Contours.get(i));
+
+                if(area>contourArea&&width*1.7<height)
                 {
-                    contourArea=Imgproc.contourArea(Contours.get(i));
+                    contourArea=area;
                     contourIndex=i;
                 }
             }
@@ -195,12 +199,6 @@ public class AlignerAuto extends OpenCvPipeline {
                 mat=morphed2;
             }
             error="None";
-        }
-        catch(Exception e)
-        {
-            error=e.getMessage();
-            mat=morphed2;
-        }
 
 
 
