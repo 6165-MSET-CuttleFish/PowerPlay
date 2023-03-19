@@ -17,9 +17,9 @@ public class Claw extends HwModule
     public static double CLOSE = 0.62;
     public static double PARTIAL=0;
 
-    Servo claw;
-    public Claw.State state;
-
+    Servo claw, pole;
+    public State state = State.OPEN;
+    public Pole poleState = Pole.UP;
     @Override
     public void setState(ModuleState s)
     {
@@ -29,12 +29,23 @@ public class Claw extends HwModule
         }
         update();
     }
-
+    public void setPoleState(ModuleState s)
+    {
+        if(s.getClass()==Claw.Pole.class)
+        {
+            poleState=(Pole)s;
+        }
+        update();
+    }
     @Override
     public boolean isBusy() {
         return false;
     }
-
+    public static double UP = 0, DOWN = 1;
+    public enum Pole implements ModuleState
+    {
+        UP,DOWN
+    }
     public enum State implements ModuleState
     {
         OPEN, CLOSE, PARTIAL, OPEN_WIDE
@@ -43,11 +54,22 @@ public class Claw extends HwModule
     public Claw()
     {
         claw = Context.hardwareMap.get(Servo.class, "claw");
+        pole = Context.hardwareMap.get(Servo.class, "pole");
         setState(State.OPEN);
+        setPoleState(Pole.UP);
     }
 
     public void update()
     {
+        switch(poleState)
+        {
+            case UP:
+                pole.setPosition(UP);
+                break;
+            case DOWN:
+                pole.setPosition(DOWN);
+                break;
+        }
         switch(state)
         {
             case OPEN:

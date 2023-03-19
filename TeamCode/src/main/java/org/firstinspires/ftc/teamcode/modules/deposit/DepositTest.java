@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
@@ -16,29 +17,32 @@ public class DepositTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Context.hardwareMap=hardwareMap;
-        Deposit deposit = new Deposit();
-        Claw claw = new Claw();
+        Robot robot = new Robot(this);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)
-                deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                robot.deposit.setExtension(Deposit.ExtensionState.EXTEND);
             if (gamepad1.b)
-                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                robot.deposit.setExtension(Deposit.ExtensionState.RETRACT);
             if (gamepad1.x)
-                deposit.setAngle(Deposit.AngleState.INTAKE);
+                robot.deposit.setAngle(Deposit.AngleState.INTAKE);
             if (gamepad1.y)
-                deposit.setAngle(Deposit.AngleState.VECTORING);
+                robot.deposit.setAngle(Deposit.AngleState.VECTORING);
             if(gamepad1.right_bumper)
-                claw.setState(Claw.State.OPEN);
+                robot.claw.setState(Claw.State.OPEN);
             if(gamepad1.left_bumper)
-                claw.setState(Claw.State.CLOSE);
+                robot.claw.setState(Claw.State.CLOSE);
+            if(gamepad1.dpad_up)
+                robot.claw.setPoleState(Claw.Pole.UP);
+            if(gamepad1.dpad_down)
+                robot.claw.setPoleState(Claw.Pole.DOWN);
 
-            telemetry.addData("Ext State: ", deposit.getExtState());
-            telemetry.addData("Ang State: ", deposit.getAngState());
-            telemetry.addData("clawState: ",claw.getState());
-            telemetry.addData("leftEXT: ", deposit.leftExtension.getPosition());
-            telemetry.addData("rightEXT: ", deposit.rightExtension.getPosition());
-            telemetry.addData("wrist: ", deposit.wrist.getPosition());
+            telemetry.addData("Ext State: ", robot.deposit.getExtState());
+            telemetry.addData("Ang State: ", robot.deposit.getAngState());
+            telemetry.addData("clawState: ",robot.claw.getState());
+            telemetry.addData("leftEXT: ", robot.deposit.leftExtension.getPosition());
+            telemetry.addData("rightEXT: ", robot.deposit.rightExtension.getPosition());
+            telemetry.addData("wrist: ", robot.deposit.wrist.getPosition());
             telemetry.update();
 
         }
