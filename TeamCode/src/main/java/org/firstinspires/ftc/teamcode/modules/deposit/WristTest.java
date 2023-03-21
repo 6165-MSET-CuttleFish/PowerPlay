@@ -12,7 +12,7 @@ public class WristTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Context.hardwareMap=hardwareMap;
-        Deposit deposit = new Deposit();
+        Deposit deposit = new Deposit(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)

@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.util.Context;
 public class AlignerTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Context.hardwareMap=hardwareMap;
-        Claw claw = new Claw();
+        //Context.hardwareMap=hardwareMap;
+        Claw claw = new Claw(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.cross)

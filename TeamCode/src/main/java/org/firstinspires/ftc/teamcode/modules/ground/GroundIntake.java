@@ -44,10 +44,10 @@ public class GroundIntake extends HwModule
         INTAKING, DEPOSITING, FAST, OFF
     }
 
-    public GroundIntake()
+    public GroundIntake(HardwareMap hardwareMap)
     {
-        groundIntake = Context.hardwareMap.get(DcMotor.class, "gIntake");
-        distSens = Context.hardwareMap.get(ColorRangeSensor.class, "gDist");
+        groundIntake = hardwareMap.get(DcMotor.class, "gIntake");
+        distSens = hardwareMap.get(ColorRangeSensor.class, "gDist");
         groundIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         groundIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         groundIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

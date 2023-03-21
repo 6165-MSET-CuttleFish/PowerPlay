@@ -72,7 +72,6 @@ public class ASafeDriverControl extends LinearOpMode {
     ElapsedTime cycleTimer = new ElapsedTime();
     TrajectorySequence cycleIntake, cycleDropOff;
     double sideOdomPos = 0.33;
-
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(this);
@@ -86,7 +85,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Context.hallEffectEnabled=false;
+
         keyReaders = new KeyReader[]{
                 ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
@@ -384,7 +383,7 @@ public class ASafeDriverControl extends LinearOpMode {
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
-                Context.hallEffectEnabled=false;
+                turret.isAuto=false;
                 //robot.turretCamera.pauseViewport();
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
                 sideOdomPos = 0.33;

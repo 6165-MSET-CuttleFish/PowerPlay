@@ -74,7 +74,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
-import org.firstinspires.ftc.teamcode.util.Context;
+//import org.firstinspires.ftc.teamcode.util.Context;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -88,11 +88,11 @@ import java.util.List;
 public class Robot extends MecanumDrive{
 
     public IMU.Parameters myIMUparameters;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9.75, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
 
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
     public static double LATERAL_MULTIPLIER = 1;
-    public static double odomServoPos = 0.4, sideOdomServoPos = 0;
+    public static double odomServoPos = 0.38, sideOdomServoPos = 0;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -161,10 +161,6 @@ public class Robot extends MecanumDrive{
     {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        Context.opMode=l;
-        Context.robot=this;
-        Context.updateValues();
-
         hardwareMap=l.hardwareMap;
         this.l=l;
 
@@ -176,19 +172,19 @@ public class Robot extends MecanumDrive{
                         OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
 
         detector2 = new AlignerAuto();
-        initAutoAlignCamera();
-        initSignalSleeveCamera();
+//        initAutoAlignCamera();
+//        initSignalSleeveCamera();
 
         distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
         left = new MB1643(hardwareMap, "left");
         right = new MB1643(hardwareMap, "right");
 
-        slides = new Slides();
-        deposit = new Deposit();
-        claw = new Claw();
-        turret = new Turret();
-        groundIntake = new GroundIntake();
+        slides = new Slides(hardwareMap);
+        deposit = new Deposit(hardwareMap);
+        claw = new Claw(hardwareMap);
+        turret = new Turret(hardwareMap, detector2, true);
+        groundIntake = new GroundIntake(hardwareMap);
 
         hardware=new BackgroundCR(this);
         hardware.startHW();
@@ -282,9 +278,9 @@ public class Robot extends MecanumDrive{
 
     }
 
-    public void initSignalSleeveCamera()
+    public void initSignalSleeveCamera(boolean isAuto)
     {
-        if(Context.isAuto)
+        if(isAuto)
         {
             autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
             pipeline = new colorDetection();
@@ -295,7 +291,6 @@ public class Robot extends MecanumDrive{
                     //telemetry.addData("Camera 1: ", "started");
                     //telemetry.update();
                     autoCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                    Context.signalsleeveCameraPastInit=true;
                     //telemetry.addData("Camera 1: ", "streaming");
                     //telemetry.update();
                 }
@@ -317,7 +312,7 @@ public class Robot extends MecanumDrive{
             @Override
             public void onOpened() {
                 turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                Context.autoalignCameraPastInit=true;
+                //Context.autoalignCameraPastInit=true;
             }
 
             @Override

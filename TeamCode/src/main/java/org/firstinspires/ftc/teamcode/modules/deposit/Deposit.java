@@ -71,10 +71,10 @@ public class Deposit extends HwModule {
         TEMP1, TEMP2
     }
 
-    public Deposit() {
-        leftExtension= Context.hardwareMap.get(Servo.class, "lExt");
-        rightExtension=Context.hardwareMap.get(Servo.class, "rExt");
-        wrist = Context.hardwareMap.get(Servo.class, "wrist");
+    public Deposit(HardwareMap hardwareMap) {
+        leftExtension= hardwareMap.get(Servo.class, "lExt");
+        rightExtension=hardwareMap.get(Servo.class, "rExt");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         rightExtension.setDirection(Servo.Direction.REVERSE);
         setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);

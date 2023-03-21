@@ -15,9 +15,9 @@ public class ClawTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Context.hardwareMap=hardwareMap;
+        //Context.hardwareMap=hardwareMap;
         time=new ElapsedTime();
-        claw=new Claw();
+        claw=new Claw(hardwareMap);
         claw.setState(Claw.State.OPEN);
         waitForStart();
         while(opModeIsActive()){

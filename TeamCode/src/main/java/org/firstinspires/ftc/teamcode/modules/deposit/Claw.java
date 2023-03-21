@@ -45,9 +45,9 @@ public class Claw extends HwModule {
         OPEN, CLOSE, PARTIAL, OPEN_WIDE
     }
 
-    public Claw() {
-        claw = Context.hardwareMap.get(Servo.class, "claw");
-        pole = Context.hardwareMap.get(Servo.class, "pole");
+    public Claw(HardwareMap hardwareMap) {
+        claw = hardwareMap.get(Servo.class, "claw");
+        pole = hardwareMap.get(Servo.class, "pole");
         setState(State.OPEN);
         setPoleState(Pole.UP);
     }

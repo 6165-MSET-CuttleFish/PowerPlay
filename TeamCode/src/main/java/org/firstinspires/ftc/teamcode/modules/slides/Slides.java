@@ -77,9 +77,9 @@ public class Slides extends HwModule {
         BOTTOM, MANUAL, INTAKE_AUTO, ZERO, PICKUP,
         CYCLE0,CYCLE1,CYCLE2,CYCLE3,CYCLE4, SLIGHT
     }
-    public Slides() {
-        slidesLeft = Context.hardwareMap.get(DcMotorEx.class, "s1");
-        slidesRight = Context.hardwareMap.get(DcMotorEx.class, "s2");
+    public Slides(HardwareMap hardwareMap) {
+        slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
+        slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         //slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
 //        slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setDirection(DcMotorEx.Direction.REVERSE);

@@ -56,7 +56,7 @@ public class colorDetection extends OpenCvPipeline
     int blueCount;
 
     int max1;
-    public int max2;
+    int max2;
 
     double HVal;
     double SVal;
@@ -64,11 +64,9 @@ public class colorDetection extends OpenCvPipeline
 
     Mat H=new Mat();
 
-    Mat preview=new Mat();
-
     int state=-1;
 
-    public static double THRESHOLD=500;
+    public static double THRESHOLD=0;
 
     Telemetry tel;
     public colorDetection()
@@ -98,7 +96,6 @@ public class colorDetection extends OpenCvPipeline
         HSV.release();
         preProcessed.release();
         test.release();
-        preview.release();
     }
 
     public Mat preProcessing(Mat input)
@@ -121,6 +118,36 @@ public class colorDetection extends OpenCvPipeline
         return cropped;
     }
 
+    public void getZone(Mat input)
+    {
+        Core.extractChannel(input, H, 0);
+        //Mat H;
+
+        Scalar h=Core.mean(H);
+
+        hAvg=h.val[0];
+
+
+        tel.addData("H", hAvg);
+
+        //bocchi 💀  green
+        if(hAvg>145&&hAvg<170)
+        {
+            state=1;
+        }
+        //ryo my beloved 😳 blue
+        else if(hAvg>105&&hAvg<125)
+        {
+            state=2;
+        }
+
+        //nijika-chwan(ty mr flamer) 👀 yellow
+        else if(hAvg>35&&hAvg<65)
+        {
+            state=3;
+        }
+    }
+
     public void getZone2(Mat input)
     {
         greenCount =0;
@@ -139,7 +166,7 @@ public class colorDetection extends OpenCvPipeline
                         SVal=input.get(r, c)[1];
                         VVal=input.get(r, c)[2];
 
-                        if(HVal>55&&HVal<75)
+                        if(HVal>55&&HVal<80)
                         {
                             greenCount++;
                         }
@@ -159,7 +186,7 @@ public class colorDetection extends OpenCvPipeline
                     catch(NullPointerException e)
                     {
                         //cancer
-                        state=-1;
+                        state--;
                         throw e;
                     }
                 }
@@ -194,7 +221,7 @@ public class colorDetection extends OpenCvPipeline
         //tel.addData("State", state);
         //tel.update();
 
-        preview=input.clone();
+        Mat preview=input.clone();
         Imgproc.rectangle(preview, rectCrop, new Scalar (0, 255, 0));
 
         Core.inRange(HSV, greenLower, greenHigher, test);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
+import static org.firstinspires.ftc.teamcode.util.Context.robot;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -61,7 +63,7 @@ public class Turret extends HwModule
     public AlignerAuto detector;
     public Turret.State state;
     public double motorOil=0;
-
+    public boolean isAuto = true;
     @Override
     public void setState(ModuleState s)
     {
@@ -96,20 +98,20 @@ public class Turret extends HwModule
         state=State.ZERO;
     }
 
-    public Turret()
+    public Turret(HardwareMap hardwareMap, AlignerAuto detector, boolean isAuto)
     {
         pidController= new BPIDFController(coeff1);
 
-        turretMotor = Context.hardwareMap.get(DcMotorEx.class, "hturret");
+        turretMotor =hardwareMap.get(DcMotorEx.class, "hturret");
 
-        encoder=new Encoder(Context.hardwareMap.get(DcMotorEx.class, "hturret"));
-        hallEffect = Context.hardwareMap.get(AnalogInput.class, "hallEffect");
-
+        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
+        hallEffect =hardwareMap.get(AnalogInput.class, "hallEffect");
+        this.isAuto = isAuto;
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
-        this.detector=Context.robot.detector2;
+        this.detector=detector;
     }
 
     public void update() {
@@ -140,7 +142,7 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        if(Context.hallEffectEnabled){
+        if(!isAuto){
             if (hallEffect.getVoltage()<1.0) {
                 posAtZero = -encoder.getCurrentPosition();
             }
