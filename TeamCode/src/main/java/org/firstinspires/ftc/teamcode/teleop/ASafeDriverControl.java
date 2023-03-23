@@ -83,6 +83,7 @@ public class ASafeDriverControl extends LinearOpMode {
         deposit = robot.deposit;
         groundIntake = robot.groundIntake;
         turret = robot.turret;
+        turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         keyReaders = new KeyReader[]{
@@ -230,25 +231,21 @@ public class ASafeDriverControl extends LinearOpMode {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
 //                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                            claw.setPoleState(Claw.Pole.UP);
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
                             deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                            claw.setPoleState(Claw.Pole.DOWN);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
                             deposit.setExtension(Deposit.ExtensionState.FOURTH);
-                            claw.setPoleState(Claw.Pole.DOWN);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
                             deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             slides.setState(Slides.State.HIGH);
-                            claw.setPoleState(Claw.Pole.DOWN);
                             break;
                     }
                 }
@@ -450,9 +447,6 @@ public class ASafeDriverControl extends LinearOpMode {
                 transfer = false;
             } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
-                if (cycle != 1) {
-                    claw.setPoleState(Claw.Pole.DOWN);
-                }
                 switch(turretPos) {
                     case 0:
                         turret.setState(Turret.State.LEFT);
@@ -489,7 +483,6 @@ public class ASafeDriverControl extends LinearOpMode {
             claw.setState(Claw.State.OPEN);
             deposit.setExtension(Deposit.ExtensionState.RETRACT);
             deposit.setAngle(Deposit.AngleState.INTAKE);
-            claw.setPoleState(Claw.Pole.UP);
             if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1200) {
                 turret.setState(Turret.State.ZERO);
                 if (resetTimer.milliseconds() > 500) {
