@@ -164,14 +164,14 @@ public class Robot extends MecanumDrive{
         hardwareMap=l.hardwareMap;
         this.l=l;
 
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-
-        detector2 = new AlignerAuto();
+//        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        viewportContainerIds = OpenCvCameraFactory.getInstance()
+//                .splitLayoutForMultipleViewports(
+//                        cameraMonitorViewId,
+//                        2,
+//                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+//
+//        detector2 = new AlignerAuto();
 //        initAutoAlignCamera();
 //        initSignalSleeveCamera();
 
