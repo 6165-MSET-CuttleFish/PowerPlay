@@ -23,8 +23,8 @@ public class Deposit extends HwModule {
     public static double RZERO = 0.155;
     public static double rightPos = 0;
 
-    public static double VECTORING = 0.54;
-    public static double INTAKE = 0.69;
+    public static double VECTORING = 0.09;
+    public static double INTAKE = 0.235;
     public static double AUTO_INTAKE = 0.74;
     //public static double PICKUP = 0.97;
 
