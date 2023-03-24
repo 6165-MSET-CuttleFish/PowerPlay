@@ -166,7 +166,7 @@ public class RightSideHighMS extends LinearOpMode{
 
 
         if (isStopRequested()) return;
-        robot.autoCamera.pauseViewport();
+        //robot.autoCamera.pauseViewport();
         //robot.autoCamera.stopStreaming();
 
 
@@ -210,7 +210,7 @@ public class RightSideHighMS extends LinearOpMode{
         {
             turret.setState(Turret.State.AUTOALIGN);
             while(System.currentTimeMillis()-300 < timer){
-                if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                     turret.setState(Turret.State.IDLE);
                 }
                 telemetry.addData("TURRET", turret.getState());

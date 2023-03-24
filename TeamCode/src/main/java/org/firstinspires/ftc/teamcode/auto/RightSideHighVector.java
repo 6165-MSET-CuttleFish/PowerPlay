@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -162,7 +161,7 @@ public class RightSideHighVector extends LinearOpMode{
 
 
         if (isStopRequested()) return;
-        robot.autoCamera.stopStreaming();
+        //robot.autoCamera.stopStreaming();
 
 
         robot.setPoseEstimate(startPose);
@@ -203,7 +202,7 @@ public class RightSideHighVector extends LinearOpMode{
         timer = System.currentTimeMillis();
         turret.setState(Turret.State.AUTOALIGN);
         while(System.currentTimeMillis()-350 < timer){
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
             telemetry.addData("TURRET", turret.getState());

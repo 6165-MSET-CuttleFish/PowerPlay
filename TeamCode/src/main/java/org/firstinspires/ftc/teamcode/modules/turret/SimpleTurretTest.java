@@ -13,7 +13,7 @@ public class SimpleTurretTest extends LinearOpMode {
     Turret turret;
     @Override
     public void runOpMode() throws InterruptedException {
-        turret = new Turret(hardwareMap, false);
+        turret = new Turret(hardwareMap);
         turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
         encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         turretMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);

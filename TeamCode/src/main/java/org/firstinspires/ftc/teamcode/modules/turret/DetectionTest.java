@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
-import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 
 @TeleOp(name = "A Vision Test")
@@ -22,7 +14,7 @@ public class DetectionTest extends OpMode {
 
     @Override
     public void init() {
-        turret=new Turret(hardwareMap,false);
+        turret=new Turret(hardwareMap);
         turret.turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 

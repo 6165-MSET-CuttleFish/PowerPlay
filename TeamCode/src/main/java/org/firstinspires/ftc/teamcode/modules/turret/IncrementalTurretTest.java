@@ -8,7 +8,7 @@ public class IncrementalTurretTest extends LinearOpMode {
     Turret turret;
     @Override
     public void runOpMode() {
-        turret = new Turret(hardwareMap, false);
+        turret = new Turret(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a)

@@ -33,14 +33,12 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -48,7 +46,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -63,22 +60,16 @@ import org.firstinspires.ftc.teamcode.modules.relocalizer.MB1643;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
-import org.firstinspires.ftc.teamcode.modules.turret.Detector;
-
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
-import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
+import org.firstinspires.ftc.teamcode.modules.vision.DualCameras;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.BackgroundCR;
 
 //import org.firstinspires.ftc.teamcode.util.Context;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.teamcode.util.Context;
 
 
 import java.util.ArrayList;
@@ -138,17 +129,8 @@ public class Robot extends MecanumDrive{
     public TelemetryPacket packet;
     public LinearOpMode l;
 
-    HardwareMap hardwareMap;
-
-    public OpenCvWebcam autoCamera;
-    public OpenCvWebcam turretCamera;
-    public Detector detector1 = new Detector();
-    public AlignerAuto detector2 = new AlignerAuto();
-    //detector2.setState
-    public colorDetection pipeline;
-
-    int cameraMonitorViewId;
-    int[] viewportContainerIds;
+    public HardwareMap hardwareMap;
+    public DualCameras dualCameras;
 
     public void setState(driveState state){
         this.state = state;
@@ -161,19 +143,14 @@ public class Robot extends MecanumDrive{
     {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
+        Context.opMode=l;
+        Context.robot=this;
+        Context.updateValues();
+
         hardwareMap=l.hardwareMap;
         this.l=l;
 
-//        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        viewportContainerIds = OpenCvCameraFactory.getInstance()
-//                .splitLayoutForMultipleViewports(
-//                        cameraMonitorViewId,
-//                        2,
-//                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-//
-//        detector2 = new AlignerAuto();
-//        initAutoAlignCamera();
-//        initSignalSleeveCamera();
+        startCameras();
 
         distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
@@ -183,7 +160,7 @@ public class Robot extends MecanumDrive{
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
-        turret = new Turret(hardwareMap, detector2, true);
+        turret = new Turret(hardwareMap);
         groundIntake = new GroundIntake(hardwareMap);
 
         hardware=new BackgroundCR(this);
@@ -278,62 +255,9 @@ public class Robot extends MecanumDrive{
 
     }
 
-    public void initSignalSleeveCamera(boolean isAuto)
+    public void startCameras()
     {
-        if(isAuto)
-        {
-            autoCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
-            pipeline = new colorDetection();
-            autoCamera.setPipeline(pipeline);
-            autoCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    //telemetry.addData("Camera 1: ", "started");
-                    //telemetry.update();
-                    autoCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                    //telemetry.addData("Camera 1: ", "streaming");
-                    //telemetry.update();
-                }
-
-                @Override
-                public void onError(int errorCode) {
-                    //telemetry.addData("Webcam 1", "failed");
-                    //telemetry.update();
-                }
-            });
-        }
-    }
-
-    public void initAutoAlignCamera()
-    {
-        turretCamera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
-        turretCamera.setPipeline(detector2);
-        turretCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                turretCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                //Context.autoalignCameraPastInit=true;
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
-    }
-
-    public void closeCameras()
-    {
-        autoCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClose() {
-            }
-        });
-        turretCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClose() {
-
-            }
-        });
+        dualCameras=new DualCameras(this);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -513,7 +437,5 @@ public class Robot extends MecanumDrive{
     {
         return new ProfileAccelerationConstraint(maxAccel);
     }
-
-
 }
 

@@ -19,7 +19,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -386,7 +385,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 sideOdomPos = 0.65;
                 robot.midOdo.setPosition(0);
                 robot.sideOdo.setPosition(sideOdomPos);
-                turret.isAuto=false;
+                Context.hallEffectEnabled=false;
+                //turret.isAuto=false;
                 //robot.turretCamera.pauseViewport();
             } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
                 sideOdomPos = 0.33;
@@ -420,7 +420,10 @@ public class ASafeDriverControl extends LinearOpMode {
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
-            telemetry.addData("Auto Align (Aligned < 0.6)", turret.detector.record);
+            if(Context.autoalignCameraPastInit)
+            {
+                telemetry.addData("Auto Align (Aligned < 0.6)", turret.autoalign.record);
+            }
             telemetry.addData("Turret State", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getCurrentPosition());
@@ -550,7 +553,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
         while(System.currentTimeMillis()-350 < timer){
 
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
             robot.update();

@@ -178,7 +178,7 @@ public class LeftSideWARTIME extends LinearOpMode {
 
 
         if (isStopRequested()) return;
-        robot.autoCamera.pauseViewport();
+        //robot.autoCamera.pauseViewport();
 
 
         robot.setPoseEstimate(startPose);
@@ -222,7 +222,7 @@ public class LeftSideWARTIME extends LinearOpMode {
         {
             turret.setState(Turret.State.AUTOALIGN);
             while(System.currentTimeMillis()-350 < timer){
-                if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+                if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                     turret.setState(Turret.State.IDLE);
                 }
                 telemetry.addData("TURRET", turret.getState());

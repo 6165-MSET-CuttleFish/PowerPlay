@@ -44,6 +44,9 @@ object Context
     @JvmField
     var dashboardCameraStreaming: Boolean=false
 
+    @JvmField
+    var signalsleeveCameraPastInit: Boolean = false
+
     @JvmStatic fun updateValues()
     {
         if (opMode!!.javaClass.isAnnotationPresent(Autonomous::class.java))
@@ -72,7 +75,15 @@ object Context
         opMode=null
         tel=null
         robot=null
+        isAuto=false;
         hardwareMap=null
+        hallEffectEnabled=true;
         contextPastInit=false
+        signalSleeveZone=-1
+        autoalignEnabled=false
+        autoalignCameraPastInit=false
+        signalsleeveCameraPastInit=false
+        dashboardCameraStreaming=false
+        side=Side.UNASSIGNED
     }
 }

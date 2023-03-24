@@ -20,17 +20,25 @@ class BackgroundCR(val robot: Robot)
 
             }
 
+            while(Context.opMode!!.runtime<1)
+            {
+
+            }
+
+            //robot.startCameras()
+
             //during init
             while(!Context.opMode!!.isStarted&&!robot.l.isStopRequested)
             {
                 if(Context.isAuto)
                 {
-                    var zone=Context.robot!!.pipeline.output
-                    if(zone>0)
-                    {
-                        Context.signalSleeveZone=zone
-                    }
+                    var zone=Context.robot!!.dualCameras.signalSleeve.output
+                    Context.signalSleeveZone=zone
                     Context.tel!!.addData("Camera 1: ", Context.signalSleeveZone)
+                }
+                else
+                {
+                    Context.tel!!.addData("Waiting", "in init")
                 }
                 if(Context.autoalignEnabled)
                 {
@@ -38,9 +46,18 @@ class BackgroundCR(val robot: Robot)
                 }
                 if(Context.autoalignCameraPastInit&&!Context.dashboardCameraStreaming)
                 {
-                    dashboard.startCameraStream(robot.turretCamera, 10.0);
+                    dashboard.startCameraStream(robot.dualCameras.turretCamera, 10.0);
                     Context.dashboardCameraStreaming=true
                 }
+                if(Context.isAuto)
+                {
+                    Context.tel!!.addData("Signal Sleeve Camera: ", Context.signalsleeveCameraPastInit);
+                }
+                if(Context.signalsleeveCameraPastInit)
+                {
+                    Context.tel!!.addData("Signal Sleeve Max Pixels Read: ", Context.robot!!.dualCameras.signalSleeve.max2);
+                }
+                //if(Context.autoalignCameraPastInit/*&&!Context.dashboardCameraStreaming*/)
                 Context.tel!!.update()
                 robot.slides.update()
                 robot.turret.update()
@@ -51,9 +68,10 @@ class BackgroundCR(val robot: Robot)
             {
                 robot.slides.update()
                 robot.turret.update()
-                Context.tel!!.update()
+                //Context.tel!!.update()
             }
             Context.resetValues()
+            //robot.dualCameras.closeCameras()
         }
     }
 }

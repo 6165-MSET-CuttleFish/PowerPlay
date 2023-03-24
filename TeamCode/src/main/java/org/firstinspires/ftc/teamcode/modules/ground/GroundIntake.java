@@ -47,15 +47,15 @@ public class GroundIntake extends HwModule
     public GroundIntake(HardwareMap hardwareMap)
     {
         groundIntake = hardwareMap.get(DcMotor.class, "gIntake");
-        distSens = hardwareMap.get(ColorRangeSensor.class, "gDist");
+        //distSens = hardwareMap.get(ColorRangeSensor.class, "gDist");
         groundIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         groundIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         groundIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setState(State.OFF);
     }
-    public double getDistance(){
-        return distSens.getDistance(DistanceUnit.INCH);
-    }
+    //public double getDistance(){
+        //return distSens.getDistance(DistanceUnit.INCH);
+    //}
     public void update()
     {
         switch(state)

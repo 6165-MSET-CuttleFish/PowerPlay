@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
-import static org.firstinspires.ftc.teamcode.util.Context.robot;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -12,8 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Encoder;
@@ -21,10 +17,6 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 import org.firstinspires.ftc.teamcode.util.PIDCoeff;
 import org.firstinspires.ftc.teamcode.util.PIDControl;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
 public class Turret extends HwModule
@@ -60,10 +52,9 @@ public class Turret extends HwModule
     public DcMotorEx turretMotor;
     public Encoder encoder;
     public AnalogInput hallEffect;
-    public AlignerAuto detector;
+    public AlignerAuto autoalign;
     public Turret.State state;
     public double motorOil=0;
-    public boolean isAuto = true;
     @Override
     public void setState(ModuleState s)
     {
@@ -82,36 +73,19 @@ public class Turret extends HwModule
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
         LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
     }
-    public Turret(HardwareMap hardwareMap, boolean isAuto)
+
+    public Turret(HardwareMap hardwareMap)
     {
-        pidController= new BPIDFController(coeff1);
+        pidController=new BPIDFController(coeff1);
 
-        turretMotor = hardwareMap.get(DcMotorEx.class, "hturret");
-
-        encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
-        //this.isAuto=isAuto;
-        hallEffect = hardwareMap.get(AnalogInput.class, "hallEffect");
-
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        state=State.ZERO;
-    }
-
-    public Turret(HardwareMap hardwareMap, AlignerAuto detector, boolean isAuto)
-    {
-        pidController= new BPIDFController(coeff1);
-
-        turretMotor =hardwareMap.get(DcMotorEx.class, "hturret");
+        turretMotor=hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         hallEffect =hardwareMap.get(AnalogInput.class, "hallEffect");
-        this.isAuto = isAuto;
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
-        this.detector=detector;
     }
 
     public void update() {
@@ -142,7 +116,7 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        if(!isAuto){
+        if(Context.hallEffectEnabled){
             if (hallEffect.getVoltage()<1.0) {
                 posAtZero = -encoder.getCurrentPosition();
             }
@@ -200,9 +174,17 @@ public class Turret extends HwModule
                     targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
                 case AUTOALIGN:
-                    targetPos = encoder.getCurrentPosition() + detector.getShift();
+                    if(Context.autoalignCameraPastInit)
+                    {
+                        targetPos = encoder.getCurrentPosition() + autoalign.getShift();
+                    }
                     break;
         }
+    }
+
+    public void setAutoalignCamera(AlignerAuto autoalign)
+    {
+        this.autoalign=autoalign;
     }
 
     public void resetPos() {

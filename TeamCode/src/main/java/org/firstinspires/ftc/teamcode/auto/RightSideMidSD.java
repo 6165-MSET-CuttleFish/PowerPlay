@@ -253,7 +253,7 @@ public class RightSideMidSD extends LinearOpMode {
         timer = System.currentTimeMillis();
         turret.setState(Turret.State.AUTOALIGN);
         while(System.currentTimeMillis()-350 < timer){
-            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
             telemetry.addData("TURRET", turret.getState());

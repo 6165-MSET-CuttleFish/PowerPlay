@@ -43,7 +43,7 @@ public class presflex extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Context.hallEffectEnabled=false;
         extend = new ToggleButtonReader(primary, GamepadKeys.Button.A);
-        robot.turretCamera.stopStreaming();
+        //robot.turretCamera.stopStreaming();
 
         waitForStart();
         while (opModeIsActive()){
