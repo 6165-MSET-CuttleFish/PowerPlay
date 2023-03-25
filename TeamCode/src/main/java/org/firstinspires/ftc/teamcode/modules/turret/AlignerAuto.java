@@ -38,7 +38,7 @@ public class AlignerAuto extends OpenCvPipeline {
 
     private Location location = Location.MIDDLE;
     private State state=State.POLE;
-    public static int factor=75;
+    public static int factor=100;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static int boxHeight=120;
@@ -100,7 +100,7 @@ public class AlignerAuto extends OpenCvPipeline {
     Scalar lowHSV;
     Scalar highHSV;
 
-    double imgCount=0;
+    public double centerX=-1;
 
 
 
@@ -117,8 +117,6 @@ public class AlignerAuto extends OpenCvPipeline {
 
         kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13));
         kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));
-
-        imgCount=0;
     }
 
     public void release()
@@ -195,6 +193,7 @@ public class AlignerAuto extends OpenCvPipeline {
             {
                 mat=maskTemplate.clone();
                 Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+                centerX=(Imgproc.boundingRect(Contours.get(contourIndex)).x+Imgproc.boundingRect(Contours.get(contourIndex)).br().x)/2;
                 //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
                 //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
                 //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
@@ -202,6 +201,7 @@ public class AlignerAuto extends OpenCvPipeline {
             else
             {
                 mat=morphed2;
+                centerX=-1;
             }
             error="None";
 
@@ -282,6 +282,6 @@ public class AlignerAuto extends OpenCvPipeline {
     public int getShift()
     {
         //Find shift
-        return (int)(-1*factor*(loc[0]*4+loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*0+loc[5]*-1+loc[6]*-2));
+        return (int)(factor*(loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }

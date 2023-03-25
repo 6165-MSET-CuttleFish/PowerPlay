@@ -51,6 +51,10 @@ class BackgroundCR(val robot: Robot)
                 {
                     Context.tel!!.addData("Signal Sleeve Max Pixels Read: ", Context.robot!!.dualCameras.signalSleeve.max2);
                 }
+                if(Context.autoalignCameraPastInit)
+                {
+                    Context.tel!!.addData("Center X", Context.robot!!.dualCameras.aligner.centerX)
+                }
                 //if(Context.autoalignCameraPastInit/*&&!Context.dashboardCameraStreaming*/)
                 Context.tel!!.update()
                 robot.slides.update()
