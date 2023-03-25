@@ -15,17 +15,11 @@ class BackgroundCR(val robot: Robot)
     {
         GlobalScope.launch(Dispatchers.Main)
         {
+
             while(!Context.contextPastInit&&!robot.l.isStopRequested)
             {
 
             }
-
-            while(Context.opMode!!.runtime<1)
-            {
-
-            }
-
-            //robot.startCameras()
 
             //during init
             while(!Context.opMode!!.isStarted&&!robot.l.isStopRequested)

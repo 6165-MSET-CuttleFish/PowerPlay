@@ -40,26 +40,30 @@ public class AlignerAuto extends OpenCvPipeline {
     private State state=State.POLE;
     public static int factor=75;
     FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    public static int boxHeight=120;
+    public static double ratio=1.8;
+
     // find and set the regions of interest
-    public static Rect POS_1_HIGH = new Rect(0, 0, 40, 30);
-    public static Rect POS_2_HIGH = new Rect(40, 0, 40, 30);
-    public static Rect POS_3_HIGH = new Rect(80, 0, 40, 30);
-    public static Rect POS_4_HIGH = new Rect(120, 0, 40, 30);
-    public static Rect POS_5_HIGH = new Rect(160, 0, 40, 30);
-    public static Rect POS_6_HIGH = new Rect(200, 0, 40, 30);
-    public static Rect POS_7_HIGH = new Rect(240, 0, 40, 30);
+    public static Rect POS_1_HIGH = new Rect(0, 0, 40, boxHeight);
+    public Rect POS_2_HIGH = new Rect(40, 0, 40, boxHeight);
+    public Rect POS_3_HIGH = new Rect(80, 0, 40, boxHeight);
+    public Rect POS_4_HIGH = new Rect(120, 0, 40, boxHeight);
+    public Rect POS_5_HIGH = new Rect(160, 0, 40, boxHeight);
+    public Rect POS_6_HIGH = new Rect(200, 0, 40, boxHeight);
+    public Rect POS_7_HIGH = new Rect(240, 0, 40, boxHeight);
     //public static Rect POS_8_HIGH = new Rect(280, 0, 40, 30);
 
-    public static Rect HigherBoxes=new Rect(0, 10, 320, 30);
-    public static Rect LowerBoxes=new Rect(0, 170, 320, 30);
+    public Rect HigherBoxes=new Rect(0, 10, 320, boxHeight);
+    public Rect LowerBoxes=new Rect(0, 170, 320, boxHeight);
 
     //Find numbers for actual place
 
-    public static int HLow = 14;
+    public static int HLow = 5;
     public static int SLow = 80;
     public static int VLow = 50;
 
-    public static int HHigh = 43;
+    public static int HHigh = 55;
     public static int SHigh = 255;
     public static int VHigh = 255;
 
@@ -111,8 +115,8 @@ public class AlignerAuto extends OpenCvPipeline {
         lowHSV = new Scalar(HLow, SLow, VLow);
         highHSV = new Scalar(HHigh, SHigh, VHigh);
 
-        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
-        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(9, 9));
+        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13));
+        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));
 
         imgCount=0;
     }
@@ -178,9 +182,10 @@ public class AlignerAuto extends OpenCvPipeline {
             {
                 int height=Imgproc.boundingRect(Contours.get(i)).height;
                 int width=Imgproc.boundingRect(Contours.get(i)).width;
+                //Imgproc.boundingRect(Contours.get(i)).br();
                 double area=Imgproc.contourArea(Contours.get(i));
 
-                if(area>contourArea&&width*1.7<height)
+                if(area>contourArea&&width*ratio<height)
                 {
                     contourArea=area;
                     contourIndex=i;
