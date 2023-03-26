@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -53,7 +54,7 @@ public class ASafeDriverControl extends LinearOpMode {
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
     ButtonReader autoAlign, odomRaise, cycleMacro, cycleDown, cycleUp, actuateLeft,
             intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, slidesReset;
-    ToggleButtonReader ninjaMode, straightMode;
+    ToggleButtonReader alignerAdjust, straightMode;
 
     Gamepad.RumbleEffect customRumbleEffect0;    // Use to build a custom rumble sequence.
     Gamepad.RumbleEffect customRumbleEffect1;    // Use to build a custom rumble sequence.
@@ -85,7 +86,7 @@ public class ASafeDriverControl extends LinearOpMode {
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         keyReaders = new KeyReader[]{
-                ninjaMode = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
+                alignerAdjust = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
                 intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
@@ -186,12 +187,6 @@ public class ASafeDriverControl extends LinearOpMode {
             for (KeyReader reader : keyReaders) {
                 reader.readValue();
             }
-            if (ninjaMode.wasJustPressed() && ninjaMultiplier == 1) {
-                ninjaMultiplier = 0.9;
-            } else if (ninjaMode.wasJustPressed() && ninjaMultiplier == 0.9) {
-                ninjaMultiplier = 1;
-            }
-
             //DRIVETRAIN
             if (straightMode.getState()) {
                 robot.setWeightedDrivePower(
@@ -228,26 +223,24 @@ public class ASafeDriverControl extends LinearOpMode {
                     switch (cycleValue) {
                         case 0:
                             slides.setState(Slides.State.BOTTOM);
-//                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                            deposit.setExtension(Deposit.ExtensionState.RETRACT);
                             claw.setPoleState(Claw.Pole.UP);
                             break;
                         case 1:
                             gamepad2.runRumbleEffect(customRumbleEffect0);
                             slides.setState(Slides.State.LOW);
                             deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                            claw.setPoleState(Claw.Pole.DOWN);
+                            claw.setPoleState(Claw.Pole.UP);
                             break;
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
                             deposit.setExtension(Deposit.ExtensionState.FOURTH);
-                            claw.setPoleState(Claw.Pole.DOWN);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
                             deposit.setExtension(Deposit.ExtensionState.FOURTH);
                             slides.setState(Slides.State.HIGH);
-                            claw.setPoleState(Claw.Pole.DOWN);
                             break;
                     }
                 }
@@ -301,21 +294,27 @@ public class ASafeDriverControl extends LinearOpMode {
                 groundIntake.setState(GroundIntake.State.FAST);
             }
 
-            if (depositTransfer.isDown()) {
+            if (depositTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.OPEN);
                 if (slides.slidesLeft.getCurrentPosition() > 1000)
                 claw.setPoleState(Claw.Pole.DEPOSIT);
-            } else if (intakeTransfer.isDown()) {
+            } else if (intakeTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.CLOSE);
             }
 
             //extension
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                if (slides.slidesLeft.getCurrentPosition() > 800) {
+                    claw.setPoleState(Claw.Pole.DEPOSIT);
+                }
             } else if (extension.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.RETRACT
                     || deposit.getExtState() == Deposit.ExtensionState.FOURTH)
                     || deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                if (slides.slidesLeft.getCurrentPosition() > 800) {
+                    claw.setPoleState(Claw.Pole.DOWN);
+                }
             }
             //angle
             if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.VECTORING) {
@@ -333,14 +332,14 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             //auto close claw
-//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 6 &&
-//                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
-//                claw.setState(Claw.State.CLOSE);
-//                distanceSensor = false;
-//            }
-//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 6) {
-//                distanceSensor = true;
-//            }
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 8 &&
+                    slides.slidesLeft.getCurrentPosition() + slides.posAtZero < 80 && distanceSensor) {
+                claw.setState(Claw.State.CLOSE);
+                distanceSensor = false;
+            }
+            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 8) {
+                distanceSensor = true;
+            }
 
             //reset
             if (reset.wasJustPressed()) {
@@ -372,6 +371,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 transferTimer.reset();
             }
 
+            if (alignerAdjust.wasJustPressed()) {
+                claw.setPoleState(Claw.Pole.DEPOSIT);
+            }
 
             if (cycleMacro.wasJustPressed()) {
                 //robot.turretCamera.resumeViewport();
@@ -407,11 +409,8 @@ public class ASafeDriverControl extends LinearOpMode {
 //                turret.setState(Turret.State.IDLE);
 //            }
 
-            if (autoAlign.wasJustPressed() && claw.getPoleState() == Claw.Pole.UP) {
-                claw.setPoleState(Claw.Pole.DOWN);
-            }
-            if (autoAlign.wasJustPressed() && claw.getPoleState() == Claw.Pole.DOWN) {
-                claw.setPoleState(Claw.Pole.UP);
+            if (autoAlign.wasJustPressed()) {
+                claw.setPoleState(Claw.Pole.DEPOSIT);
             }
 
             transferUpdate(cycleValue);
@@ -456,7 +455,7 @@ public class ASafeDriverControl extends LinearOpMode {
             } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle != 1) {
-                    claw.setPoleState(Claw.Pole.DOWN);
+                    claw.setPoleState(Claw.Pole.DEPOSIT);
                 }
                 switch(turretPos) {
                     case 0:

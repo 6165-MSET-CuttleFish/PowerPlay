@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -156,7 +157,7 @@ public class Robot extends MecanumDrive{
         distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
         left = new MB1643(hardwareMap, "left");
         right = new MB1643(hardwareMap, "right");
-
+        distanceSensor = hardwareMap.get(ColorRangeSensor.class, "distance");
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
