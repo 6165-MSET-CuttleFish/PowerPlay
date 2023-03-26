@@ -32,7 +32,7 @@ public class Slides extends HwModule {
 
     public static int HIGH = 1680; //old = 1850
     public static int CYCLE_HIGH = 2347; //old = 1650
-    public static int MID = 1150; //in inches, 23.5 - 17.5 (mid junction height - slides height)
+    public static int MID = 1100; //in inches, 23.5 - 17.5 (mid junction height - slides height)
     public static int MID_DROP = 1180;
     public static int LOW = 650; //in inches, low junction is 13.5 inches
     public static int LOW_DROP = 250;

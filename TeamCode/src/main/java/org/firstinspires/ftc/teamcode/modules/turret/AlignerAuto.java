@@ -38,11 +38,11 @@ public class AlignerAuto extends OpenCvPipeline {
 
     private Location location = Location.MIDDLE;
     private State state=State.POLE;
-    public static int factor=100;
+    public static int factor=70;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public static int boxHeight=120;
-    public static double ratio=1.8;
+    public static double ratio=1.5;
 
     // find and set the regions of interest
     public static Rect POS_1_HIGH = new Rect(0, 0, 40, boxHeight);
@@ -115,7 +115,7 @@ public class AlignerAuto extends OpenCvPipeline {
         lowHSV = new Scalar(HLow, SLow, VLow);
         highHSV = new Scalar(HHigh, SHigh, VHigh);
 
-        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13));
+        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(19, 19));
         kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));
     }
 
