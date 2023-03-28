@@ -55,6 +55,12 @@ class BackgroundCR(val robot: Robot)
                 {
                     Context.tel!!.addData("Center X", Context.robot!!.dualCameras.aligner.centerX)
                 }
+                //Context.robot!!.localizer.update()
+                /*Context.tel!!.addData("Front Left Dist", Context.robot!!.localizer.frontDistL)
+                Context.tel!!.addData("Front Right Dist", Context.robot!!.localizer.frontDistR)
+                Context.tel!!.addData("Left Dist", Context.robot!!.localizer.leftDist)
+                Context.tel!!.addData("Right Dist", Context.robot!!.localizer.rightDist)*/
+
                 //if(Context.autoalignCameraPastInit/*&&!Context.dashboardCameraStreaming*/)
                 Context.tel!!.update()
                 robot.slides.update()
@@ -66,6 +72,11 @@ class BackgroundCR(val robot: Robot)
             {
                 robot.slides.update()
                 robot.turret.update()
+                //Context.robot!!.localizer.update()
+                //Context.tel!!.addData("Front Left Dist", Context.robot!!.localizer.frontDistL)
+                //Context.tel!!.addData("Front Right Dist", Context.robot!!.localizer.frontDistR)
+                //Context.tel!!.addData("Left Dist", Context.robot!!.localizer.leftDist)
+                //Context.tel!!.addData("Right Dist", Context.robot!!.localizer.rightDist)
                 //Context.tel!!.update()
             }
             Context.resetValues()

@@ -56,6 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
+import org.firstinspires.ftc.teamcode.modules.relocalizer.Localizer;
 import org.firstinspires.ftc.teamcode.modules.relocalizer.MB1242;
 import org.firstinspires.ftc.teamcode.modules.relocalizer.MB1643;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
@@ -119,8 +120,8 @@ public class Robot extends MecanumDrive{
     public Turret turret;
     public Deposit deposit;
     public Claw claw;
-    public MB1242 distfl, distfr;
-    public MB1643 left, right;
+    //public MB1242 distfl, distfr;
+    //public MB1643 left, right;
     //public HardwareThread thread;
     public BackgroundCR hardware;
     public GroundIntake groundIntake;
@@ -130,6 +131,7 @@ public class Robot extends MecanumDrive{
     public TelemetryPacket packet;
     public LinearOpMode l;
 
+    public Localizer localizer;
     public HardwareMap hardwareMap;
     public DualCameras dualCameras;
 
@@ -153,10 +155,13 @@ public class Robot extends MecanumDrive{
 
         startCameras();
 
-        distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
-        distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
-        left = new MB1643(hardwareMap, "left");
-        right = new MB1643(hardwareMap, "right");
+        //localizer=new Localizer(this);
+        //distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
+        //distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
+        //left = new MB1643(hardwareMap, "left");
+        //right = new MB1643(hardwareMap, "right");
+        //localizer=new Localizer(this);
+
         distanceSensor = hardwareMap.get(ColorRangeSensor.class, "distance");
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
@@ -332,7 +337,7 @@ public class Robot extends MecanumDrive{
 
     public void waitForIdle()
     {
-        while (!Thread.currentThread().isInterrupted() && isBusy())
+        while (!Thread.currentThread().isInterrupted() && isBusy() && !l.isStopRequested())
         {
             update();
         }
