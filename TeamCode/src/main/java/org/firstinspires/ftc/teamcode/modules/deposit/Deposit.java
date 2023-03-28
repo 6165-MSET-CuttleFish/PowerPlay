@@ -13,14 +13,14 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 @Config
 public class Deposit extends HwModule {
     //temporary values
-    public static double LEXTENDED = 0.315;
-    public static double REXTENDED = 0.31;
+    public static double LEXTENDED = 0.338;
+    public static double REXTENDED = 0.279;
     public static double LHALF = 0.26;
     public static double RHALF = 0.20;
     public static double LFOURTH = 0.37;
     public static double RFOURTH = 0.17;
-    public static double LZERO = 0.208;
-    public static double RZERO = 0.105;
+    public static double LZERO = 0.236;
+    public static double RZERO = 0.169;
     public static double rightPos = 0;
 
     public static double VECTORING = 0.09;
