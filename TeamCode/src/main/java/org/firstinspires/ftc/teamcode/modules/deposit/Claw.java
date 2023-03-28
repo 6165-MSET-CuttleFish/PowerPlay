@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 public class Claw extends HwModule {
     public static double OPEN_WIDE = 0.3;
     public static double OPEN = 0.4;
-    public static double CLOSE = 0.62;
+    public static double CLOSE = 0.64;
     public static double PARTIAL=0;
 
     Servo claw, pole;
@@ -37,7 +37,7 @@ public class Claw extends HwModule {
     }
 
 
-    public static double UP = 0.225, DOWN = 0.8, DEPOSIT = 0.95;
+    public static double UP = 0.225, DOWN = 0.95, DEPOSIT = 0.77;
     public enum Pole implements ModuleState {
         UP, DOWN, DEPOSIT
     }
