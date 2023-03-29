@@ -24,8 +24,8 @@ public class frontSensorTest extends LinearOpMode {
         //test = robot.distfl;
         movingMedianFront = new filter(10);
 
-        distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
-        distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
+        //distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
+        //distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
 
         waitForStart();
         while(opModeIsActive()) {
@@ -40,9 +40,9 @@ public class frontSensorTest extends LinearOpMode {
             //telemetry.addData("front right", robot.localizer.frontDistR);
             //telemetry.addData("left", robot.localizer.leftDist);
             //telemetry.addData("right", robot.localizer.rightDist);
-            telemetry.addData("Left", distfl.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Right", distfr.getDistance(DistanceUnit.INCH));
-            telemetry.update();
+            //telemetry.addData("Left", distfl.getDistance(DistanceUnit.INCH));
+            //telemetry.addData("Right", distfr.getDistance(DistanceUnit.INCH));
+            //telemetry.update();
         }
     }
 /*
