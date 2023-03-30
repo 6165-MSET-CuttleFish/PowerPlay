@@ -56,12 +56,13 @@ public class Turret2Test extends LinearOpMode
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             }
             else if(gamepad1.dpad_down) deposit.setExtension(Deposit.ExtensionState.RETRACT);
-            //turret.update();
+            turret.update();
             telemetry.addData("State", turret.getState());
             telemetry.addData("power", turret.turretMotor.getPower());
             telemetry.addData("encoder", turret.encoder.getCurrentPosition());
             telemetry.addData("Target Pos", turret.getTargetPos());
-            //telemetry.addData("pid", turret.pidMotorOil);
+            telemetry.addData("pid", turret.pidController.update(turret.encoder.getCurrentPosition()));
+            telemetry.addData("pid target velo", turret.pidController.getTargetVelocity());
             telemetry.update();
         }
     }

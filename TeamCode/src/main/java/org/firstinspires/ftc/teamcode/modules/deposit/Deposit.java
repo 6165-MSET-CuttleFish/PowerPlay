@@ -25,7 +25,7 @@ public class Deposit extends HwModule {
 
     public static double VECTORING = 0.09;
     public static double INTAKE = 0.235;
-    public static double AUTO_INTAKE = 0.3;
+    public static double AUTO_INTAKE = 0.2;
     //public static double PICKUP = 0.97;
 
     Servo leftExtension;
