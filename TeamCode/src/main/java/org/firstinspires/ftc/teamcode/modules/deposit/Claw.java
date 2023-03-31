@@ -37,7 +37,7 @@ public class Claw extends HwModule {
     }
 
 
-    public static double UP = 0.225, DOWN = 0.95, DEPOSIT = 0.8;
+    public static double UP = 0.225, DOWN = 0.95, DEPOSIT = 0.766;
     public enum Pole implements ModuleState {
         UP, DOWN, DEPOSIT
     }
