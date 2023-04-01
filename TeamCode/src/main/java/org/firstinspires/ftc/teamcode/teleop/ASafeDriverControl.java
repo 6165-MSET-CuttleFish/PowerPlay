@@ -71,7 +71,7 @@ public class ASafeDriverControl extends LinearOpMode {
     ElapsedTime resetTimer = new ElapsedTime();
     ElapsedTime cycleTimer = new ElapsedTime();
     TrajectorySequence cycleIntake, cycleDropOff;
-    double sideOdomPos = 0.33;
+    public static double sideOdomPos = 0.33;
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Robot(this);
@@ -180,7 +180,7 @@ public class ASafeDriverControl extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         slides.setState(Slides.State.BOTTOM);
         robot.midOdo.setPosition(0);
-        robot.sideOdo.setPosition(0.65);
+        robot.sideOdo.setPosition(1);
         turret.setState(Turret.State.ZERO);
         while (opModeIsActive()) {
             robot.update();
@@ -506,11 +506,11 @@ public class ASafeDriverControl extends LinearOpMode {
 //                    resetCheck = false;
 //                }
 //            }
-            if (resetTimer.milliseconds() > 500)  {
+            if (resetTimer.milliseconds() > 500 && (slides.getState() == Slides.State.MID || slides.getState() == Slides.State.LOW || slides.getState() == Slides.State.MANUAL))  {
                 slides.setState(Slides.State.BOTTOM);
                 resetCheck = false;
             }
-            else if (resetTimer.milliseconds() > 200 && slides.getState()==Slides.State.HIGH) {
+            else if (resetTimer.milliseconds() > 200 && slides.getState() == Slides.State.HIGH) {
                 slides.setState(Slides.State.BOTTOM);
                 resetCheck = false;
             } else if (resetTimer.milliseconds() > 0) {
