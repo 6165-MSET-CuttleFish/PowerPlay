@@ -298,7 +298,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
             if (depositTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.OPEN);
-                if (slides.slidesLeft.getCurrentPosition() > 1000)
+            } if (slides.slidesLeft.getCurrentPosition() > 1000){
                 claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
             } else if (intakeTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.CLOSE);
