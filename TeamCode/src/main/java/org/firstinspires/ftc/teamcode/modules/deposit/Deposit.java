@@ -15,8 +15,8 @@ public class Deposit extends HwModule {
     //temporary values
     public static double LEXTENDED = 0.338;
     public static double REXTENDED = 0.279;
-    public static double LHALF = 0.26;
-    public static double RHALF = 0.20;
+    public static double LHALF = 0.24;
+    public static double RHALF = 0.21;
     public static double LFOURTH = 0.37;
     public static double RFOURTH = 0.17;
     public static double LZERO = 0.221;
@@ -25,7 +25,7 @@ public class Deposit extends HwModule {
 
     public static double VECTORING = 0.09;
     public static double INTAKE = 0.235;
-    public static double AUTO_INTAKE = 0.2;
+    public static double AUTO_INTAKE = 0.19;
     //public static double PICKUP = 0.97;
 
     Servo leftExtension;

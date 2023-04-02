@@ -506,19 +506,21 @@ public class ASafeDriverControl extends LinearOpMode {
 //                    resetCheck = false;
 //                }
 //            }
-            if (resetTimer.milliseconds() > 500 && (slides.getState() == Slides.State.MID || slides.getState() == Slides.State.LOW || slides.getState() == Slides.State.MANUAL))  {
-                slides.setState(Slides.State.BOTTOM);
-                resetCheck = false;
-            }
-            else if (resetTimer.milliseconds() > 200 && slides.getState() == Slides.State.HIGH) {
-                slides.setState(Slides.State.BOTTOM);
-                resetCheck = false;
-            } else if (resetTimer.milliseconds() > 0) {
+
+            if (resetTimer.milliseconds() > 0) {
                 turret.setState(Turret.State.ZERO);
                 claw.setState(Claw.State.OPEN);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
                 claw.setPoleState(Claw.Pole.TELE_UP);
+                if (slides.slidesLeft.getCurrentPosition() > 1000 && resetTimer.milliseconds() > 200) {
+                    slides.setState(Slides.State.BOTTOM);
+                    resetCheck = false;
+                }
+                if (slides.slidesLeft.getCurrentPosition() < 1000 && resetTimer.milliseconds() > 500) {
+                    slides.setState(Slides.State.BOTTOM);
+                    resetCheck = false;
+                }
             }
         }
     }
