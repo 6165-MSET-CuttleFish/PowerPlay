@@ -18,7 +18,10 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
+import org.firstinspires.ftc.teamcode.util.Right;
+
 @Autonomous
+@Right
 public class RightSideHighAntiSlam extends LinearOpMode {
     ElapsedTime t;
     Robot robot;
@@ -95,8 +98,8 @@ public class RightSideHighAntiSlam extends LinearOpMode {
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
                 .splineToConstantHeading(new Vector2d(-50, 13.5), Math.toRadians(180),
-                        robot.getVelocityConstraint(52.5, 5.939, 16.92),
-                        robot.getAccelerationConstraint(50))
+                        robot.getVelocityConstraint(57.5, 5.939, 16.92),
+                        robot.getAccelerationConstraint(60))
 
                 .addTemporalMarker(0.1, ()->{
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -106,14 +109,14 @@ public class RightSideHighAntiSlam extends LinearOpMode {
                 })
                 .build();
         Trajectory intaking = robot.trajectoryBuilder(initIntake.end())
-                .splineToConstantHeading(new Vector2d(-53.5, 13.5), Math.toRadians(180),
-                        robot.getVelocityConstraint(30, 5.939, 16.92),
-                        robot.getAccelerationConstraint(30))
+                .splineToConstantHeading(new Vector2d(-54.5, 13.5), Math.toRadians(180),
+                        robot.getVelocityConstraint(40, 5.939, 16.92),
+                        robot.getAccelerationConstraint(44))
                 .build();
         Trajectory cycleDrop = robot.trajectoryBuilder(intaking.end())
                 .lineToConstantHeading(new Vector2d(-32.85, 12.7),
-                        robot.getVelocityConstraint(52.5, 5.939, 16.92),
-                        robot.getAccelerationConstraint(50))
+                        robot.getVelocityConstraint(60, 5.939, 16.92),
+                        robot.getAccelerationConstraint(60))
                 .addTemporalMarker(0.1, ()->{
                     slides.setState(Slides.State.CYCLE_HIGH);
                     claw.setPoleState(Claw.Pole.DOWN);
@@ -129,8 +132,8 @@ public class RightSideHighAntiSlam extends LinearOpMode {
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
                 .splineToConstantHeading(new Vector2d(-50, 13.5), Math.toRadians(180),
-                        robot.getVelocityConstraint(52.5, 5.939, 16.92),
-                        robot.getAccelerationConstraint(50))
+                        robot.getVelocityConstraint(57.5, 5.939, 16.92),
+                        robot.getAccelerationConstraint(60))
 
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -182,7 +185,7 @@ public class RightSideHighAntiSlam extends LinearOpMode {
                     claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(-58,13)).build();
+                .lineToConstantHeading(new Vector2d(-58.5,13)).build();
 
 
         waitForStart();
@@ -234,7 +237,7 @@ public class RightSideHighAntiSlam extends LinearOpMode {
         {
 
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-195 < timer){
+            while(System.currentTimeMillis()-175 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -257,7 +260,7 @@ public class RightSideHighAntiSlam extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-115<timer){
+        while(System.currentTimeMillis()-125<timer){
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);
@@ -267,7 +270,7 @@ public class RightSideHighAntiSlam extends LinearOpMode {
 
         //claw.setPoleState(Claw.Pole.UP);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-198< timer){
+        while(System.currentTimeMillis()-185< timer){
             robot.update();
         }
     }
@@ -290,7 +293,7 @@ public class RightSideHighAntiSlam extends LinearOpMode {
 
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-185< timer){
+        while(System.currentTimeMillis()-130< timer){
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
