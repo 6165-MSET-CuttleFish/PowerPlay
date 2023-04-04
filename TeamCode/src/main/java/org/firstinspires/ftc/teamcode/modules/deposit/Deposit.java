@@ -78,6 +78,7 @@ public class Deposit extends HwModule {
         rightExtension.setDirection(Servo.Direction.REVERSE);
         setExtension(ExtensionState.RETRACT);
         setAngle(AngleState.INTAKE);
+
     }
 
     public void update() {
