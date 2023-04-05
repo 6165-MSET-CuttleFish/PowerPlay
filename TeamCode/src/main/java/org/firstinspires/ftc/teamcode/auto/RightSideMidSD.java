@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Detector;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 import org.openftc.easyopencv.OpenCvWebcam;
@@ -269,20 +270,12 @@ public class RightSideMidSD extends LinearOpMode {
             robot.followTrajectory(cycleDrop);
             dropOff(false);
         }
-        robot.followTrajectory(endRight);
+        //robot.followTrajectory(endRight);
 
 
-/*
-        if(state==1) robot.followTrajectory(endLeft);
-        else if(state==2) robot.followTrajectory(endMiddle);
-        else if(state==3) robot.followTrajectory(endRight);
-        //robot.turn(Math.toRadians(100));
-        slides.setState(Slides.State.BOTTOM);
-        timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-2000< timer&&opModeIsActive())
-        {
-            robot.update();
-        }*/
+        if(Context.signalSleeveZone==1) robot.followTrajectory(endLeft);
+        else if(Context.signalSleeveZone==2) robot.followTrajectory(endMiddle);
+        else if(Context.signalSleeveZone==3) robot.followTrajectory(endRight);
     }
 
     public void dropOff(boolean preload){
