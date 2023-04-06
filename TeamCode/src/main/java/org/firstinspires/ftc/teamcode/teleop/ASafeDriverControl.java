@@ -50,6 +50,8 @@ public class ASafeDriverControl extends LinearOpMode {
     public static double powerOffsetTurning = 0.25;
     double ninjaMultiplier = 1;
     FtcDashboard dashboard = FtcDashboard.getInstance();
+    boolean wristClockwork = false;
+    ElapsedTime wristClock = new ElapsedTime();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
     ButtonReader autoAlign, odomRaise, cycleMacro, cycleDown, cycleUp, actuateLeft,
@@ -66,6 +68,7 @@ public class ASafeDriverControl extends LinearOpMode {
     boolean autoActuate = false;
     public double resetTime = 1;
     public double transferTime = 1, transferTurretTime = 500;
+    public double WRIST_DELAY = 0;
     public boolean distanceSensor = false;
     ElapsedTime transferTimer = new ElapsedTime();
     ElapsedTime resetTimer = new ElapsedTime();
@@ -297,13 +300,20 @@ public class ASafeDriverControl extends LinearOpMode {
             }
 
             if (depositTransfer.wasJustPressed()) {
-                claw.setState(Claw.State.OPEN);
+                wristClockwork = true;
+                wristClock.reset();
+
+                deposit.setAngle(Deposit.AngleState.INTAKE);
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000)
                 claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
             } else if (intakeTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.CLOSE);
             }
 
+if(wristClockwork&&wristClock.milliseconds()>WRIST_DELAY){
+    claw.setState(Claw.State.OPEN);
+    wristClockwork = false;
+}
             //extension
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
