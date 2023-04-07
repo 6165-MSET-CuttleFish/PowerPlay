@@ -310,10 +310,10 @@ public class ASafeDriverControl extends LinearOpMode {
                 claw.setState(Claw.State.CLOSE);
             }
 
-if(wristClockwork&&wristClock.milliseconds()>WRIST_DELAY){
-    claw.setState(Claw.State.OPEN);
-    wristClockwork = false;
-}
+            if (wristClockwork&&wristClock.milliseconds()>WRIST_DELAY){
+                claw.setState(Claw.State.OPEN);
+                wristClockwork = false;
+            }
             //extension
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -523,11 +523,11 @@ if(wristClockwork&&wristClock.milliseconds()>WRIST_DELAY){
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.INTAKE);
                 claw.setPoleState(Claw.Pole.TELE_UP);
-                if (slides.slidesLeft.getCurrentPosition() > 1000 && resetTimer.milliseconds() > 200) {
+                if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000 && resetTimer.milliseconds() > 300) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
                 }
-                if (slides.slidesLeft.getCurrentPosition() < 1000 && resetTimer.milliseconds() > 500) {
+                if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1000 && resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                     resetCheck = false;
                 }

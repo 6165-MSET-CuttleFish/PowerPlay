@@ -17,8 +17,8 @@ public class Deposit extends HwModule {
     public static double REXTENDED = 0.279;
     public static double LHALF = 0.24;
     public static double RHALF = 0.21;
-    public static double LFOURTH = 0.37;
-    public static double RFOURTH = 0.17;
+    public static double LFOURTH = 0.35;
+    public static double RFOURTH = 0.15;
     public static double LZERO = 0.221;
     public static double RZERO = 0.154;
     public static double rightPos = 0;

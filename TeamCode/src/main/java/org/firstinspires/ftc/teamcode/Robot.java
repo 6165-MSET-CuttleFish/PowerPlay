@@ -223,8 +223,7 @@ public class Robot extends MecanumDrive{
 
         midOdo = hardwareMap.get(Servo.class, "midOdom");
         sideOdo = hardwareMap.get(Servo.class, "sideOdom");
-        sideOdo.setPosition(sideOdomServoPos);
-        midOdo.setPosition(odomServoPos);
+
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
