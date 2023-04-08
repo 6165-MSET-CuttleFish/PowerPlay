@@ -202,8 +202,8 @@ public class ASafeDriverControl extends LinearOpMode {
             } else robot.setWeightedDrivePower(
                     new Pose2d(
                             Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.left_stick_x) <= 0.1 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning :powerOffsetTurning)) * (ninjaMultiplier))
+                            Math.abs(gamepad1.left_stick_x) <= 0.25 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning : powerOffsetTurning)) * (ninjaMultiplier))
                     )
             );
 
@@ -329,12 +329,8 @@ public class ASafeDriverControl extends LinearOpMode {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
             }
             //half extension
-            if (half.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.EXTEND
-                    || deposit.getExtState() == Deposit.ExtensionState.RETRACT
-                    || deposit.getExtState() == Deposit.ExtensionState.FOURTH)) {
-                deposit.setExtension(Deposit.ExtensionState.HALF);
-            } else if (half.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.HALF) {
-                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+            if (half.wasJustPressed()) {
+                claw.setState(Claw.State.CLOSE);
             }
 
             //auto close claw
@@ -516,8 +512,10 @@ public class ASafeDriverControl extends LinearOpMode {
 //                    resetCheck = false;
 //                }
 //            }
-
-            if (resetTimer.milliseconds() > 0) {
+            if (resetTimer.milliseconds() > 1000) {
+                deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                resetCheck = false;
+            } else if (resetTimer.milliseconds() > 0) {
                 turret.setState(Turret.State.ZERO);
                 claw.setState(Claw.State.OPEN);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -525,11 +523,9 @@ public class ASafeDriverControl extends LinearOpMode {
                 claw.setPoleState(Claw.Pole.TELE_UP);
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000 && resetTimer.milliseconds() > 300) {
                     slides.setState(Slides.State.BOTTOM);
-                    resetCheck = false;
                 }
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1000 && resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
-                    resetCheck = false;
                 }
             }
         }

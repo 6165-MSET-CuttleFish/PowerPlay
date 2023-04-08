@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 public class Claw extends HwModule {
     public static double OPEN_WIDE = 0.69;
     public static double OPEN = 0.73;
-    public static double CLOSE = 0.87;
+    public static double CLOSE = 0.9;
     public static double PARTIAL=0;
 
     Servo claw, pole;
