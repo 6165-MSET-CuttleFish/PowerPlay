@@ -117,11 +117,11 @@ public class Turret extends HwModule
     }
 
     private void updateTarget() {
-        if(Context.hallEffectEnabled){
-            if (hallEffect.getVoltage()<1.0) {
-                posAtZero = -encoder.getCurrentPosition();
-            }
-        }
+//        if(Context.hallEffectEnabled){
+//            if (hallEffect.getVoltage()<1.0) {
+//                posAtZero = -encoder.getCurrentPosition();
+//            }
+//        }
             switch (state) {
                 case MANUAL:
                     targetPos = encoder.getCurrentPosition();
@@ -191,8 +191,7 @@ public class Turret extends HwModule
     public void resetPos() {
         posAtZero = encoder.getCurrentPosition();
     }
-    public double getTargetPos()
-    {
+    public double getTargetPos() {
         return targetPos;
     }
     public boolean isBusy()

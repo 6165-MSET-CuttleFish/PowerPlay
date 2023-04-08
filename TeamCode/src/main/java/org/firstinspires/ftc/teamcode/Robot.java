@@ -81,9 +81,9 @@ import java.util.List;
 public class Robot extends MecanumDrive{
 
     public IMU.Parameters myIMUparameters;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 2);
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
     public static double LATERAL_MULTIPLIER = 1;
     public static double odomServoPos = 0.38, sideOdomServoPos = 0;
 
@@ -173,9 +173,10 @@ public class Robot extends MecanumDrive{
         hardware.startHW();
 
         //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
+        //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.35);
+                new Pose2d(0.6, 0.6, Math.toRadians(5.0)), 0.30);
 
         //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -223,6 +224,9 @@ public class Robot extends MecanumDrive{
 
         midOdo = hardwareMap.get(Servo.class, "midOdom");
         sideOdo = hardwareMap.get(Servo.class, "sideOdom");
+
+        sideOdo.setPosition(sideOdomServoPos);
+        midOdo.setPosition(odomServoPos);
 
         isOdoRaised = false;
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);

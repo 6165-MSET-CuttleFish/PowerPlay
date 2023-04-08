@@ -423,10 +423,6 @@ public class ASafeDriverControl extends LinearOpMode {
             //TELEMETRY
             telemetry.addData("cycle: ", cycleValue);
             telemetry.addData("turret power: ", turret.turretMotor.getPower());
-            if(Context.autoalignCameraPastInit)
-            {
-                telemetry.addData("Auto Align (Aligned < 0.6)", turret.autoalign.record);
-            }
             telemetry.addData("Turret State", turret.getState());
             telemetry.addData("Turret", turret.turretMotor.getCurrentPosition());
             telemetry.addData("Slides 1: ", slides.slidesLeft.getCurrentPosition());
