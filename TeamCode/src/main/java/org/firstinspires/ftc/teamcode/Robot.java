@@ -14,7 +14,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -30,6 +32,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -53,6 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.drive.TrajectorySequenceRunnerCancelable;
 import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
@@ -91,7 +95,7 @@ public class Robot extends MecanumDrive{
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private TrajectorySequenceRunner trajectorySequenceRunner;
+    public TrajectorySequenceRunnerCancelable trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
@@ -135,6 +139,9 @@ public class Robot extends MecanumDrive{
     public HardwareMap hardwareMap;
     public DualCameras dualCameras;
 
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
+    public MultipleTelemetry telemetry;
+
     public void setState(driveState state){
         this.state = state;
     }
@@ -146,6 +153,9 @@ public class Robot extends MecanumDrive{
     {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
+        //PhotonCore.enable();
+        telemetry=new MultipleTelemetry(l.telemetry, dashboard.getTelemetry());
+
         Context.opMode=l;
         Context.robot=this;
         Context.updateValues();
@@ -155,7 +165,7 @@ public class Robot extends MecanumDrive{
 
         startCameras();
 
-        //localizer=new Localizer(this);
+        localizer=new Localizer(this);
         //distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
         //distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
         //left = new MB1643(hardwareMap, "left");
@@ -256,8 +266,7 @@ public class Robot extends MecanumDrive{
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
+        trajectorySequenceRunner = new TrajectorySequenceRunnerCancelable(follower, HEADING_PID);
     }
 
     public void startCameras()
@@ -441,6 +450,16 @@ public class Robot extends MecanumDrive{
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel)
     {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public double percentComplete()
+    {
+        return 0;
+    }
+
+    public void breakFollowing()
+    {
+        trajectorySequenceRunner.breakFollowing();
     }
 }
 

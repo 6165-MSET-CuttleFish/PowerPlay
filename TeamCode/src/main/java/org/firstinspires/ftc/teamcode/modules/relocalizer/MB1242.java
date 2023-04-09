@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @DeviceProperties(
         name = "MB1242",
         description = "Ultrasonic Distance Sensor",
-        xmlTag = "MB1242"
+        xmlTag = "MB1242V2"
 )
 public class MB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements DistanceSensor{
     private long lastRun = 0;
@@ -80,8 +80,5 @@ public class MB1242 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements Dist
 
     }
 
-    @Override
-    public void close() {
 
-    }
 }

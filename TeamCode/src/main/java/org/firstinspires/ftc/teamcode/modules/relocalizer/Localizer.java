@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.modules.relocalizer;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.outoftheboxrobotics.photoncore.Neutrino.MB1242.MB1242Ex;
+import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -10,14 +13,17 @@ import org.firstinspires.ftc.teamcode.util.Side;
 
 public class Localizer
 {
-    public MB1242 distfl /*, distfr*/;
+
+    public MB1242Ex distfl /*, distfr*/;
+
     public MB1643 left, right;
-    
+
 
     public double frontDistL;
     //public double frontDistR;
     public double leftDist;
     public double rightDist;
+    public double localizedCount=0;
 
     public double frontDistLRaw, /*frontDistRRaw*/ leftDistRaw, rightDistRaw;
 
@@ -26,6 +32,8 @@ public class Localizer
     filter movingMedianLeft;
     filter movingMedianRight;
 
+    public double savedDist;
+
     boolean enabled=true;
 
     public enum LocalizationMode
@@ -33,20 +41,28 @@ public class Localizer
         TO_INTAKE,
         INTAKING,
         BACKGROUND,
-        OFF
+        OFF,
+        COMPLETED
     }
 
     LocalizationMode mode=LocalizationMode.BACKGROUND;
 
     Robot r;
 
+    public boolean cancelTraj=false;
 
 
     public Localizer(Robot r)
     {
         this.r=r;
         HardwareMap hardwareMap=r.hardwareMap;
-        distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
+        //hardwareMap.getAll(I2cDeviceSynch.class);
+
+        distfl = hardwareMap.get(MB1242Ex.class, "frontLeftDistance");
+        //distfl.doInitialize();
+        //distfl.resetDeviceConfigurationForOpMode();
+        //distfl.setRunDelayMs(5);
+
         //distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
         left = new MB1643(hardwareMap, "left");
         right = new MB1643(hardwareMap, "right");
@@ -61,8 +77,8 @@ public class Localizer
     {
         if(mode!=LocalizationMode.OFF)
         {
-            frontDistL=movingMedianFrontL.update(distfl.getDistance(DistanceUnit.INCH));
-            frontDistLRaw=distfl.getDistance(DistanceUnit.INCH);
+            frontDistLRaw=distfl.getDistanceAsync(DistanceUnit.INCH);
+            frontDistL=movingMedianFrontL.update(frontDistLRaw);
 
             //frontDistR=movingMedianFrontR.update(distfr.getDistance(DistanceUnit.INCH));
             //frontDistRRaw=distfr.getDistance(DistanceUnit.INCH);
@@ -72,6 +88,7 @@ public class Localizer
 
             rightDist=movingMedianRight.update(right.getDistance(DistanceUnit.INCH));
             rightDistRaw=right.getDistance(DistanceUnit.INCH);
+
         }
     }
 
@@ -82,24 +99,27 @@ public class Localizer
 
     public void relocalize()
     {
-        switch(mode)
+        if(frontDistLRaw<18&&frontDistLRaw>7)
         {
-            case TO_INTAKE:
-                if(frontDistLRaw<10)
-                {
-                    r.setPoseEstimate(new Pose2d(-56.8, r.getPoseEstimate().getY(), r.getPoseEstimate().getHeading()));
-                }
-            case INTAKING:
-                /*if(Context.side==Side.LEFT)
-                {
-                    double y=(leftDist-4)+15;
-                    r.setPoseEstimate(new Pose2d(r.getPoseEstimate().getX(), y, r.getPoseEstimate().getHeading()));
-                }
-                else if(Context.side==Side.RIGHT)
-                {
-                    double y=0;
-                    r.setPoseEstimate(new Pose2d(r.getPoseEstimate().getX(), y, r.getPoseEstimate().getHeading()));
-                }*/
+            if(mode==LocalizationMode.TO_INTAKE)
+            {
+                //savedDist=frontDistLRaw;
+                //r.setPoseEstimate(new Pose2d(-56.8, 13.75, r.getPoseEstimate().getHeading()));
+                r.breakFollowing();
+                //r.setPoseEstimate(new Pose2d(-56.8, 13.75, r.getPoseEstimate().getHeading()));
+
+                cancelTraj=true;
+                mode=LocalizationMode.BACKGROUND;
+                localizedCount++;
+            }
+            else if(mode==LocalizationMode.COMPLETED)
+            {
+                cancelTraj=false;
+            }
+        }
+        else
+        {
+            cancelTraj=false;
         }
     }
 }

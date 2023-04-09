@@ -18,6 +18,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class AlignerAuto extends OpenCvPipeline {
     public String recording= "Not Recording";
     public String error="None";
     private double[] loc=new double[8];
+    public static double multiplier=-1.5;
 
     Mat processed=new Mat();
     Mat morphed=new Mat();
@@ -101,6 +103,16 @@ public class AlignerAuto extends OpenCvPipeline {
     Scalar highHSV;
 
     public double centerX=-1;
+    public double largestArea=0;
+    public double threshold=1500;
+
+    public double power=0;
+    double pastError;
+    double currentError;
+    double gainCoeff=-0.00015;
+
+    public boolean aligning=false;
+    Moments m;
 
 
 
@@ -183,7 +195,7 @@ public class AlignerAuto extends OpenCvPipeline {
                 //Imgproc.boundingRect(Contours.get(i)).br();
                 double area=Imgproc.contourArea(Contours.get(i));
 
-                if(area>contourArea&&width*ratio<height)
+                if(area>contourArea&&width*ratio<height&&area>threshold)
                 {
                     contourArea=area;
                     contourIndex=i;
@@ -193,7 +205,16 @@ public class AlignerAuto extends OpenCvPipeline {
             {
                 mat=maskTemplate.clone();
                 Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
-                centerX=(Imgproc.boundingRect(Contours.get(contourIndex)).x+Imgproc.boundingRect(Contours.get(contourIndex)).br().x)/2;
+                m=Imgproc.moments(Contours.get(contourIndex));
+                if(m.m00!=0)
+                {
+                    centerX=(int) m.m10/m.m00;
+                }
+                else
+                {
+                    centerX=-1;
+                }
+                largestArea=contourArea;
                 //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
                 //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
                 //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
@@ -256,7 +277,7 @@ public class AlignerAuto extends OpenCvPipeline {
             location= Location.LEFT;
         }
 
-
+        updatePower();
         //Imgproc.cvtColor(mat, returnMat, Imgproc.COLOR_HSV2RGB);
         return mat;
     }
@@ -278,6 +299,43 @@ public class AlignerAuto extends OpenCvPipeline {
         //Find equation for actual place
         double area=boxsize;
         return area;
+    }
+
+    private void updatePower()
+    {
+        if(centerX<0)
+        {
+            power=0;
+        }
+        else if(aligning)
+        {
+            currentError=centerX-160;
+            if(Math.abs(currentError)<5)
+            {
+                currentError=0;
+            }
+
+            if(Math.signum(currentError)==Math.signum(pastError)||power==0)
+            {
+                power+=gainCoeff*currentError;
+            }
+            else
+            {
+                power=Math.abs(power)/2*Math.signum(currentError)*-1;
+            }
+
+            pastError=currentError;
+        }
+        else
+        {
+            pastError=0;
+            power=0;
+        }
+    }
+
+    public double getPower()
+    {
+        return power;
     }
     public int getShift()
     {

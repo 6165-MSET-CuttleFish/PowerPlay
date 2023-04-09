@@ -16,7 +16,7 @@ public class DepositTest extends LinearOpMode {
     
     @Override
     public void runOpMode() throws InterruptedException {
-        Context.hardwareMap=hardwareMap;
+        //Context.hardwareMap=hardwareMap;
         Robot robot = new Robot(this);
         waitForStart();
         while (opModeIsActive()) {
@@ -29,13 +29,19 @@ public class DepositTest extends LinearOpMode {
             if (gamepad1.y)
                 robot.deposit.setAngle(Deposit.AngleState.VECTORING);
             if(gamepad1.right_bumper)
+                robot.deposit.setExtension(Deposit.ExtensionState.HALF);
+            if(gamepad1.left_bumper)
+                robot.deposit.setExtension(Deposit.ExtensionState.FOURTH);
+            /*if(gamepad1.right_bumper)
                 robot.claw.setState(Claw.State.OPEN);
             if(gamepad1.left_bumper)
                 robot.claw.setState(Claw.State.CLOSE);
-            if(gamepad1.dpad_up)
+            if(gamepad1.dpad_down)
+                robot.claw.setState(Claw.State.OPEN_WIDE);*/
+            /*if(gamepad1.dpad_up)
                 robot.claw.setPoleState(Claw.Pole.UP);
             if(gamepad1.dpad_down)
-                robot.claw.setPoleState(Claw.Pole.DOWN);
+                robot.claw.setPoleState(Claw.Pole.DOWN);*/
 
             telemetry.addData("Ext State: ", robot.deposit.getExtState());
             telemetry.addData("Ang State: ", robot.deposit.getAngState());

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.util
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -12,7 +13,7 @@ object Context
     var opMode: LinearOpMode? = null
 
     @JvmField
-    var tel: Telemetry? = null
+    var tel: MultipleTelemetry? = null
 
     @JvmField
     var robot: Robot? = null
@@ -54,6 +55,7 @@ object Context
             isAuto = true
             hallEffectEnabled=false
             autoalignEnabled=true
+            hardwareMap= opMode!!.hardwareMap;
         }
 
         if (opMode!!.javaClass.isAnnotationPresent(Left::class.java))
@@ -65,7 +67,7 @@ object Context
             side=Side.RIGHT
         }
 
-        tel= opMode!!.telemetry
+        tel= robot!!.telemetry;
         hardwareMap= opMode!!.hardwareMap
         contextPastInit=true
     }

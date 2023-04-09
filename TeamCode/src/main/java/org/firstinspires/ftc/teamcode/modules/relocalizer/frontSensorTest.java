@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.relocalizer;
 
+import com.outoftheboxrobotics.photoncore.Neutrino.MB1242.MB1242Ex;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -14,22 +16,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class frontSensorTest extends LinearOpMode {
 
     AnalogInput distanceInput;
-    MB1242 test;
 
-    public MB1242 distfl, distfr;
+    public MB1242Ex distfl, distfr;
 
     filter movingMedianFront;
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(this);
+        PhotonCore.enable();
+        //Robot robot = new Robot(this);
         //test = robot.distfl;
-        movingMedianFront = new filter(10);
+        //movingMedianFront = new filter(10);
 
-        //distfl = hardwareMap.get(MB1242.class, "frontLeftDistance");
+        distfl = hardwareMap.get(MB1242Ex.class, "frontLeftDistance");
+        telemetry.addData("Help", "Me");
+        telemetry.update();
         //distfr = hardwareMap.get(MB1242.class, "frontRightDistance");
 
         waitForStart();
-        while(opModeIsActive()) {
-            robot.deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        while(opModeIsActive())
+        {
+            telemetry.addData("Help", "Me2");
+            telemetry.addData("Front", distfl.getDistanceAsync(DistanceUnit.INCH));
+            telemetry.update();
 
             // double rawFront = test.getDistance(DistanceUnit.INCH);
             //double rawSide = robot.right.getDistance(DistanceUnit.INCH);

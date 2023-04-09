@@ -55,6 +55,11 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public AlignerAuto autoalign;
     public Turret.State state;
+
+    Mode mode=Mode.PID;
+    double timeConstraint=0;
+    ElapsedTime motionprofileTimer;
+
     public double motorOil=0;
     @Override
     public void setState(ModuleState s)
@@ -64,15 +69,44 @@ public class Turret extends HwModule
         {
             state=(State)s;
         }
+        if(s==State.AUTOALIGN)
+        {
+            autoalign.aligning=true;
+        }
+        //timeConstraint=0;
+        //mode=Mode.PID;
         updateTarget();
         time.reset();
     }
+
+    /*public void setState(ModuleState s, double time)
+    {
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(s.getClass()==Turret.State.class)
+        {
+            state=(State)s;
+        }
+        if(s== State.AUTOALIGN)
+        {
+            autoalign.aligning=true;
+        }
+        timeConstraint=time;
+        mode=Mode.MOTION_PROFILED;
+        updateTarget();
+        this.time.reset();
+    }*/
+
     public enum State implements ModuleState
     {
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
         LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
+    }
+
+    public enum Mode
+    {
+        PID, MOTION_PROFILED
     }
 
     public Turret(HardwareMap hardwareMap)
@@ -87,26 +121,41 @@ public class Turret extends HwModule
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         state=State.ZERO;
+
+        motionprofileTimer=new ElapsedTime();
     }
 
-    public void update() {
-        updateTarget();
+    public void update()
+    {
+            if(state!=State.AUTOALIGN&&Context.autoalignCameraPastInit)
+            {
+                autoalign.aligning=false;
+            }
+            else if(Context.autoalignCameraPastInit)
+            {
+                autoalign.aligning=true;
+            }
 
-        //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
+            updateTarget();
 
-        if(Math.abs(encoder.getCurrentPosition()) < 600) {
-            pidController.gainSchedule(coeff2);
-        }
-        else {
-            pidController.gainSchedule(coeff1);
-        }
+            //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
+
+            if(Math.abs(encoder.getCurrentPosition()) < 600) {
+                pidController.gainSchedule(coeff2);
+            }
+            else {
+                pidController.gainSchedule(coeff1);
+            }
 
 
-        if(state!=State.MANUAL) {
-            pidController.setTargetPosition(targetPos);
-
-            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
-        }
+            if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
+            {
+                turretMotor.setPower(autoalign.getPower());
+            }
+            else if(state!=State.MANUAL) {
+                pidController.setTargetPosition(targetPos);
+                turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            }
     }
 
     public double secondsSpentInState() {
@@ -175,10 +224,11 @@ public class Turret extends HwModule
                     targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
                 case AUTOALIGN:
-                    if(Context.autoalignCameraPastInit)
-                    {
-                        targetPos = encoder.getCurrentPosition() + autoalign.getShift();
-                    }
+                    //if(Context.autoalignCameraPastInit)
+                    //{
+                        //targetPos = encoder.getCurrentPosition() + autoalign.getShift();
+                        targetPos=encoder.getCurrentPosition();
+                    //}
                     break;
         }
     }

@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.pytorch:pytorch_android_lite:1.9.0'
     implementation 'org.pytorch:pytorch_android_torchvision:1.9.0'
 
+    implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.4'
+
     /*implementation platform("ai.djl:bom:0.20.0")
     implementation "ai.djl:api"
     // TODO: remove djl android package version in 0.21.0

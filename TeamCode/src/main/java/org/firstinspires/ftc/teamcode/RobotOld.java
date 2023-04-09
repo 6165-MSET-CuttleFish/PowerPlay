@@ -137,7 +137,7 @@ public class RobotOld extends MecanumDrive {
         groundIntake = new GroundIntake(hardwareMap);*/
         //thread=new HardwareThread(turret, slides, l);
 
-        hardware.startHW();
+        //hardware.startHW();
 
 
 //        camera = new Camera(hardwareMap, telemetry);

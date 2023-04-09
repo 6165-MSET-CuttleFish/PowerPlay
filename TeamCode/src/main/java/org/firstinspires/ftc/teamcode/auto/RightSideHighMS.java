@@ -15,12 +15,15 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
+import org.firstinspires.ftc.teamcode.modules.relocalizer.Localizer;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @Autonomous
 @Right
@@ -56,6 +59,8 @@ public class RightSideHighMS extends LinearOpMode{
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+        t=new ElapsedTime();
+        TaskScheduler scheduler=new TaskScheduler(this);
 
 
         //telemetry.setMsTransmissionInterval(50);
@@ -82,24 +87,24 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-34,13.5, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-34,12.7, Math.toRadians(180)))
 
                 .addTemporalMarker(0.0,()->{
-                    turret.setState(Turret.State.ZERO);
+                    //turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
 
                 })
                 .addTemporalMarker(0.65,()->{
 
-                    slides.setState(Slides.State.CYCLE0);
+                    //slides.setState(Slides.State.CYCLE0);
                 })
                 .addTemporalMarker(0.8,()->{
                     claw.setPoleState(Claw.Pole.UP);
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-54.8, 13.5),
+                .lineToConstantHeading(new Vector2d(-54.8, 12.7),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
@@ -107,12 +112,12 @@ public class RightSideHighMS extends LinearOpMode{
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     groundIntake.setState(GroundIntake.State.OFF);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
-                    deposit.setExtension(Deposit.ExtensionState.EXTEND);
+                    //deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .build();
 
-        Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-32.85, 12.7),
+        Trajectory cycleDrop = robot.trajectoryBuilder(new Pose2d(-57.8, 12.7, Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-31.85, 12.7),
                         robot.getVelocityConstraint(52.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
@@ -122,27 +127,33 @@ public class RightSideHighMS extends LinearOpMode{
                 .addTemporalMarker(0.25, ()->{
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH);
 
-
+                    //RunCondition r=new RunCondition(()->Math.abs(turret.encoder.getCurrentPosition()+3000)<200);
+                    //scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, ()->{
                     deposit.setExtension(Deposit.ExtensionState.HALF);
                 })
                 .build();
+
+
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-54.8, 13.5),
+                .lineToConstantHeading(new Vector2d(-54.8, 12.7),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
-
+                .addDisplacementMarker(16, ()->
+                {
+                    robot.localizer.setMode(Localizer.LocalizationMode.TO_INTAKE);
+                })
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
 
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                 })
-                .addTemporalMarker(0.3, ()->{
+                /*.addTemporalMarker(0.3, ()->{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
-                })
+                })*/
                 .build();
-        Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
+        Trajectory endLeft = robot.trajectoryBuilder(new Pose2d(-32.85, 12.7, Math.toRadians(180)))
 
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -156,7 +167,7 @@ public class RightSideHighMS extends LinearOpMode{
                     slides.setState(Slides.State.BOTTOM);
                 })
                 .lineToConstantHeading(new Vector2d(-13,14)).build();
-        Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
+        Trajectory endMiddle = robot.trajectoryBuilder(new Pose2d(-32.85, 12.7, Math.toRadians(180)))
                 /*
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -169,7 +180,7 @@ public class RightSideHighMS extends LinearOpMode{
                     slides.setState(Slides.State.BOTTOM);
                 })*/
                 .lineToConstantHeading(new Vector2d(-37,14)).build();
-        Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
+        Trajectory endRight = robot.trajectoryBuilder(new Pose2d(-32.85, 12.7, Math.toRadians(180)))
 
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
@@ -205,18 +216,43 @@ public class RightSideHighMS extends LinearOpMode{
 
         for(int i = 0; i < 5; i++){
             turret.setState(Turret.State.ZERO);
+            if(i==0) slides.setState(Slides.State.CYCLE0);
             if(i==1) slides.setState(Slides.State.CYCLE1);
-            else if(i==2) slides.setState(Slides.State.CYCLE2);
-            else if(i==3) slides.setState(Slides.State.CYCLE3);
-            else if(i==4) slides.setState(Slides.State.CYCLE4);
+            if(i==2) slides.setState(Slides.State.CYCLE2);
+            if(i==3) slides.setState(Slides.State.CYCLE3);
+            if(i==4) slides.setState(Slides.State.CYCLE4);
             claw.setPoleState(Claw.Pole.UP);
-            if(i==0)robot.followTrajectory(initIntake);
+            if(i==0)
+            {
+                robot.localizer.setMode(Localizer.LocalizationMode.TO_INTAKE);
+                robot.followTrajectory(initIntake);
+            }
             else robot.followTrajectory(cycleIntake);
+
+            robot.setDrivePower(new Pose2d(0, 0, 0));
+
+            robot.deposit.setExtension(Deposit.ExtensionState.HALF);
+            while(robot.localizer.frontDistL>7.9)
+            {
+                robot.setDrivePower(new Pose2d(0.1, 0, 0));
+                robot.update();
+                robot.turret.update();
+            }
+            /*t.reset();
+            while(t.milliseconds()<200)
+            {
+                robot.setDrivePower(new Pose2d(0.05, 0, 0));
+                robot.update();
+            }*/
+            robot.setDrivePower(new Pose2d(0, 0, 0));
+            robot.setPoseEstimate(new Pose2d(-57.8, robot.getPoseEstimate().getY(), robot.getPoseEstimate().getHeading()));
+
             intake();
+
             robot.followTrajectory(cycleDrop);
-            dropOff(false);
+            dropOff(true);
         }
-        robot.followTrajectory(endRight);
+        //robot.followTrajectory(endRight);
 
 /*
 
@@ -242,7 +278,7 @@ public class RightSideHighMS extends LinearOpMode{
         else
         {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-185<timer)
+            while(System.currentTimeMillis()-400<timer)
             {
                 robot.update();
             }
@@ -299,8 +335,6 @@ public class RightSideHighMS extends LinearOpMode{
         while(System.currentTimeMillis()-5< timer){
             robot.update();
         }
-
-
 
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
     }
