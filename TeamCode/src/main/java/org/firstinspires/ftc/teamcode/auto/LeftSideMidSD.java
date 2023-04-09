@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
-import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
@@ -37,60 +36,13 @@ public class LeftSideMidSD extends LinearOpMode {
     Deposit deposit;
     GroundIntake groundIntake;
     Turret turret;
-    TelemetryPacket packet;
-    Detector detector1;
-    OpenCvWebcam camera, camera2;
-    TaskScheduler scheduler;
-    colorDetection pipeline;
+
     Pose2d startPose = new Pose2d(34,61, Math.toRadians(270));
     double timer = 0;
-    int cycle = 0;
-    double state=-1;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        /*
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-       // camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        int[] viewportContainerIds = OpenCvCameraFactory.getInstance()
-                .splitLayoutForMultipleViewports(
-                        cameraMonitorViewId,
-                        2,
-                        OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), viewportContainerIds[0]);
-        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), viewportContainerIds[1]);
-        //aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-        pipeline=new colorDetection(telemetry);
 
-        camera.setPipeline(pipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-        camera2.setPipeline(detector1=new Detector());
-        camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera2.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });*/
 
         robot = new Robot(this);
 
@@ -132,7 +84,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(34,13, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(34,12.5, Math.toRadians(0)))
 
                 .addTemporalMarker(0.0,()->{
                     turret.setState(Turret.State.ZERO);
@@ -149,7 +101,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(55.8, 12.8),
+                .lineToConstantHeading(new Vector2d(55.1, 12.3),
                         robot.getVelocityConstraint(47.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(45))
 
@@ -162,7 +114,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.85, 12.2),
+                .lineToConstantHeading(new Vector2d(32.85, 12.3),
                         robot.getVelocityConstraint(52.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
@@ -179,7 +131,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(55.8, 12.8),
+                .lineToConstantHeading(new Vector2d(55.1, 12.3),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
@@ -207,17 +159,18 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(13,14)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
-                /*
+
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
+
 
                 })
-                .addTemporalMarker(0.07, ()->{
+                .addTemporalMarker(0.2, ()->{
+                    claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
-                })*/
+                })
                 .lineToConstantHeading(new Vector2d(37,14)).build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
 
@@ -233,7 +186,6 @@ public class LeftSideMidSD extends LinearOpMode {
                     slides.setState(Slides.State.BOTTOM);
                 })
                 .lineToConstantHeading(new Vector2d(58,13)).build();
-        double tempState;
 
 
         waitForStart();
@@ -256,8 +208,8 @@ public class LeftSideMidSD extends LinearOpMode {
 
         for(int i = 0; i < 5; i++){
             turret.setState(Turret.State.ZERO);
-            while(System.currentTimeMillis()-500< timer){
-                robot.update();
+            while(System.currentTimeMillis()-500<timer){
+
             }
             if(i==1) slides.setState(Slides.State.CYCLE1);
             else if(i==2) slides.setState(Slides.State.CYCLE2);
@@ -277,6 +229,7 @@ public class LeftSideMidSD extends LinearOpMode {
         if(Context.signalSleeveZone==1) robot.followTrajectory(endLeft);
         else if(Context.signalSleeveZone==2) robot.followTrajectory(endMiddle);
         else if(Context.signalSleeveZone==3) robot.followTrajectory(endRight);
+
     }
 
     public void dropOff(boolean preload){
@@ -303,7 +256,6 @@ public class LeftSideMidSD extends LinearOpMode {
 
         /*while(slides.isBusy())
         {
-
         }*/
 
         claw.setState(Claw.State.OPEN);
@@ -335,7 +287,6 @@ public class LeftSideMidSD extends LinearOpMode {
             turret.setState(Turret.State.AUTOALIGN);
             while(System.currentTimeMillis()-150<timer && robot.detector2.getLocation()!=AlignerAuto.Location.MIDDLE)
             {
-
             }
             turret.setState(Turret.State.IDLE);
         }*/
@@ -358,4 +309,3 @@ public class LeftSideMidSD extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
     }
 }
-
