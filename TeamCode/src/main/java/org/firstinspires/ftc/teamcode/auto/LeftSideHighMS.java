@@ -84,7 +84,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(34,13, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(34,12.5, Math.toRadians(0)))
 
                 .addTemporalMarker(0.0,()->{
                     turret.setState(Turret.State.ZERO);
@@ -101,7 +101,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(55.1, 12.8),
+                .lineToConstantHeading(new Vector2d(55.1, 12.3),
                         robot.getVelocityConstraint(47.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(45))
 
@@ -114,7 +114,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.85, 12.2),
+                .lineToConstantHeading(new Vector2d(32.85, 11.8),
                         robot.getVelocityConstraint(52.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, ()->{
@@ -131,7 +131,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(55.1, 12.8),
+                .lineToConstantHeading(new Vector2d(55.1, 12.3),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
@@ -159,17 +159,18 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .lineToConstantHeading(new Vector2d(13,14)).build();
         Trajectory endMiddle = robot.trajectoryBuilder(cycleDrop.end())
-                /*
+
                 .addTemporalMarker(0.0, ()->{
                     turret.setState(Turret.State.ZERO);
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
-                    claw.setState(Claw.State.OPEN);
+
 
                 })
-                .addTemporalMarker(0.07, ()->{
+                .addTemporalMarker(0.2, ()->{
+                    claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
-                })*/
+                })
                 .lineToConstantHeading(new Vector2d(37,14)).build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
 
