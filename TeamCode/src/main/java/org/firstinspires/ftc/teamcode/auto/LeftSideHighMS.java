@@ -127,7 +127,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
                 })
                 .addTemporalMarker(0.5, ()->{
-                    deposit.setExtension(Deposit.ExtensionState.HALF);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
@@ -236,7 +236,7 @@ public class LeftSideHighMS extends LinearOpMode {
         {
 
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-195 < timer){
+            while(System.currentTimeMillis()-300 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -245,7 +245,7 @@ public class LeftSideHighMS extends LinearOpMode {
         else
         {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-185<timer)
+            while(System.currentTimeMillis()-300<timer)
             {
                 robot.update();
             }
