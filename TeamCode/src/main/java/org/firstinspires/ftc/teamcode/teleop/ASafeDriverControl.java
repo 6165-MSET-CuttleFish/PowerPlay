@@ -305,7 +305,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
                 deposit.setAngle(Deposit.AngleState.INTAKE);
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000)
-                claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
+                    claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
             } else if (intakeTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.CLOSE);
             }
@@ -443,7 +443,7 @@ public class ASafeDriverControl extends LinearOpMode {
 
     public void transferUpdate(int cycle) {
         if (transfer && cycle != 0) {
-            if (transferTimer.milliseconds() > 700) {
+            if (transferTimer.milliseconds() > 1000) {
                 if(cycle==1) {
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 } else {
