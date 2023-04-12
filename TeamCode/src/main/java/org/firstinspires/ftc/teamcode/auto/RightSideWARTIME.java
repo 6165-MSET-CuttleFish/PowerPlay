@@ -68,17 +68,19 @@ public class RightSideWARTIME extends LinearOpMode{
 
 
                 })
-                .addTemporalMarker(0.2, () -> {
+                .addTemporalMarker(0.2,()->{
                     //groundIntake.setState(GroundIntake.State.INTAKING);
-                    slides.setState(Slides.State.CYCLE_HIGH);
+                    slides.setState(Slides.State.HIGH);
 
                 })
-                .addTemporalMarker(0.3, () -> {
+                .addTemporalMarker(0.4, ()->{
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
-                    turret.setState(Turret.State.RIGHT);
-                    deposit.setAngle(Deposit.AngleState.VECTORING);
                     claw.setPoleState(Claw.Pole.DOWN);
-                    deposit.setExtension(Deposit.ExtensionState.HALF);
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                    turret.setState(Turret.State.RIGHT);
+                })
+                .addTemporalMarker(0.5,() ->{
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 })
                 .build();
         Trajectory preloadShift = robot.trajectoryBuilder(preload1.end())
@@ -107,7 +109,7 @@ public class RightSideWARTIME extends LinearOpMode{
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-55.5, 13.5),
+                .lineToConstantHeading(new Vector2d(-56.2, 13.5),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
@@ -137,7 +139,7 @@ public class RightSideWARTIME extends LinearOpMode{
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-55.5, 13.5),
+                .lineToConstantHeading(new Vector2d(-56.2, 13.5),
                         robot.getVelocityConstraint(40, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
