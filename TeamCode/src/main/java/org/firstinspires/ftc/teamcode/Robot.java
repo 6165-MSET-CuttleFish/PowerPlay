@@ -39,7 +39,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -57,8 +56,6 @@ import org.firstinspires.ftc.teamcode.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.relocalizer.Localizer;
-import org.firstinspires.ftc.teamcode.modules.relocalizer.MB1242;
-import org.firstinspires.ftc.teamcode.modules.relocalizer.MB1643;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 
@@ -68,7 +65,7 @@ import org.firstinspires.ftc.teamcode.modules.vision.DualCameras;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.BackgroundTasks;
 import org.firstinspires.ftc.teamcode.util.Context;
 
 //import org.firstinspires.ftc.teamcode.util.Context;
@@ -123,7 +120,7 @@ public class Robot extends MecanumDrive{
     //public MB1242 distfl, distfr;
     //public MB1643 left, right;
     //public HardwareThread thread;
-    public BackgroundCR hardware;
+    public BackgroundTasks hardware;
     public GroundIntake groundIntake;
     //public Camera camera;
     public boolean isOdoRaised = false;
@@ -169,8 +166,8 @@ public class Robot extends MecanumDrive{
         turret = new Turret(hardwareMap);
         groundIntake = new GroundIntake(hardwareMap);
 
-        hardware=new BackgroundCR(this);
-        hardware.startHW();
+        hardware=new BackgroundTasks(this);
+        hardware.start();
 
         //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
         //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");

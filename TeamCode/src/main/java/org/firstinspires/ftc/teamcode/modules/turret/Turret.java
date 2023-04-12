@@ -15,8 +15,6 @@ import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
-import org.firstinspires.ftc.teamcode.util.PIDCoeff;
-import org.firstinspires.ftc.teamcode.util.PIDControl;
 
 @Config
 public class Turret extends HwModule
@@ -29,9 +27,6 @@ public class Turret extends HwModule
     public BPIDFController pidController;
 
     public static ElapsedTime time = new ElapsedTime();
-
-    PIDControl controller;
-    PIDCoeff coeff;
 
     public static double offset=8;
 
@@ -64,8 +59,15 @@ public class Turret extends HwModule
         {
             state=(State)s;
         }
+        if(s==State.AUTOALIGN)
+        {
+            autoalign.alignstate=true;
+        }
+        else
+        {
+            autoalign.alignstate = false;
+        }
         updateTarget();
-        time.reset();
     }
     public enum State implements ModuleState
     {
@@ -101,8 +103,11 @@ public class Turret extends HwModule
             pidController.gainSchedule(coeff1);
         }
 
-
-        if(state!=State.MANUAL) {
+        if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
+        {
+           turretMotor.setPower(autoalign.getPower());
+        }
+        else if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
 
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
@@ -124,8 +129,7 @@ public class Turret extends HwModule
 //        }
             switch (state) {
                 case MANUAL:
-                    targetPos = encoder.getCurrentPosition();
-                    break;
+                case AUTOALIGN:
                 case IDLE:
                     targetPos = encoder.getCurrentPosition();
                     break;
@@ -174,13 +178,7 @@ public class Turret extends HwModule
                 case LEFT_DIAGONAL:
                     targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
-                case AUTOALIGN:
-                    if(Context.autoalignCameraPastInit)
-                    {
-                        targetPos = encoder.getCurrentPosition() + autoalign.getShift();
-                    }
-                    break;
-        }
+            }
     }
 
     public void setAutoalignCamera(AlignerAuto autoalign)
