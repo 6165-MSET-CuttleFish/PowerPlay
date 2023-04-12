@@ -14,18 +14,18 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.BackgroundTasks;
 import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
-public class presflex extends LinearOpMode {
+public class presentationDemo extends LinearOpMode {
     Robot robot;
     Slides slides;
     Deposit deposit;
     GroundIntake groundIntake;
     Claw claw;
     Turret turret;
-    BackgroundCR hardware;
+    BackgroundTasks hardware;
     TelemetryPacket packet;
     GamepadEx primary;
     ToggleButtonReader extend;

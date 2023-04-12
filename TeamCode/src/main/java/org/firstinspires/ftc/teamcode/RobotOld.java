@@ -52,9 +52,8 @@ import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.BackgroundTasks;
 import org.firstinspires.ftc.teamcode.util.HardwareThread;
-import org.firstinspires.ftc.teamcode.modules.vision.Camera;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,10 +108,9 @@ public class RobotOld extends MecanumDrive {
 
     public Claw claw;
     public HardwareThread thread;
-    public BackgroundCR hardware;
+    public BackgroundTasks hardware;
 
     public GroundIntake groundIntake;
-    public Camera camera;
     public boolean isOdoRaised = false;
     public driveState state;
 
@@ -137,7 +135,7 @@ public class RobotOld extends MecanumDrive {
         groundIntake = new GroundIntake(hardwareMap);*/
         //thread=new HardwareThread(turret, slides, l);
 
-        hardware.startHW();
+        hardware.start();
 
 
 //        camera = new Camera(hardwareMap, telemetry);

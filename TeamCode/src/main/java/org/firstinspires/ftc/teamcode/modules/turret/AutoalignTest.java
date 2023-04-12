@@ -21,14 +21,16 @@ public class AutoalignTest extends LinearOpMode
         turret=robot.turret;
 
         waitForStart();
+        turret.setState(Turret.State.AUTOALIGN);
 
         while(opModeIsActive())
         {
-            turret.setState(Turret.State.AUTOALIGN);
             turret.update();
 
-            telemetry.addData("Shift", turret.autoalign.getShift());
+            telemetry.addData("Power", turret.autoalign.getPower());
             telemetry.addData("State", turret.getState());
+            telemetry.addData("Aligning", turret.autoalign.aligning);
+            telemetry.addData("Aligning State", turret.autoalign.alignstate);
             telemetry.update();
         }
     }
