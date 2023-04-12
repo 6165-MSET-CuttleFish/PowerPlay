@@ -59,13 +59,16 @@ public class Turret extends HwModule
         {
             state=(State)s;
         }
-        if(s==State.AUTOALIGN)
+        if(Context.autoalignCameraPastInit)
         {
-            autoalign.alignstate=true;
-        }
-        else
-        {
-            autoalign.alignstate = false;
+            if(s==State.AUTOALIGN)
+            {
+                autoalign.alignstate=true;
+            }
+            else
+            {
+                autoalign.alignstate = false;
+            }
         }
         updateTarget();
     }
