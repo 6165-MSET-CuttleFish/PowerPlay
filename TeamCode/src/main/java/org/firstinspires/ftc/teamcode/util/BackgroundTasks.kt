@@ -5,13 +5,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import kotlinx.coroutines.*
 import org.firstinspires.ftc.teamcode.Robot
 
-class BackgroundCR(val robot: Robot)
+class BackgroundTasks(val robot: Robot)
 {
     var packet: TelemetryPacket= TelemetryPacket()
     val dashboard: FtcDashboard= FtcDashboard.getInstance()
 
 
-    fun startHW()
+    fun start()
     {
         GlobalScope.launch(Dispatchers.Main)
         {

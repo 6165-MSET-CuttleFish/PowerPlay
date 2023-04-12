@@ -8,7 +8,9 @@ import android.os.Environment;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 
+import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -18,6 +20,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
@@ -44,15 +47,6 @@ public class AlignerAuto extends OpenCvPipeline {
     public static int boxHeight=120;
     public static double ratio=1.5;
 
-    // find and set the regions of interest
-    public static Rect POS_1_HIGH = new Rect(0, 0, 40, boxHeight);
-    public Rect POS_2_HIGH = new Rect(40, 0, 40, boxHeight);
-    public Rect POS_3_HIGH = new Rect(80, 0, 40, boxHeight);
-    public Rect POS_4_HIGH = new Rect(120, 0, 40, boxHeight);
-    public Rect POS_5_HIGH = new Rect(160, 0, 40, boxHeight);
-    public Rect POS_6_HIGH = new Rect(200, 0, 40, boxHeight);
-    public Rect POS_7_HIGH = new Rect(240, 0, 40, boxHeight);
-    //public static Rect POS_8_HIGH = new Rect(280, 0, 40, 30);
 
     public Rect HigherBoxes=new Rect(0, 10, 320, boxHeight);
     public Rect LowerBoxes=new Rect(0, 170, 320, boxHeight);
@@ -60,8 +54,8 @@ public class AlignerAuto extends OpenCvPipeline {
     //Find numbers for actual place
 
     public static int HLow = 5;
-    public static int SLow = 80;
-    public static int VLow = 50;
+    public static int SLow = 30;
+    public static int VLow = 30;
 
     public static int HHigh = 55;
     public static int SHigh = 255;
@@ -69,8 +63,6 @@ public class AlignerAuto extends OpenCvPipeline {
 
     public static boolean returnBlack = true;
     private double boxsize =0;
-    public double record;
-    public static double restrict=0.6;
     public String recording= "Not Recording";
     public String error="None";
     private double[] loc=new double[8];
@@ -90,18 +82,22 @@ public class AlignerAuto extends OpenCvPipeline {
     Mat returnMat=new Mat();
     Mat HSV=new Mat();
 
-    Mat submat_2=new Mat();
-    Mat submat_3=new Mat();
-    Mat submat_4=new Mat();
-    Mat submat_5=new Mat();
-    Mat submat_6=new Mat();
-    Mat submat_7=new Mat();
-
     Scalar lowHSV;
     Scalar highHSV;
 
     public double centerX=-1;
+    public double largestArea=0;
+    public double threshold=1500;
 
+    public double power=0;
+
+    public boolean aligning=false;
+    public boolean alignstate=false;
+    Moments m;
+
+    public static double highpower=0.3;
+    public static double lowpower=0.15;
+    public static boolean showPole=true;
 
 
     @Override
@@ -115,8 +111,8 @@ public class AlignerAuto extends OpenCvPipeline {
         lowHSV = new Scalar(HLow, SLow, VLow);
         highHSV = new Scalar(HHigh, SHigh, VHigh);
 
-        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(19, 19));
-        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15));
+        kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(17, 17));
+        kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13));
     }
 
     public void release()
@@ -134,12 +130,12 @@ public class AlignerAuto extends OpenCvPipeline {
         returnMat.release();
         HSV.release();
 
-        submat_2.release();
+        /*submat_2.release();
         submat_3.release();
         submat_4.release();
         submat_5.release();
         submat_6.release();
-        submat_7.release();
+        submat_7.release();*/
 
         if(Contours.size()>0)
         {
@@ -171,94 +167,62 @@ public class AlignerAuto extends OpenCvPipeline {
 
         Imgproc.morphologyEx(morphed, morphed2, MORPH_CLOSE, kernel2);
 
-            Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(morphed2, Contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-            int contourIndex=0;
-            double contourArea=0;
+        int contourIndex=0;
+        double contourArea=0;
 
-            for(int i=0; i<Contours.size(); i++)
+        for(int i=0; i<Contours.size(); i++)
+        {
+            Rect boundingRect=Imgproc.boundingRect(Contours.get(i));
+            int height=boundingRect.height;
+            int width=boundingRect.width;
+            //Imgproc.boundingRect(Contours.get(i)).br();
+            double area=Imgproc.contourArea(Contours.get(i));
+
+            if(area>contourArea&&width*ratio<height&&area>threshold)
             {
-                int height=Imgproc.boundingRect(Contours.get(i)).height;
-                int width=Imgproc.boundingRect(Contours.get(i)).width;
-                //Imgproc.boundingRect(Contours.get(i)).br();
-                double area=Imgproc.contourArea(Contours.get(i));
-
-                if(area>contourArea&&width*ratio<height)
-                {
-                    contourArea=area;
-                    contourIndex=i;
-                }
+                contourArea=area;
+                contourIndex=i;
             }
-            if(Contours.size()>0)
+        }
+        if(Contours.size()>0)
+        {
+            mat=maskTemplate.clone();
+            Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
+            m=Imgproc.moments(Contours.get(contourIndex));
+            if(m.m00!=0)
             {
-                mat=maskTemplate.clone();
-                Imgproc.drawContours(mat, Contours, contourIndex, new Scalar(255, 255, 255), -1);
-                centerX=(Imgproc.boundingRect(Contours.get(contourIndex)).x+Imgproc.boundingRect(Contours.get(contourIndex)).br().x)/2;
-                //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
-                //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
-                //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+                centerX=m.m10/m.m00;
             }
             else
             {
-                mat=morphed2;
                 centerX=-1;
             }
-            error="None";
-
-
-
-
+            largestArea=contourArea;
+            //Rect rect=Imgproc.boundingRect(Contours.get(contourIndex));
+            //Core.bitwise_and(laCringe, laCringe, finalMat, Contours.get(contourIndex));
+            //Imgproc.rectangle(finalMat, rect, new Scalar (0, 255, 0));
+        }
+        else
+        {
+            mat=morphed2;
+            centerX=-1;
+        }
+        error="None";
 
         //String logFilePath = String.format("%s/FIRST/data/img"+imgCount+".png", Environment.getExternalStorageDirectory().getAbsolutePath());
         //Imgcodecs.imwrite(logFilePath, mat);
 
-        //rectangle(mat, POS_1_BLUE, new Scalar(255, 255, 255));
-
-
-        /*rectangle(mat, POS_2_HIGH, new Scalar(255, 255, 255));
-        rectangle(mat, POS_3_HIGH, new Scalar(255, 255, 255));
-        rectangle(mat, POS_4_HIGH, new Scalar(255, 255, 255));
-        rectangle(mat, POS_5_HIGH, new Scalar(255, 255, 255));
-        rectangle(mat, POS_6_HIGH, new Scalar(255, 255, 255));
-        rectangle(mat, POS_7_HIGH, new Scalar(255, 255, 255));
-                //rectangle(mat, POS_8_BLUE, new Scalar(255, 255, 255));
-                //rectangle(input,POS_1_BLUE, new Scalar(255, 255, 255));
-        rectangle(input, POS_3_HIGH, new Scalar(255, 255, 255));
-        rectangle(input, POS_4_HIGH, new Scalar(255, 255, 255));
-        rectangle(input, POS_5_HIGH, new Scalar(255, 255, 255));
-        rectangle(input, POS_6_HIGH, new Scalar(255, 255, 255));
-        rectangle(input, POS_7_HIGH, new Scalar(255, 255, 255));
-        rectangle(input, POS_2_HIGH, new Scalar(255, 255, 255));*/
-                //rectangle(input,POS_8_BLUE, new Scalar(255, 255, 255));
-
-                //loc[0] = Core.sumElems(mat.submat(POS_1_BLUE)).val[0]/(POS_1_BLUE.height*POS_1_BLUE.width*255);
-        submat_2=mat.submat(POS_2_HIGH);
-        submat_3=mat.submat(POS_3_HIGH);
-        submat_4=mat.submat(POS_4_HIGH);
-        submat_5=mat.submat(POS_5_HIGH);
-        submat_6=mat.submat(POS_6_HIGH);
-        submat_7=mat.submat(POS_7_HIGH);
-        loc[1] = Core.sumElems(submat_2).val[0]/(POS_2_HIGH.height* POS_2_HIGH.width*255);
-        loc[2] = Core.sumElems(submat_3).val[0]/(POS_3_HIGH.height* POS_3_HIGH.width*255);
-        loc[3] = Core.sumElems(submat_4).val[0]/(POS_4_HIGH.height* POS_4_HIGH.width*255);
-        loc[4] = Core.sumElems(submat_5).val[0]/(POS_5_HIGH.height* POS_5_HIGH.width*255);
-        loc[5] = Core.sumElems(submat_6).val[0]/(POS_6_HIGH.height* POS_6_HIGH.width*255);
-        loc[6] = Core.sumElems(submat_7).val[0]/(POS_7_HIGH.height* POS_7_HIGH.width*255);
-                //loc[7] = Core.sumElems(mat.submat(POS_8_BLUE)).val[0]/(POS_7_BLUE.height*POS_8_BLUE.width*255);
-        boxsize =Math.round(((/*loc[0]*/+loc[1]+loc[3]+loc[4]+loc[5]+loc[6]+loc[2])*50));
-        record=Math.abs(loc[3]-loc[4]);
-        if(getShift()<restrict)
+        if(alignstate)
         {
-            location= Location.MIDDLE;
-        }else if((/*loc[0]*/+loc[1]+loc[2]+loc[3])<(loc[5]+loc[6]+loc[4]/*loc[7]*/)){
-            location= Location.RIGHT;
-        }else{
-            location= Location.LEFT;
+            updatePower();
         }
-
-
         //Imgproc.cvtColor(mat, returnMat, Imgproc.COLOR_HSV2RGB);
-        return mat;
+        if(showPole)
+            return mat;
+        else
+            return morphed2;
     }
 
     public void setState(State s)
@@ -278,6 +242,76 @@ public class AlignerAuto extends OpenCvPipeline {
         //Find equation for actual place
         double area=boxsize;
         return area;
+    }
+
+    /*private void updatePower()
+    {
+        if(centerX<0)
+        {
+            power=0;
+        }
+        else if(aligning)
+        {
+            currentError=centerX-160;
+            if(Math.abs(currentError)<5)
+            {
+                currentError=0;
+            }
+
+            if(Math.signum(currentError)==Math.signum(pastError)||power==0)
+            {
+                power+=gainCoeff*currentError;
+
+            }
+            else
+            {
+                power=Math.abs(power)/2*Math.signum(currentError)*-1;
+            }
+
+            pastError=currentError;
+        }
+        else
+        {
+            pastError=0;
+            power=0;
+        }
+    }*/
+
+    private void updatePower()
+    {
+        if(Math.abs(centerX-160)<5)
+        {
+            aligning=false;
+        }
+        else
+        {
+            aligning=true;
+        }
+
+        if(centerX>-1&&aligning)
+        {
+            if(Math.abs(centerX-160)>30)
+            {
+                power=-highpower*Math.signum(centerX-160);
+            }
+            else if(Math.abs(centerX-160)>15)
+            {
+                power=-lowpower*Math.signum(centerX-160);
+            }
+            else
+            {
+                power=0;
+            }
+        }
+        else
+        {
+            power=0;
+        }
+    }
+
+    public double getPower()
+    {
+        return power;
     }
     public int getShift()
     {

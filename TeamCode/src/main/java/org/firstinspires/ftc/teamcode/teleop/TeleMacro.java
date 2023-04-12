@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
-import org.firstinspires.ftc.teamcode.util.BackgroundCR;
+import org.firstinspires.ftc.teamcode.util.BackgroundTasks;
 @TeleOp
 public class TeleMacro extends LinearOpMode {
     Robot robot;
@@ -28,7 +28,7 @@ public class TeleMacro extends LinearOpMode {
     GroundIntake groundIntake;
     Claw claw;
     Turret turret;
-    BackgroundCR hardware;
+    BackgroundTasks hardware;
     TelemetryPacket packet;
     GamepadEx primary, secondary;
     ToggleButtonReader macroToggle, angling;
