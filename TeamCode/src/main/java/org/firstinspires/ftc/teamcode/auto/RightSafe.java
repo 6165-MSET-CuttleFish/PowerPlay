@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @Autonomous
 @Right
@@ -52,6 +54,7 @@ public class RightSafe extends LinearOpMode{
         slides.setState(Slides.State.BOTTOM);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
+        TaskScheduler scheduler=new TaskScheduler(this);
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
@@ -116,7 +119,8 @@ public class RightSafe extends LinearOpMode{
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
-
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-12&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<250);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
 
                 })
                 .addTemporalMarker(0.5, () -> {
@@ -225,7 +229,7 @@ public class RightSafe extends LinearOpMode{
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if(!preload) {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-110 < timer){
+            while(System.currentTimeMillis()-300 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -238,10 +242,10 @@ public class RightSafe extends LinearOpMode{
                 robot.update();
             }
         }
-        claw.setState(Claw.State.OPEN);
+        claw.setState(Claw.State.OPEN_WIDE);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-115 < timer){
+        while(System.currentTimeMillis()-250 < timer){
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);

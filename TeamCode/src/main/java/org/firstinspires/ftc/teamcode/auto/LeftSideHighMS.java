@@ -14,12 +14,13 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
+import org.firstinspires.ftc.teamcode.modules.turret.Autoalign;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous
 @Left
@@ -49,6 +50,7 @@ public class LeftSideHighMS extends LinearOpMode {
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+        TaskScheduler scheduler=new TaskScheduler(this);
         //telemetry.setMsTransmissionInterval(50);
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
@@ -109,6 +111,8 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<34.5&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<250);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
@@ -197,7 +201,7 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if (!preload) {
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 255 < timer) {
+            while (System.currentTimeMillis() - 300 < timer && Math.abs(turret.autoalign.centerX-160)>10) {
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();

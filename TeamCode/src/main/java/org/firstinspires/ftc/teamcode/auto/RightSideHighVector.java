@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
+import org.firstinspires.ftc.teamcode.modules.turret.Autoalign;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 
 //@Autonomous
@@ -202,7 +202,7 @@ public class RightSideHighVector extends LinearOpMode{
         timer = System.currentTimeMillis();
         turret.setState(Turret.State.AUTOALIGN);
         while(System.currentTimeMillis()-350 < timer){
-            if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.autoalign.getLocation() == Autoalign.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
             }
             telemetry.addData("TURRET", turret.getState());

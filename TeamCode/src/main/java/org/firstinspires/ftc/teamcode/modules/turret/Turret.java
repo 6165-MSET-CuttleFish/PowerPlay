@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -28,29 +27,20 @@ public class Turret extends HwModule
 
     public static ElapsedTime time = new ElapsedTime();
 
-    public static double offset=8;
-
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-
-
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3000,
             RIGHT_SIDE_HIGH_PRELOAD = -1030, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3200,
             LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 2850,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
-
-    public static double closePower = 0.3;
-    public static double farPower = 0.8; //:)
     double targetPos=0;
     public double posAtZero=0;
-    public double prevHall=0;
     public DcMotorEx turretMotor;
     public Encoder encoder;
     public AnalogInput hallEffect;
-    public AlignerAuto autoalign;
+    public Autoalign autoalign;
     public Turret.State state;
-    public double motorOil=0;
+
     @Override
     public void setState(ModuleState s)
     {
@@ -96,8 +86,6 @@ public class Turret extends HwModule
 
     public void update() {
         updateTarget();
-
-        //motorOil=controller.calculate(encoder.getCurrentPosition(), targetPos, time)/100;
 
         if(Math.abs(encoder.getCurrentPosition()) < 600) {
             pidController.gainSchedule(coeff2);
@@ -184,7 +172,7 @@ public class Turret extends HwModule
             }
     }
 
-    public void setAutoalignCamera(AlignerAuto autoalign)
+    public void setAutoalignCamera(Autoalign autoalign)
     {
         this.autoalign=autoalign;
     }

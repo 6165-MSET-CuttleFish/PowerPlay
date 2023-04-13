@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
-import static org.opencv.imgproc.Imgproc.COLOR_HSV2RGB;
 import static org.opencv.imgproc.Imgproc.MORPH_CLOSE;
 import static org.opencv.imgproc.Imgproc.MORPH_OPEN;
 import static org.opencv.imgproc.Imgproc.rectangle;
 
-import android.os.Environment;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
 
-import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -18,7 +13,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -27,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-public class AlignerAuto extends OpenCvPipeline {
+public class Autoalign extends OpenCvPipeline {
     public enum Location {
         LEFT,
         MIDDLE,
@@ -95,8 +89,8 @@ public class AlignerAuto extends OpenCvPipeline {
     public boolean alignstate=false;
     Moments m;
 
-    public static double highpower=0.3;
-    public static double lowpower=0.15;
+    public static double highpower=0.28;
+    public static double lowpower=0.12;
     public static boolean showPole=true;
 
 
@@ -233,49 +227,18 @@ public class AlignerAuto extends OpenCvPipeline {
     public Location getLocation() {
         return location;
     }
+
     public double getDistance() {
         //Find equation for actual place
         double distance=Math.round(-2*boxsize+62);
         return distance;
     }
+
     public double getArea() {
         //Find equation for actual place
         double area=boxsize;
         return area;
     }
-
-    /*private void updatePower()
-    {
-        if(centerX<0)
-        {
-            power=0;
-        }
-        else if(aligning)
-        {
-            currentError=centerX-160;
-            if(Math.abs(currentError)<5)
-            {
-                currentError=0;
-            }
-
-            if(Math.signum(currentError)==Math.signum(pastError)||power==0)
-            {
-                power+=gainCoeff*currentError;
-
-            }
-            else
-            {
-                power=Math.abs(power)/2*Math.signum(currentError)*-1;
-            }
-
-            pastError=currentError;
-        }
-        else
-        {
-            pastError=0;
-            power=0;
-        }
-    }*/
 
     private void updatePower()
     {
@@ -312,10 +275,5 @@ public class AlignerAuto extends OpenCvPipeline {
     public double getPower()
     {
         return power;
-    }
-    public int getShift()
-    {
-        //Find shift
-        return (int)(factor*(loc[1]*3+loc[2]*2+loc[3]*1+loc[4]*-1+loc[5]*-2+loc[6]*-3));
     }
 }

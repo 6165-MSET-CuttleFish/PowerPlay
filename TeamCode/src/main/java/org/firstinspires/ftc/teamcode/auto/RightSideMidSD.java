@@ -17,10 +17,11 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @Autonomous
 @Right
@@ -56,6 +57,7 @@ public class RightSideMidSD extends LinearOpMode{
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+        TaskScheduler scheduler=new TaskScheduler(this);
 
 
         //telemetry.setMsTransmissionInterval(50);
@@ -121,8 +123,8 @@ public class RightSideMidSD extends LinearOpMode{
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.RIGHT_SIDE_MID);
-
-
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-35&&Math.abs(turret.encoder.getCurrentPosition()-Turret.RIGHT_SIDE_MID)<250);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
                     deposit.setExtension(Deposit.ExtensionState.HALF);
@@ -234,7 +236,7 @@ public class RightSideMidSD extends LinearOpMode{
         {
 
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-195 < timer){
+            while(System.currentTimeMillis()-300 < timer && Math.abs(turret.autoalign.centerX-160)>10){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();

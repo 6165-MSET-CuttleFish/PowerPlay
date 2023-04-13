@@ -17,10 +17,11 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
 import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @Autonomous
 @Right
@@ -55,6 +56,7 @@ public class RightSideHighMS extends LinearOpMode{
         deposit.setAngle(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
+        TaskScheduler scheduler=new TaskScheduler(this);
         timer = System.currentTimeMillis();
 
 
@@ -120,8 +122,8 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.RIGHT_SIDE_HIGH);
-
-
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-34.5&&Math.abs(turret.encoder.getCurrentPosition()-Turret.RIGHT_SIDE_HIGH)<250);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
@@ -228,7 +230,7 @@ public class RightSideHighMS extends LinearOpMode{
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if (!preload) {
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 255 < timer) {
+            while (System.currentTimeMillis() - 300 < timer && Math.abs(turret.autoalign.centerX-160)>10) {
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();

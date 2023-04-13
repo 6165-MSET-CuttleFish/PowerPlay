@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.modules.turret.AlignerAuto;
+import org.firstinspires.ftc.teamcode.modules.turret.Autoalign;
 import org.firstinspires.ftc.teamcode.pipelines.colorDetection;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -16,7 +16,7 @@ public class DualCameras
 {
     public OpenCvWebcam autoCamera;
     public OpenCvWebcam turretCamera;
-    public AlignerAuto aligner;
+    public Autoalign aligner;
     //detector2.setState
     public colorDetection signalSleeve;
 
@@ -37,7 +37,7 @@ public class DualCameras
                         2,
                         OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
 
-        aligner = new AlignerAuto();
+        aligner = new Autoalign();
         initAutoAlignCamera();
 
         signalSleeve = new colorDetection();
