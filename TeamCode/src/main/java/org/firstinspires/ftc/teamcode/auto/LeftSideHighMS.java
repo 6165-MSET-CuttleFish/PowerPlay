@@ -55,16 +55,22 @@ public class LeftSideHighMS extends LinearOpMode {
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(34, 9))
                 .addTemporalMarker(0, () -> {
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                    deposit.setExtension(Deposit.ExtensionState.HALF);
                 })
-                .addTemporalMarker(0.2, () -> {
+                .addTemporalMarker(0.15, () -> {
                     //groundIntake.setState(GroundIntake.State.INTAKING);
                     slides.setState(Slides.State.CYCLE_HIGH);
+                    //deposit.setExtension(Deposit.ExtensionState.HALF);
                 })
                 .addTemporalMarker(0.3, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
                     turret.setState(Turret.State.LEFT_SIDE_HIGH_PRELOAD);
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                     claw.setPoleState(Claw.Pole.DOWN);
+                    //deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                })
+                .addTemporalMarker(0.4, ()->{
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 })
                 .build();
@@ -94,7 +100,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.85, 11.8),
+                .lineToConstantHeading(new Vector2d(32.1, 11.8),
                         robot.getVelocityConstraint(52.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, () -> {
@@ -110,8 +116,8 @@ public class LeftSideHighMS extends LinearOpMode {
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
                 .lineToConstantHeading(new Vector2d(55.1, 12.3),
-                        robot.getVelocityConstraint(40, 5.939, 16.92),
-                        robot.getAccelerationConstraint(42.5))
+                        robot.getVelocityConstraint(47.5, 5.939, 16.92),
+                        robot.getAccelerationConstraint(45))
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -152,7 +158,7 @@ public class LeftSideHighMS extends LinearOpMode {
                     claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(58, 13)).build();
+                .lineToConstantHeading(new Vector2d(59.5, 13)).build();
         waitForStart();
         if (isStopRequested()) return;
         //robot.autoCamera.pauseViewport();
@@ -191,7 +197,7 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if (!preload) {
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 210 < timer) {
+            while (System.currentTimeMillis() - 255 < timer) {
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -202,13 +208,16 @@ public class LeftSideHighMS extends LinearOpMode {
                 robot.update();
             }
         }
+
+        //deposit.setState(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
-        deposit.setState(Deposit.AngleState.INTAKE);
-        turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 150 < timer) {
+        while (System.currentTimeMillis() - 175< timer) {
             robot.update();
         }
+
+        turret.setState(Turret.State.IDLE);
+
         claw.setPoleState(Claw.Pole.DOWN);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
         deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -236,14 +245,14 @@ public class LeftSideHighMS extends LinearOpMode {
          }*/
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 185 < timer) {
+        while (System.currentTimeMillis() - 135 < timer) {
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.INTAKE_AUTO);
         deposit.setAngle(Deposit.AngleState.VECTORING);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 5 < timer) {
+        while (System.currentTimeMillis() - 85 < timer) {
             robot.update();
         }
 

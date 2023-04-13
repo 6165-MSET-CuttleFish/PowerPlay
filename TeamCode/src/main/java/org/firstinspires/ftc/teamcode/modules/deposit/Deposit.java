@@ -17,15 +17,15 @@ public class Deposit extends HwModule {
     public static double REXTENDED = 0.43;
     public static double LHALF = 0.09;
     public static double RHALF = 0.50;
-    public static double LFOURTH = 0.155;
-    public static double RFOURTH = 0.465;
+    public static double LFOURTH = 0.14;
+    public static double RFOURTH = 0.57;
     public static double LZERO = 0.20;
     public static double RZERO = 0.63;
     public static double rightPos = 0;
 
     public static double VECTORING = 0.09;
     public static double INTAKE = 0.235;
-    public static double AUTO_INTAKE = 0.19;
+    public static double AUTO_INTAKE = 0.18;
     //public static double PICKUP = 0.97;
 
     Servo leftExtension;

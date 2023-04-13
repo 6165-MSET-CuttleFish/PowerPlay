@@ -158,6 +158,7 @@ public class DriverControl extends LinearOpMode {
                 })
                 .addTemporalMarker(0.1, ()->{
                     turret.setState(Turret.State.BACK);
+                    claw.setPoleState(Claw.Pole.DOWN);
                 })
                 .build();
         /*
@@ -559,23 +560,24 @@ public class DriverControl extends LinearOpMode {
     public void dropOff(){
         timer = System.currentTimeMillis();
         turret.setState(Turret.State.BACK);
-        while(System.currentTimeMillis()-200 < timer){
+        while(System.currentTimeMillis()-475 < timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
+        claw.setPoleState(Claw.Pole.DEPOSIT);
         //turret.setState(Turret.State.AUTOALIGN);
         timer = System.currentTimeMillis();
 
-        while(System.currentTimeMillis()-350 < timer){
-
+        while(System.currentTimeMillis()-300 < timer){
+            /*
             if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
                 turret.setState(Turret.State.IDLE);
-            }
+            }*/
             robot.update();
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-50< timer){
+        while(System.currentTimeMillis()-150< timer){
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -586,9 +588,10 @@ public class DriverControl extends LinearOpMode {
         }
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-25< timer){
+        while(System.currentTimeMillis()-60< timer){
             robot.update();
         }
+        claw.setPoleState(Claw.Pole.UP);
         deposit.setExtension(Deposit.ExtensionState.SLIGHT);
         slides.setState(Slides.State.BOTTOM);
 
