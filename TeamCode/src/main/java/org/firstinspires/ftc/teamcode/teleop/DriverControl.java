@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.modules.deposit.Claw;
 import org.firstinspires.ftc.teamcode.modules.deposit.Deposit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.modules.slides.Slides;
-import org.firstinspires.ftc.teamcode.modules.turret.Autoalign;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.modules.ground.GroundIntake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -45,6 +44,7 @@ public class DriverControl extends LinearOpMode {
     GamepadEx primary, secondary;
     double timer;
     boolean transfer = false;
+    int stackValue = 5;
     boolean resetCheck, cycleCheck = false;
     int turretPos = -1; //0 = left, 1 = back, 2 = right
     public static double powerOffsetTurning = 0.25;
@@ -54,7 +54,7 @@ public class DriverControl extends LinearOpMode {
     ElapsedTime wristClock = new ElapsedTime();
     KeyReader[] keyReaders;
     TriggerReader intakeTransfer, depositTransfer, actuateUp;
-    ButtonReader autoAlign, odomRaise, cycleMacro, cycleDown, cycleUp, actuateLeft,
+    ButtonReader stackUp, stackDown, cycleMacro, cycleDown, cycleUp, actuateLeft,
             intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, slidesReset;
     ToggleButtonReader alignerAdjust, straightMode;
 
@@ -95,8 +95,8 @@ public class DriverControl extends LinearOpMode {
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
                 cycleMacro = new ButtonReader(primary, GamepadKeys.Button.B),
-                odomRaise = new ButtonReader(primary, GamepadKeys.Button.A),
-                autoAlign = new ButtonReader(primary, GamepadKeys.Button.Y),
+                stackDown = new ButtonReader(primary, GamepadKeys.Button.A),
+                stackUp = new ButtonReader(primary, GamepadKeys.Button.Y),
                 intakeTransfer = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
 
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
@@ -214,6 +214,56 @@ public class DriverControl extends LinearOpMode {
                 cycleValue++;
             if (cycleDown.wasJustPressed())
                 cycleValue--;
+
+            if (stackUp.wasJustPressed()) {
+                stackValue++;
+                if (stackValue < 0)
+                    stackValue = 4;
+                if (stackValue > 4)
+                    stackValue = 0;
+                switch (stackValue) {
+                    case 0:
+                        slides.setState(Slides.State.CYCLE0);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.CYCLE1);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.CYCLE2);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.CYCLE3);
+                        break;
+                    case 4:
+                        slides.setState(Slides.State.CYCLE4);
+                        break;
+                }
+            }
+            if (stackDown.wasJustPressed()) {
+                stackValue--;
+                if (stackValue < 0)
+                    stackValue = 4;
+                if (stackValue > 4)
+                    stackValue = 0;
+                switch (stackValue) {
+                    case 0:
+                        slides.setState(Slides.State.CYCLE0);
+                        break;
+                    case 1:
+                        slides.setState(Slides.State.CYCLE1);
+                        break;
+                    case 2:
+                        slides.setState(Slides.State.CYCLE2);
+                        break;
+                    case 3:
+                        slides.setState(Slides.State.CYCLE3);
+                        break;
+                    case 4:
+                        slides.setState(Slides.State.CYCLE4);
+                        break;
+                }
+            }
+
 
             //keeps the integer range between 0 and 3
             if (cycleValue < 0)
@@ -388,33 +438,31 @@ public class DriverControl extends LinearOpMode {
                 //robot.turretCamera.pauseViewport();
             }
 
-            if (odomRaise.wasJustPressed() && sideOdomPos == 0.33) { //up
-                sideOdomPos = 0.65;
-                robot.midOdo.setPosition(0);
-                robot.sideOdo.setPosition(sideOdomPos);
-                Context.hallEffectEnabled=false;
-                //turret.isAuto=false;
-                //robot.turretCamera.pauseViewport();
-            } else if (odomRaise.wasJustPressed() && sideOdomPos == 0.65) { //down
-                sideOdomPos = 0.33;
-                robot.midOdo.setPosition(sideOdomPos);
-                robot.sideOdo.setPosition(sideOdomPos);
-                //robot.turretCamera.resumeViewport();
-                //robot.turret.setHall(Turret.Hall.ON);
-            }
+//            if (stackDown.wasJustPressed() && sideOdomPos == 0.33) { //up
+//                sideOdomPos = 0.65;
+//                robot.midOdo.setPosition(0);
+//                robot.sideOdo.setPosition(sideOdomPos);
+//                Context.hallEffectEnabled=false;
+//                //turret.isAuto=false;
+//                //robot.turretCamera.pauseViewport();
+//            } else if (stackDown.wasJustPressed() && sideOdomPos == 0.65) { //down
+//                sideOdomPos = 0.33;
+//                robot.midOdo.setPosition(sideOdomPos);
+//                robot.sideOdo.setPosition(sideOdomPos);
+//                //robot.turretCamera.resumeViewport();
+//                //robot.turret.setHall(Turret.Hall.ON);
+//            }
             
 
             //AUTO ALIGN:
-//           if (autoAlign.wasJustPressed() && turret.detector.getLocation() != AlignerAuto.Location.MIDDLE) {
-//                turret.setState(Turret.State.AUTOALIGN);
+//           if (stackUp.wasJustPressed() && turret.detector.getLocation() != AlignerAuto.Location.MIDDLE) {
+//                turret.setState(Turret.State.stackUp);
 //            }
-//            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+//            if (turret.detector.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.stackUp) {
 //                turret.setState(Turret.State.IDLE);
 //            }
 
-            if (autoAlign.wasJustPressed()) {
-                claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
-            }
+            
 
             transferUpdate(cycleValue);
             resetUpdate();
@@ -565,12 +613,12 @@ public class DriverControl extends LinearOpMode {
         }
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         claw.setPoleState(Claw.Pole.DEPOSIT);
-        //turret.setState(Turret.State.AUTOALIGN);
+        //turret.setState(Turret.State.stackUp);
         timer = System.currentTimeMillis();
 
         while(System.currentTimeMillis()-300 < timer){
             /*
-            if (turret.autoalign.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.AUTOALIGN) {
+            if (turret.stackUp.getLocation() == AlignerAuto.Location.MIDDLE&&turret.getState()==Turret.State.stackUp) {
                 turret.setState(Turret.State.IDLE);
             }*/
             robot.update();
