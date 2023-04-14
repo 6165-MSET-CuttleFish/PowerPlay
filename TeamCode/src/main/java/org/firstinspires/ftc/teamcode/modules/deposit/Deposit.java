@@ -19,8 +19,10 @@ public class Deposit extends HwModule {
     public static double RHALF = 0.50;
     public static double LFOURTH = 0.14;
     public static double RFOURTH = 0.57;
-    public static double LZERO = 0.20;
-    public static double RZERO = 0.63;
+    public static double TELE_LFOURTH = 0.135;
+    public static double TELE_RFOURTH = 0.445;
+    public static double LZERO = 0.18;
+    public static double RZERO = 0.61;
     public static double rightPos = 0;
 
     public static double VECTORING = 0.09;
@@ -60,7 +62,7 @@ public class Deposit extends HwModule {
 
     public enum ExtensionState implements ModuleState
     {
-        EXTEND, RETRACT, SLIGHT, HALF, FOURTH
+        EXTEND, RETRACT, SLIGHT, HALF, FOURTH, TELE_FOURTH
     }
     public enum AngleState implements ModuleState
     {
@@ -98,6 +100,10 @@ public class Deposit extends HwModule {
             case FOURTH:
                 leftExtension.setPosition(LFOURTH);
                 rightExtension.setPosition(RFOURTH);
+                break;
+            case TELE_FOURTH:
+                leftExtension.setPosition(TELE_LFOURTH);
+                rightExtension.setPosition(TELE_RFOURTH);
                 break;
         }
         switch (angState){

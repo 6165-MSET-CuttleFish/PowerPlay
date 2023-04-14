@@ -448,7 +448,7 @@ public class DriverControl extends LinearOpMode {
                 if(cycle==1) {
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 } else {
-                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                    deposit.setExtension(Deposit.ExtensionState.TELE_FOURTH);
                 }
                 transfer = false;
             } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
