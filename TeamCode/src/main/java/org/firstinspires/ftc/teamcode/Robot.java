@@ -173,7 +173,7 @@ public class Robot extends MecanumDrive{
         //slidesLimitSwitch = hardwareMap.get(AnalogInput.class, "slidesLimitSwitch");
 //        camera = new Camera(hardwareMap, telemetry);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.6, 0.6, Math.toRadians(5.0)), 0.30);
+                new Pose2d(0.6, 0.6, Math.toRadians(5.0)), 0.27);
 
         //LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 

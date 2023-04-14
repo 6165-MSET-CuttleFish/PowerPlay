@@ -83,7 +83,7 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-34, 12.3, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-34, 12.5, Math.toRadians(180)))
 
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
@@ -100,8 +100,8 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-55, 12.3),
-                        robot.getVelocityConstraint(40, 5.939, 16.92),
+                .lineToConstantHeading(new Vector2d(-55, 12.5),
+                        robot.getVelocityConstraint(47, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
                 .addTemporalMarker(0.1, () -> {
@@ -113,7 +113,7 @@ public class RightSideHighMS extends LinearOpMode{
                 .build();
 
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(-32.35, 11.8),
+                .lineToConstantHeading(new Vector2d(-32.35, 12.5),
                         robot.getVelocityConstraint(52.5, 5.939, 16.92),
                         robot.getAccelerationConstraint(50))
                 .addTemporalMarker(0.1, () -> {
@@ -130,8 +130,8 @@ public class RightSideHighMS extends LinearOpMode{
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-55, 12.3),
-                        robot.getVelocityConstraint(40, 5.939, 16.92),
+                .lineToConstantHeading(new Vector2d(-55, 12.5),
+                        robot.getVelocityConstraint(47, 5.939, 16.92),
                         robot.getAccelerationConstraint(42.5))
 
                 .addTemporalMarker(0.0, () -> {
@@ -230,7 +230,7 @@ public class RightSideHighMS extends LinearOpMode{
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if (!preload) {
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 300 < timer && Math.abs(turret.autoalign.centerX-160)>10) {
+            while (System.currentTimeMillis() - 300 < timer /*&& Math.abs(turret.autoalign.centerX-160)>10*/) {
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -245,7 +245,7 @@ public class RightSideHighMS extends LinearOpMode{
         //deposit.setState(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 175< timer) {
+        while (System.currentTimeMillis() - 185< timer) {
             robot.update();
         }
 
