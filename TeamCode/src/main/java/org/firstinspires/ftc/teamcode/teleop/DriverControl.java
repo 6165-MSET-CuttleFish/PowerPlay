@@ -180,7 +180,7 @@ public class DriverControl extends LinearOpMode {
         gamepad1.setLedColor(100, 79, 183, 120000); //blue
         gamepad2.setLedColor(147, 112, 219, 120000); //light purple
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
-        deposit.setAngle(Deposit.AngleState.INTAKE);
+        deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
         claw.setState(Claw.State.OPEN);
         slides.setState(Slides.State.BOTTOM);
         robot.midOdo.setPosition(0);
@@ -354,7 +354,7 @@ public class DriverControl extends LinearOpMode {
                 wristClockwork = true;
                 wristClock.reset();
 
-                deposit.setAngle(Deposit.AngleState.INTAKE);
+                deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000)
                     claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
             } else if (intakeTransfer.wasJustPressed()) {
@@ -375,8 +375,8 @@ public class DriverControl extends LinearOpMode {
             }
             //angle
             if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.VECTORING) {
-                deposit.setAngle(Deposit.AngleState.INTAKE);
-            } else if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.INTAKE) {
+                deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
+            } else if (angle.wasJustPressed() && deposit.getAngState() == Deposit.AngleState.TELE_INTAKE) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
             }
             //half extension
@@ -539,7 +539,7 @@ public class DriverControl extends LinearOpMode {
 //            turret.setState(Turret.State.ZERO);
 //            claw.setState(Claw.State.OPEN);
 //            deposit.setExtension(Deposit.ExtensionState.RETRACT);
-//            deposit.setAngle(Deposit.AngleState.INTAKE);
+//            deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
 //            claw.setPoleState(Claw.Pole.UP);
 //            if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1200) {
 //                turret.setState(Turret.State.ZERO);
@@ -551,7 +551,7 @@ public class DriverControl extends LinearOpMode {
 //                turret.setState(Turret.State.ZERO);
 //                claw.setState(Claw.State.OPEN);
 //                deposit.setExtension(Deposit.ExtensionState.RETRACT);
-//                deposit.setAngle(Deposit.AngleState.INTAKE);
+//                deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
 //                if (resetTimer.milliseconds() > 200) {
 //                    slides.setState(Slides.State.BOTTOM);
 //                    resetCheck = false;
@@ -564,7 +564,7 @@ public class DriverControl extends LinearOpMode {
                 turret.setState(Turret.State.ZERO);
                 claw.setState(Claw.State.OPEN);
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
-                deposit.setAngle(Deposit.AngleState.INTAKE);
+                deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
                 claw.setPoleState(Claw.Pole.TELE_UP);
                 if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000 && resetTimer.milliseconds() > 300) {
                     slides.setState(Slides.State.BOTTOM);
@@ -629,7 +629,7 @@ public class DriverControl extends LinearOpMode {
             robot.update();
         }
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
-        deposit.setAngle(Deposit.AngleState.INTAKE);
+        deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-75< timer){
             robot.update();

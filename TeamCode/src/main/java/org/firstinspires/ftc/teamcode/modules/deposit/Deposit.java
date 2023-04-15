@@ -26,6 +26,7 @@ public class Deposit extends HwModule {
 
     public static double VECTORING = 0.09;
     public static double INTAKE = 0.235;
+    public static double TELE_INTAKE = 0.2;
     public static double AUTO_INTAKE = 0.18;
     //public static double PICKUP = 0.97;
 
@@ -65,7 +66,7 @@ public class Deposit extends HwModule {
     }
     public enum AngleState implements ModuleState
     {
-        VECTORING, INTAKE, X, AUTO_INTAKE
+        VECTORING, INTAKE, X, AUTO_INTAKE,TELE_INTAKE
     }
     public enum WristState implements ModuleState
     {
@@ -117,7 +118,8 @@ public class Deposit extends HwModule {
                 break;
             /*case CONE_PICKUP:
                 wrist.setPosition(PICKUP);*/
-            case X:
+            case TELE_INTAKE:
+                wrist.setPosition(TELE_INTAKE);
                 break;
         }
         rightPos = rightExtension.getPosition();
