@@ -289,12 +289,12 @@ public class DriverControl extends LinearOpMode {
                         case 2:
                             gamepad2.runRumbleEffect(customRumbleEffect1);
                             slides.setState(Slides.State.MID);
-                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                            deposit.setExtension(Deposit.ExtensionState.TELE_FOURTH);
                             claw.setPoleState(Claw.Pole.TELE_DOWN);
                             break;
                         case 3:
                             gamepad2.runRumbleEffect(customRumbleEffect2);
-                            deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                            deposit.setExtension(Deposit.ExtensionState.TELE_FOURTH);
                             slides.setState(Slides.State.HIGH);
                             claw.setPoleState(Claw.Pole.TELE_DOWN);
                             break;
@@ -369,7 +369,7 @@ public class DriverControl extends LinearOpMode {
             if (extension.wasJustPressed() && deposit.getExtState() == Deposit.ExtensionState.EXTEND) {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
             } else if (extension.wasJustPressed() && (deposit.getExtState() == Deposit.ExtensionState.RETRACT
-                    || deposit.getExtState() == Deposit.ExtensionState.FOURTH)
+                    || deposit.getExtState() == Deposit.ExtensionState.TELE_FOURTH)
                     || deposit.getExtState() == Deposit.ExtensionState.HALF) {
                 deposit.setExtension(Deposit.ExtensionState.EXTEND);
             }
