@@ -82,7 +82,7 @@ public class Slides extends HwModule {
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         //slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
 //        slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        slidesRight.setDirection(DcMotorEx.Direction.REVERSE);
+        slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -154,8 +154,8 @@ public class Slides extends HwModule {
             slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             pidController.setTargetPosition(targetPos);
-            routput = pidController.update(slidesLeft.getCurrentPosition());
-            loutput = pidController.update(slidesLeft.getCurrentPosition());
+            routput = pidController.update(slidesLeft.getCurrentPosition() * -1);
+            loutput = pidController.update(slidesLeft.getCurrentPosition() * -1);
             slidesRight.setPower(routput);
             slidesLeft.setPower(loutput);
         }
@@ -164,14 +164,14 @@ public class Slides extends HwModule {
             slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
             slidesLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-            output = pidController.update(slidesLeft.getCurrentPosition());
+            output = pidController.update(slidesLeft.getCurrentPosition() * -1);
             if (Math.abs(manual) > 0.1) {
                 slidesRight.setPower(manual);
                 slidesLeft.setPower(manual);
-                pidController.setTargetPosition(slidesLeft.getCurrentPosition());
+                pidController.setTargetPosition(slidesLeft.getCurrentPosition() * -1);
             } else {
-                slidesRight.setPower(output);
-                slidesLeft.setPower(output);
+                slidesRight.setPower(-output);
+                slidesLeft.setPower(-output);
             }
         }
 //        output = pidController.update(slidesRight.getCurrentPosition());

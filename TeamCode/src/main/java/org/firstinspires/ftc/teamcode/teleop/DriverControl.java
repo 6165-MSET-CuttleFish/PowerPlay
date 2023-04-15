@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.util.BackgroundTasks;
 import org.firstinspires.ftc.teamcode.util.Context;
 
 @Config
-@TeleOp(name = "1. Driver Practice")
+@TeleOp(name = "1. Driver Control")
 public class DriverControl extends LinearOpMode {
     Robot robot;
     Slides slides;
@@ -355,7 +355,7 @@ public class DriverControl extends LinearOpMode {
                 wristClock.reset();
 
                 deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
-                if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000)
+                if (Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero > 1000)
                     claw.setPoleState(Claw.Pole.TELE_DEPOSIT);
             } else if (intakeTransfer.wasJustPressed()) {
                 claw.setState(Claw.State.CLOSE);
@@ -386,7 +386,7 @@ public class DriverControl extends LinearOpMode {
 
             //auto close claw
             if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 8 &&
-                    slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 80 && distanceSensor) {
+                    Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero < 80 && distanceSensor) {
                 claw.setState(Claw.State.CLOSE);
                 distanceSensor = false;
             }
@@ -402,7 +402,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             if (slidesReset.wasJustPressed()) {
-                slides.posAtZero = slides.slidesLeft.getCurrentPosition();
+                slides.posAtZero = slides.slidesLeft.getCurrentPosition()*-1;
             }
             //turret mid
             if (actuateUp.wasJustPressed()) {
@@ -499,7 +499,7 @@ public class DriverControl extends LinearOpMode {
                     deposit.setExtension(Deposit.ExtensionState.TELE_FOURTH);
                 }
                 transfer = false;
-            } else if (transferTimer.milliseconds() > 300 || slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 500) {
+            } else if (transferTimer.milliseconds() > 300 || Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero > 500) {
                 deposit.setAngle(Deposit.AngleState.VECTORING);
                 if (cycle != 1) {
                     claw.setPoleState(Claw.Pole.TELE_DOWN);
@@ -566,10 +566,10 @@ public class DriverControl extends LinearOpMode {
                 deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
                 claw.setPoleState(Claw.Pole.TELE_UP);
-                if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero > 1000 && resetTimer.milliseconds() > 300) {
+                if (Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero > 1000 && resetTimer.milliseconds() > 300) {
                     slides.setState(Slides.State.BOTTOM);
                 }
-                if (slides.slidesLeft.getCurrentPosition() - slides.posAtZero < 1000 && resetTimer.milliseconds() > 500) {
+                if (Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero < 1000 && resetTimer.milliseconds() > 500) {
                     slides.setState(Slides.State.BOTTOM);
                 }
             }
