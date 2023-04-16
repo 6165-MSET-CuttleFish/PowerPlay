@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.turret;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class AutoalignController
@@ -9,10 +10,13 @@ public class AutoalignController
     public static double defaultLowPower=0.15;
     public static double defaultHighPower=0.3;
     public static double gain=0.0045;
+    ElapsedTime t=new ElapsedTime();
 
     double pastError;
     double highPower;
     double lowPower;
+
+    public double rateOfChangeError;
 
     double error;
 
@@ -26,24 +30,30 @@ public class AutoalignController
     {
         highPower=defaultHighPower;
         lowPower=defaultLowPower;
+        t.reset();
     }
 
     public void clearError()
     {
         pastError=0;
+        t.reset();
     }
 
     public double update(double error)
     {
         this.error=error;
 
-        if(Math.abs(pastError-error)<minChange&&Math.abs(error)>10)
+        rateOfChangeError=(pastError-error)/t.milliseconds();
+
+        if(Math.abs(rateOfChangeError)<minChange&&Math.abs(error)>10)
         {
             highPower+=gain;
             lowPower+=gain;
         }
 
         pastError=error;
+
+        t.reset();
 
         if(Math.abs(error)>30)
             return Math.signum(error)*-highPower;

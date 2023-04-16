@@ -5,7 +5,9 @@ import static org.opencv.imgproc.Imgproc.rectangle;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 
+import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -92,6 +94,8 @@ public class Autoalign extends OpenCvPipeline {
     public static double highpower=0.3;
     public static double lowpower=0.15;
     public static boolean showPole=true;
+
+    public static double multiplier=-1.5;
 
 
     @Override
@@ -238,6 +242,18 @@ public class Autoalign extends OpenCvPipeline {
         //Find equation for actual place
         double area=boxsize;
         return area;
+    }
+
+    public double getShift()
+    {
+        if(centerX>-1)
+        {
+            return (centerX-160)*multiplier;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     private void updatePower()

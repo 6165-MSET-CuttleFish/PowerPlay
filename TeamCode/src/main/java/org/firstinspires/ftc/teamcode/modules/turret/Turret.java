@@ -109,11 +109,13 @@ public class Turret extends HwModule
             pidController.gainSchedule(coeff1);
         }
 
-        if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
+        /*if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
         {
-           turretMotor.setPower(autoalign.getPower());
-        }
-        else if(state!=State.MANUAL) {
+           //turretMotor.setPower(autoalign.getPower());
+            pidController.setTargetPosition(targetPos);
+            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+        }*/
+        if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
 
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
@@ -135,7 +137,6 @@ public class Turret extends HwModule
 //        }
             switch (state) {
                 case MANUAL:
-                case AUTOALIGN:
                 case IDLE:
                     targetPos = encoder.getCurrentPosition();
                     break;
@@ -184,6 +185,15 @@ public class Turret extends HwModule
                 case LEFT_DIAGONAL:
                     targetPos = LEFT_DIAGONAL - posAtZero;
                     break;
+                case AUTOALIGN:
+                    if(Context.autoalignCameraPastInit)
+                    {
+                        targetPos = encoder.getCurrentPosition()+autoalign.getShift();
+                    }
+                    else
+                    {
+                        targetPos=encoder.getCurrentPosition();
+                    }
             }
     }
 
