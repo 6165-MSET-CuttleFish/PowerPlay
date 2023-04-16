@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -81,8 +82,9 @@ public class Slides extends HwModule {
         slidesLeft = hardwareMap.get(DcMotorEx.class, "s1");
         slidesRight = hardwareMap.get(DcMotorEx.class, "s2");
         //slidesLimitSwitch = hardwareMap.get(DigitalChannel.class, "sLimit");
-//        slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
         slidesLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        //slidesRight.setDirection(DcMotorEx.Direction.REVERSE);
+
         slidesRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slidesRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
