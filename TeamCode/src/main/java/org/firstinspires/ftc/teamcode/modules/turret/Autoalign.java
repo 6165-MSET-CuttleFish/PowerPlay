@@ -256,6 +256,7 @@ public class Autoalign extends OpenCvPipeline {
         }
     }
 
+    //not used either
     private void updatePower()
     {
         if(Math.abs(centerX-160)<5)

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.turret;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+//not actually used
 @Config
 public class AutoalignController
 {
