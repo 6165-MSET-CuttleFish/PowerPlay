@@ -72,10 +72,12 @@ class BackgroundTasks(val robot: Robot)
             {
                 robot.slides.update()
                 robot.turret.update()
+                //robot.current.update()
                 if(Context.isAuto)
                 {
                     Context.tel!!.addData("Turret State", Context.robot!!.turret.getState())
                     Context.tel!!.addData("Turret Autoalign Power", Context.robot!!.turret.autoalign.getPower())
+                    //Context.tel!!.addData("Voltage", Context.robot!!.turret.voltSensor.voltage)
                     Context.tel!!.update()
                 }
                 //Context.robot!!.localizer.update()

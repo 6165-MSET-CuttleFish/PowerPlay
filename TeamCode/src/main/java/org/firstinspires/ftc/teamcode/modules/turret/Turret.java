@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 @Config
 public class Turret extends HwModule
 {
+
+
     public static double p = 0.0020, i = 0.0012, d = 0.00024;
     PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
     public static double p2=0.0023, i2=0.00094, d2=0.00021;
@@ -30,7 +33,7 @@ public class Turret extends HwModule
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3000,
             RIGHT_SIDE_HIGH_PRELOAD = -1030, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3200,
-            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 2950,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
+            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3100,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
     double targetPos=0;
@@ -40,6 +43,8 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public Autoalign autoalign;
     public Turret.State state;
+
+    public VoltageSensor voltSensor;
 
     @Override
     public void setState(ModuleState s)
@@ -77,6 +82,7 @@ public class Turret extends HwModule
         turretMotor=hardwareMap.get(DcMotorEx.class, "hturret");
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
+        //voltSensor=hardwareMap.voltageSensor.get("hturret");
         hallEffect =hardwareMap.get(AnalogInput.class, "hallEffect");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -86,6 +92,15 @@ public class Turret extends HwModule
 
     public void update() {
         updateTarget();
+
+        /*if(voltSensor.getVoltage()>13)
+        {
+
+        }
+        else
+        {
+
+        }*/
 
         if(Math.abs(encoder.getCurrentPosition()) < 600) {
             pidController.gainSchedule(coeff2);

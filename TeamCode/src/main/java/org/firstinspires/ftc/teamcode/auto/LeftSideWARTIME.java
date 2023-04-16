@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.modules.transfer.Intake;
 import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
+import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
 @Autonomous
 @Left
@@ -53,6 +55,7 @@ public class LeftSideWARTIME extends LinearOpMode {
         claw.setState(Claw.State.CLOSE);
         turret.setState(Turret.State.ZERO);
         timer = System.currentTimeMillis();
+        TaskScheduler scheduler=new TaskScheduler(this);
 
 
         //telemetry.setMsTransmissionInterval(50);
@@ -128,8 +131,8 @@ public class LeftSideWARTIME extends LinearOpMode {
                 })
                 .addTemporalMarker(0.25, ()->{
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
-
-
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<34&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<150);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, ()->{
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);

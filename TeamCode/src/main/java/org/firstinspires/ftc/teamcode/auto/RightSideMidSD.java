@@ -123,7 +123,7 @@ public class RightSideMidSD extends LinearOpMode{
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.RIGHT_SIDE_MID);
-                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-35&&Math.abs(turret.encoder.getCurrentPosition()-Turret.RIGHT_SIDE_MID)<250);
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-34&&Math.abs(turret.encoder.getCurrentPosition()-Turret.RIGHT_SIDE_MID)<125);
                     scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {

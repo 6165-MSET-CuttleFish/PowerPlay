@@ -47,6 +47,9 @@ object Context
     @JvmField
     var signalsleeveCameraPastInit: Boolean = false
 
+    @JvmField
+    var overCurrentLimit: Boolean =false;
+
     @JvmStatic fun updateValues()
     {
         if (opMode!!.javaClass.isAnnotationPresent(Autonomous::class.java))
@@ -84,6 +87,7 @@ object Context
         autoalignCameraPastInit=false
         signalsleeveCameraPastInit=false
         dashboardCameraStreaming=false
+        overCurrentLimit=false;
         side=Side.UNASSIGNED
     }
 }

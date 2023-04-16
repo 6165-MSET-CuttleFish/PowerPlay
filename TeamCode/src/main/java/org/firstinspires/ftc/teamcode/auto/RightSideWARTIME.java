@@ -240,7 +240,7 @@ public class RightSideWARTIME extends LinearOpMode{
         {
 
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-195 < timer){
+            while(System.currentTimeMillis()-300 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -249,7 +249,7 @@ public class RightSideWARTIME extends LinearOpMode{
         else
         {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-185<timer)
+            while(System.currentTimeMillis()-300<timer)
             {
                 robot.update();
             }
@@ -263,7 +263,7 @@ public class RightSideWARTIME extends LinearOpMode{
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-115<timer){
+        while(System.currentTimeMillis()-250<timer){
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);

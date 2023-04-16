@@ -121,7 +121,7 @@ public class LeftSideMidSD extends LinearOpMode {
                 })
                 .addTemporalMarker(0.25, ()->{
                     turret.setState(Turret.State.LEFT_SIDE_MID);
-                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<35&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_MID)<250);
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<34.5&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_MID)<150);
                     scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, ()->{
@@ -237,7 +237,7 @@ public class LeftSideMidSD extends LinearOpMode {
         {
 
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-300 < timer && Math.abs(turret.autoalign.centerX-160)>10){
+            while(System.currentTimeMillis()-300 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -259,7 +259,7 @@ public class LeftSideMidSD extends LinearOpMode {
         claw.setState(Claw.State.OPEN);
         turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-115<timer){
+        while(System.currentTimeMillis()-315<timer){
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);

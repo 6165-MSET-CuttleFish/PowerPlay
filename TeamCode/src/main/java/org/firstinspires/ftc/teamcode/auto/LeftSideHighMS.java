@@ -38,6 +38,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         robot = new Robot(this);
         deposit = robot.deposit;
         claw = robot.claw;
@@ -107,8 +108,8 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
-                    //RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<34&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<185);
-                    //scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<33.75&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<150);
+                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
                     deposit.setExtension(Deposit.ExtensionState.FOURTH);
