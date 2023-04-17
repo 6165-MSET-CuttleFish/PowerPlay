@@ -82,7 +82,7 @@ public class Robot extends MecanumDrive{
 
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
     public static double LATERAL_MULTIPLIER = 1;
-    public static double odomServoPos = 0.4, sideOdomServoPos = 0;
+    public static double odomServoPos = 0.42, sideOdomServoPos = 0;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;

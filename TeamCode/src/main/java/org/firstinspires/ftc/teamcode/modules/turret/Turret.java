@@ -21,7 +21,7 @@ public class Turret extends HwModule
 {
 
 
-    public static double p = 0.0020, i = 0.0012, d = 0.00024;
+    public static double p = 0.0021, i = 0.0012, d = 0.00024;
     PIDCoefficients coeff1=new PIDCoefficients(p, i, d);
     public static double p2=0.0023, i2=0.00094, d2=0.00021;
     PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
@@ -33,7 +33,7 @@ public class Turret extends HwModule
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3000,
             RIGHT_SIDE_HIGH_PRELOAD = -1030, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3200,
-            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3100,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
+            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3125,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
     double targetPos=0;
