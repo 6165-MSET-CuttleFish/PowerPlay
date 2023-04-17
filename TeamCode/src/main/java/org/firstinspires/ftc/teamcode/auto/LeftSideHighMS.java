@@ -101,7 +101,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.1, 12.5))
+                .lineToConstantHeading(new Vector2d(32.1, 12))
                 .addTemporalMarker(0.1, () -> {
                     slides.setState(Slides.State.CYCLE_HIGH);
                     claw.setPoleState(Claw.Pole.DOWN);
@@ -121,7 +121,7 @@ public class LeftSideHighMS extends LinearOpMode {
                     turret.setState(Turret.State.ZERO);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                 })
-                .addTemporalMarker(0.3, () -> {
+                .addTemporalMarker(0.6, () -> {
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .build();
@@ -213,6 +213,7 @@ public class LeftSideHighMS extends LinearOpMode {
 
         //deposit.setState(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
         timer = System.currentTimeMillis();
         while (System.currentTimeMillis() - 225< timer) {
             robot.update();

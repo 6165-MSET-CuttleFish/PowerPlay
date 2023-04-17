@@ -45,6 +45,8 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public Autoalign autoalign;
     public Turret.State state;
+
+    public static double factor=1.5;
     double pastVel;
 
     HardwareMap hardwareMap;
@@ -126,8 +128,9 @@ public class Turret extends HwModule
             //pidController.setTargetPosition(targetPos);
             //turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
 
-
-            turretMotor.setPower(Math.pow(12/getBatteryVoltage(), 1.5)*autoalign.getPower());
+            pidController.setTargetPosition(targetPos);
+            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            //turretMotor.setPower(Math.pow(12/getBatteryVoltage(), 1.5)*autoalign.getPower());
         }
         else if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
@@ -202,7 +205,8 @@ public class Turret extends HwModule
                 case AUTOALIGN:
                     if(Context.autoalignCameraPastInit)
                     {
-                        targetPos = encoder.getCurrentPosition()+autoalign.getShift();
+                        targetPos=encoder.getCurrentPosition()+(autoalign.centerX-160)*factor*(13/getBatteryVoltage());
+                        //targetPos = encoder.getCurrentPosition()+autoalign.getShift();
                     }
                     else
                     {
