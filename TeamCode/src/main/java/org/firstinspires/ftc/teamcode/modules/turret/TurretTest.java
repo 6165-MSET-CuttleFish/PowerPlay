@@ -27,6 +27,8 @@ public class TurretTest extends LinearOpMode
         {
             telemetry.addData("Encoder", turret.encoder.getCurrentPosition());
             telemetry.addData("Target Pos", turret.getTargetPos());
+            telemetry.addData("Encoder Vel Corrected", turret.encoder.getCorrectedVelocity());
+            telemetry.addData("Encoder Vel Raw", turret.encoder.getRawVelocity());
             telemetry.update();
         }
         waitForStart();
@@ -63,6 +65,9 @@ public class TurretTest extends LinearOpMode
             telemetry.addData("Target Pos", turret.getTargetPos());
             telemetry.addData("pid", turret.pidController.update(turret.encoder.getCurrentPosition()));
             telemetry.addData("pid target velo", turret.pidController.getTargetVelocity());
+            telemetry.addData("Encoder Vel Corrected", turret.encoder.getCorrectedVelocity());
+            telemetry.addData("Encoder Vel Raw", turret.encoder.getRawVelocity());
+            telemetry.addData("Battery", robot.getBatteryVoltage());
             telemetry.update();
         }
     }

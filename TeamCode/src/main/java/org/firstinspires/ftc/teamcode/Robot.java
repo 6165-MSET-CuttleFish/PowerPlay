@@ -299,6 +299,20 @@ public class Robot extends MecanumDrive{
         waitForIdle();
     }
 
+    public double getBatteryVoltage()
+    {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hardwareMap.voltageSensor)
+        {
+            double voltage = sensor.getVoltage();
+            if (voltage > 0)
+            {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
+    }
+
     public void followTrajectoryAsync(Trajectory trajectory) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(trajectory.start())

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import kotlinx.coroutines.*
 import org.firstinspires.ftc.teamcode.Robot
+import kotlin.math.abs
 
 class BackgroundTasks(val robot: Robot)
 {
@@ -79,6 +80,14 @@ class BackgroundTasks(val robot: Robot)
                     Context.tel!!.addData("Turret Autoalign Power", Context.robot!!.turret.autoalign.getPower())
                     //Context.tel!!.addData("Voltage", Context.robot!!.turret.voltSensor.voltage)
                     Context.tel!!.update()
+
+                    /*if(Context.autoalignEnabled&&Context.robot!!.dualCameras.aligner.alignstate
+                        && abs(Context.robot!!.dualCameras.aligner.getPower()) >0&&
+                            abs(Context.robot!!.turret.encoder.correctedVelocity) <5)
+                    {
+                        Context.robot!!.dualCameras.aligner.highpower+=0.01;
+                        Context.robot!!.dualCameras.aligner.lowpower+=0.01;
+                    }*/
                 }
                 //Context.robot!!.localizer.update()
                 //Context.robot!!.localizer.relocalize()

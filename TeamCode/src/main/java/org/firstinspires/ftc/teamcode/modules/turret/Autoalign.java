@@ -5,9 +5,7 @@ import static org.opencv.imgproc.Imgproc.rectangle;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
 
-import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -91,8 +89,8 @@ public class Autoalign extends OpenCvPipeline {
     public boolean alignstate=false;
     Moments m;
 
-    public static double highpower=0.4;
-    public static double lowpower=0.25;
+    public double highpower=0.35;
+    public double lowpower=0.2;
     public static boolean showPole=true;
 
     public static double multiplier=-1.5;
@@ -274,7 +272,7 @@ public class Autoalign extends OpenCvPipeline {
             {
                 power=-highpower*Math.signum(centerX-160);
             }
-            else if(Math.abs(centerX-160)>15)
+            else if(Math.abs(centerX-160)>10)
             {
                 power=-lowpower*Math.signum(centerX-160);
             }

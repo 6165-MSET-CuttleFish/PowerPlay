@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.util.BPIDFController;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.TBHController;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.HwModule;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.ModuleState;
 
@@ -27,6 +28,7 @@ public class Turret extends HwModule
     PIDCoefficients coeff2=new PIDCoefficients(p2, i2, d2);
 
     public BPIDFController pidController;
+    public TBHController autoalignController;
 
     public static ElapsedTime time = new ElapsedTime();
 
@@ -43,8 +45,11 @@ public class Turret extends HwModule
     public AnalogInput hallEffect;
     public Autoalign autoalign;
     public Turret.State state;
+    double pastVel;
 
-    public VoltageSensor voltSensor;
+    HardwareMap hardwareMap;
+
+    public static double gain=0.001;
 
     @Override
     public void setState(ModuleState s)
@@ -77,7 +82,9 @@ public class Turret extends HwModule
 
     public Turret(HardwareMap hardwareMap)
     {
+        this.hardwareMap=hardwareMap;
         pidController=new BPIDFController(coeff1);
+        autoalignController=new TBHController(gain);
 
         turretMotor=hardwareMap.get(DcMotorEx.class, "hturret");
 
@@ -109,16 +116,23 @@ public class Turret extends HwModule
             pidController.gainSchedule(coeff1);
         }
 
-        /*if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
+        if(state==State.AUTOALIGN&&Context.autoalignCameraPastInit)
         {
-           //turretMotor.setPower(autoalign.getPower());
-            pidController.setTargetPosition(targetPos);
-            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
-        }*/
-        if(state!=State.MANUAL) {
-            pidController.setTargetPosition(targetPos);
+            //autoalignController.setTargetVel(autoalign.getVel());
+            //turretMotor.setPower(autoalignController.update(encoder.getCorrectedVelocity()));
 
+            //turretMotor.setPower(autoalign.getPower());
+            //turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            //pidController.setTargetPosition(targetPos);
+            //turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+
+
+            turretMotor.setPower(Math.pow(12/getBatteryVoltage(), 1.5)*autoalign.getPower());
+        }
+        else if(state!=State.MANUAL) {
+            pidController.setTargetPosition(targetPos);
             turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            //autoalignController.setTargetVel(0);
         }
     }
 
@@ -194,6 +208,7 @@ public class Turret extends HwModule
                     {
                         targetPos=encoder.getCurrentPosition();
                     }
+                    break;
             }
     }
 
@@ -215,6 +230,20 @@ public class Turret extends HwModule
             return false;
         }
         return true;
+    }
+
+    public double getBatteryVoltage()
+    {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hardwareMap.voltageSensor)
+        {
+            double voltage = sensor.getVoltage();
+            if (voltage > 0)
+            {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
     }
 
     public Turret.State getState()
