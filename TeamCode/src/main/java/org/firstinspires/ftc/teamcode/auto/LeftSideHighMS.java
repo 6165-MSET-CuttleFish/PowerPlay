@@ -101,7 +101,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleDrop = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.1, 11))
+                .lineToConstantHeading(new Vector2d(32.1, 11.5))
                 .addTemporalMarker(0.1, () -> {
                     slides.setState(Slides.State.CYCLE_HIGH);
                     claw.setPoleState(Claw.Pole.DOWN);
@@ -112,7 +112,7 @@ public class LeftSideHighMS extends LinearOpMode {
                     scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
-                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
@@ -157,14 +157,14 @@ public class LeftSideHighMS extends LinearOpMode {
                     claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(60, 12)).build();
+                .lineToConstantHeading(new Vector2d(59, 12)).build();
         waitForStart();
         if (isStopRequested()) return;
         //robot.autoCamera.pauseViewport();
         //camera.stopStreaming();
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
-        /*timer = System.currentTimeMillis();
+        /*timer = System.current    TimeMillis();
         while(System.currentTimeMillis()-500<timer)
         {
             //stall a little
@@ -214,7 +214,7 @@ public class LeftSideHighMS extends LinearOpMode {
         //deposit.setState(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 250< timer) {
+        while (System.currentTimeMillis() - 225< timer) {
             robot.update();
         }
 
@@ -225,7 +225,7 @@ public class LeftSideHighMS extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.INTAKE);
         //claw.setPoleState(Claw.Pole.UP);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 300 < timer) {
+        while (System.currentTimeMillis() - 325 < timer) {
             robot.update();
         }
     }
