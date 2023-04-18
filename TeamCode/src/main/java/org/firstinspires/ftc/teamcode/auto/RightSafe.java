@@ -119,8 +119,8 @@ public class RightSafe extends LinearOpMode{
                 })
                 .addTemporalMarker(0.25, () -> {
                     turret.setState(Turret.State.LEFT_SIDE_HIGH);
-                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-12&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<250);
-                    scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
+                    //RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()>-12&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<250);
+                    //scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
 
                 })
                 .addTemporalMarker(0.5, () -> {
@@ -229,7 +229,7 @@ public class RightSafe extends LinearOpMode{
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if(!preload) {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-300 < timer){
+            while(System.currentTimeMillis()-400 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -242,10 +242,15 @@ public class RightSafe extends LinearOpMode{
                 robot.update();
             }
         }
-        claw.setState(Claw.State.OPEN_WIDE);
-        turret.setState(Turret.State.IDLE);
+        claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-250 < timer){
+        while (System.currentTimeMillis() - 100< timer) {
+            robot.update();
+        }
+
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+        timer = System.currentTimeMillis();
+        while (System.currentTimeMillis() - 115< timer) {
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);

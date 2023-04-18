@@ -224,7 +224,7 @@ public class LeftSafe extends LinearOpMode {
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if(!preload) {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-110 < timer){
+            while(System.currentTimeMillis()-400 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -238,9 +238,14 @@ public class LeftSafe extends LinearOpMode {
             }
         }
         claw.setState(Claw.State.OPEN);
-        turret.setState(Turret.State.IDLE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-115 < timer){
+        while (System.currentTimeMillis() - 100< timer) {
+            robot.update();
+        }
+
+        deposit.setAngle(Deposit.AngleState.INTAKE);
+        timer = System.currentTimeMillis();
+        while (System.currentTimeMillis() - 115< timer) {
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);
