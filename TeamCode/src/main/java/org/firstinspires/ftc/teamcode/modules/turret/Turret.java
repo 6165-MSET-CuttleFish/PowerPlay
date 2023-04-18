@@ -34,6 +34,7 @@ public class Turret extends HwModule
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
             BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3075,
+            RIGHT_SIDE_HIGH_SAFE = -3000,
             RIGHT_SIDE_HIGH_PRELOAD = -1030, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3200,
             LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3075,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
@@ -79,7 +80,7 @@ public class Turret extends HwModule
         IDLE, LEFT, RIGHT, ZERO, MANUAL, AUTOALIGN, INIT, BACK,
         RIGHT_SIDE_HIGH, RIGHT_SIDE_HIGH_PRELOAD, RIGHT_DIAGONAL,
         LEFT_DIAGONAL, RIGHT_SIDE_MID, RIGHT_SIDE_MID_PRELOAD, LEFT_SIDE_HIGH, LEFT_SIDE_HIGH_PRELOAD,
-        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD
+        LEFT_SIDE_MID, LEFT_SIDE_MID_PRELOAD, Right_SIDE_MID, Right_SIDE_MID_PRELOAD, RIGHT_SIDE_HIGH_SAFE
     }
 
     public Turret(HardwareMap hardwareMap)
@@ -201,6 +202,9 @@ public class Turret extends HwModule
                     break;
                 case INIT:
                     targetPos = INIT - posAtZero;
+                    break;
+                case RIGHT_SIDE_HIGH_SAFE:
+                    targetPos = RIGHT_SIDE_HIGH_SAFE - posAtZero;
                     break;
                 case RIGHT_DIAGONAL:
                     targetPos = RIGHT_DIAGONAL - posAtZero;

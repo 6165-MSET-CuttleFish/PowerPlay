@@ -37,10 +37,10 @@ public class Claw extends HwModule {
     }
 
 
-    public static double UP = 0.225, DOWN = 1, DEPOSIT = 0.817;
+    public static double UP = 0.225, DOWN = 1, DEPOSIT = 0.817, SAFE = 0.795;
     public static double TELE_UP = 0.26, TELE_DOWN = 0.79, TELE_DEPOSIT = 0.95;
     public enum Pole implements ModuleState {
-        UP, DOWN, DEPOSIT,
+        UP, DOWN, DEPOSIT, SAFE,
         TELE_UP, TELE_DOWN, TELE_DEPOSIT
     }
     public enum State implements ModuleState {
@@ -64,6 +64,9 @@ public class Claw extends HwModule {
                 break;
             case DEPOSIT:
                 pole.setPosition(DEPOSIT);
+                break;
+            case SAFE:
+                pole.setPosition(SAFE);
                 break;
             case TELE_UP:
                 pole.setPosition(TELE_UP);
