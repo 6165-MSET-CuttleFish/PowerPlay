@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.util.Context;
 
+
 @TeleOp
 public class AutoalignTest extends LinearOpMode
 {
@@ -22,6 +23,9 @@ public class AutoalignTest extends LinearOpMode
         Context.autoalignEnabled=true;
         robot=new Robot(this);
         turret=robot.turret;
+
+        //turret.factor=-1.25;
+        Context.autoalignConstantSpeed=true;
 
         waitForStart();
         turret.setState(Turret.State.AUTOALIGN);

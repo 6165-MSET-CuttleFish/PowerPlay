@@ -89,8 +89,8 @@ public class Autoalign extends OpenCvPipeline {
     public boolean alignstate=false;
     Moments m;
 
-    public double highpower=0.35;
-    public double lowpower=0.2;
+    public double highpower=0.3;
+    public double lowpower=0.17;
     public static boolean showPole=true;
 
     public static double multiplier=-1.5;

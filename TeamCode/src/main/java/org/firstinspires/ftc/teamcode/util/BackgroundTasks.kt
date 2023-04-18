@@ -77,7 +77,9 @@ class BackgroundTasks(val robot: Robot)
                 if(Context.isAuto)
                 {
                     Context.tel!!.addData("Turret State", Context.robot!!.turret.getState())
-                    Context.tel!!.addData("Turret Autoalign Power", Context.robot!!.turret.autoalign.getPower())
+                    Context.tel!!.addData("Turret Power", Context.robot!!.turret.turretMotor.power)
+                    Context.tel!!.addData("Pole Center", Context.robot!!.turret.autoalign.centerX)
+
                     //Context.tel!!.addData("Voltage", Context.robot!!.turret.voltSensor.voltage)
                     Context.tel!!.update()
 

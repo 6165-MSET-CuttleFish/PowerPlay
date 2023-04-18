@@ -33,9 +33,9 @@ public class Turret extends HwModule
     public static ElapsedTime time = new ElapsedTime();
 
     public static int LEFT_POS = 2100, RIGHT_POS = -2100, ZERO_POS = 0, INIT=1020,
-            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3000,
+            BACK = 4125, RIGHT_DIAGONAL = -3000, LEFT_DIAGONAL = 3000,  RIGHT_SIDE_HIGH = -3075,
             RIGHT_SIDE_HIGH_PRELOAD = -1030, RIGHT_SIDE_MID_PRELOAD = -3200, RIGHT_SIDE_MID = 3200,
-            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3125,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
+            LEFT_SIDE_HIGH_PRELOAD = 1030, LEFT_SIDE_HIGH = 3075,LEFT_SIDE_MID = -3100,LEFT_SIDE_MID_PRELOAD = 3200;
 
 
     double targetPos=0;
@@ -46,7 +46,7 @@ public class Turret extends HwModule
     public Autoalign autoalign;
     public Turret.State state;
 
-    public static double factor=1.5;
+    public double factor=-3;
     double pastVel;
 
     HardwareMap hardwareMap;
@@ -128,9 +128,15 @@ public class Turret extends HwModule
             //pidController.setTargetPosition(targetPos);
             //turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
 
-            pidController.setTargetPosition(targetPos);
-            turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
-            //turretMotor.setPower(Math.pow(12/getBatteryVoltage(), 1.5)*autoalign.getPower());
+            if(!Context.autoalignConstantSpeed)
+            {
+                pidController.setTargetPosition(targetPos);
+                turretMotor.setPower(pidController.update(encoder.getCurrentPosition()));
+            }
+            else
+            {
+                turretMotor.setPower(autoalign.getPower());
+            }
         }
         else if(state!=State.MANUAL) {
             pidController.setTargetPosition(targetPos);
@@ -205,7 +211,14 @@ public class Turret extends HwModule
                 case AUTOALIGN:
                     if(Context.autoalignCameraPastInit)
                     {
-                        targetPos=encoder.getCurrentPosition()+(autoalign.centerX-160)*factor*(13/getBatteryVoltage());
+                        if(autoalign.centerX>-1)
+                        {
+                            targetPos=encoder.getCurrentPosition()+(autoalign.centerX-160)*factor*(13/getBatteryVoltage());
+                        }
+                        else
+                        {
+                            targetPos=encoder.getCurrentPosition();
+                        }
                         //targetPos = encoder.getCurrentPosition()+autoalign.getShift();
                     }
                     else

@@ -146,7 +146,7 @@ public class LeftSideHighMS extends LinearOpMode {
                     claw.setPoleState(Claw.Pole.UP);
                     slides.setState(Slides.State.BOTTOM);
                 })
-                .lineToConstantHeading(new Vector2d(37, 14)).build();
+                .lineToConstantHeading(new Vector2d(37, 19)).build();
         Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
@@ -197,7 +197,7 @@ public class LeftSideHighMS extends LinearOpMode {
         if (!preload) {
             turret.setState(Turret.State.AUTOALIGN);
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 300 < timer /*&& Math.abs(turret.autoalign.centerX-160)>10*/) {
+            while (System.currentTimeMillis() - 400 < timer /*&& Math.abs(turret.autoalign.centerX-160)>10*/) {
                 //if(Math.abs(turret.autoalign.centerX)-160 < 5) turret.setState(Turret.State.IDLE);
                 turret.update();
                 robot.update();
@@ -213,9 +213,14 @@ public class LeftSideHighMS extends LinearOpMode {
 
         //deposit.setState(Deposit.AngleState.INTAKE);
         claw.setState(Claw.State.OPEN);
+        timer = System.currentTimeMillis();
+        while (System.currentTimeMillis() - 100< timer) {
+            robot.update();
+        }
+
         deposit.setAngle(Deposit.AngleState.INTAKE);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 225< timer) {
+        while (System.currentTimeMillis() - 115< timer) {
             robot.update();
         }
 
@@ -255,7 +260,7 @@ public class LeftSideHighMS extends LinearOpMode {
         slides.setState(Slides.State.INTAKE_AUTO);
         deposit.setAngle(Deposit.AngleState.VECTORING);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 120 < timer) {
+        while (System.currentTimeMillis() - 105 < timer) {
             robot.update();
         }
 
