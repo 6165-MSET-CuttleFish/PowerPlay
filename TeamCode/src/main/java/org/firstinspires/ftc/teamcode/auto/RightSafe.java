@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.Right;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
-@Autonomous
+@Autonomous(name = "1. Right Side Safe")
 @Right
 public class RightSafe extends LinearOpMode{
     ElapsedTime t;

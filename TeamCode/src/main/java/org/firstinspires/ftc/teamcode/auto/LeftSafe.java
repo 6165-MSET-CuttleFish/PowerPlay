@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Left;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
+@Autonomous(name = "0. Left Side Safe")
 @Left
 public class LeftSafe extends LinearOpMode {
     ElapsedTime t;

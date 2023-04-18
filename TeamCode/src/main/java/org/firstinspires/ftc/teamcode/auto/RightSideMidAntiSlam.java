@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 import org.firstinspires.ftc.teamcode.util.Right;
 
-@Autonomous
 @Right
 public class RightSideMidAntiSlam extends LinearOpMode {
     ElapsedTime t;

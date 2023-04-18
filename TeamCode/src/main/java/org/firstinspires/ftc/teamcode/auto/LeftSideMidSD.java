@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.util.Left;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
-@Autonomous
 @Left
 public class LeftSideMidSD extends LinearOpMode {
     ElapsedTime t;

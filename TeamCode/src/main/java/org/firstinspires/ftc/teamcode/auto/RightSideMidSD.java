@@ -23,7 +23,6 @@ import org.firstinspires.ftc.teamcode.util.Right;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 
-@Autonomous
 @Right
 public class RightSideMidSD extends LinearOpMode{
     ElapsedTime t;

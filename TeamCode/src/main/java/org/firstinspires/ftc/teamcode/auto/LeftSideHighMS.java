@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.util.Left;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.RunCondition;
 import org.firstinspires.ftc.teamcode.util.moduleUtil.TaskScheduler;
 import org.openftc.easyopencv.OpenCvWebcam;
-@Autonomous
+@Autonomous(name = "0. Left Side Contested")
 @Left
 public class LeftSideHighMS extends LinearOpMode {
     ElapsedTime t;
