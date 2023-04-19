@@ -99,8 +99,9 @@ public class RightSideHighMS extends LinearOpMode{
                     claw.setPoleState(Claw.Pole.UP);
                 })
                 .build();
+
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(-54.5, 12.5))
+                .lineToConstantHeading(new Vector2d(-55.1, 12.5))
 
                 .addTemporalMarker(0.1, () -> {
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
@@ -125,8 +126,9 @@ public class RightSideHighMS extends LinearOpMode{
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 })
                 .build();
+
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(-54.5, 12.5))
+                .lineToConstantHeading(new Vector2d(-55.1, 12.5))
 
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
@@ -137,8 +139,8 @@ public class RightSideHighMS extends LinearOpMode{
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .build();
-        Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
 
+        Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     deposit.setExtension(Deposit.ExtensionState.RETRACT);

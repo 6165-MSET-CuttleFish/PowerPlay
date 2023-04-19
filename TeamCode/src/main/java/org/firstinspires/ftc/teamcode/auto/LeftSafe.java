@@ -35,7 +35,8 @@ public class LeftSafe extends LinearOpMode {
     GroundIntake groundIntake;
     Turret turret;
 
-    Pose2d startPose = new Pose2d(34, 61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(34, 60, Math.toRadians(270));
+
     double timer = 0;
 
     @Override
@@ -100,7 +101,7 @@ public class LeftSafe extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(54.9, 12.25))
+                .lineToConstantHeading(new Vector2d(54.7, 12.5))
                 .addTemporalMarker(0.1, () -> {
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -124,7 +125,7 @@ public class LeftSafe extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(54.9, 12.25))
+                .lineToConstantHeading(new Vector2d(54.7, 12.5))
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -211,12 +212,10 @@ public class LeftSafe extends LinearOpMode {
             if(i==0)robot.followTrajectory(initIntake);
             else robot.followTrajectory(cycleIntake);
             intake();
-            if(i==4&&Context.signalSleeveZone==1)
-            {
+            if(i==4&&Context.signalSleeveZone==1) {
                 robot.followTrajectory(cycleDropContested);
             }
-            else
-            {
+            else {
                 robot.followTrajectory(cycleDrop);
             }
             dropOff(false);

@@ -47,7 +47,7 @@ public class Turret extends HwModule
     public Autoalign autoalign;
     public Turret.State state;
 
-    public double factor=-3;
+    public double factor=-2.5;
     double pastVel;
 
     HardwareMap hardwareMap;

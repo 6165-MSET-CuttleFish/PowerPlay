@@ -47,11 +47,11 @@ public class Autoalign extends OpenCvPipeline {
 
     //Find numbers for actual place
 
-    public static int HLow = 5;
-    public static int SLow = 30;
-    public static int VLow = 30;
+    public static int HLow = 0;
+    public static int SLow = 0;
+    public static int VLow = 150;
 
-    public static int HHigh = 55;
+    public static int HHigh = 40;
     public static int SHigh = 255;
     public static int VHigh = 255;
 

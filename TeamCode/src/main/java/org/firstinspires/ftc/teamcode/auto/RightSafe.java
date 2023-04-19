@@ -63,29 +63,31 @@ public class RightSafe extends LinearOpMode{
         //telemetry.setMsTransmissionInterval(50);
         robot.sideOdo.setPosition(sideOdomServoPos);
         robot.midOdo.setPosition(odomServoPos);
+
         Trajectory preload1 = robot.trajectoryBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(-34, 9.5))
-
                 .addTemporalMarker(0, () -> {
-
-
+                    deposit.setAngle(Deposit.AngleState.VECTORING);
+                    deposit.setExtension(Deposit.ExtensionState.HALF);
                 })
-                .addTemporalMarker(0.2, () -> {
+                .addTemporalMarker(0.15, () -> {
                     //groundIntake.setState(GroundIntake.State.INTAKING);
-                    slides.setState(Slides.State.CYCLE_HIGH);
-
+                    slides.setState(Slides.State.MID);
+                    //deposit.setExtension(Deposit.ExtensionState.HALF);
                 })
                 .addTemporalMarker(0.3, () -> {
                     groundIntake.setState(GroundIntake.State.DEPOSITING);
-                    turret.setState(Turret.State.RIGHT_SIDE_HIGH_PRELOAD);
+                    turret.setState(Turret.State.RIGHT_SIDE_MID_PRELOAD);
                     deposit.setAngle(Deposit.AngleState.VECTORING);
                     claw.setPoleState(Claw.Pole.DOWN);
-                    deposit.setExtension(Deposit.ExtensionState.HALF);
+                    deposit.setExtension(Deposit.ExtensionState.FOURTH);
                 })
                 .build();
-        Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
-                .lineToLinearHeading(new Pose2d(-34, 13, Math.toRadians(180)))
 
+        Trajectory preload2 = robot.trajectoryBuilder(preload1.end())
+                .lineToLinearHeading(new Pose2d(-34, 12.5, Math.toRadians(180)),
+                        robot.getVelocityConstraint(47.5, 1.5, 16.92),
+                        robot.getAccelerationConstraint(45))
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     groundIntake.setState(GroundIntake.State.INTAKING);
@@ -100,6 +102,7 @@ public class RightSafe extends LinearOpMode{
                     claw.setPoleState(Claw.Pole.UP);
                 })
                 .build();
+
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
                 .lineToConstantHeading(new Vector2d(-55, 13))
 
@@ -132,13 +135,29 @@ public class RightSafe extends LinearOpMode{
 
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
-
                 })
                 .addTemporalMarker(0.3, () -> {
                     deposit.setAngle(Deposit.AngleState.INTAKE);
                     deposit.setExtension(Deposit.ExtensionState.EXTEND);
                 })
                 .build();
+
+        Trajectory cycleDropContested = robot.trajectoryBuilder(initIntake.end())
+                .lineToConstantHeading(new Vector2d(32.1, 12))
+                .addTemporalMarker(0.1, () -> {
+                    slides.setState(Slides.State.CYCLE_HIGH);
+                    claw.setPoleState(Claw.Pole.DOWN);
+                })
+                .addTemporalMarker(0.26, () -> {
+                    turret.setState(Turret.State.RIGHT_SIDE_HIGH);
+                    //RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<33&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<100);
+                    //scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
+                })
+                .addTemporalMarker(0.5, () -> {
+                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                })
+                .build();
+
         Trajectory endLeft = robot.trajectoryBuilder(cycleDrop.end())
 
                 .addTemporalMarker(0.0, () -> {
@@ -166,7 +185,7 @@ public class RightSafe extends LinearOpMode{
                     slides.setState(Slides.State.BOTTOM);
                 })
                 .lineToConstantHeading(new Vector2d(-37, 14)).build();
-        Trajectory endRight = robot.trajectoryBuilder(cycleDrop.end())
+        Trajectory endRight = robot.trajectoryBuilder(cycleDropContested.end())
 
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
@@ -192,12 +211,7 @@ public class RightSafe extends LinearOpMode{
 
         robot.setPoseEstimate(startPose);
         robot.followTrajectory(preload1);
-        /*timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-500<timer)
-        {
-            //stall a little
-        }*/
-        dropOff(true);
+        dropOff(false);
         robot.followTrajectory(preload2);
 
         for (int i = 0; i < 5; i++) {
@@ -207,13 +221,15 @@ public class RightSafe extends LinearOpMode{
             else if (i == 3) slides.setState(Slides.State.CYCLE3);
             else if (i == 4) slides.setState(Slides.State.CYCLE4);
             claw.setPoleState(Claw.Pole.UP);
-            if (i == 0) robot.followTrajectory(initIntake);
+            if(i==0)robot.followTrajectory(initIntake);
             else robot.followTrajectory(cycleIntake);
-            if(i==4){
-                cycle=5;
-            }
             intake();
-            robot.followTrajectory(cycleDrop);
+            if(i==4&&Context.signalSleeveZone==3) {
+                robot.followTrajectory(cycleDropContested);
+            }
+            else {
+                robot.followTrajectory(cycleDrop);
+            }
             dropOff(false);
         }
 
@@ -224,12 +240,12 @@ public class RightSafe extends LinearOpMode{
 
     }
 
-    public void dropOff(boolean preload){
-        claw.setPoleState(Claw.Pole.DEPOSIT);
+    public void dropOff(boolean preload) {
+        claw.setPoleState(Claw.Pole.SAFE);
         deposit.setExtension(Deposit.ExtensionState.EXTEND);
         if(!preload) {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-400 < timer){
+            while(System.currentTimeMillis() - 100 < timer){
                 turret.setState(Turret.State.AUTOALIGN);
                 turret.update();
                 robot.update();
@@ -237,24 +253,25 @@ public class RightSafe extends LinearOpMode{
         }
         else {
             timer = System.currentTimeMillis();
-            while(System.currentTimeMillis()-80 < timer)
+            while(System.currentTimeMillis() - 70 < timer)
             {
                 robot.update();
             }
         }
         claw.setState(Claw.State.OPEN);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 100< timer) {
+        while (System.currentTimeMillis() - 70 < timer) {
             robot.update();
         }
 
         deposit.setAngle(Deposit.AngleState.INTAKE);
         timer = System.currentTimeMillis();
-        while (System.currentTimeMillis() - 115< timer) {
+        while (System.currentTimeMillis() - 90 < timer) {
             robot.update();
         }
         claw.setPoleState(Claw.Pole.DOWN);
         deposit.setExtension(Deposit.ExtensionState.RETRACT);
+        deposit.setAngle(Deposit.AngleState.INTAKE);
         timer = System.currentTimeMillis();
         while(System.currentTimeMillis()-50 < timer){
             robot.update();
@@ -279,17 +296,8 @@ public class RightSafe extends LinearOpMode{
 
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        if(cycle==5){
-
-            while(System.currentTimeMillis()-160< timer){
-                robot.update();
-            }
-        }
-        else{
-
-            while(System.currentTimeMillis()-120< timer){
-                robot.update();
-            }
+        while(System.currentTimeMillis()-120< timer){
+            robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);
         slides.setState(Slides.State.INTAKE_AUTO);

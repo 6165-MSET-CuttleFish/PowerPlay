@@ -23,13 +23,16 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class colorDetection extends OpenCvPipeline
 {
 
-    Rect rectCropLeft=new Rect(117, 20, 60, 60);
-    Rect rectCropRight=new Rect(108, 20, 60, 60);
+    Rect rectCropLeft=new Rect(117, 30, 60, 50);
+    Rect rectCropRight=new Rect(108, 30, 60, 50);
     Rect rectCrop;
 
     CLAHE cl=Imgproc.createCLAHE(2, new Size(3, 3));
 
     double hAvg;
+
+    double width;
+    double height;
 
     Scalar yellowLower=new Scalar(20, 60, 20);
     Scalar yellowMax=new Scalar(40, 255, 255);
@@ -75,10 +78,14 @@ public class colorDetection extends OpenCvPipeline
         if(Context.side==Side.LEFT)
         {
             rectCrop=rectCropLeft;
+            width=rectCropLeft.width;
+            height=rectCropLeft.height;
         }
         else if(Context.side==Side.RIGHT)
         {
             rectCrop=rectCropRight;
+            width=rectCropRight.width;
+            height=rectCropRight.height;
         }
 
         this.tel=Context.tel;
@@ -128,9 +135,9 @@ public class colorDetection extends OpenCvPipeline
 
         if(input!=null)
         {
-            for(int r=0; r<input.width(); r++)
+            for(int r=0; r<input.height(); r++)
             {
-                for(int c=0; c<input.height(); c++)
+                for(int c=0; c<input.width(); c++)
                 {
                     try
                     {
