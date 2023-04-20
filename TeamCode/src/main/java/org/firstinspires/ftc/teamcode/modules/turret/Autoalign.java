@@ -6,6 +6,7 @@ import static org.opencv.imgproc.Imgproc.rectangle;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.util.Context;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -55,6 +56,10 @@ public class Autoalign extends OpenCvPipeline {
     public static int SHigh = 255;
     public static int VHigh = 255;
 
+    public static int HHighOld=60;
+    public static int SLowOld=30;
+    public static int VLowOld=30;
+
     public static boolean returnBlack = true;
     private double boxsize =0;
     public String recording= "Not Recording";
@@ -78,6 +83,8 @@ public class Autoalign extends OpenCvPipeline {
 
     Scalar lowHSV;
     Scalar highHSV;
+    Scalar oldLowHSV;
+    Scalar oldHighHSV;
 
     public double centerX=-1;
     public double largestArea=0;
@@ -106,6 +113,9 @@ public class Autoalign extends OpenCvPipeline {
 
         lowHSV = new Scalar(HLow, SLow, VLow);
         highHSV = new Scalar(HHigh, SHigh, VHigh);
+
+        oldLowHSV=new Scalar(HLow, SLowOld, VLowOld);
+        oldHighHSV=new Scalar(HHighOld, SHigh, VHigh);
 
         kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(17, 17));
         kernel2=Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(13, 13));
@@ -157,7 +167,14 @@ public class Autoalign extends OpenCvPipeline {
 
 
         //Imgproc.bilateralFilter(selectedBoxes, processed, 15, 75, 75);
-        Core.inRange(selectedBoxes, lowHSV, highHSV, inRange);
+        if(Context.white)
+        {
+            Core.inRange(selectedBoxes, lowHSV, highHSV, inRange);
+        }
+        else
+        {
+            Core.inRange(selectedBoxes, oldLowHSV, oldHighHSV, inRange);
+        }
 
         Imgproc.morphologyEx(inRange, morphed, MORPH_OPEN, kernel);
 

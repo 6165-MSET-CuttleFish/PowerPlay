@@ -53,6 +53,9 @@ object Context
     @JvmField
     var autoalignConstantSpeed: Boolean=false;
 
+    @JvmField
+    var white: Boolean=true
+
     @JvmStatic fun updateValues()
     {
         if (opMode!!.javaClass.isAnnotationPresent(Autonomous::class.java))
@@ -93,5 +96,6 @@ object Context
         overCurrentLimit=false;
         side=Side.UNASSIGNED
         autoalignConstantSpeed=false;
+        white=true
     }
 }
