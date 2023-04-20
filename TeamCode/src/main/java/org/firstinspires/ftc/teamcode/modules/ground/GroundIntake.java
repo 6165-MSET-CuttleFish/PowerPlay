@@ -23,6 +23,7 @@ public class GroundIntake extends HwModule
     DcMotor groundIntake;
     ColorRangeSensor distSens;
     public State state;
+    public boolean overrideState=true;
 
     @Override
     public void setState(ModuleState s)
@@ -58,20 +59,27 @@ public class GroundIntake extends HwModule
     //}
     public void update()
     {
-        switch(state)
+        if(overrideState)
         {
-            case INTAKING:
-                groundIntake.setPower(INTAKING);
-                break;
-            case DEPOSITING:
-                groundIntake.setPower(REVERSE);
-                break;
-            case FAST:
-                groundIntake.setPower(FAST);
-                break;
-            case OFF:
-                groundIntake.setPower(OFF);
-                break;
+            switch(state)
+            {
+                case INTAKING:
+                    groundIntake.setPower(INTAKING);
+                    break;
+                case DEPOSITING:
+                    groundIntake.setPower(REVERSE);
+                    break;
+                case FAST:
+                    groundIntake.setPower(FAST);
+                    break;
+                case OFF:
+                    groundIntake.setPower(OFF);
+                    break;
+            }
+        }
+        else
+        {
+            groundIntake.setPower(0);
         }
     }
 

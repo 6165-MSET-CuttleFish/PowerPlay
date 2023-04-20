@@ -53,7 +53,7 @@ public class DriverControl extends LinearOpMode {
     boolean wristClockwork = false;
     ElapsedTime wristClock = new ElapsedTime();
     KeyReader[] keyReaders;
-    TriggerReader intakeTransfer, depositTransfer, actuateUp;
+    TriggerReader intakeTransfer, depositTransfer, actuateUp, groundOverride;
     ButtonReader stackUp, stackDown, cycleMacro, cycleDown, cycleUp, actuateLeft,
             intakeGround, extakeGround, actuateRight, reset, half, angle, extension, turretZero, slidesReset;
     ToggleButtonReader alignerAdjust, straightMode;
@@ -65,6 +65,7 @@ public class DriverControl extends LinearOpMode {
 
     int cycleValue = 0;
     boolean slidesZero = false, turretStop = false;
+    boolean enableOverride=true;
     boolean autoActuate = false;
     public double resetTime = 1;
     public double transferTime = 1, transferTurretTime = 500;
@@ -98,6 +99,7 @@ public class DriverControl extends LinearOpMode {
                 stackDown = new ButtonReader(primary, GamepadKeys.Button.A),
                 stackUp = new ButtonReader(primary, GamepadKeys.Button.Y),
                 intakeTransfer = new TriggerReader(primary, GamepadKeys.Trigger.RIGHT_TRIGGER),
+                groundOverride=new TriggerReader(primary, GamepadKeys.Trigger.LEFT_TRIGGER),
 
                 actuateRight = new ButtonReader(secondary, GamepadKeys.Button.DPAD_RIGHT),
                 actuateLeft = new ButtonReader(secondary, GamepadKeys.Button.DPAD_LEFT),
@@ -110,6 +112,7 @@ public class DriverControl extends LinearOpMode {
                 extension = new ButtonReader(secondary, GamepadKeys.Button.A),
                 cycleDown = new ButtonReader(secondary, GamepadKeys.Button.LEFT_BUMPER),
                 cycleUp = new ButtonReader(secondary, GamepadKeys.Button.RIGHT_BUMPER),
+
 
         };
         customRumbleEffect0 = new Gamepad.RumbleEffect.Builder()
@@ -349,6 +352,16 @@ public class DriverControl extends LinearOpMode {
             } else if (gamepad1.dpad_right) {
                 groundIntake.setState(GroundIntake.State.FAST);
             }
+
+            //ground intake override
+            if(Math.abs(slides.slidesLeft.getCurrentPosition())>1200&&enableOverride)
+                groundIntake.overrideState=false;
+            else
+                groundIntake.overrideState=true;
+
+            //override for end game
+            if(groundOverride.wasJustPressed())
+                enableOverride=!enableOverride;
 
             if (depositTransfer.wasJustPressed()) {
                 wristClockwork = true;
