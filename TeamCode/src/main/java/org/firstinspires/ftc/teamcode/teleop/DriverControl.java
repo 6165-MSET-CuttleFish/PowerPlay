@@ -354,14 +354,21 @@ public class DriverControl extends LinearOpMode {
             }
 
             //ground intake override
-            if(slides.getState()==Slides.State.HIGH||turret.getState()==Turret.State.BACK&&enableOverride)
-                groundIntake.overrideState=false;
+            if((turret.getState()==Turret.State.BACK)&&enableOverride)
+            {
+                groundIntake.setOverrideState(false);
+
+            }
             else
-                groundIntake.overrideState=true;
+            {
+                groundIntake.setOverrideState(true);
+            }
 
             //override for end game
             if(groundOverride.wasJustPressed())
+            {
                 enableOverride=!enableOverride;
+            }
 
             if (depositTransfer.wasJustPressed()) {
                 wristClockwork = true;
@@ -496,6 +503,8 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
            // telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
+            telemetry.addData("Override enabled?", enableOverride);
+            telemetry.addData("Ground Intake", groundIntake.getOverrideState());
 //            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }

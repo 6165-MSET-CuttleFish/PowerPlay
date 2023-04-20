@@ -23,7 +23,7 @@ public class GroundIntake extends HwModule
     DcMotor groundIntake;
     ColorRangeSensor distSens;
     public State state;
-    public boolean overrideState=true;
+    boolean overrideState=true;
 
     @Override
     public void setState(ModuleState s)
@@ -108,5 +108,15 @@ public class GroundIntake extends HwModule
 //    }
     public boolean runningTriggere(){
         return runningTrigger;
+    }
+
+    public void setOverrideState(boolean state)
+    {
+        overrideState=state;
+        update();
+    }
+    public boolean getOverrideState()
+    {
+        return overrideState;
     }
 }

@@ -92,7 +92,7 @@ public class LeftSideHighMS extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(54.7, 12.5))
+                .lineToConstantHeading(new Vector2d(54.3, 12.5))
                 .addTemporalMarker(0.1, () -> {
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -112,11 +112,13 @@ public class LeftSideHighMS extends LinearOpMode {
                     //scheduler.scheduleTask(turret.task(Turret.State.AUTOALIGN, r));
                 })
                 .addTemporalMarker(0.5, () -> {
-                    deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                    RunCondition r=new RunCondition(()->robot.getPoseEstimate().getX()<35&&Math.abs(turret.encoder.getCurrentPosition()-Turret.LEFT_SIDE_HIGH)<400);
+                    scheduler.scheduleTask(deposit.task(Deposit.ExtensionState.FOURTH, r));
+                    //deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(54.7, 12.5))
+                .lineToConstantHeading(new Vector2d(54.3, 12.5))
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     deposit.setAngle(Deposit.AngleState.INTAKE);

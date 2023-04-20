@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.modules.slides.Slides;
+import org.firstinspires.ftc.teamcode.modules.turret.Turret;
 import org.firstinspires.ftc.teamcode.util.Context;
 
 @TeleOp
@@ -20,10 +22,12 @@ public class DepositTest extends LinearOpMode {
         Robot robot = new Robot(this);
         waitForStart();
         while (opModeIsActive()) {
+            robot.slides.setState(Slides.State.CYCLE_HIGH);
+            robot.turret.setState(Turret.State.LEFT_SIDE_HIGH);
             if (gamepad1.a)
                 robot.deposit.setExtension(Deposit.ExtensionState.EXTEND);
             if (gamepad1.b)
-                robot.deposit.setExtension(Deposit.ExtensionState.RETRACT);
+                robot.deposit.setExtension(Deposit.ExtensionState.FOURTH);
             if (gamepad1.x)
                 robot.deposit.setAngle(Deposit.AngleState.INTAKE);
             if (gamepad1.y)
