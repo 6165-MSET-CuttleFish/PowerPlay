@@ -354,7 +354,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             //ground intake override
-            if(Math.abs(slides.slidesLeft.getCurrentPosition())>1200&&enableOverride)
+            if(slides.getState()==Slides.State.HIGH||turret.getState()==Turret.State.BACK&&enableOverride)
                 groundIntake.overrideState=false;
             else
                 groundIntake.overrideState=true;
