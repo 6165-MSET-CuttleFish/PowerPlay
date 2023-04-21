@@ -110,10 +110,11 @@ public class GroundIntake extends HwModule
         return runningTrigger;
     }
 
-    public void setOverrideState(boolean state)
-    {
-        overrideState=state;
-        update();
+    public void setOverrideState(boolean state) {
+        if (state != overrideState) {
+            overrideState=state;
+            update();
+        }
     }
     public boolean getOverrideState()
     {

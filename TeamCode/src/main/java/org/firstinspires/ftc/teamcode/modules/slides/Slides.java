@@ -95,49 +95,49 @@ public class Slides extends HwModule {
     {
             switch (state) {
                 case HIGH:
-                    targetPos=HIGH+posAtZero;
+                    targetPos=HIGH-posAtZero;
                     break;
                 case CYCLE_HIGH:
-                    targetPos=CYCLE_HIGH+posAtZero;
+                    targetPos=CYCLE_HIGH-posAtZero;
                     break;
                 case MID:
-                    targetPos=MID+posAtZero;
+                    targetPos=MID-posAtZero;
                     break;
                 case MID_DROP:
-                    targetPos=MID_DROP+posAtZero;
+                    targetPos=MID_DROP-posAtZero;
                     break;
                 case LOW:
-                    targetPos=LOW+posAtZero;
+                    targetPos=LOW-posAtZero;
                     break;
                 case LOW_DROP:
-                    targetPos=LOW_DROP+posAtZero;
+                    targetPos=LOW_DROP-posAtZero;
                     break;
                 case INTAKE_AUTO:
-                    targetPos=INTAKE_AUTO+posAtZero;
+                    targetPos=INTAKE_AUTO-posAtZero;
                     break;
                 case BOTTOM:
-                    targetPos=0+posAtZero;
+                    targetPos=0-posAtZero;
                     break;
                 case PICKUP:
-                    targetPos=PICKUP+posAtZero;
+                    targetPos=PICKUP-posAtZero;
                     break;
                 case CYCLE0:
-                    targetPos=CYCLE0+posAtZero;
+                    targetPos=CYCLE0-posAtZero;
                     break;
                 case CYCLE1:
-                    targetPos=CYCLE1+posAtZero;
+                    targetPos=CYCLE1-posAtZero;
                     break;
                 case CYCLE2:
-                    targetPos=CYCLE2+posAtZero;
+                    targetPos=CYCLE2-posAtZero;
                     break;
                 case CYCLE3:
-                    targetPos=CYCLE3+posAtZero;
+                    targetPos=CYCLE3-posAtZero;
                     break;
                 case CYCLE4:
-                    targetPos=CYCLE4+posAtZero;
+                    targetPos=CYCLE4-posAtZero;
                     break;
                 case SLIGHT:
-                    targetPos=SLIGHT+posAtZero;
+                    targetPos=SLIGHT-posAtZero;
                     break;
             }
     }

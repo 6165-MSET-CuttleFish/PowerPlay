@@ -422,7 +422,7 @@ public class DriverControl extends LinearOpMode {
             }
 
             if (slidesReset.wasJustPressed()) {
-                slides.posAtZero = slides.slidesLeft.getCurrentPosition()*-1;
+                slides.posAtZero = slides.slidesLeft.getCurrentPosition();
             }
             //turret mid
             if (actuateUp.wasJustPressed()) {
@@ -503,9 +503,11 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("turret pos at zero: ", turret.posAtZero);
            // telemetry.addData("SLS VOLTAGE: ", slides.slidesLimitSwitch.getState());
             telemetry.addData("SLIDES POS AT ZERO: ", slides.posAtZero);
+            telemetry.addData("Slides target", slides.slidesLeft.getTargetPosition());
+            telemetry.addData("Slides power", slides.slidesLeft.getPower());
             telemetry.addData("Override enabled?", enableOverride);
             telemetry.addData("Ground Intake", groundIntake.getOverrideState());
-//            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
     }

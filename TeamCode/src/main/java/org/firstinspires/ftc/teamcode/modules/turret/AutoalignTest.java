@@ -26,6 +26,7 @@ public class AutoalignTest extends LinearOpMode
 
         //turret.factor=-1.25;
         Context.autoalignConstantSpeed=true;
+        Context.white=false;
 
         waitForStart();
         turret.setState(Turret.State.AUTOALIGN);

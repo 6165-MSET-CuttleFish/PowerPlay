@@ -227,8 +227,7 @@ public class RightSideHighMS extends LinearOpMode{
         if (!preload) {
             turret.setState(Turret.State.AUTOALIGN);
             timer = System.currentTimeMillis();
-            while (System.currentTimeMillis() - 400 < timer /*&& Math.abs(turret.autoalign.centerX-160)>10*/) {
-                //if(Math.abs(turret.autoalign.centerX)-160 < 5) turret.setState(Turret.State.IDLE);
+            while (System.currentTimeMillis() - 400 < timer){
                 turret.update();
                 robot.update();
             }

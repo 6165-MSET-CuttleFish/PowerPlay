@@ -102,7 +102,7 @@ public class LeftSafe extends LinearOpMode {
                 })
                 .build();
         Trajectory initIntake = robot.trajectoryBuilder(preload2.end())
-                .lineToConstantHeading(new Vector2d(54.7, 12.5))
+                .lineToConstantHeading(new Vector2d(54.7, 12.25))
                 .addTemporalMarker(0.1, () -> {
                     //deposit.setExtension(Deposit.ExtensionState.RETRACT);
                     groundIntake.setState(GroundIntake.State.OFF);
@@ -126,7 +126,7 @@ public class LeftSafe extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleIntake = robot.trajectoryBuilder(cycleDrop.end())
-                .lineToConstantHeading(new Vector2d(54.7, 12.5))
+                .lineToConstantHeading(new Vector2d(54.7, 12.25))
                 .addTemporalMarker(0.0, () -> {
                     turret.setState(Turret.State.ZERO);
                     deposit.setAngle(Deposit.AngleState.INTAKE);
@@ -136,7 +136,7 @@ public class LeftSafe extends LinearOpMode {
                 })
                 .build();
         Trajectory cycleDropContested = robot.trajectoryBuilder(initIntake.end())
-                .lineToConstantHeading(new Vector2d(32.1, 12))
+                .lineToConstantHeading(new Vector2d(32.1, 12.25))
                 .addTemporalMarker(0.1, () -> {
                     slides.setState(Slides.State.CYCLE_HIGH);
                     claw.setPoleState(Claw.Pole.DOWN);
