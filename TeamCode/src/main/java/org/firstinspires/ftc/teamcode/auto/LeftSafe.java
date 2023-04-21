@@ -287,7 +287,7 @@ public class LeftSafe extends LinearOpMode {
 
         claw.setState(Claw.State.CLOSE);
         timer = System.currentTimeMillis();
-        while(System.currentTimeMillis()-120< timer){
+        while(System.currentTimeMillis()-165< timer){
             robot.update();
         }
         //deposit.setExtension(Deposit.ExtensionState.RETRACT);

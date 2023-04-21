@@ -32,14 +32,19 @@ public class DepositTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Context.hardwareMap=hardwareMap;
         Robot robot = new Robot(this);
+        robot.claw.setState(Claw.State.CLOSE);
+        sleep(2000);
         robot.slides.setState(Slides.State.CYCLE_HIGH);
+        sleep(1000);
         robot.turret.setState(Turret.State.LEFT_SIDE_HIGH);
+
         waitForStart();
 
         primary = new GamepadEx(gamepad1);
         keyReaders = new KeyReader[]{
                 depo = new ButtonReader(primary, GamepadKeys.Button.DPAD_DOWN)
         };
+        /*
         while (opModeIsActive())
         {
 
@@ -60,34 +65,35 @@ public class DepositTest extends LinearOpMode {
                 robot.claw.setPoleState(Claw.Pole.UP);
             if(gamepad1.dpad_down)
                 robot.claw.setPoleState(Claw.Pole.DOWN);*/
-            if(depo.wasJustPressed()){
-                robot.claw.setPoleState(Claw.Pole.DEPOSIT);
+            sleep(2000);
+                robot.deposit.setAngle(Deposit.AngleState.VECTORING);
+                //robot.claw.setPoleState(Claw.Pole.DEPOSIT);
                 robot.deposit.setExtension(Deposit.ExtensionState.EXTEND);
 
                     robot.turret.setState(Turret.State.AUTOALIGN);
                     timer = System.currentTimeMillis();
-                    while (System.currentTimeMillis() - 400 < timer){
+                    while (System.currentTimeMillis() - 325 < timer){
                         robot.turret.update();
                         robot.update();
                     }
-
+                robot.deposit.setAngle(Deposit.AngleState.INTAKE);
+                timer = System.currentTimeMillis();
+                while (System.currentTimeMillis() - 75< timer) {
+                   robot.update();
+                }
 
                 //deposit.setState(Deposit.AngleState.INTAKE);
                 robot.claw.setState(Claw.State.OPEN);
                 timer = System.currentTimeMillis();
-                while (System.currentTimeMillis() - 100< timer) {
+                while (System.currentTimeMillis() - 125< timer) {
                     robot.update();
                 }
 
-                robot.deposit.setAngle(Deposit.AngleState.INTAKE);
-                timer = System.currentTimeMillis();
-                while (System.currentTimeMillis() - 115< timer) {
-                    robot.update();
-                }
+
 
                 robot.turret.setState(Turret.State.IDLE);
 
-                robot.claw.setPoleState(Claw.Pole.DOWN);
+                //robot.claw.setPoleState(Claw.Pole.DOWN);
                 robot.deposit.setExtension(Deposit.ExtensionState.RETRACT);
                 robot.deposit.setAngle(Deposit.AngleState.INTAKE);
                 //claw.setPoleState(Claw.Pole.UP);
@@ -95,7 +101,7 @@ public class DepositTest extends LinearOpMode {
                 while (System.currentTimeMillis() - 325 < timer) {
                     robot.update();
                 }
-            }
+            //}
             telemetry.addData("Ext State: ", robot.deposit.getExtState());
             telemetry.addData("Ang State: ", robot.deposit.getAngState());
             telemetry.addData("clawState: ",robot.claw.getState());
@@ -104,6 +110,6 @@ public class DepositTest extends LinearOpMode {
             telemetry.addData("wrist: ", robot.deposit.wrist.getPosition());
             telemetry.update();
 
-        }
+
     }
 }
