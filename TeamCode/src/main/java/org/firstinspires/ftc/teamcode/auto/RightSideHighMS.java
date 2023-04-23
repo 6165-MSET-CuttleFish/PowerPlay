@@ -35,7 +35,7 @@ public class RightSideHighMS extends LinearOpMode{
     GroundIntake groundIntake;
     Turret turret;
     TelemetryPacket packet;
-    Pose2d startPose = new Pose2d(-34,61, Math.toRadians(270));
+    Pose2d startPose = new Pose2d(-34,60, Math.toRadians(270));
     double timer = 0;
     int cycle = 0;
     double state=-1;
