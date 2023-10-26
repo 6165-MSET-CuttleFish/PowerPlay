@@ -164,7 +164,7 @@ public class Robot extends MecanumDrive{
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap);
-        groundIntake = new GroundIntake(hardwareMap);
+        //groundIntake = new GroundIntake(hardwareMap);
 
         hardware=new BackgroundTasks(this);
         hardware.start();
@@ -340,13 +340,13 @@ public class Robot extends MecanumDrive{
     }
 
     public void update() {
-        updatePoseEstimate();
+        //updatePoseEstimate();
 
         /*turret.update();
         slides.update();*/
 
-        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
-        if (signal != null) setDriveSignal(signal);
+        //DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        //if (signal != null) setDriveSignal(signal);
     }
 
     public void waitForIdle()

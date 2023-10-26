@@ -93,7 +93,7 @@ public class Turret extends HwModule
 
         encoder=new Encoder(hardwareMap.get(DcMotorEx.class, "hturret"));
         //voltSensor=hardwareMap.voltageSensor.get("hturret");
-        hallEffect =hardwareMap.get(AnalogInput.class, "hallEffect");
+        //hallEffect =hardwareMap.get(AnalogInput.class, "hallEffect");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         turretMotor.setDirection(DcMotorSimple.Direction.REVERSE);

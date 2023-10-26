@@ -70,7 +70,7 @@ public class DriverControl extends LinearOpMode {
     public double resetTime = 1;
     public double transferTime = 1, transferTurretTime = 500;
     public double WRIST_DELAY = 0;
-    public boolean distanceSensor = false;
+    //public boolean distanceSensor = false;
     ElapsedTime transferTimer = new ElapsedTime();
     ElapsedTime resetTimer = new ElapsedTime();
     ElapsedTime cycleTimer = new ElapsedTime();
@@ -78,7 +78,7 @@ public class DriverControl extends LinearOpMode {
     public static double sideOdomPos = 0.33;
     @Override
     public void runOpMode() throws InterruptedException {
-        //robot = new Robot(this);
+        robot = new Robot(this);
         //robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
@@ -91,7 +91,7 @@ public class DriverControl extends LinearOpMode {
 
         keyReaders = new KeyReader[]{
                 alignerAdjust = new ToggleButtonReader(primary, GamepadKeys.Button.RIGHT_BUMPER),
-                intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
+                //intakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_DOWN),
                 extakeGround = new ToggleButtonReader(primary, GamepadKeys.Button.DPAD_UP),
                 straightMode = new ToggleButtonReader(primary, GamepadKeys.Button.LEFT_BUMPER),
                 turretZero = new ToggleButtonReader(primary, GamepadKeys.Button.X),
@@ -186,8 +186,8 @@ public class DriverControl extends LinearOpMode {
         deposit.setAngle(Deposit.AngleState.TELE_INTAKE);
         claw.setState(Claw.State.OPEN);
         slides.setState(Slides.State.BOTTOM);
-        robot.midOdo.setPosition(0);
-        robot.sideOdo.setPosition(1);
+        //robot.midOdo.setPosition(0);
+        //robot.sideOdo.setPosition(1);
         turret.setState(Turret.State.ZERO);
         while (opModeIsActive()) {
             robot.update();
@@ -405,14 +405,14 @@ public class DriverControl extends LinearOpMode {
             }
 
             //auto close claw
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 8 &&
-                    Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero < 80 && distanceSensor) {
-                claw.setState(Claw.State.CLOSE);
-                distanceSensor = false;
-            }
-            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 8) {
-                distanceSensor = true;
-            }
+//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) <= 8 &&
+//                    Math.abs(slides.slidesLeft.getCurrentPosition()) - slides.posAtZero < 80 && distanceSensor) {
+//                claw.setState(Claw.State.CLOSE);
+//                distanceSensor = false;
+//            }
+//            if (robot.distanceSensor.getDistance(DistanceUnit.CM) > 8) {
+//                distanceSensor = true;
+//            }
 
             //reset
             if (reset.wasJustPressed()) {
@@ -507,7 +507,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Slides power", slides.slidesLeft.getPower());
             telemetry.addData("Override enabled?", enableOverride);
             //telemetry.addData("Ground Intake", groundIntake.getOverrideState());
-            telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
+            //telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
     }
