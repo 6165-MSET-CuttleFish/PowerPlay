@@ -36,7 +36,7 @@ public class DriverControl extends LinearOpMode {
     Robot robot;
     Slides slides;
     Deposit deposit;
-    GroundIntake groundIntake;
+    //GroundIntake groundIntake;
     Claw claw;
     Turret turret;
     BackgroundTasks hardware;
@@ -78,14 +78,14 @@ public class DriverControl extends LinearOpMode {
     public static double sideOdomPos = 0.33;
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Robot(this);
-        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot = new Robot(this);
+        //robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         primary = new GamepadEx(gamepad1);
         secondary = new GamepadEx(gamepad2);
         slides = robot.slides;
         claw = robot.claw;
         deposit = robot.deposit;
-        groundIntake = robot.groundIntake;
+        //groundIntake = robot.groundIntake;
         turret = robot.turret;
         turret.turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -195,21 +195,21 @@ public class DriverControl extends LinearOpMode {
                 reader.readValue();
             }
             //DRIVETRAIN
-            if (straightMode.getState()) {
-                robot.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y * ninjaMultiplier,
-                                0,
-                                -gamepad1.right_stick_x * ninjaMultiplier
-                        )
-                );
-            } else robot.setWeightedDrivePower(
-                    new Pose2d(
-                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.left_stick_x) <= 0.25 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
-                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning : powerOffsetTurning)) * (ninjaMultiplier))
-                    )
-            );
+//            if (straightMode.getState()) {
+//                robot.setWeightedDrivePower(
+//                        new Pose2d(
+//                                -gamepad1.left_stick_y * ninjaMultiplier,
+//                                0,
+//                                -gamepad1.right_stick_x * ninjaMultiplier
+//                        )
+//                );
+//            } else robot.setWeightedDrivePower(
+//                    new Pose2d(
+//                            Math.abs(gamepad1.left_stick_y) == 0 ? 0 : (-gamepad1.left_stick_y + (gamepad1.left_stick_y > 0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+//                            Math.abs(gamepad1.left_stick_x) <= 0.25 ? 0: (-gamepad1.left_stick_x +(gamepad1.left_stick_x>0?-0.25:0.25)) * (ninjaMultiplier - 0.3),
+//                            Math.abs(gamepad1.right_stick_x) == 0 ? 0: ((-0.65*Math.pow(gamepad1.right_stick_x, 3)+(gamepad1.right_stick_x>0?-powerOffsetTurning : powerOffsetTurning)) * (ninjaMultiplier))
+//                    )
+//            );
 
             //CYCLING:
             //0: ground/terminal, 1: low, 2: mid, 3: high
@@ -343,26 +343,26 @@ public class DriverControl extends LinearOpMode {
             }
             slides.setPowerManual(gamepad2.left_stick_y);
             //GROUND INTAKE
-            if (intakeGround.wasJustPressed()) {
-                groundIntake.setState(GroundIntake.State.INTAKING);
-            } else if (extakeGround.wasJustPressed()) {
-                groundIntake.setState(GroundIntake.State.DEPOSITING);
-            } else if (gamepad1.dpad_left) {
-                groundIntake.setState(GroundIntake.State.OFF);
-            } else if (gamepad1.dpad_right) {
-                groundIntake.setState(GroundIntake.State.FAST);
-            }
-
-            //ground intake override
-            if((turret.getState()==Turret.State.BACK)&&enableOverride)
-            {
-                groundIntake.setOverrideState(false);
-
-            }
-            else
-            {
-                groundIntake.setOverrideState(true);
-            }
+//            if (intakeGround.wasJustPressed()) {
+//                groundIntake.setState(GroundIntake.State.INTAKING);
+//            } else if (extakeGround.wasJustPressed()) {
+//                groundIntake.setState(GroundIntake.State.DEPOSITING);
+//            } else if (gamepad1.dpad_left) {
+//                groundIntake.setState(GroundIntake.State.OFF);
+//            } else if (gamepad1.dpad_right) {
+//                groundIntake.setState(GroundIntake.State.FAST);
+//            }
+//
+//            //ground intake override
+//            if((turret.getState()==Turret.State.BACK)&&enableOverride)
+//            {
+//                groundIntake.setOverrideState(false);
+//
+//            }
+//            else
+//            {
+//                groundIntake.setOverrideState(true);
+//            }
 
             //override for end game
             if(groundOverride.wasJustPressed())
@@ -506,7 +506,7 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("Slides target", slides.slidesLeft.getTargetPosition());
             telemetry.addData("Slides power", slides.slidesLeft.getPower());
             telemetry.addData("Override enabled?", enableOverride);
-            telemetry.addData("Ground Intake", groundIntake.getOverrideState());
+            //telemetry.addData("Ground Intake", groundIntake.getOverrideState());
             telemetry.addData("distance sensor: ", robot.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }

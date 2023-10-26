@@ -97,7 +97,7 @@ public class Robot extends MecanumDrive{
 
 
     public CRServo groundLeft, groundRight;
-    public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
+    //public final DcMotorEx leftFront, leftRear, rightRear, rightFront;//, slides1, slides2, hturret;
     //public final Servo v4bSup, v4bRun;
     //public final CRServo intakeSup, intakeRun;
     //public final CRServo  groundLeft, groundRight;
@@ -159,7 +159,7 @@ public class Robot extends MecanumDrive{
         //right = new MB1643(hardwareMap, "right");
         //localizer=new Localizer(this);
 
-        distanceSensor = hardwareMap.get(ColorRangeSensor.class, "distance");
+        //distanceSensor = hardwareMap.get(ColorRangeSensor.class, "distance");
         slides = new Slides(hardwareMap);
         deposit = new Deposit(hardwareMap);
         claw = new Claw(hardwareMap);
@@ -202,10 +202,10 @@ public class Robot extends MecanumDrive{
         );
         imu.initialize(myIMUparameters);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
-        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
-        rightRear = hardwareMap.get(DcMotorEx.class, "fr");
-        rightFront = hardwareMap.get(DcMotorEx.class, "br");
+        //leftFront = hardwareMap.get(DcMotorEx.class, "fl");
+        //leftRear = hardwareMap.get(DcMotorEx.class, "bl");
+        //rightRear = hardwareMap.get(DcMotorEx.class, "fr");
+        //rightFront = hardwareMap.get(DcMotorEx.class, "br");
 
        /* slides1 = hardwareMap.get(DcMotorEx.class, "s1");
         slides2 = hardwareMap.get(DcMotorEx.class, "s2");
@@ -219,45 +219,45 @@ public class Robot extends MecanumDrive{
 */
 
 
-        midOdo = hardwareMap.get(Servo.class, "midOdom");
-        sideOdo = hardwareMap.get(Servo.class, "sideOdom");
-
-        sideOdo.setPosition(sideOdomServoPos);
-        midOdo.setPosition(odomServoPos);
-
-        isOdoRaised = false;
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-
-
-        for (DcMotorEx motor : motors) {
-            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
-            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
-            motor.setMotorType(motorConfigurationType);
-        }
-
-        if (RUN_USING_ENCODER) {
-            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        }
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
-        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        // TODO: reverse any motors using DcMotor.setDirection()
-
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+//        midOdo = hardwareMap.get(Servo.class, "midOdom");
+//        sideOdo = hardwareMap.get(Servo.class, "sideOdom");
+//
+//        sideOdo.setPosition(sideOdomServoPos);
+//        midOdo.setPosition(odomServoPos);
+//
+//        isOdoRaised = false;
+//        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+//
+//
+//        for (DcMotorEx motor : motors) {
+//            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+//            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+//            motor.setMotorType(motorConfigurationType);
+//        }
+//
+//        if (RUN_USING_ENCODER) {
+//            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        }
+//
+//        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+//            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+//        }
+//        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+//        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+//        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        leftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        rightRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//
+//        // TODO: reverse any motors using DcMotor.setDirection()
+//
+//        // TODO: if desired, use setLocalizer() to change the localization method
+//        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+//        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+//        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+//        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
     }
 
@@ -426,10 +426,10 @@ public class Robot extends MecanumDrive{
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+//        leftFront.setPower(v);
+//        leftRear.setPower(v1);
+//        rightRear.setPower(v2);
+//        rightFront.setPower(v3);
     }
 
     @Override
